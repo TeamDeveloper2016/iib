@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">		
+  <h:outputScript library="janal" name="js/jquery.magnify.min-1.2.0.js"/>
+  <h:outputScript library="janal" name="core/jquery.janal.magnify-0.0.1.js"/>
+  <h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
+  <h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />
+  <script type="text/javascript">
+    $(function() {
+      janal.fecha();
+      $('#banner').addClass('ui-panelgrid');
+      $('#banner').addClass('ui-widget');
+      $('#banner tr:eq(0)').addClass('ui-widget-content');
+    });
+  </script>
+  <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+    <div class="ui-g ui-grid-row janal-grid-row">
+			<div class="ui-g-1 janal-content-center janal-column-center">
+				<p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="lg-pantalla janal-logo-mini" style="#{kajoolUtilAplicacion.logoWidth}"/>
+				<p:graphicImage library="janal" name="img/sistema/logo-#{kajoolUtilAplicacion.logoEmpresa}" styleClass="xs-pantalla janal-logo-mini" style="width: 35px !important;"/>
+			</div>	
+			<div class="ui-g-11 janal-content-center">
+        <div class="ui-g ui-grid-row janal-grid-row">
+					<div class="ui-g-12 janal-content-center">
+						<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-left, janal-control-acceso janal-column-center janal-wid-col-150">
+  		  		  <h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
+	  		  	  <h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
+              <p:panelGrid columns="4" styleClass="janal-wid-100">
+                <p:commandLink title="Facebook">
+                  <span class="fa fa-stack janal-global-icon-cart">
+                    <i class="fa fa-circle fa-stack-2x janal-color-orange"></i>
+                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                  </span>
+                </p:commandLink>
+                <p:commandLink title="Twitter">
+                  <span class="fa fa-stack janal-global-icon-cart">
+                    <i class="fa fa-circle fa-stack-2x janal-color-orange"></i>
+                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                  </span>
+                </p:commandLink>
+                <p:commandLink title="Instagram">
+                  <span class="fa fa-stack janal-global-icon-cart">
+                    <i class="fa fa-circle fa-stack-2x janal-color-orange"></i>
+                    <i class="fa fa-instagram fa-stack-1x fa-inverse"></i>
+                  </span>
+                </p:commandLink>
+                <p:commandLink title="Youtube">
+                  <span class="fa fa-stack janal-global-icon-cart">
+                    <i class="fa fa-circle fa-stack-2x janal-color-orange"></i>
+                    <i class="fa fa-youtube-play fa-stack-1x fa-inverse"></i>
+                  </span>
+                </p:commandLink>
+              </p:panelGrid>  
+						</p:panelGrid>
+				  </div>	
+				</div>	
+        <div class="ui-g ui-grid-row janal-grid-row">
+					<div class="ui-g-4 janal-content-center">
+						<span id="reloj" class="fecha lg-pantalla"></span>
+						<span class="fecha xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+					</div>
+					<div class="ui-g-4 janal-content-center margin-desarrollo" style="text-align: center;">
+						<p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+					</div>
+					<div class="ui-g-4 janal-content-center margin-version" style="text-align: right;">
+						<p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-control-acceso janal-column-right lg-pantalla janal-wid-30">
+							<div>
+							  <span id="version" class="version lg-pantalla">TEL: #{kajoolUtilAplicacion.celular}</span>
+							  <span id="version" class="version xs-pantalla Fs14">TEL: #{kajoolUtilAplicacion.celular}</span>
+							</div>
+              <p:commandLink action="/acceso?faces-redirect=true" title="Iniciar sesion" styleClass="janal-control-acceso" style="text-decoration: none;" rendered="false">
+								<p:outputLabel value="Iniciar sesión"/>
+							</p:commandLink>
+						</p:panelGrid>
+					</div>
+				</div>	
+			</div>
+		</div>	
+  </div>
+</html>

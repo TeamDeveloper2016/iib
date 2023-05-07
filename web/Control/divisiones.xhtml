@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+  xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/plantillas/portada.xhtml">
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.errors = 2;
+			Janal.Control.fields = {
+			};
+			//<![CDATA[
+			$(document).ready(function() {
+			});
+			//]]>
+		</script> 
+		<style type="text/css">
+      .ui-datagrid, .ui-datagrid:hover, .ui-datagrid:focus {border: solid 0px #C0C5C7;}  
+      .ui-commandlink {color: #27AAE1 !important; margin-right: 5px; font-weight: bold; text-decoration: none;}
+      .ui-menu.ui-megamenu .ui-menu-child .ui-menu-list {width: 23em;}
+    </style>
+	</ui:define>
+	<ui:define name="contenido">  	
+    <pe:remoteCommand name="busquedaArticulos" process="@this" action="/Control/articulos.jsf?faces-redirect=true" actionListener="#{kajoolControlDivisiones.doLoadArticulos}">  
+      <pe:methodSignature parameters="java.lang.String"/>  
+      <pe:methodParam name="codigo"/>  
+    </pe:remoteCommand>
+    <pe:remoteCommand name="busquedaCategoria" process="@this" action="/Control/galeria.jsf?faces-redirect=true" actionListener="#{kajoolControlDivisiones.doLoadCategoria}">  
+      <pe:methodSignature parameters="java.lang.String"/>  
+      <pe:methodParam name="codigo"/>  
+    </pe:remoteCommand>
+    <pe:remoteCommand name="busquedaLocal" process="@this" actionListener="#{kajoolControlDivisiones.doLoadLocal}" update="tabla categorias">  
+      <pe:methodSignature parameters="java.lang.String"/>  
+      <pe:methodParam name="codigo"/>  
+    </pe:remoteCommand>
+    <div id="janal-opcion-1" class="opciones">
+      <center style="margin-left: 0%; margin-right: 0%;">
+        <div>
+          <p:outputLabel id="categorias" value="#{kajoolControlDivisiones.attrs.links}" escape="false" style="display: #{empty kajoolControlDivisiones.attrs.links? 'none': ''}"/>
+        </div>
+        <div class="distribucion">
+          <div class="categoria lg-pantalla">
+            <p:megaMenu model="#{kajoolControlBaseMenu.megaCategorias}" orientation="vertical" style="margin-top: #{empty kajoolControlDivisiones.attrs.links? '25': '0'}px;"/>
+          </div>  
+          <div class="galeria">
+            <p:dataGrid lazy="true" id="tabla" var="row" value="#{kajoolControlDivisiones.lazyModel}" columns="3" layout="grid" rows="12" paginator="#{kajoolControlDivisiones.lazyModel.rowCount gt kajoolControlDivisiones.lazyModel.pageSize}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="6,12,16" paginatorPosition="bottom" rowIndexVar="index" style="display: #{empty(kajoolControlDivisiones.lazyModel)? 'none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+              <p:panel header="#{row['categoria']}" styleClass="janal-column-center">
+                <p:panelGrid columns="1" styleClass="janal-column-center">
+                  <a id="tabla:#{index}:source-image" class="janal-control-imagen" data-magnify="gallery" data-caption="#{row['categoria']}" data-group="icon-image" href="#{kajoolControlDivisiones.pathImage}#{row.archivo.toString}" title="Ver imagen" style="display: #{empty(row.archivo)? 'none': ''}">
+                    <img src="#{kajoolControlDivisiones.pathImage}#{row.archivo.toString}?pfdrid_c=true" width="203" height="162" style="cursor:zoom-in;"/>
+                  </a>	
+                  <p:commandLink process="@this" action="#{kajoolControlDivisiones.doLoadDetalle}" value="[ VER MAS ]" title="Buscar categorías" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+                    <f:setPropertyActionListener value="#{row}" target="#{kajoolControlDivisiones.attrs.seleccionado}" />
+                  </p:commandLink>
+                </p:panelGrid>          
+              </p:panel>  
+              <f:facet name="footer">
+                Total [#{kajoolControlDivisiones.lazyModel== null? 0: kajoolControlDivisiones.lazyModel.rowCount}] registros
+              </f:facet>
+            </p:dataGrid>        
+          </div>
+        </div>  
+      </center>  
+    </div>  
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>

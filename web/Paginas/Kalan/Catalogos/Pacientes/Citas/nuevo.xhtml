@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Agendar una cita" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'contenedorGrupos\\:nombre': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:paterno': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:materno': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:celular': {validaciones: 'requerido|entero({\"cuantos\":10})', mascara: 'telefono'},
+        'contenedorGrupos\\:correo': {validaciones: 'correo', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:idAtendio':{validaciones: 'libre', mascara: 'libre'},
+        'servicios': {validaciones: 'requerido|mayor({\"cuanto\":1})', mascara: 'libre', mensaje: 'Se tiene que seleccionar al menos 1 servicio'}
+      };
+			$(document).ready(function(){janal.readingMode('#{kalanCatalogosPacientesCitasNuevo.attrs.nombreAccion}');});
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-12">
+          <p:outputLabel for="contenedorGrupos:nombre" value="Nombre(s)" styleClass="janal-display-none"/>
+          <p:outputLabel for="contenedorGrupos:paterno" value="1er apellido" styleClass="janal-display-none"/>
+          <p:outputLabel for="contenedorGrupos:celular" value="Celular" styleClass="janal-display-none"/>
+          <p:accordionPanel id="contenedorGrupos" activeIndex="#{kalanCatalogosPacientesCitasNuevo.attrs.activeIndex}" multiple="true">
+					  <p:tab title="Cliente(s)" titleStyle="display: #{kalanCatalogosPacientesCitasNuevo.visualizar? '': 'none'}">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:autoComplete id="clientes" var="custom" placeholder="BUSCAR Ej. JUAN PEREZ LOPEZ" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCatalogosPacientesCitasNuevo.attrs.cliente}" completeMethod="#{kalanCatalogosPacientesCitasNuevo.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+  								<p:ajax event="itemSelect" process="contenedorGrupos" update="@(.generales)" listener="#{kalanCatalogosPacientesCitasNuevo.doLoadGenerales}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <h:outputText value="Nombre:" />
+                      <h:outputText value="#{custom.cliente}" />
+                      <h:outputText value="Última cita:" styleClass="janal-color-orange" />
+                      <h:outputText value="#{empty(custom.servicios.toString())? 'SIN CITA': custom.inicio}" styleClass="janal-color-orange FsBold"/>
+                      <h:outputText value="Servicios:" />
+                      <h:outputText value="#{empty(custom.servicios.toString())? 'SIN SERVICIOS': custom.servicios}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>	
+              </p:panelGrid>  
+					  </p:tab>
+					  <p:tab title="Generales" titleStyle="display: #{kalanCatalogosPacientesCitasNuevo.visualizar? '': 'none'}">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-34, janal-wid-33, janal-wid-33">
+                  <p:inputText id="nombre" placeholder="NOMBRE(S) Ej. JUAN JOSE" value="#{kalanCatalogosPacientesCitasNuevo.paciente.razonSocial}" styleClass="janal-wid-100-txt generales"/>
+                  <p:inputText id="paterno" placeholder="1ER APELLIDO Ej. PEREZ" value="#{kalanCatalogosPacientesCitasNuevo.paciente.paterno}" styleClass="janal-wid-100-txt generales"/>
+                  <p:inputText id="materno" placeholder="2DO APELLIDO Ej. LOPEZ" value="#{kalanCatalogosPacientesCitasNuevo.paciente.materno}" styleClass="janal-wid-100-txt generales"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">
+                  <p:inputText id="celular" placeholder="CELULAR Ej. 4492090586" value="#{kalanCatalogosPacientesCitasNuevo.paciente.celular}" styleClass="janal-wid-100-txt janal-color-orange generales FontBold"/>
+                  <p:inputText id="correo" placeholder="CORREO Ej. juan.perez@gmail.com" value="#{kalanCatalogosPacientesCitasNuevo.paciente.correo}" styleClass="janal-wid-100-txt janal-color-ble generales FontBold"/>
+                </p:panelGrid>
+              </p:panelGrid>
+            </p:tab>  
+            <p:tab title="Horario #{empty(kalanCatalogosPacientesCitasNuevo.paciente.consecutivo)? '': '[Cita: '.concat(kalanCatalogosPacientesCitasNuevo.paciente.consecutivo).concat(']')}">  
+              <p:panelGrid columns="7" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20 janal-column-center, janal-wid-5 janal-column-center, janal-wid-20 janal-column-center, janal-wid-20 janal-column-right, janal-wid-10 janal-column-center, janal-wid-15 janal-column-right, janal-wid-10 janal-column-center">
+                <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100 generales" value="#{kalanCatalogosPacientesCitasNuevo.paciente.inicio}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario">
+                  <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesCitasNuevo.doUpdateInicio}" process="@this contenedorGrupos:termino" update="contenedorGrupos:termino"/>
+                </p:calendar>  
+                <p:outputLabel value=" A " styleClass="janal-color-black FsBold"/>
+                <p:calendar id="termino" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100 generales" value="#{kalanCatalogosPacientesCitasNuevo.paciente.termino}" pattern="dd/MM/yyyy HH:mm:ss" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario">
+                  <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesCitasNuevo.doUpdateTermino}" process="@this contenedorGrupos:inicio" update="contenedorGrupos:inicio"/>
+                </p:calendar>                    
+                <p:outputLabel value="Recordatorio por whatsapp:" styleClass="janal-color-black FsBold"/>
+                <p:inputNumber id="recordatorio" value="#{kalanCatalogosPacientesCitasNuevo.paciente.recordatorio}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="0" maxValue="24" minValue="2" thousandSeparator=","/>
+                <p:outputLabel value="Notificar mismo día:" styleClass="janal-color-black FsBold"/>
+                <p:inputNumber id="notificacion" value="#{kalanCatalogosPacientesCitasNuevo.paciente.notificacion}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="0" maxValue="12" minValue="2" thousandSeparator=","/>
+              </p:panelGrid>
+            </p:tab>  
+            <p:tab title="Asignar:" titleStyle="display: #{kalanCatalogosPacientesCitasNuevo.visualizar? '': 'none'}">  
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:selectOneMenu id="idAtendio" tabindex="0" value="#{kalanCatalogosPacientesCitasNuevo.paciente.ikAtendio}" var="row" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt generales" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{kalanCatalogosPacientesCitasNuevo.attrs.personas}" var="element" itemValue="#{element.key}" itemLabel="#{element.empleado}"/>
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{row.empleado}"/>
+                  </p:column>   
+                  <p:column headerText="Celular">
+                    <h:outputText value="#{row.celular}"/>
+                  </p:column>   
+                  <p:column headerText="Correo">
+                    <h:outputText value="#{row.correo}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+              </p:panelGrid>
+            </p:tab>  
+          </p:accordionPanel>  
+          <p:spacer width="5px"/>
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosPacientesCitasNuevo.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosPacientesCitasNuevo.seleccionados}" paginator="#{kalanCatalogosPacientesCitasNuevo.lazyModel.rowCount gt kalanCatalogosPacientesCitasNuevo.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+            <p:ajax event="rowUnselectCheckbox" listener="#{kalanCatalogosPacientesCitasNuevo.doRowSeleccionado}" process="@this tabla" update="servicios" oncomplete="PF('tabla').writeSelections()" skipChildren="false"/>
+            <p:ajax event="rowSelectCheckbox" listener="#{kalanCatalogosPacientesCitasNuevo.doRowSeleccionado}" process="@this tabla" update="servicios" oncomplete="PF('tabla').writeSelections()" skipChildren="false"/>
+            <p:column selectionMode="multiple" styleClass="janal-column-center MarAuto Responsive janal-wid-3"/>							
+						<f:facet name="header" >
+              <div style="float: left;">
+                <p:outputLabel value="S E R V I C I O S" styleClass="janal-color-white"/>
+              </div>  
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem value="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+								<p:commandButton title="Exportar PDF" icon="fa fa-file-pdf-o" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:commandButton title="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{row.codigo}">
+              <f:facet name="header">
+                <h:outputText value="Código"/>
+              </f:facet>
+              <h:outputText value="#{row['codigo']}"/>
+            </p:column>
+            <p:column styleClass="tabla_checkbox janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Servicio(s)"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{kalanCatalogosPacientesCitasNuevo.lazyModel== null? 0: kalanCatalogosPacientesCitasNuevo.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:outputLabel for="servicios" value="Servicios:" styleClass="janal-display-none"/>
+          <p:inputText id="servicios" value="#{kalanCatalogosPacientesCitasNuevo.attrs.trabajos}" styleClass="janal-wid-100 janal-display-none"/>
+        </div>
+      </div>
+    </div>		    
+  </ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
+      <p:commandButton id="depurar" value="Cancelar" icon="fa fa-remove" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doDepurar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.cancelar}"/>
+			<p:commandButton id="recuperar" value="Recuperar" icon="fa fa-recycle" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doRecuperar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.recuperar}"/>
+			<p:commandButton id="eliminar" value="Eliminar" icon="fa fa-trash" accesskey="a" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doEliminar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.eliminar}"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesCitasNuevo.doCancelar}" immediate="true"/>
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();"/>
+			<p:commandButton id="depurarIcon" title="Cancelar" icon="fa fa-remove" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doDepurar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.cancelar}"/>
+			<p:commandButton id="recuperarIcon" title="Recuperar" icon="fa fa-recycle" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doRecuperar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.recuperar}"/>
+			<p:commandButton id="elminarIcon" title="Eliminar" icon="fa fa-trash" process="@form" update="@form" action="#{kalanCatalogosPacientesCitasNuevo.doEliminar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh();" rendered="#{kalanCatalogosPacientesCitasNuevo.eliminar}"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-undo" process="@this" action="#{kalanCatalogosPacientesCitasNuevo.doCancelar}" immediate="true"/>
+		</div>	
+	</ui:define>	
+  <ui:param name="componenteBloqueo" value="tabla" />
+</ui:composition>

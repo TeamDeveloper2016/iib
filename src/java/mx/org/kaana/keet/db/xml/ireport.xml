@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para la generacion de reportes para IMOX
+-->
+<process>
+  <model>
+  </model>
+  <dml>
+		<unit id="VistaEmpleadosEstatusDto">
+			<select id="empleados">
+				select 
+					tc_mantic_empresas.nombre empresa,
+					concat(tc_mantic_empresas.titulo) as nombre_empresa,  
+					tr_mantic_empresa_personal.clave,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre_completo,
+					tc_mantic_puestos.nombre as puesto,
+					departamentos.departamento,
+          1 total,
+					if(tr_mantic_empresa_personal.id_activo=1, 'SI', 'NO') as activo,					
+					if(tr_mantic_empresa_personal.id_seguro=1, 'SI', 'NO') as seguro,
+					if(tr_mantic_empresa_personal.id_activo=1, '1', '0') as id_activo,					
+					if(tr_mantic_empresa_personal.id_seguro=1, '0', '1') as id_inactivo,
+					tr_mantic_empresa_personal.sueldo_semanal,
+					tr_mantic_empresa_personal.sueldo_imss
+				from
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+        inner join ( 
+          select 
+            tc_keet_contratistas_departamentos.id_empresa_persona,
+            concat('|', group_concat(tc_keet_departamentos.id_departamento separator '|'), '|') as id_departamentos,
+            group_concat(tc_keet_departamentos.nombre separator ', ') as departamento
+          from
+            tc_keet_contratistas_departamentos
+          inner join
+            tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+          group by
+            tc_keet_contratistas_departamentos.id_empresa_persona				  
+        ) as departamentos on tr_mantic_empresa_personal.id_empresa_persona= departamentos.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				order by 
+					nombre_empresa, departamento, 
+          concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')), 
+          nombre_completo, puesto
+      </select>			
+			<select id="desarrollo">
+				select 
+					tc_mantic_empresas.nombre empresa,
+					concat(tc_mantic_empresas.titulo) as nombre_empresa,  
+					tr_mantic_empresa_personal.clave,
+					concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre_completo,
+					tc_mantic_puestos.nombre as puesto,
+					departamentos.departamento,
+					if(tr_mantic_empresa_personal.id_activo=1, 'SI', 'NO') as activo,					
+					if(tr_mantic_empresa_personal.id_seguro=1, 'SI', 'NO') as seguro,
+					if(tr_mantic_empresa_personal.id_activo=1, '1', '0') as id_activo,					
+					if(tr_mantic_empresa_personal.id_seguro=1, '0', '1') as id_inactivo,
+					tr_mantic_empresa_personal.sueldo_semanal,
+					tr_mantic_empresa_personal.sueldo_imss
+				from
+					tr_mantic_empresa_personal
+				inner join 
+					tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
+        inner join ( 
+          select 
+            tc_keet_contratistas_departamentos.id_empresa_persona,
+            concat('|', group_concat(tc_keet_departamentos.id_departamento separator '|'), '|') as id_departamentos,
+            group_concat(tc_keet_departamentos.nombre separator ', ') as departamento
+          from
+            tc_keet_contratistas_departamentos
+          inner join
+            tc_keet_departamentos on tc_keet_contratistas_departamentos.id_departamento= tc_keet_departamentos.id_departamento
+          group by
+            tc_keet_contratistas_departamentos.id_empresa_persona				  
+        ) as departamentos on tr_mantic_empresa_personal.id_empresa_persona= departamentos.id_empresa_persona
+				inner join 
+					tc_mantic_personas on tr_mantic_empresa_personal.id_persona = tc_mantic_personas.id_persona and tc_mantic_personas.id_tipo_persona!= 1
+				order by 
+					nombre_empresa, departamento, 
+          concat(tc_mantic_personas.nombres,' ', ifnull(tc_mantic_personas.paterno, ''),' ', ifnull(tc_mantic_personas.materno, '')), 
+          nombre_completo, puesto
+      </select>			
+		</unit>    
+  </dml>
+</process>

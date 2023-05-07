@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Consulta de precios"/>
+	<ui:define name="librerias">
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
+		<script type="text/javascript">			
+			Janal.Control.fields = {				 				
+				'descuento' : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},
+				'nombres'   : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
+				'cantidades': {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'},
+				'precios'   : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'}
+			};	
+			
+    	$(document).ready(function() {
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticClientesMovil.adminOrden.articulos.size()}, 'tabla\\:');
+				janal.readingMode('#{manticClientesMovil.attrs.nombreAccion}');
+        $(".janal-global-help").hide();
+        $("a.janal-global-dashboard").click(function(event) {event.preventDefault(); return true;});
+      });			
+      
+      function triggerLocalEvent(index, keyCode, value) {
+        janal.console("triggerLocalEvent: index="+ index+ ", keyCode= "+ keyCode+ ", value: "+ value);
+        if(typeof(value)!== 'undefined') {
+          value= $("#tabla\\:"+ index+ "\\:cuantos_input").val();
+          $("#tabla\\:"+ index+ "\\:codigos_input").val(value);
+        } // if  
+        $("#tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('focus'));
+        $("#tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('keydown', {which: keyCode}));
+      }
+      
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
+		</script>   
+		<style type="text/css">
+			.janal-total-compra {font-size: 20px !important;font-weight: bold !important;font-style: italic;}			
+      .producto .producto-search {display: flex;width: 290px;}
+      .producto .producto-input {flex: 1 1 70%;}
+      .producto .producto-button {flex: 1 1 30%;}
+      .producto .producto-name {font-size: 1rem;font-weight: 700;}
+      .producto .producto-description {margin: 0 0 0.5rem 0;}
+      .producto .producto-category-icon {vertical-align: middle;margin-right: 0.5rem;}
+      .producto .producto-category {font-weight: 600;vertical-align: middle;}
+      .producto .producto-list-item {display: -ms-flexbox;display: flex;-ms-flex-align: center;align-items: center;padding: 1rem;}
+      .producto .producto-list-item .producto-item-search {width: 220px; text-align: center;}
+      .producto .producto-list-item img {width: 200px;height:170px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
+      .producto .producto-list-item .producto-list-detail {flex: 1 1 0;-ms-flex: 1 1 0;}  
+      .producto .producto-list-item.border {border-bottom: 1px solid;} 
+      .producto .producto-list-item .producto-price {font-size: 1.5rem;font-weight: 600;margin-bottom: 0.5rem;align-self: flex-end; text-align: right;}
+      .producto .producto-list-item .producto-quantity {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+      .producto .producto-list-item .producto-cost {font-size: 1.0rem;font-weight: 200;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+      .producto .producto-list-item .producto-action {display: -ms-flexbox;display: flex;-ms-flex-direction: column;flex-direction: column;}
+      .producto .producto-list-item .producto-action .ui-button {margin-bottom: 0.5rem;}
+      @media screen and (max-width: 576px) {
+        .ui-autocomplete-panel {width: 220px !important;}
+        .janal-wid-col-300 {width: 230px !important;}
+        .producto .producto-search {display: flex;width: 100%;}
+        .producto .producto-input {flex: 1 1 80%;}
+        .producto .producto-button {flex: 1 1 20%;}
+        .producto .producto-name {font-size: 0.8rem;font-weight: 300;}
+        .producto .producto-category {font-size: 0.8rem;font-weight: 300;vertical-align: middle;}
+        .producto .producto-list-item .producto-item-search {width: 150px; text-align: center;}
+        .producto .producto-list-item img {width: 140px;height:120px;box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23); margin-right: 2rem;}
+        .producto .producto-list-item .producto-price {font-size: 1.0rem;font-weight: 300;margin-bottom: 0.5rem;align-self: flex-end;}
+        .producto .producto-list-item .producto-quantity {font-size: 0.9rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+        .producto .producto-list-item .producto-cost {font-size: 0.7rem;font-weight: 100;margin-bottom: 0.1rem;align-self: flex-end; text-align: right;}
+      }
+      .p-p-0 {padding: 0 !important;}
+      .p-p-1 {padding: 0.25rem !important;}
+      .p-p-2 {padding: 0.5rem !important;}
+      .p-p-3 {padding: 1rem !important;}
+      .p-p-4 {padding: 1.5rem !important;}
+      .p-p-5 {padding: 2rem !important;}
+      .p-p-6 {padding: 3rem !important;}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<pe:remoteCommand name="unlockVenta" process="@this" actionListener="#{manticClientesMovil.unlockVenta}"/>
+		<p:commandLink id="listadoPrecios" value="Articulos" action="#{manticClientesMovil.doIrPage}" process="@form" style="display: none;"/>
+		<p:commandLink id="catalogoPrecios" value="Catalogos" action="#{manticClientesMovil.doIrPage}" process="@form" style="display: none;"/>
+		<p:poll listener="#{manticClientesMovil.doActivatePage}" process="@this" interval="60"/>
+		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) deudor" actionListener="#{manticClientesMovil.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
+			<pe:methodParam name="codigo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticClientesMovil.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo) deudor" actionListener="#{manticClientesMovil.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="search" process="@this" update="@(.informacion)" actionListener="#{manticClientesMovil.doSearchArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
+			<pe:methodParam name="idArticulo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) deudor panelTotales" actionListener="#{manticClientesMovil.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>
+		<p:remoteCommand name="erase" process="@this"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">					
+					<p:panelGrid id="deudor" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center janal-display-none" columnClasses="janal-wid-100" style="display: #{manticClientesMovil.saldoCliente.deudor} ? 'none' : ''">
+						<p:outputLabel value="#{manticClientesMovil.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange" style="font-weight: bold !important"/>
+					</p:panelGrid>	
+          <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+            <p:panelGrid columns="4" styleClass="janal-wid-100-txt" columnClasses="janal-fix-20, janal-fix-30 janal-column-center, janal-fix-20, janal-fix-30 janal-column-center">
+              <p:outputLabel value="Articulos:" styleClass="janal-total-compra janal-color-blue"/>
+              <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-blue" value="#{manticClientesMovil.adminOrden.totales.reales}"/>
+              <p:outputLabel value="Total:" styleClass="janal-total-compra janal-color-orange"/>
+              <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticClientesMovil.adminOrden.totales.totalDosDecimales$}"/>
+            </p:panelGrid>	  
+            <p:panelGrid columns="2" styleClass="janal-wid-99" columnClasses="janal-fix-50, janal-fix-60 janal-column-right">
+              <p:outputLabel value="Buscar por código:"/>
+              <p:selectBooleanCheckbox value="#{manticClientesMovil.attrs.buscaPorCodigo}" title="Buscar por código:" styleClass="filas">
+                <p:ajax event="change" process="@this"/>
+              </p:selectBooleanCheckbox>
+            </p:panelGrid>  
+					</p:panelGrid>	
+          <p:panelGrid id="contenido" columns="1" layout="grid" styleClass="janal-wid-100-txt" style="height:480px !important;overflow-y: auto" columnClasses="janal-wid-100">					
+            <p:dataGrid id="tabla" widgetVar="kajoolTable" var="row" value="#{manticClientesMovil.adminOrden.articulos}" paginator="false" columns="1" rows="1000" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="filas">
+              <f:facet name="header" class="janal-align-left">
+                <span class="Fs16" style="font-weight: normal;">Por favor ingrese su lista de articulos</span>
+              </f:facet>
+              <div class="producto">
+                <p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
+                <p:inputText id="values" value="#{row['valor']}" style="display:none"/>
+                <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>																						
+                <p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
+                <h:outputText value="#{row['detallePrecio']}" escape="false" rendered="false"/>
+                <div class="producto-list-item p-p-1">
+                  <div class="producto-item-search">
+                    <a data-magnify="gallery" href="#{manticClientesMovil.path}#{row['imagen']}" data-caption="#{row['imagen']}" data-group="icon-image" title="Click para ver más grande la imagen">
+                      <p:graphicImage url="#{manticClientesMovil.path}#{row['imagen']}" style="cursor:zoom-in;"/>
+                    </a>  
+                  </div>	
+                  <div class="producto-list-detail">
+                    <div id="nombres" class="producto-name" title="Código: #{row['propio']}, Fabricante: #{row['fabricante']}"><i class="fa fa-qrcode producto-category-icon"/>[#{row['propio']}] stock, #{row['stock']}</div>
+                    <div class="producto-description #{row['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}">#{row['nombre']}</div>
+                    <p:rating readonly="true" value="#{10}"/>
+                    <span class="producto-category" title="Unidad de medida"><i class="fa fa-language producto-category-icon"/>#{row['unidadMedida']}</span>
+                    <div class="producto-description" title="Descuento: #{row['descuentoDescripcion']}"><i class="fa fa-tags producto-category-icon"/>#{row['descuentoDescripcion']}</div>
+                  </div>  
+                  <div class="producto-list-action">
+                    <div class="producto-price janal-color-black" title="Importe">#{row['importe$']}</div>
+                    <div class="producto-quantity janal-color-orange" title="Clic para cambiar la cantidad" style="cursor: poiter;">
+                      <i class="fa fa-sort-numeric-asc producto-category-icon"/>
+                      <p:inplace label="Cantidad: #{row['cantidad']}" effectSpeed="fast" event="click">
+                        <p:selectOneMenu id="cuantos" style="width: 45px;">
+                          <p:ajax event="change" process="@this" onstart="return true;" oncomplete="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK, 1);"/>
+                          <f:selectItem itemLabel="1" itemValue="1" />
+                          <f:selectItem itemLabel="2" itemValue="2" />
+                          <f:selectItem itemLabel="3" itemValue="2" />
+                          <f:selectItem itemLabel="4" itemValue="4" />
+                          <f:selectItem itemLabel="5" itemValue="5" />
+                          <f:selectItem itemLabel="6" itemValue="6" />
+                          <f:selectItem itemLabel="7" itemValue="7" />
+                          <f:selectItem itemLabel="8" itemValue="8" />
+                          <f:selectItem itemLabel="9" itemValue="9" />
+                          <f:selectItem itemLabel="10" itemValue="10" />
+                          <f:selectItem itemLabel="11" itemValue="11" />
+                          <f:selectItem itemLabel="12" itemValue="12" />
+                          <f:selectItem itemLabel="13" itemValue="13" />
+                          <f:selectItem itemLabel="14" itemValue="14" />
+                          <f:selectItem itemLabel="15" itemValue="15" />
+                          <f:selectItem itemLabel="16" itemValue="16" />
+                          <f:selectItem itemLabel="17" itemValue="17" />
+                          <f:selectItem itemLabel="18" itemValue="18" />
+                          <f:selectItem itemLabel="19" itemValue="19" />
+                          <f:selectItem itemLabel="20" itemValue="20" />
+                        </p:selectOneMenu>
+                      </p:inplace>                      
+                    </div>
+                    <div class="producto-cost" title="Precio">#{row['costo']}</div>
+                  </div> 
+                </div>	
+                <div class="janal-wid-100-txt producto-search">
+                  <div class="producto-input">
+                    <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+                    <p:inputText id="locks" value="0" style="display:none"/>
+                    <p:autoComplete id="codigos" styleClass="janal-wid-100-txt" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-93 key-down-event filas" itemValue="#{custom}" value="#{manticClientesMovil.attrs.articulo}" completeMethod="#{manticClientesMovil.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="#{row['idArticulo'] eq -1? 'Buscar articulo ej. martillo': 'Teclear cantidad [Clic boton]'}">
+                      <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
+                      <p:ajax event="focus" process="@this" listener="#{manticClientesMovil.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
+                      <f:facet name="itemtip">
+                        <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300" columnClasses="janal-fix-40, janal-fix-60">
+                          <f:facet name="header" class="TexAlCenter">
+                            <a data-magnify="gallery" href="#{manticClientesMovil.path}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
+                              <p:graphicImage url="#{manticClientesMovil.path}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
+                            </a>
+                          </f:facet>
+                          <h:outputText value="Código:" />
+                          <h:outputText value="#{custom.propio}" />
+                          <h:outputText value="Precio venta:" />
+                          <p:outputLabel value="$ #{custom.precioCliente}" styleClass="janal-color-blue janal-font-bold"/>
+                          <h:outputText value="Código auxiliar:" />
+                          <h:outputText value="#{custom.codigo}" />
+                        </h:panelGrid>
+                      </f:facet>
+                    </p:autoComplete>												
+                  </div>	
+                  <div class="producto-button janal-column-right">  
+                    <p:commandButton type="button" title="Cantidad" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary" rendered="#{true or kajoolUtilAplicacion.isMobile}"/>
+                    <p:commandButton type="button" title="Eliminar" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary" rendered="#{true or kajoolUtilAplicacion.isMobile}"/>
+                  </div>  
+                </div>  
+              </div>  
+            </p:dataGrid>
+            <p:panelGrid id="panelTotales" columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100">
+              <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-30, janal-fix-70 janal-column-right">
+                <p:outputLabel for="articulos" value="Articulos:"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticClientesMovil.adminOrden.totales.reales}"/>
+                <p:outputLabel value="Descuento:"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticClientesMovil.adminOrden.totales.descuentoDosDecimales$}"/>
+                <p:outputLabel value="Global:" rendered="false"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticClientesMovil.adminOrden.totales.globalDosDecimales$}" rendered="false"/>
+                <p:outputLabel value="Subtotal:"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticClientesMovil.adminOrden.totales.subTotalDosDecimales$}"/>
+                <p:outputLabel value="IVA:"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticClientesMovil.adminOrden.totales.ivaDosDecimales$}"/>
+                <p:outputLabel for="total" value="Total:" styleClass="janal-total-compra janal-color-orange"/>
+                <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticClientesMovil.adminOrden.totales.totalDosDecimales$}"/>
+              </p:panelGrid>
+            </p:panelGrid>
+          </p:panelGrid>
+					<p:inputText id="articulos" value="#{manticClientesMovil.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
+          <p:inputText id="total" value="#{manticClientesMovil.adminOrden.totales.totalDosDecimales}" styleClass="recalculo" style="display:none"/>
+				</div>
+			</div>
+		</div>
+	</ui:define>    
+	<ui:define name="acciones">
+    <div class="lg-pantalla">
+      <p:commandButton value="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="filas" style="display: #{manticClientesMovil.adminOrden.articulos.size() lt 2? 'none': ''}">
+  			<p:fileDownload value="#{manticClientesMovil.archivo}"/>
+      </p:commandButton>  
+      <p:commandButton value="Limpiar" icon="fa fa-recycle" accesskey="r" process="@this" action="#{manticClientesMovil.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>						
+    </div>	
+    <div class="xs-pantalla">
+      <p:commandButton title="Exportar" icon="fa fa-cloud-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="filas" style="display: #{manticClientesMovil.adminOrden.articulos.size() lt 2? 'none': ''}">
+  			<p:fileDownload value="#{manticClientesMovil.archivo}"/>
+      </p:commandButton>  
+      <p:commandButton title="Limpiar" icon="fa fa-recycle" accesskey="r"  process="@this" action="#{manticClientesMovil.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+    </div>		
+	</ui:define>	
+	<ui:define name="dialogos">
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Asignar sobre sueldo de empleados" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			// |siguiente({"cuantos":3,"cual":"0","token":"BR"})
+      Janal.Control.fields = {
+        'clave'       : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas', grupo: 'general'},
+        'nombre'      : {validaciones: 'libre', mascara: 'libre' , formatos: 'cambiar-mayusculas', grupo: 'general'},       
+        'rfc'         : {validaciones: 'rfc'  , mascara: 'fiscal', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        'idActivo'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'idTipoGasto' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'idSeguro'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'tipoPersona' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'salarioMenor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'salarioMayor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'sueldo'      : {multiple: '$', validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'sueldo'},
+				'sobre'       : {multiple: '$', validaciones: 'requerido|flotante', mascara: 'libre', grupo: 'sueldo'}
+      };
+    </script>		
+		<style type="text/css">
+			.ui-selectcheckboxmenu-token-label {
+				display: block;
+				padding: 0 2.1em 0 .5em;
+				background: #1578c9;
+				color: white;
+			}
+		</style>
+  </ui:define>
+  <ui:define name="contenido">
+		<pe:remoteCommand name="globalImporte" process="@this" actionListener="#{manticCatalogosEmpleadosSueldo.doGlobalImporte}">  
+			<pe:methodSignature parameters="java.lang.Double"/>  
+			<pe:methodParam name="importe"/>  
+		</pe:remoteCommand>
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosEmpleadosSueldo.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosEmpleadosSueldo.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticCatalogosEmpleadosSueldo.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:outputLabel for="idActivo" value="Activo:"/>
+              <p:selectOneMenu id="idActivo" value="#{manticCatalogosEmpleadosSueldo.attrs.idActivo}" styleClass="janal-wid-96">
+                <f:selectItem itemLabel="ACTIVO" itemValue="1"/>
+                <f:selectItem itemLabel="INACTIVO" itemValue="2"/>                
+                <f:selectItem itemLabel="TODOS" itemValue="1,2"/>
+              </p:selectOneMenu>
+							<p:outputLabel for="contratista" value="Asignado a contratista:"/>
+							<p:selectOneMenu id="contratista" value="#{manticCatalogosEmpleadosSueldo.attrs.idContratista}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">									
+								<f:selectItems value="#{manticCatalogosEmpleadosSueldo.attrs.contratistas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{empty element.nombres or element.nombres eq ''? '': '|'} #{element.nombre}"/>
+								<p:column headerText="Departamento">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column> 
+								<p:column headerText="Puesto">
+									<h:outputText value="#{item.puesto}"/>
+								</p:column> 
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombres}"/>
+								</p:column>   
+							</p:selectOneMenu>																
+							<p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general', true);" process="@this panelBusqueda" actionListener="#{manticCatalogosEmpleadosSueldo.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="@this panelBusqueda" actionListener="#{manticCatalogosEmpleadosSueldo.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
+          </p:panel>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosEmpleadosSueldo.chalanes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosEmpleadosSueldo.chalanes.size() gt 10}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowKey="#{row.id}">
+						<f:facet name="header">
+              <div class="janal-align-left">
+                <p:commandLink process="@this" update="confirmacion" onstart="return janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();">
+                  <f:setPropertyActionListener target="#{manticCatalogosEmpleadosSueldo.attrs.leyenda}" value="#{'sueldo'}"/>
+                  <f:setPropertyActionListener target="#{manticCatalogosEmpleadosSueldo.attrs.titulo}" value="#{'Sueldo'}"/>
+                  <p:outputLabel value="Clic para cambiar sueldo" styleClass="janal-color-white"/>
+                </p:commandLink>
+                <p:commandLink process="@this" update="confirmacion" onstart="return janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();">
+                  <f:setPropertyActionListener target="#{manticCatalogosEmpleadosSueldo.attrs.leyenda}" value="#{'sobre sueldo'}"/>
+                  <f:setPropertyActionListener target="#{manticCatalogosEmpleadosSueldo.attrs.titulo}" value="#{'Sobre sueldo'}"/>
+                  <p:outputLabel value="Clic para cambiar sobre sueldo" styleClass="janal-color-white"/>
+                </p:commandLink>
+              </div>
+							<p:menuButton styleClass="lg-pantalla" value="Opciones">
+								<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							</p:menuButton>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+            </f:facet>	  						
+						<p:column class="MarAuto Responsive janal-wid-8">
+              <f:facet name="header">
+                <h:outputText value="Empresa"/>
+              </f:facet>
+              <h:outputText value="#{row['empresa']}"/>
+            </p:column>		
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-7">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{row['clave']}"/>
+            </p:column>		
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="CURP"/>
+              </f:facet>
+              <h:outputText value="#{row['curp']}"/>
+            </p:column>		
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-20">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row['nombre']}"/>
+            </p:column>																			
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" rendered="false">
+              <f:facet name="header">
+                <h:outputText value="Departamento"/>
+              </f:facet>
+              <h:outputText value="#{row['departamento']}"/>
+            </p:column>
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-10">
+              <f:facet name="header">
+                <h:outputText value="Puesto"/>
+              </f:facet>
+              <h:outputText value="#{row['puesto']}"/>
+              <i class="fa fa-fw fa-lastfm janal-align-left janal-color-orange" title="Departamento: #{row['departamento']}"></i>
+            </p:column>		
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-8 sueldo" >
+              <f:facet name="header">
+                <p:outputLabel value="Sueldo"/>
+              </f:facet>
+              <p:inputText id="sueldo" value="#{row['sueldo']}" styleClass="janal-wid-90 janal-column-right" converter="javax.faces.Double">
+                <p:ajax event="change" process="@this" update="@(.totales)" listener="#{manticCatalogosEmpleadosSueldo.doMakeNothing}"/>
+              </p:inputText>  
+            </p:column>		
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-8 sueldo janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Sueldo"/>
+              </f:facet>
+              <p:outputLabel value="#{row['sueldoSemanal']}" styleClass="janal-wid-90 janal-column-right"/>
+            </p:column>		
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8 sobre">
+              <f:facet name="header">
+                <h:outputText value="Extra"/>
+              </f:facet>
+              <p:inputText id="sobre" value="#{row['sobre']}" styleClass="janal-wid-90 janal-column-right" converter="javax.faces.Double">
+                <p:ajax event="change" process="@this" update="@(.totales)" listener="#{manticCatalogosEmpleadosSueldo.doMakeNothing}"/>
+              </p:inputText>  
+            </p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8 sobre janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Extra"/>
+              </f:facet>
+              <p:outputLabel value="#{row['sobreSueldo']}" styleClass="janal-wid-90 janal-column-right"/>
+            </p:column>
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-4" exportable="false">
+              <f:facet name="header">
+                <h:outputText value="Limpiar"/>
+              </f:facet>
+              <p:selectBooleanCheckbox value="#{row['limpiar']}" styleClass="janal-wid-90 janal-column-right" title="Clic para limpiar el sobre sueldo al corte de la nómina"/>
+            </p:column>
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-3" exportable="false">							
+							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo eq 2? 'circulo-rojo' : (row.idActivo eq 1 and row.idNomina eq 2 and row.idSeguro eq 2? 'circulo-amarillo': (row.idActivo eq 1 and row.idNomina eq 2? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo eq 1? '': 'NO '}activo"/>
+						</p:column>												
+            <f:facet name="footer">
+              <p:outputLabel value="Sueldo: $#{manticCatalogosEmpleadosSueldo.attrs.totalSueldo}, Sobre sueldo: $#{manticCatalogosEmpleadosSueldo.attrs.totalSobre}" styleClass="janal-font-bold janal-color-blue janal-align-left totales"/>
+              <p:outputLabel value="Total [#{manticCatalogosEmpleadosSueldo.chalanes== null? 0: manticCatalogosEmpleadosSueldo.chalanes.size()}] registros"/>
+            </f:facet>
+          </p:dataTable>
+					<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
+						<p:outputLabel value="Empleados activos"/>
+						<p:outputLabel value="Empleados inactivos"/>
+						<p:outputLabel value="Activos sin seguro"/>
+						<p:outputLabel value="Activos sin deposito al banco"/>
+						<h:graphicImage library="janal" name="icon/semaforos/circulo-verde.png"/>
+						<h:graphicImage library="janal" name="icon/semaforos/circulo-rojo.png"/>
+						<h:graphicImage library="janal" name="icon/semaforos/circulo-amarillo.png"/>
+						<h:graphicImage library="janal" name="icon/semaforos/circulo-azul.png"/>
+					</p:panelGrid>	
+          <hr class="ui-widget-content"/>          
+          <div class="janal-line-button">
+            <div class="lg-pantalla">
+              <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosEmpleadosSueldo.doAceptar}" onstart="return janal.partial('sueldo')" oncomplete="janal.desbloquear()"/>
+            </div>		
+            <div class="xs-pantalla">
+              <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosEmpleadosSueldo.doAceptar}" onstart="return janal.partial('sueldo')" oncomplete="janal.desbloquear()"/>
+            </div>		
+            <br/>
+            <br/>
+            <br/>
+          </div>  
+        </div>
+      </div>
+    </div>
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+  <ui:param name="lineaSeparacion" value="false"/>	
+  <ui:param name="textoConfirmacion" value="¿ Cual es el importe a dejar en #{manticCatalogosEmpleadosSueldo.attrs.leyenda} ?" />
+  <ui:param name="accionConfirmacion" value="#{manticCatalogosEmpleadosSueldo}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doUpdateComunSueldo"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <h:panelGrid columns="2" styleClass="todos">
+      <p:outputLabel value="#{manticCatalogosEmpleadosSueldo.attrs.titulo}:"/>
+      <p:inputNumber id="importe" value="#{manticCatalogosEmpleadosSueldo.attrs.importe}" decimalPlaces="2" decimalSeparator="." thousandSeparator="," inputStyleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Double" emptyValue="0">
+        <p:ajax event="blur" process="@this" oncomplete="globalImporte($('#importe_input').val().replace(',', ''));"/>
+      </p:inputNumber>
+    </h:panelGrid>			
+  </ui:define>
+</ui:composition>

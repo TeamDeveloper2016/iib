@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/reporte.xhtml">
+  <ui:param name="titulo" value="Recepcion de articulos entre almacenes"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'idEmpresa'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'consecutivo'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
+        'transferencia': {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', grupo: 'general'},
+				'codigos_input': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'fechaInicio'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'idConfrontaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+      };
+			
+			fieldsDialog= {
+				'estatusDlg'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoDos'},
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos', formatos: 'cambiar-mayusculas'}
+			};
+			
+			function validaJustificacion() {
+				var ok= janal.partial('dialogoDos');
+				if(ok) {
+					PF('dlgEstatus').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validaJustificacion
+			
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla janal-wid-100">
+      <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+            <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{manticCatalogosAlmacenesConfrontasFiltro.doAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="idAlmacen" value="Almacen:" rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="consecutivo" value="No. confronta:"/>
+              <p:inputText id="consecutivo" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>              
+              <p:outputLabel for="consecutivo" value="No. transferencia:"/>
+              <p:inputText id="transferencia" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.transferencia}" styleClass="janal-wid-100-txt"/>              
+              <p:outputLabel for="codigos" value="Código ó nombre:"/>
+							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.custom}" completeMethod="#{manticCatalogosAlmacenesConfrontasFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<p:ajax event="itemSelect" process="panelBusqueda" update="tabla" listener="#{manticCatalogosAlmacenesConfrontasFiltro.doLoad}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+                      <p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini" width="30" style="#{kajoolUtilAplicacion.logoWidth}"/>                                      
+										</f:facet>
+										<h:outputText value="Propio:" />
+										<h:outputText value="#{custom.propio}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />
+										<h:outputText value="IVA:" />
+										<h:outputText value="#{custom.iva}" />
+										<h:outputText value="Costo:" />
+										<h:outputText value="$ #{custom.precio}" />
+									</p:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Fecha término:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="idEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idEstatus" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idTransferenciaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.catalogo}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+							<p:separator/>
+            </p:panelGrid>
+						<div class="janal-align-right">
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" oncomplete="janal.desbloquear();" process="panelBusqueda" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doLoad}" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doLoad}" update="tabla"/>
+						</div>
+          </p:panel>
+        </div>
+        <div id="collapse-content" class="ui-grid-col-9">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosAlmacenesConfrontasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAlmacenesConfrontasFiltro.lazyModel.rowCount gt manticCatalogosAlmacenesConfrontasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{manticCatalogosAlmacenesConfrontasFiltro.toColor(row)}">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+            <f:facet name="header" >
+              <div class="lg-pantalla">
+                <p:menuButton value="Opciones">
+                  <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-file-word-o" title="Reporte confrontas" value="Reporte confrontas" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('CONFTONTAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:commandButton id="pdfIcon" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="xlsIcon" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton icon="fa fa-file-word-o" title="Reporte confrontas" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('CONFTONTAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+              </div>  
+            </f:facet>												
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="No. confronta"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.transferencia}">
+              <f:facet name="header">
+                <h:outputText value="No. transferencia"/>
+              </f:facet>
+							<p:commandLink action="#{manticCatalogosAlmacenesConfrontasFiltro.doTransferencias}">
+								<f:setPropertyActionListener target="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idTransferencia}" value="#{row.idTransferencia}"/>
+                <h:outputText value="#{row['transferencia']}"/>
+						  </p:commandLink>
+            </p:column>		
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombreOrigen}">
+							<f:facet name="header">
+								<h:outputText value="Almacen origen"/>
+							</f:facet>
+							<h:outputText value="#{row['nombreOrigen']}"/>
+						</p:column>														
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombreDestino}">
+							<f:facet name="header">
+								<h:outputText value="Almacen destino"/>
+							</f:facet>
+							<h:outputText value="#{row['nombreDestino']}"/>
+						</p:column>					
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEstatus}">
+							<f:facet name="header">
+								<h:outputText value="Estatus"/>
+							</f:facet>
+							<h:outputText value="#{row['nombreEstatus']}" title="Observaciones: #{row['observaciones']}"/>
+						</p:column>	
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
+							<f:facet name="header">
+								<h:outputText value="Tipo"/>
+							</f:facet>
+							<h:outputText value="#{row['tipo']}"/>
+						</p:column>	
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+							<f:facet name="header">
+								<h:outputText value="Fecha"/>
+							</f:facet>
+							<h:outputText value="#{row['registro']}"/>
+						</p:column>					
+						<f:facet name="footer">
+							<p:outputLabel value="Las filas en color son transferncias con partidas desaparecidas !" style="float: left;"/>
+							Total [#{manticCatalogosAlmacenesConfrontasFiltro.lazyModel== null? 0: manticCatalogosAlmacenesConfrontasFiltro.lazyModel.rowCount}] registros
+						</f:facet>
+					</p:dataTable>
+          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+						<p:menuitem id="recibir" value="Recibir" action="#{manticCatalogosAlmacenesConfrontasFiltro.doRecibir()}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|3|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>
+						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesConfrontasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|5|6|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus) or manticCatalogosAlmacenesConfrontasFiltro.isAutorizar}"/>
+            <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesConfrontasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"  rendered="#{!fn:contains('|3|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus) or manticCatalogosAlmacenesConfrontasFiltro.isAutorizar}"/>
+            <p:separator/>					
+            <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosAlmacenesConfrontasFiltro.doMovimientos}"/>
+            <p:separator rendered="#{fn:contains('|5|6|7|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>			
+            <p:menuitem id="diferencias" icon="fa fa-list-ol" value="Diferencias" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" action="#{manticCatalogosAlmacenesConfrontasFiltro.doDiferencias}" rendered="#{fn:contains('|5|6|7|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>
+            <p:separator rendered="#{fn:contains('|7|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>			
+            <p:menuitem id="autorizar" icon="fa fa-check-square-o" value="Autorizar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" action="#{manticCatalogosAlmacenesConfrontasFiltro.doAutorizar}" rendered="#{fn:contains('|7|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>
+            <p:separator/>			
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte transferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('TRANSFERENCIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:menuitem id="reporteconfronta" icon="fa fa-file-word-o" value="Reporte confronta" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doReporte('CONFTONTAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:separator rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}"/>			
+            <p:menuitem icon="fa fa-indent" value="Sin conteo" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{fn:contains('|8|9|', manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.estatus)}">
+							<p:fileDownload value="#{manticCatalogosAlmacenesConfrontasFiltro.archivo}" />
+						</p:menuitem>	
+            <p:separator rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.perdidos.toDouble() gt 0}"/>			
+            <p:menuitem id="desaparecidos" icon="fa fa-user-secret" value="Desaparecidos" actionListener="#{manticCatalogosAlmacenesConfrontasFiltro.doUpdatePerdidos}" process="@this tabla" update="documento @(.documento)" onstart="return janal.bloquear();" oncomplete="PF('widgetDetalle').show();" rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.seleccionado.perdidos.toDouble() gt 0}"/>
+					</p:contextMenu>
+        </div>
+      </div>
+    </div>	    		
+    <p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle #{manticCatalogosAlmacenesConfrontasFiltro.attrs.tipoDocumento}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1200px" height="480px" resizable="false" appendTo="@(body)" dynamic="true">
+			<p:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-10 janal-column-center, janal-wid-70 janal-column-center, janal-wid-12 janal-column-center, janal-wid-10 janal-column-center">
+				<p:outputLabel value="Consecutivo"/>
+				<p:outputLabel value="Autorizó"/>
+				<p:outputLabel value="Fecha"/>
+				<p:outputLabel value="Desaparecidos"/>
+				<p:inputText value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos[0].consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos[0].autorizo}" styleClass="janal-wid-100-txt" readonly="true"/>
+				<p:inputText value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos[0].registro}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos[0].articulos}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+			</p:panelGrid>
+			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		
+        <p:dataTable id="informacion" var="item" lazy="false" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos}" paginator="false" reflow="true" rowKey="#{item.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
+          <p:columnGroup type="header">
+            <p:row>
+              <p:column rowspan="2" headerText="No." styleClass="MarAuto Responsive janal-wid-3"/>
+              <p:column rowspan="2" headerText="Código" styleClass="MarAuto Responsive janal-wid-10"/>
+              <p:column rowspan="2" headerText="Nombre" styleClass="MarAuto Responsive"/>
+              <p:column colspan="2" headerText="Cantidad" styleClass="MarAuto Responsive janal-wid-20"/>
+              <p:column rowspan="2" headerText="Diferencia" styleClass="MarAuto Responsive janal-wid-8"/>
+              <p:column rowspan="2" headerText="Desaparecidos" styleClass="MarAuto Responsive janal-wid-10"/>
+              <p:column rowspan="2" headerText="Observaciones" styleClass="MarAuto Responsive"/>
+            </p:row>
+            <p:row>
+              <p:column headerText="Surtida" />
+              <p:column headerText="Recibida" />
+            </p:row>
+          </p:columnGroup>
+          <p:column>
+            <p:outputLabel value="#{index+ 1}.-"/>
+          </p:column>													
+          <p:column>
+            <p:outputLabel value="#{item['codigo']}"/>
+          </p:column>		
+          <p:column>
+            <p:outputLabel value="#{item['nombre']}"/>
+          </p:column>		
+          <p:column styleClass="janal-column-right">
+            <p:outputLabel value="#{item['declarados']}"/>
+            <!-- Solicitaron -->
+          </p:column>	
+          <p:column styleClass="janal-column-right">
+            <p:outputLabel value="#{item['cantidad']}"/>
+            <!-- Recibieron -->
+          </p:column>		
+          <p:column styleClass="janal-column-right">
+            <p:outputLabel value="#{item['diferencia']}" styleClass="janal-color-black"/>
+            <!-- diferencia -->
+          </p:column>		
+          <p:column styleClass="janal-column-right">
+            <p:outputLabel value="#{item['perdidos']}" styleClass="janal-font-bold janal-color-blue"/>
+            <!-- perdidos -->
+          </p:column>		
+          <p:column>
+            <p:outputLabel value="#{item['observaciones']}"/>
+            <!-- observaciones -->
+          </p:column>		
+          <f:facet name="footer">
+            Total [#{manticCatalogosAlmacenesConfrontasFiltro.attrs.documentos.size()}] registros
+          </f:facet>
+				</p:dataTable>
+			</p:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cerrar" oncomplete="PF('widgetDetalle').hide();"/>
+			</div>
+		</p:dialog>		
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticCatalogosClientesConveniosAccion.attrs.nombreAccion} al catálogo de precios por cliente" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:idArticulo'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idCliente'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:menudeo'     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre'},
+				'contenedorGrupos\\:medioMayoreo': {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre'},
+				'contenedorGrupos\\:mayoreo'     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre'}
+				'contenedorGrupos\\:limiteMedioMayoreo': {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre'},
+				'contenedorGrupos\\:limiteMayoreo'     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre'}
+			};						
+			
+			$(document).ready(function(){janal.readingMode('#{manticCatalogosClientesConveniosAccion.attrs.nombreAccion}');});
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+              <div class="janal-column-center janal-wid-100-txt">
+                <p:outputLabel id="existe" value="EL PRECIO DE ESTE ARTICULO YA SE ENCUENTRA REGISTRADO PARA ESTE CLIENTE !" styleClass="janal-font-bold janal-color-orange" style="display: #{manticCatalogosClientesConveniosAccion.attrs.existe? '': 'none'}"/>
+              </div>  
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
+                <p:outputLabel for="idCliente" value="Cliente:"/>
+                <p:autoComplete id="idCliente" var="custom" placeholder="Ej. ABARROTES LA BOMBITA" itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesConveniosAccion.ikCliente}" completeMethod="#{manticCatalogosClientesConveniosAccion.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <p:ajax event="itemSelect" process="@this idArticulo" update="menudeo medioMayoreo mayoreo limiteMedioMayoreo limiteMayoreo existe" listener="#{manticCatalogosClientesConveniosAccion.doLookForPrecioCliente}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>  
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <h:outputText value="Clave:" />
+                      <h:outputText value="#{custom.clave}" />
+                      <h:outputText value="RFC:" />
+                      <h:outputText value="#{custom.rfc}" />
+                      <h:outputText value="Razón social:" />
+                      <h:outputText value="#{custom.razonSocial}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>	
+                <p:outputLabel for="idArticulo" value="Artículo:"/>							
+                <p:autoComplete id="idArticulo" var="custom" placeholder="Ej. FRIJOL NEGRO N1" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesConveniosAccion.ikArticulo}" completeMethod="#{manticCatalogosClientesConveniosAccion.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <p:ajax event="itemSelect" process="@this idCliente" update="menudeo medioMayoreo mayoreo limiteMedioMayoreo limiteMayoreo existe" listener="#{manticCatalogosClientesConveniosAccion.doLookForPrecioArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>  
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <f:facet name="header" class="TexAlCenter">
+                        <p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="janal-logo-mini"  width="50" height="30"/>
+                      </f:facet>
+                      <h:outputText value="Propio:" />
+                      <h:outputText value="#{custom.propio}" />
+                      <h:outputText value="Nombre:" />
+                      <h:outputText value="#{custom.nombre}" />
+                      <h:outputText value="IVA:" />
+                      <h:outputText value="#{custom.iva}" />
+                      <h:outputText value="Costo sin IVA:" />
+                      <h:outputText value="$ #{custom.precio}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>	
+								<p:outputLabel for="menudeo" value="Menudeo:"/>
+                <p:inputNumber placeholder="Ej. 21.18" id="menudeo" value="#{manticCatalogosClientesConveniosAccion.precio.menudeo}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+								<p:outputLabel for="medioMayoreo" value="Medio mayoreo:"/>
+                <p:inputNumber placeholder="Ej. 19.15" id="medioMayoreo" value="#{manticCatalogosClientesConveniosAccion.precio.medioMayoreo}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+								<p:outputLabel for="mayoreo" value="Mayoreo:"/>
+                <p:inputNumber placeholder="Ej. 18.12" id="mayoreo" value="#{manticCatalogosClientesConveniosAccion.precio.mayoreo}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+								<p:outputLabel for="limiteMedioMayoreo" value="Límite medio mayoreo:"/>
+                <p:inputNumber placeholder="Ej. 30" id="limiteMedioMayoreo" value="#{manticCatalogosClientesConveniosAccion.precio.limiteMedioMayoreo}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double">
+                  <p:ajax event="change" process="@this limiteMayoreo" update="limiteMayoreo" listener="#{manticCatalogosClientesConveniosAccion.doUpdateLimiteMedioMayoreo()}"/>
+                </p:inputNumber>  
+								<p:outputLabel for="limiteMayoreo" value="Límite mayoreo:"/>
+                <p:inputNumber placeholder="Ej. 40" id="limiteMayoreo" value="#{manticCatalogosClientesConveniosAccion.precio.limiteMayoreo}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double">
+                  <p:ajax event="change" process="@this limiteMedioMayoreo" update="limiteMedioMayoreo" listener="#{manticCatalogosClientesConveniosAccion.doUpdateLimiteMayoreo()}"/>
+                </p:inputNumber>  
+              </p:panelGrid>
+						</p:tab>						            						            																																																
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosClientesConveniosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosClientesConveniosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosClientesConveniosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosClientesConveniosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

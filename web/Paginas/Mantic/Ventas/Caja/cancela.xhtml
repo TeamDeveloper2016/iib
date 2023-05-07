@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Cancelar ticket #{not empty manticVentasCajaCancela.documento.folio? 'y factura generada': ''}"/>
+	<ui:define name="librerias">    		
+		<script type="text/javascript">
+			// <![CDATA[
+			Janal.Control.fields={
+				'correos': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
+			};
+			
+			Janal.Control.credenciales ={
+				referenciaDlg: {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
+				cuenta       : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},			
+				contrasenia  : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},		
+				justificacion: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'credenciales'}
+			};
+      
+      function execute() {
+        var msg= 'Esta seguro que desea CANCELAR el ticket y la factura anterior [folio: #{manticVentasCajaCancela.documento.folio}], confirmar ?';
+        if(#{empty manticVentasCajaCancela.documento.folio})
+          msg= 'Esta seguro que desea CANCELAR el ticket, confirmar ?';
+        return janal.execute() && confirm(msg);
+      };
+      
+			function validateCancelacion() {
+				var ok= janal.execute();
+				if(ok) {
+					PF('dlgCerrarVenta').hide();
+				} // if
+				return ok;
+			} // validateGarantia
+			// ]]>
+		</script>
+	</ui:define>
+	<ui:define name="contenido">
+		<pe:remoteCommand name="onPendiente" process="@this" actionListener="#{manticVentasCajaCancela.doPendiente}">  
+			<pe:methodSignature parameters="mx.org.kaana.mantic.ventas.caja.beans.Facturacion"/>  
+			<pe:methodParam name="facturacion">
+				  <pe:convertJson />
+			</pe:methodParam>								
+		</pe:remoteCommand>		
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">					
+          <p:panel header="Ticket original de #{manticVentasCajaCancela.cliente.razonSocial}" styleClass="janal-wid-100-txt">
+            <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel value="Folio:"/>
+                <p:inputText value="#{manticVentasCajaCancela.venta.ticket}" styleClass="janal-wid-100-txt janal-column-center janal-color-black janal-font-bold" readonly="true"/>
+              </p:panelGrid>
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel value="Fecha:"/>
+                <p:inputText value="#{manticVentasCajaCancela.doRegistro(manticVentasCajaCancela.venta.registro)}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel value="Importe:"/>
+                <p:inputText value="$#{manticVentasCajaCancela.doNumericoSat(manticVentasCajaCancela.venta.total)}" styleClass="janal-wid-100-txt janal-color-orange janal-column-right" readonly="true"/>
+              </p:panelGrid>  
+            </p:panelGrid>  
+          </p:panel>
+          <p:panel header="Factura generada" styleClass="janal-wid-100-txt" rendered="#{not empty manticVentasCajaCancela.documento.folio}">
+            <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-100">
+              <p:outputLabel value="Cliente:"/>
+              <p:inputText value="#{manticVentasCajaCancela.cliente.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
+            </p:panelGrid>
+            <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-20, janal-wid-60">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel value="Folio:"/>
+                <p:inputText value="#{manticVentasCajaCancela.documento.folio}" styleClass="janal-wid-100-txt janal-color-black janal-font-bold janal-column-center" readonly="true"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel value="Timbrado:"/>
+                <p:inputText value="#{manticVentasCajaCancela.doRegistro(manticVentasCajaCancela.documento.timbrado)}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+              </p:panelGrid>  
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel value="Enviada:"/>
+                <p:inputText value="#{manticVentasCajaCancela.documento.correos}" styleClass="janal-wid-100-txt" readonly="true"/>
+              </p:panelGrid>
+            </p:panelGrid>  
+          </p:panel>
+        </div>
+      </div>
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">				
+          <p:panel header="Articulos del ticket" styleClass="janal-wid-100-txt" collapsed="true" toggleable="true">
+            <p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" style="height:250px !important;" columnClasses="janal-wid-80, janal-wid-20">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">
+                <p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCancela.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
+                  <p:column class="MarAuto Responsive janal-wid-3">
+                    <f:facet name="header">
+                      <h:outputText value="No."/>
+                    </f:facet>
+                    <h:outputText value="#{index+ 1}.-"/>
+                  </p:column>		
+                  <p:column  class="MarAuto Responsive janal-wid-10">
+                    <f:facet name="header">
+                      <h:outputText value="Código"/>
+                    </f:facet>
+                    <h:outputText value="#{row['propio']}"/>
+                  </p:column>
+                  <p:column  class="MarAuto Responsive">
+                    <f:facet name="header">
+                      <h:outputText value="Articulo"/>
+                    </f:facet>
+                    <h:outputText id="nombres" value="[#{row['stock']}] [#{row['propio']}] #{row['nombre']}" title="Código: #{row['propio']}, Fabricante: #{row['fabricante']}, Existencias almacen: #{row['stock']}" escape="false" styleClass="#{row['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="Cantidad"/>
+                    </f:facet>
+                    <p:outputLabel value="#{row['cantidad']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                    <f:facet name="header">
+                      <h:outputText value="Precio"/>
+                    </f:facet>
+                    <div class="ui-grid-row janal-grid-row">
+                      <div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">											
+                        <p:outputLabel value="#{row['costo']}"/>
+                      </div>	 
+                      <div style="width: 10px; margin-left: -4px; margin-top: 1px;">
+                        <h:outputText value="#{row['detallePrecio']}" escape="false"/>
+                       </div>
+                    </div>									
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                    <f:facet name="header">
+                      <h:outputText value="Descuento %"/>
+                    </f:facet>
+                    <p:outputLabel value="#{row['descuentoDescripcion']}" title="#{row['descuentoDescripcion']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="Unidad medida"/>
+                    </f:facet>
+                    <p:outputLabel value="#{row['unidadMedida']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="Importe"/>
+                    </f:facet>
+                    <p:outputLabel value="#{row['importe$']}"/>
+                  </p:column>		
+                </p:dataTable>
+              </p:panelGrid>  
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100">
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">
+                  <p:outputLabel value="Articulos:"/>
+                  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaCancela.totales.articulos}"/>
+                  <p:outputLabel value="Descuento:"/>
+                  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaCancela.totales.descuentoDosDecimales$}"/>
+                  <p:outputLabel value="Global:"/>
+                  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaCancela.totales.globalDosDecimales$}"/>
+                  <p:outputLabel value="Subtotal:"/>
+                  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaCancela.totales.subTotalDosDecimales$}"/>
+                  <p:outputLabel value="IVA:"/>
+                  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaCancela.totales.ivaDosDecimales$}"/>
+                  <p:outputLabel value="Total:" styleClass="janal-total-compra janal-color-orange"/>
+                  <p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasCajaCancela.totales.totalDosDecimales$}"/>
+                </p:panelGrid>
+              </p:panelGrid>
+            </p:panelGrid>  
+          </p:panel>  
+        </div>  
+      </div>
+    </div>
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="dialogoAutorizacion" actionListener="#{manticVentasCajaCancela.doUpdateCatalogos}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('widgetDialogoAutorizacion').show();" disabled="#{manticVentasCajaCancela.totales.total lt 0}"/>			
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasCajaCancela.doCancelar}" ajax="false" onstart="janal.bloquear();" oncomplete="janal.desbloquear()"/>						
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="dialogoAutorizacion"  actionListener="#{manticVentasCajaCancela.doUpdateCatalogos}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('widgetDialogoAutorizacion').show();" disabled="#{manticVentasCajaCancela.totales.total lt 0}"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCancela.doCancelar}" ajax="false" onstart="janal.bloquear();" oncomplete="janal.desbloquear()"/>						
+		</div>		
+	</ui:define>		
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoAutorizacion" widgetVar="widgetDialogoAutorizacion" header="Persona que autoriza la cancelación del ticket" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="true" onShow="janal.change('formAutorizacion', Janal.Control.credenciales);" width="50%" onHide="janal.restore(); janal.desbloquear();">						
+			<h:form id="formAutorizacion" prependId="false">
+				<div class="janal-wid-100-txt janal-column-center">
+				  <p:outputLabel id="invalido" value="La cuenta o contraseña no son validas o no tiene autorización" styleClass="janal-color-orange" style="display: #{manticVentasCajaCancela.attrs.ok? '': 'none'};"/>
+			  </div>
+        <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">
+          <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+            <p:outputLabel for="cuenta" value="Usuario:"/>
+            <p:inputText id="cuenta" value="#{manticVentasCajaCancela.attrs.cuenta}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-contrasenia"/>
+          </p:panelGrid>
+          <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+            <p:outputLabel for="contrasenia" value="Contraseña:"/>
+            <p:password id="contrasenia" value="#{manticVentasCajaCancela.attrs.contrasenia}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-justificacion" autocomplete="new-password"/>									
+          </p:panelGrid>
+        </p:panelGrid>
+        <p:outputLabel for="justificacion" value="Justificación:" styleClass="janal-wid-100-txt"/>
+        <p:inputTextarea id="justificacion" rows="2" value="#{manticVentasCajaCancela.attrs.justificacion}" styleClass="event-keydown-enter janal-wid-100-txt janal-name-verificar"/>	
+				<p:outputLabel for="caja" value="Caja:" styleClass="font-resume-venta-detail"/>
+				<p:selectOneMenu id="caja" value="#{manticVentasCajaCancela.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">								
+					<f:selectItems value="#{manticVentasCajaCancela.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+					<p:column headerText="Clave">
+						<h:outputText value="#{item.clave}"/>
+					</p:column>   
+					<p:column headerText="Nombre">
+						<h:outputText value="#{item.nombre}"/>
+					</p:column>   
+					<p:column headerText="Limite" styleClass="janal-column-right">
+						<h:outputText value="$#{item.limite}"/>
+					</p:column>   
+				</p:selectOneMenu>
+				<h:panelGrid columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="tipoPago" value="Tipo de pago:" styleClass="font-resume-venta-detail"/>
+					<p:selectOneRadio id="tipoPago" value="#{manticVentasCajaCancela.attrs.tipoPago}">
+						<p:ajax event="change" listener="#{manticVentasCajaCancela.doActivarPago}" process="@this" update="panelDescuentoEspecificacionIndividual"/>
+						<c:forEach items="#{manticVentasCajaCancela.attrs.pagosVenta}" var="prop" varStatus="index">
+							<f:selectItem itemLabel="#{prop.nombre}" itemValue="#{prop.idTipoMedioPago}"/>							
+						</c:forEach>																	
+					</p:selectOneRadio>
+				</h:panelGrid>				
+				<h:panelGrid id="panelDescuentoEspecificacionIndividual" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">			
+					<p:outputLabel id="lblBanco" for="bancoDlg" value="Banco:" rendered="#{!manticVentasCajaCancela.attrs.isEfectivo}"/>
+					<p:selectOneMenu id="bancoDlg" value="#{manticVentasCajaCancela.attrs.banco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{!manticVentasCajaCancela.attrs.isEfectivo}">														
+						<f:selectItems value="#{manticVentasCajaCancela.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Razón social">
+							<h:outputText value="#{item.razonSocial}"/>
+						</p:column>   
+					</p:selectOneMenu>
+					<p:outputLabel id="lblReferencia" for="referenciaDlg" value="Referencia:" rendered="#{!manticVentasCajaCancela.attrs.isEfectivo}"/>
+					<p:inputText id="referenciaDlg" value="#{manticVentasCajaCancela.attrs.referencia}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564" rendered="#{!manticVentasCajaCancela.attrs.isEfectivo}"/>										
+				</h:panelGrid>							
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton id="verificar" widgetVar="lock" icon="fa fa-check" process="@this cuenta contrasenia justificacion" update="invalido" value="Aceptar" action="#{manticVentasCajaCancela.doAceptar}" onstart="PF('lock').disable(); if(janal.execute()){ return true; } else {PF('lock').enable(); return false;}" oncomplete="PF('lock').enable();"/>
+					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('widgetDialogoAutorizacion').hide();"/>
+				</div>	
+			</h:form>
+		</p:dialog>		
+  </ui:define>
+</ui:composition>

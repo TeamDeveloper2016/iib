@@ -1,0 +1,108 @@
+package mx.org.kaana.libs.recurso;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import mx.org.kaana.kajool.db.dto.TcJanalConfiguracionesDto;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.EEtapaServidor;
+
+
+public class TcConfiguraciones {
+
+  private Map<String,String> propiedades;
+  private static TcConfiguraciones instance;
+  private static Object mutex;
+
+  static {
+    mutex=new Object();
+  }
+
+  private TcConfiguraciones() {
+    this.setPropiedades(new HashMap<String, String>());
+    this.init();
+  }
+
+  public static TcConfiguraciones getInstance() {
+    if (instance == null || !Configuracion.getInstance().isEtapaProduccion()) {
+      synchronized (mutex) {
+        if (instance == null)
+          instance=new TcConfiguraciones();
+      } // synchronized
+    } // if
+    return instance;
+  }
+
+  private void setPropiedades(Map<String, String> propiedades) {
+    this.propiedades = propiedades;
+  }
+
+  private Map<String, String> getPropiedades() {
+    return propiedades;
+  }
+
+
+  private void init() {
+    List<TcJanalConfiguracionesDto> list= null;		
+    try {
+      list= DaoFactory.getInstance().findAll(TcJanalConfiguracionesDto.class, Constantes.SQL_TODOS_REGISTROS);
+      for(TcJanalConfiguracionesDto tcConfiguracionesDto: list) {
+        this.getPropiedades().put(tcConfiguracionesDto.getLlave(), tcConfiguracionesDto.getValor());
+      } // for			
+    } // try
+    catch (Exception e)  {
+      Error.mensaje(e);
+    } // catch
+    finally {
+      if (list!= null) 
+        list.clear();
+      list= null;
+    } // finally
+  }
+
+  public String getPropiedad(String key) {
+    return getPropiedades().get(key);
+  }
+	
+	public EEtapaServidor getEtapaServidor() {
+		EEtapaServidor regresar= null;
+    try {
+      regresar = EEtapaServidor.valueOf(Configuracion.getInstance().getPropiedad("sistema.servidor").toUpperCase());
+    }// try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch
+    return regresar;
+  } // getEtapaServidor
+
+  public String getPropiedadServidor(String key) {
+    try {
+      String servidor= this.getEtapaServidor().toLowerCase();
+      return this.getPropiedad(key.concat(".").concat(servidor));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch
+    return null;
+  }	// getPropiedadServidor
+
+	public boolean exist(String key) {
+	  return getPropiedades().containsKey(key);
+	}
+
+  public Integer toInteger(String key) {
+    return Numero.getInteger(getPropiedades().get(key));
+  }
+
+  public void reload() {
+    try  {
+      instance= new TcConfiguraciones();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch
+  }
+}

@@ -1,0 +1,950 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para las tablas de IMOX
+-->
+<process>
+  <model>    
+  </model>
+
+  <dml>
+    <unit id="TcKeetArticulosClientesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_articulos_clientes
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_articulos_clientes
+where      
+  id_cliente = {idCliente} and id_articulo = {idArticulo}
+      </select>
+      <select id="igual">
+select      
+  *
+from      
+  tc_keet_articulos_clientes
+where      
+  id_cliente = {idCliente} and id_articulo = {idArticulo}
+      </select>
+			<select id="maximo">
+select      
+  max(id_articulo_cliente) maximo
+from      
+  tc_keet_articulos_clientes
+			</select>
+      <update id="precio">
+update
+  tc_keet_articulos_clientes
+set 
+  menudeo= {menudeo},
+  medio_mayoreo= {medioMayoreo},
+  mayoreo= {mayoreo},
+  limite_medio_mayoreo= {limiteMedioMayoreo},
+  limite_mayoreo= {limiteMayoreo},
+  id_usuario= {idUsuario},
+  actualizado= current_timestamp
+where      
+  id_cliente = {idCliente} 
+  and id_articulo= {idArticulo}
+  and menudeo!= {menudeo}
+      </update>    
+			<delete id="rows">
+delete from tc_keet_articulos_clientes where id_cliente={idCliente}
+      </delete>      
+    </unit>    
+    <unit id="TcKeetPersonasBancosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_personas_bancos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_personas_bancos
+where      
+  id_empresa_persona = {idEmpresaPersona} and cuenta = '{cuenta}' and id_banco = {idBanco}
+      </select>
+			<select id="maximo">
+select      
+  max(id_persona_banco) maximo
+from      
+  tc_keet_personas_bancos
+      </select>
+			<delete id="rows">
+delete from tc_keet_personas_bancos where id_empresa_persona = {idEmpresaPersona}
+			</delete>
+    </unit>	
+    <unit id="TcKeetPersonasBeneficiariosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_personas_beneficiarios
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_personas_beneficiarios
+where      
+  id_persona_beneficiario = {idPersonaBeneficiario}
+      </select>
+			<select id="maximo">
+select      
+  max(id_persona_beneficiario) maximo
+from      
+  tc_keet_personas_beneficiarios
+      </select>
+			<delete id="rows">
+delete from tc_keet_personas_beneficiarios where id_empresa_persona = {idEmpresaPersona}
+			</delete>
+    </unit>		
+    <unit id="TcKeetNominasDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas
+where      
+  id_nomina_periodo = {idNominaPeriodo} and id_empresa = {idEmpresa} and id_tipo_nomina = {idTipoNomina}
+      </select>
+      <select id="ultima">
+select      
+  *
+from      
+  tc_keet_nominas
+where      
+  id_empresa in ({sucursales})
+  and id_tipo_nomina = 1
+  and id_nomina_estatus in (1, 2, 3, 4)
+order by
+  id_nomina_estatus desc
+      </select>
+      <select id="existe">
+select      
+  tc_keet_nominas.id_nomina as id_key,
+  tc_keet_nominas.*
+from      
+  tc_keet_nominas
+where      
+  id_empresa in ({sucursales})
+  and id_tipo_nomina = 1
+  and id_nomina_estatus= 5
+      </select>
+    </unit>		
+    <unit id="TcKeetNominasBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_bitacora
+where      
+  id_nomina_bitacota = {idNominaBitacota}
+      </select>
+    </unit>		
+    <unit id="TcKeetNominasConceptosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_conceptos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_conceptos
+where      
+  id_tipo_concepto = {idTipoConcepto} and id_activo = {idActivo} and clave = '{clave}' and nombre = '{nombre}'
+      </select>
+      <select id="todos">
+select      
+  *
+from      
+  tc_keet_nominas_conceptos
+where  
+  id_cargar= 1
+  and id_activo= 1
+  and (aplicar= '*' or position('|{semana}|' in aplicar)> 0)
+order by
+  clave 
+      </select>
+      <select id="personales">
+select      
+  *
+from      
+  tc_keet_nominas_conceptos
+where  
+  id_cargar= 2
+  and id_activo= 1
+order by
+  clave 
+      </select>
+    </unit>
+    <unit id="TcKeetNominasConstantesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_constantes
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_constantes
+where      
+  id_activo = {idActivo} and siglas = '{siglas}' and nombre = '{nombre}'
+      </select>
+			<select id="periodo">
+select
+  siglas,
+  nombre,
+  valor
+from
+  tc_keet_nominas_constantes
+where 
+  date_format(inicio, '%Y%m%d')&lt;= '{fecha}'
+  and date_format(termino, '%Y%m%d')&gt;= '{fecha}'
+  and id_calcular= 1
+order by
+  siglas			
+			</select>
+			<select id="todos">
+select
+  siglas,
+  nombre,
+  valor
+from
+  tc_keet_nominas_constantes
+where 
+  id_activo= 1
+order by
+  siglas			
+			</select>
+    </unit>		
+    <unit id="TcKeetNominasEstatusDto">
+      <select id="row">
+select      
+  tc_keet_nominas_estatus.id_nomina_estatus as id_key,
+  tc_keet_nominas_estatus.*
+from      
+  tc_keet_nominas_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="todos">
+select      
+  tc_keet_nominas_estatus.id_nomina_estatus as id_key,
+  tc_keet_nominas_estatus.*
+from      
+  tc_keet_nominas_estatus
+where 
+  id_nomina_estatus in (1, 2, 3, 4)
+      </select>
+			<select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+      <select id="estatus">
+select      
+  tc_keet_nominas_estatus.id_nomina_estatus as id_key,
+  tc_keet_nominas_estatus.*
+from      
+  tc_keet_nominas_estatus
+where 				  
+  id_nomina_estatus in ({estatusAsociados})
+order by 
+  id_nomina_estatus
+      </select>    
+		</unit>		
+    <unit id="TcKeetNominasPeriodosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_periodos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_periodos
+where      
+  orden = {orden} and ejercicio = {ejercicio}
+      </select>
+      <select id="siguiente">
+select      
+  *
+from      
+  tc_keet_nominas_periodos
+where      
+  id_nomina_periodo> {idNominaPeriodo}
+order by
+  id_nomina_periodo	
+      </select>
+      <select id="igual">
+select      
+  *
+from      
+  tc_keet_nominas_periodos
+where      
+  id_nomina_periodo= {idNominaPeriodo}
+order by
+  id_nomina_periodo	
+      </select>
+    </unit>							
+    <unit id="TcKeetNominasPersonasDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_personas
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_personas
+where      
+  id_nomina= {idNomina} 
+  and id_empresa_persona= {idEmpresaPersona}
+      </select>
+			<select id="personas">
+select
+  tc_keet_nominas_personas.id_nomina,
+  count(*) as personas,
+  sum(tc_keet_nominas_personas.aportaciones) as aportaciones,
+  sum(tc_keet_nominas_personas.deducciones) as deducciones,
+  sum(tc_keet_nominas_personas.percepciones) as percepciones,
+  sum(tc_keet_nominas_personas.neto) as neto
+from
+  tc_keet_nominas_personas
+where
+  tc_keet_nominas_personas.id_nomina= {idNomina}
+group by
+  tc_keet_nominas_personas.id_nomina				
+			</select>
+			<select id="desarrollo">
+select 
+  tc_keet_nominas_personas.id_empresa_persona as id_key,
+  tc_keet_nominas_personas.id_empresa_persona
+from 
+  tc_keet_nominas_personas
+where 
+  id_nomina= {idNomina}
+			</select>
+			<delete id="nomina">
+delete 
+  tc_keet_nominas_personas
+from 
+  tc_keet_nominas_personas
+where 
+  id_nomina= {idNomina}
+			</delete>
+			<delete id="persona">
+delete 
+  tc_keet_nominas_personas
+from
+  tc_keet_nominas_personas
+where 
+  id_nomina= {idNomina} 
+  and id_empresa_persona= {idEmpresaPersona}
+			</delete>
+			<delete id="eliminar">
+delete
+  tc_keet_nominas_personas 
+from 
+  tc_keet_nominas_personas 
+inner join
+  tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where 
+  tc_mantic_personas.id_persona= {idPersona}
+			</delete>      
+    </unit>		
+    <unit id="TcKeetNominasDetallesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_detalles
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_detalles
+where      
+  id_nomina_concepto = {idNominaConcepto} and id_nomina_persona = {idNominaPersona}
+      </select>
+			<delete id="nomina">
+delete
+  tc_keet_nominas_detalles 
+from 
+  tc_keet_nominas_detalles 
+inner join
+  tc_keet_nominas_personas on tc_keet_nominas_detalles.id_nomina_persona= tc_keet_nominas_personas.id_nomina_persona
+inner join
+  tc_keet_nominas on tc_keet_nominas_personas.id_nomina= tc_keet_nominas.id_nomina
+where 
+  tc_keet_nominas.id_nomina= {idNomina}
+			</delete>
+			<delete id="persona">
+delete
+  tc_keet_nominas_detalles 
+from 
+  tc_keet_nominas_detalles 
+inner join
+  tc_keet_nominas_personas on tc_keet_nominas_detalles.id_nomina_persona= tc_keet_nominas_personas.id_nomina_persona
+inner join
+  tc_keet_nominas on tc_keet_nominas_personas.id_nomina= tc_keet_nominas.id_nomina
+where 
+  tc_keet_nominas.id_nomina= {idNomina}
+  and tc_keet_nominas_personas.id_empresa_persona= {idEmpresaPersona}
+			</delete>
+			<delete id="eliminar">
+delete
+  tc_keet_nominas_detalles 
+from 
+  tc_keet_nominas_detalles 
+inner join
+  tc_keet_nominas_personas on tc_keet_nominas_detalles.id_nomina_persona= tc_keet_nominas_personas.id_nomina_persona
+inner join
+  tr_mantic_empresa_personal on tc_keet_nominas_personas.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where 
+  tc_mantic_personas.id_persona= {idPersona}
+			</delete>
+    </unit>
+    <unit id="TcKeetNominasProveedoresDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_proveedores
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_proveedores
+where      
+  id_proveedor = {idProveedor} and id_nomina = {idNomina}
+      </select>
+			<select id="proveedores">
+select
+  tc_keet_nominas_proveedores.id_nomina,
+  count(*) as proveedores,
+  sum(tc_keet_nominas_proveedores.subtotal) as subtotal,
+  sum(tc_keet_nominas_proveedores.iva) as iva,
+  sum(tc_keet_nominas_proveedores.total) as total
+from
+  tc_keet_nominas_proveedores
+where
+  tc_keet_nominas_proveedores.id_nomina= {idNomina}
+group by
+  tc_keet_nominas_proveedores.id_nomina		
+			</select>
+			<delete id="nomina">
+delete 
+  tc_keet_nominas_proveedores 
+from 	
+  tc_keet_nominas_proveedores 
+where 
+  id_nomina= {idNomina}				
+			</delete>
+			<delete id="proveedor">
+delete 
+  tc_keet_nominas_proveedores 
+from 	
+  tc_keet_nominas_proveedores 
+where 
+  id_nomina= {idNomina}
+  and id_proveedor= {idProveedor}
+			</delete>
+    </unit>		
+    <unit id="TcKeetNominasDesarrollosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_nominas_desarrollos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_nominas_desarrollos
+where      
+  id_desarrollo = {idDesarrollo} and id_empresa_persona = {idEmpresaPersona} and id_nomina = {idNomina}
+      </select>
+    </unit>    
+    <unit id="TcKeetTiposConceptosDto">
+      <select id="row">
+select      
+  tc_keet_tipos_conceptos.id_tipo_concepto as id_key,
+  tc_keet_tipos_conceptos.*
+from      
+  tc_keet_tipos_conceptos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_tipos_conceptos
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>	
+    <unit id="TcKeetBitacorasDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_bitacoras
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_bitacoras
+where      
+  id_bitacora = {idBitacora}
+      </select>
+			<select id="bitacora">
+select 
+  tc_keet_bitacoras.id_bitacora AS id_key,
+  tc_keet_bitacoras.id_bitacora,
+  tc_keet_bitacoras.proceso,
+  tc_keet_bitacoras.tabla,
+  tc_keet_bitacoras.campo,
+  tc_keet_bitacoras.antes,
+  tc_keet_bitacoras.despues,
+  tc_keet_bitacoras.id_key as id_principal,
+  tc_keet_bitacoras.id_usuario,
+  tc_keet_bitacoras.registro
+from 
+  tc_keet_bitacoras
+where 
+  proceso= '{proceso}'
+and 
+  campo= '{campo}'
+and 
+  id_key= {idKey}
+			</select>				
+    </unit>		
+    <unit id="TcKeetContratistasDepartamentosDto">
+      <select id="row">
+select      
+  tc_keet_contratistas_departamentos.id_contratista_departamento as id_key,
+  tc_keet_contratistas_departamentos.*
+from      
+  tc_keet_contratistas_departamentos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_contratistas_departamentos
+where      
+  id_departamento = {idDepartamento} and id_empresa_persona = {idEmpresaPersona}
+      </select>
+      <select id="departamentos">
+select      
+  tc_keet_contratistas_departamentos.id_departamento as id_key,
+  tc_keet_contratistas_departamentos.*
+from      
+  tc_keet_contratistas_departamentos
+where      
+  id_empresa_persona = {idEmpresaPersona}
+      </select>
+			<select id="maximo">
+select      
+  max(id_contratista_departamento) as maximo
+from      
+  tc_keet_contratistas_departamentos
+			</select>
+			<delete id="rows">
+delete 
+  tc_keet_contratistas_departamentos 
+from
+  tc_keet_contratistas_departamentos
+inner join
+  tr_mantic_empresa_personal on tc_keet_contratistas_departamentos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+where
+  tr_mantic_empresa_personal.id_persona= {idPersona}
+			</delete>
+    </unit>    
+		<unit id="TcKeetContratosPersonalDto">
+      <select id="row">
+select      
+  tc_keet_contratos_personal.id_contrato_persona as id_key,
+  tc_keet_contratos_personal.*
+from      
+  tc_keet_contratos_personal
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_contratos_personal
+where      
+  id_contrato_persona = {idContratoPersona}
+      </select>
+      <select id="existe">
+select      
+  tc_keet_contratos_personal.id_contrato_persona as id_key,
+  tc_keet_contratos_personal.*
+from      
+  tc_keet_contratos_personal
+where      
+  id_empresa_persona= {idEmpresaPersona}
+      </select>
+      <select id="desarrollo">
+select      
+  tc_keet_contratos_personal.id_contrato_persona as id_key,
+  tc_keet_contratos_personal.*
+from      
+  tc_keet_contratos_personal
+where      
+  id_empresa_persona= {idEmpresaPersona}
+order by
+  id_desarrollo desc
+      </select>
+			<select id="maximo">
+select      
+  max(id_contrato_persona) maximo
+from      
+  tc_keet_contratos_personal
+			</select>
+			<select id="numeroRegistros">
+select 
+  count(*) as total 
+from 
+  tc_keet_contratos_personal 
+where 
+  id_empresa_persona= {idEmpresaPersona}
+			</select>
+			<delete id="contrato">
+delete from tc_keet_contratos_personal where id_desarrollo= {idDesarrollo}
+			</delete>
+			<delete id="contratoPersona">
+delete from tc_keet_contratos_personal where id_empresa_persona= {idEmpresaPersona}
+			</delete>
+      <delete id="persona">
+delete 
+  tc_keet_contratos_personal 
+from 
+  tc_keet_contratos_personal 
+inner join  
+  tr_mantic_empresa_personal on tc_keet_contratos_personal.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+where 
+  tr_mantic_empresa_personal.id_persona= {idPersona}
+			</delete>
+    </unit>
+    <unit id="TcKeetDepartamentosDto">
+      <select id="row">
+select      
+  tc_keet_departamentos.id_departamento as id_key,
+  tc_keet_departamentos.*
+from      
+  tc_keet_departamentos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_departamentos
+where      
+  nombre = '{nombre}'
+      </select>
+      <select id="especialidades">
+select      
+  tc_keet_departamentos.id_departamento as id_key,
+  tc_keet_departamentos.*
+from      
+  tc_keet_departamentos
+where 
+  id_especialidad= 1
+order by
+  nombre 
+      </select>
+      <select id="residentes">
+select      
+  tc_keet_departamentos.id_departamento as id_key,
+  tc_keet_departamentos.*
+from      
+  tc_keet_departamentos
+where 
+  id_departamento in (1, 21)
+order by
+  nombre 
+      </select>
+      <select id="igual">
+select      
+  *
+from      
+  tc_keet_departamentos
+where      
+  nombre = '{nombre}'
+      </select>
+		</unit>	
+		<unit id="TcKeetDeudoresDto">
+      <select id="row">
+select      
+  tc_keet_deudores.id_deudor as id_key,
+  tc_keet_deudores.*
+from      
+  tc_keet_deudores
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_deudores
+where      
+  id_deudor = {idDeudor} and id_empresa_persona = {idEmpresaPersona}
+      </select>
+			<delete id="persona">
+delete 
+  tc_keet_deudores
+from 
+  tc_keet_deudores
+inner join  
+  tr_mantic_empresa_personal on tc_keet_deudores.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+where 
+  tr_mantic_empresa_personal.id_persona= {idPersona}
+			</delete>
+    </unit>
+    <unit id="TcKeetIncidentesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_incidentes
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_incidentes
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+      <select id="igual">
+select      
+  tc_keet_incidentes.id_incidente as id_key,
+  tc_keet_incidentes.*
+from      
+  tc_keet_incidentes
+where      
+  id_incidente= {idIncidente}
+      </select>
+			<select id="siguiente">
+select
+  max(orden) + 1 as siguiente
+from 
+  tc_keet_incidentes
+where
+  ejercicio= {ejercicio} 				  
+  and orden {operador} 900000
+			</select>		
+			<select id="existente">
+select 
+  tc_keet_incidentes.id_incidente as id_key,
+  tc_keet_incidentes.*
+from 
+  tc_keet_incidentes
+where 
+  id_proveedor= {idProveedor}
+  and id_tipo_incidente={idTipoIncidente}
+  and id_incidente_estatus in ({estatus})
+  and ('{fecha}' between tc_keet_incidentes.inicio and tc_keet_incidentes.termino)
+			</select>
+			<select id="prestamos">
+select 
+  tc_keet_incidentes.id_incidente as id_key,
+  tc_keet_incidentes.*
+from 
+  tc_keet_incidentes
+where 
+  id_anticipo= {idAnticipo}
+  and id_incidente_estatus in (1,2,6)
+			</select>
+      <select id="incidente">
+select
+  id_tipo_incidente, id_incidente_estatus, inicio, termino
+from  
+  tc_keet_incidentes
+where
+  now()&gt;= inicio
+  and now()&lt;= termino
+  and id_incidente_estatus in (1, 2, 3, 5, 6)
+  and id_tipo_incidente in (1, 2, 3, 4, 5, 6, 9)
+  and id_proveedor= {idProveedor}        
+order by
+  id_tipo_incidente
+      </select>  
+			<delete id="rows">
+delete tc_keet_incidentes from tc_keet_incidentes where id_incidente= {idIncidente}
+			</delete>
+			<update id="nomina">
+update 
+  tc_keet_incidentes 
+set 
+  id_nomina= null 
+where 
+  id_nomina= {idNomina}
+			</update>
+			<update id="persona">
+update 
+  tc_keet_incidentes 
+set 
+  id_nomina= null 
+where 
+ id_nomina= {idNomina}
+ and id_proveedor= {idProveedor}
+			</update>
+			<delete id="persona">
+delete 
+  tc_keet_incidentes
+from 
+  tc_keet_incidentes
+inner join  
+  tc_mantic_proveedores on tc_keet_incidentes.id_proveedor= tc_mantic_proveedores.id_proveedor
+where 
+  tc_mantic_proveedores.id_proveedor= {idProveedor}
+			</delete>      
+    </unit>    
+    <unit id="TcKeetIncidentesBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_incidentes_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_incidentes_bitacora
+where      
+  id_incidente_bitacora = {idIncidenteBitacora}
+      </select>
+    </unit>    
+    <unit id="TcKeetIncidentesEstatusDto">
+			<select id="estatus">
+select      
+  tc_keet_incidentes_estatus.id_incidente_estatus as id_key,
+  tc_keet_incidentes_estatus.*
+from      
+  tc_keet_incidentes_estatus
+where 				  
+  id_incidente_estatus in ({estatusAsociados})
+order by 
+  id_incidente_estatus
+      </select>
+      <select id="row">
+select      
+  *
+from      
+  tc_keet_incidentes_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_incidentes_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKeetTiposParentescosDto">
+      <select id="row">
+select      
+  tc_keet_tipos_parentescos.id_tipo_parentesco as id_key,
+  tc_keet_tipos_parentescos.*
+from      
+  tc_keet_tipos_parentescos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_keet_tipos_parentescos
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>			
+  </dml>    
+</process>

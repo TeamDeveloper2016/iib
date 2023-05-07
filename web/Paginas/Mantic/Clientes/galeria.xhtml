@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+  xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/WEB-INF/plantillas/filtro.xhtml">
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.errors = 2;
+			Janal.Control.fields = {
+			};
+			//<![CDATA[
+			$(document).ready(function() {
+        
+			});
+			//]]>
+		</script> 
+		<style type="text/css">
+      .janal-center-menu.ui-menubar {text-align: center;}
+      .janal-center-menu ul.ui-menu-list {display: inline-block; }      
+      .janal-center-menu .ui-menu .ui-menu-parent .ui-menu-child { width: 300px;}      
+    </style>
+	</ui:define>
+	<ui:define name="contenido">  	
+    <pe:remoteCommand name="busquedaArticulos" process="@this" actionListener="#{manticClientesGaleria.doLoadArticulos}" update="@(.espacio) tabla categorias">  
+      <pe:methodSignature parameters="java.lang.String"/>  
+      <pe:methodParam name="codigo"/>  
+    </pe:remoteCommand>
+    <pe:remoteCommand name="busquedaCategoria" process="@this" actionListener="#{manticClientesGaleria.doLoadCategoria}" update="@(.espacio) tabla categorias">  
+      <pe:methodSignature parameters="java.lang.String"/>  
+      <pe:methodParam name="codigo"/>  
+    </pe:remoteCommand>
+    <pe:remoteCommand name="galeriaIndividual" process="@this" actionListener="#{manticClientesGaleria.doLoadProducto}" update="@(.espacio) tabla categorias">  
+      <pe:methodSignature parameters="java.lang.String, java.lang.String"/>  
+      <pe:methodParam name="codigo"/>  
+      <pe:methodParam name="busqueda"/>  
+    </pe:remoteCommand>
+    <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="#{kajoolUtilAplicacion.isMobile? 'janal-fix-13': 'janal-fix-5'}, janal-wid-95" rendered="#{manticClientesGaleria.attrs.isGerente}">
+      <p:outputLabel for="idCliente" value="Cliente:" rendered="#{manticClientesGaleria.attrs.isGerente}"/>
+      <p:selectOneMenu id="idCliente" value="#{manticClientesGaleria.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticClientesGaleria.attrs.isGerente}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+        <p:ajax event="change" process="@this" update="tabla" listener="#{manticClientesGaleria.doLoadArticulos}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear();" />
+        <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+        <f:selectItems value="#{manticClientesGaleria.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.nombreCompleto}"/>
+        <p:column headerText="Nombre">
+          <h:outputText value="#{item.nombreCompleto}"/>
+        </p:column>   
+        <p:column headerText="Porcentaje" styleClass="janal-fix-20 janal-column-center">
+          <h:outputText value="#{item.especial}%"/>
+        </p:column>   
+      </p:selectOneMenu>
+    </p:panelGrid>   
+    <div class="janal-center-menu">
+      <p:menubar id="productos" widgetVar="janal-menu-portal" model="#{manticClientesGaleria.menuIndividual}" styleClass="janal-wid-100-txt janal-center-menu"/>
+    </div>
+    <br/>
+    <div id="janal-opcion-1" class="opciones">
+      <center style="margin-left: 0%; margin-right: 0%;">
+        <div>
+          <p:outputLabel id="categorias" value="#{manticClientesGaleria.attrs.links} #{empty manticClientesGaleria.attrs.subs? '': manticClientesGaleria.attrs.subs}" escape="false" style="display: #{empty manticClientesGaleria.attrs.links? 'none': ''}"/>
+        </div>
+      </center>  
+    </div>  
+    <br/>
+    <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticClientesGaleria.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticClientesGaleria.lazyModel.rowCount gt manticClientesGaleria.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="janal-wid-100-txt janal-column-center">
+      <f:facet name="header">
+        <h:outputText value="Listado de productos con corte al #{manticClientesGaleria.hoy}" styleClass="janal-icons-header"/>
+        <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" disabled="#{manticClientesGaleria.lazyModel== null or manticClientesGaleria.lazyModel.rowCount gt 2000}"/>
+      </f:facet>												
+      <p:column class="janal-column-left MarAuto Responsive janal-wid-2">
+        <f:facet name="header">
+          <h:outputText value="No"/>
+        </f:facet>
+        <h:outputText value="#{index+ 1}.-"/>
+      </p:column>														
+      <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.marca}">
+        <f:facet name="header">
+          <h:outputText value="Marca"/>
+        </f:facet>
+        <h:outputText value="#{row['marca']}"/>
+      </p:column>					
+      <p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.propio}">
+        <f:facet name="header">
+          <h:outputText value="Código"/>
+        </f:facet>
+        <h:outputText value="#{row['propio']}"/>
+      </p:column>														
+      <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+        <f:facet name="header">
+          <h:outputText value="Nombre"/>
+        </f:facet>
+        <h:outputText value="#{row['nombre']}"/>
+      </p:column>														
+      <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.medida}">
+        <f:facet name="header">
+          <h:outputText value="Medida"/>
+        </f:facet>
+        <h:outputText value="#{row['medida']}"/>
+      </p:column>					
+      <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
+        <f:facet name="header">
+          <h:outputText value="Menudeo"/>
+        </f:facet>
+        <h:outputText value="#{row['menudeo']}"/>
+      </p:column>					
+      <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.medioMayoreo}">
+        <f:facet name="header">
+          <h:outputText value="Medio mayoreo"/>
+        </f:facet>
+        <h:outputText value="#{row['medioMayoreo']}"/>
+      </p:column>					
+      <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.mayoreo}">
+        <f:facet name="header">
+          <h:outputText value="Mayoreo"/>
+        </f:facet>
+        <h:outputText value="#{row['mayoreo']}"/>
+      </p:column>											
+      <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.especial}">
+        <f:facet name="header">
+          <h:outputText value="Precio cliente"/>
+        </f:facet>
+        <h:outputText value="#{row['especial']}"/>
+      </p:column>											
+      <f:facet name="footer">
+        Total [#{manticClientesGaleria.lazyModel== null? 0: manticClientesGaleria.lazyModel.rowCount}] registros
+      </f:facet>
+    </p:dataTable>
+    <p:spacer height="350px" rendered="#{manticClientesGaleria.lazyModel== null or manticClientesGaleria.lazyModel.rowCount lt 3}" styleClass="espacio"/>
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>
