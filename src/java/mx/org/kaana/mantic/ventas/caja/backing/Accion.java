@@ -855,7 +855,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			fecha= this.attrs.get("fecha")!= null && ((Object)this.attrs.get("fecha")) instanceof Date ? (Date) this.attrs.get("fecha") : new Date(Calendar.getInstance().getTimeInMillis());
 			regresar= new StringBuilder();
-			regresar.append(" date_format (tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
+			regresar.append(" date_format (tc_mantic_ventas.registro, '%Y%m%d')= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)).concat("'"));
 			regresar.append(this.toCondicionEstatus(all));
 		} // try
 		catch (Exception e) {			
