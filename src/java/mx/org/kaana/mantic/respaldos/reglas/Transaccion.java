@@ -133,13 +133,13 @@ public class Transaccion extends IBaseTnx implements Serializable {
   			server= "C:/Software/Server/MariaDB-10_1/bin/mysqldump -h 127.0.0.1 -u mantic --password=mantic --databases mantic ";
 				break;
 			case PRUEBAS:
-        server= "mysqldump -h localhost -u bonanzaj_tester --password=tester2018 --databases bonanzaj_training ";
+        server= "mysqldump -h localhost -u casaelfr_tester --password=tester2018 --databases casaelfr_training ";
 				break;
 			case CAPACITACION:
-        server= "mysqldump -h localhost -u ferreter_track --password=track2018 --databases ferreter_testing ";
+        server= "mysqldump -h localhost -u casaelfr_track --password=track2018 --databases ferreter_testing ";
 				break;
 			case PRODUCCION:
-        server= "mysqldump -h localhost -u ferreter_super --password=super2018 --databases ferreter_production ";
+        server= "mysqldump -h localhost -u casaelfr_super --password=super2018 --databases ferreter_production ";
 				break;
 		} // swtich
     */

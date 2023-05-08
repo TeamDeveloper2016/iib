@@ -82,8 +82,8 @@ public class Correos extends IBaseJob implements Serializable {
           if(sb.length()<= 0) 
             sb.append("*Todos los correos son correctos por el momento*\\n\\n");
           actores.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
-          actores.put("Daniel Davalos Gutiérrez", encriptar.desencriptar("443124130375ec53c7c5cd"));
-          actores.put("Sandy Martínez Montoya", encriptar.desencriptar("2b160b0a71ea69d54a4cb4"));
+          // actores.put("Daniel Davalos Gutiérrez", encriptar.desencriptar("443124130375ec53c7c5cd"));
+          // actores.put("Sandy Martínez Montoya", encriptar.desencriptar("2b160b0a71ea69d54a4cb4"));
           Bonanza notificar= new Bonanza();
           for (String item: actores.keySet()) {
             notificar.setNombre(Cadena.nombrePersona(item));

@@ -43,10 +43,10 @@ public class CFDIFactory implements Serializable {
 	private static final Log LOG=LogFactory.getLog(CFDIFactory.class);
 	private static final long serialVersionUID =-5361573067043698091L;
   
-  private static final String MANTIC_USER_PO    = "FERRBONANZA";
-  private static final String MANTIC_PASSWORD_PO= "ZABONAN2018";
-  private static final String MANTIC_USER_PU    = "FERRBONANZASANDBOX";
-  private static final String MANTIC_PASSWORD_PU= "zabonan2018sandbox";
+  private static final String MANTIC_USER_PO    = "ELFRIJOLITO";
+  private static final String MANTIC_PASSWORD_PO= "20ElFrijolito23";
+  private static final String MANTIC_USER_PU    = "ELFRIJOLITOSANDBOX";
+  private static final String MANTIC_PASSWORD_PU= "20ElFrijolito23sandbox";
   
   private static final String KALAN_USER_PO    = "KALAN_USER";
   private static final String KALAN_PASSWORD_PO= "KALAN2018";

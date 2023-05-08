@@ -42,7 +42,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idHistorialIva", JsfBase.getFlashAttribute("idHistorialIva"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
-			doLoad();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -97,6 +97,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public String doCancelar() {   
     return (String)this.attrs.get("retorno");
-  } // doAccion
+  } // doCancelar
 	
 }

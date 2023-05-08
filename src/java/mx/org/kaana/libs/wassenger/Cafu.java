@@ -1123,8 +1123,8 @@ public final class Cafu implements Serializable {
   
   public void doSendEstadoCuenta(Session sesion) {
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
-      Message message= null;
-      Map<String, Object> params = new HashMap<>();        
+      Message message           = null;
+      Map<String, Object> params= new HashMap<>();        
       try {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);

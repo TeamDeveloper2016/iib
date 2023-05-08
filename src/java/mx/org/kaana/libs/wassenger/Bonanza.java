@@ -37,14 +37,18 @@ public final class Bonanza implements Serializable {
   private static final Log LOG = LogFactory.getLog(Bonanza.class);
   
   private static final String IMOX_TOKEN       = "IMOX_TOKEN";
-  public static final String IMOX_GROUP_MANTIC = "5214491813810-1598307650@g.us";
-  public static final String IMOX_GROUP_KANAL  = "5214491813810-1598307650@g.us";
-  public static final String IMOX_GROUP_TSAAK  = "5214491813810-1598307650@g.us";
+  public static final String IMOX_GROUP_MANTIC = "120363047127791736@g.us";
+  public static final String IMOX_GROUP_KANAL  = "5214491813810-1598307659@g.us";
+  public static final String IMOX_GROUP_TSAAK  = "5214491813810-1598307659@g.us";
   
   private static final String BODY_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a compras con nosotros. Emisión y descarga de facturas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por comprar en *_{empresa}_*.\"";
   private static final String BODY_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando notificaciones respecto a nosotros. Sobre todo promociones y avisos de tus citas agendadas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
   private static final String BODY_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando notificaciones respecto a nosotros. Sobre todo promociones y avisos de tus citas agendadas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
 
+  private static final String BODY_MESSAGE_TEST_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba \"{contenido}\" (_soy un chatbot_).\"";
+  private static final String BODY_MESSAGE_TEST_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba \"{contenido}\" (_soy un chatbot_).\"";
+  private static final String BODY_MESSAGE_TEST_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba \"{contenido}\" (_soy un chatbot_).\"";
+  
   private static final String BODY_MASIVO_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {contenido}.\\n\\nGracias por comprar en *_{empresa}_*.\"";
   private static final String BODY_MASIVO_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {contenido}.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
   private static final String BODY_MASIVO_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {contenido}.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
@@ -160,10 +164,13 @@ public final class Bonanza implements Serializable {
   private String clean(String number) {
     StringBuilder regresar= new StringBuilder();
     if(number!= null) 
-      for (int x= 0; x< number.length(); x++) {
-        if(number.charAt(x)>= '0' && number.charAt(x)<= '9') 
-          regresar.append(number.charAt(x));
-      } // for
+      if(number.contains("@"))
+        regresar.append(number);
+      else 
+        for (int x= 0; x< number.length(); x++) {
+          if(number.charAt(x)>= '0' && number.charAt(x)<= '9') 
+            regresar.append(number.charAt(x));
+        } // for
     return regresar.toString();
   }
 
@@ -247,10 +254,10 @@ public final class Bonanza implements Serializable {
     else 
       LOG.error("[doSendMessage] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
   }
+  
   public void doSendMasivo(Session sesion, String contenido) {
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
-      Value value    = null; 
       String mensaje = BODY_MASIVO_MANTIC;
       Map<String, Object> params = new HashMap<>();   
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
@@ -291,7 +298,7 @@ public final class Bonanza implements Serializable {
               message= new Message();
           } // if  
           else {
-            LOG.error("[doSendMessage] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendMasivo] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // else  
@@ -314,7 +321,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendMessage] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendMasivo] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
   }
 
   public void doSendProveedor(Session sesion) {
@@ -1226,15 +1233,89 @@ public final class Bonanza implements Serializable {
     else 
       LOG.error("[doSendSaludo] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
   }
+
+  public Boolean doSendPrueba(String contenido) {
+    return this.doSendPrueba(null, contenido);
+  }
   
+  public Boolean doSendPrueba(Session sesion, String contenido) {
+    Boolean regresar= Boolean.FALSE;
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
+      Message message= null;
+      String mensaje = BODY_MESSAGE_TEST_MANTIC;
+      Map<String, Object> params = new HashMap<>();   
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "iib":
+          mensaje= BODY_MESSAGE_TEST_MANTIC;
+          break;
+        case "kalan":
+          mensaje= BODY_MESSAGE_TEST_KALAN;
+          break;
+        case "tsaak":
+          mensaje= BODY_MESSAGE_TEST_TSAAK;
+          break;
+      } // swtich
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));
+        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+        params.put("saludo", this.toSaludo());
+        params.put("contenido", contenido);
+        params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
+        if(!Configuracion.getInstance().isEtapaProduccion())
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
+        else {  
+          HttpResponse<String> response= Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(mensaje, params, true)+ "}")
+          .asString();
+          LOG.error("Enviado: "+ response.getBody());
+          if(Objects.equals(response.getStatus(), 201)) {
+            Gson gson= new Gson();
+            message  = gson.fromJson(response.getBody(), Message.class);
+            if(message!= null)
+              message.init();
+            else
+              message= new Message();
+          } // if  
+          else {
+            LOG.error("[doSendPrueba] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
+          } // else  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje(ETypeMessage.BIENVENIDA.getId());
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else  
+        regresar= Boolean.TRUE;
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendPrueba] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+    return regresar;
+  }
+    
   public static void main(String ... args) {
     //Bonanza message= new Bonanza("Alejandro Jiménez García", "449-209-05-86", "holix.pdf", "2021-20", "15/06/2021 al 30/06/2021");
     //message.doSendSaludo();
     Map<String, Object> actores= new HashMap<>();
     Encriptar encriptar        = new Encriptar();    
     actores.put("Alejandro Jiménez García", encriptar.desencriptar("cd4b3e3924191b057b8187"));
-    actores.put("Daniel Davalos Gutiérrez", encriptar.desencriptar("443124130375ec53c7c5cd"));
-    actores.put("Sandy Martínez Montoya", encriptar.desencriptar("2b160b0a71ea69d54a4cb4"));
     Bonanza notificar= new Bonanza();
     for (String item: actores.keySet()) {
       notificar.setNombre(Cadena.nombrePersona(item));
