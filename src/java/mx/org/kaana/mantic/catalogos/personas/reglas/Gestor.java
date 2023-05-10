@@ -34,11 +34,10 @@ public class Gestor implements Serializable {
   }
 
   public void loadTiposPersonas() throws Exception {
-    Entity entityDefault = null;
-    List<Columna> formatos = null;
-    Map<String,Object>  params = null;
+    Entity entityDefault     = null;
+    List<Columna> formatos   = null;
+    Map<String,Object> params= new HashMap();
     try {
-      params =  new HashMap();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       entityDefault = new Entity();
       formatos      = new ArrayList<>();
@@ -59,9 +58,8 @@ public class Gestor implements Serializable {
 	
   public List<UISelectItem> loadPuestos() throws Exception {    
 		List<UISelectItem> regresar= null;    
-    Map<String,Object> params  = null;
+    Map<String,Object> params  = new HashMap();
     try {
-      params =  new HashMap();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			regresar= UISelect.seleccione("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
     } // try
@@ -76,9 +74,8 @@ public class Gestor implements Serializable {
 	
   public List<UISelectItem> loadDepartamentos() throws Exception {    
 		List<UISelectItem> regresar= null;    
-    Map<String,Object> params  = null;
+    Map<String,Object> params  = new HashMap();
     try {
-      params =  new HashMap();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			regresar= UISelect.seleccione("TcKeetDepartamentosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
     } // try
@@ -93,9 +90,8 @@ public class Gestor implements Serializable {
 	
   public List<UISelectItem> loadPuestosSimple() throws Exception {    
 		List<UISelectItem> regresar= null;    
-    Map<String,Object> params  = null;
+    Map<String,Object> params  = new HashMap();
     try {
-      params =  new HashMap();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			regresar= UISelect.build("TcManticPuestosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
     } // try
@@ -110,9 +106,8 @@ public class Gestor implements Serializable {
 	
   public List<UISelectItem> loadDepartamentosSimple(Long idTipoGasto) throws Exception {    
 		List<UISelectItem> regresar= null;    
-    Map<String,Object> params  = null;
+    Map<String,Object> params  = new HashMap();
     try {
-      params =  new HashMap();
       if(idTipoGasto> 0)
         params.put(Constantes.SQL_CONDICION, "id_tipo_gasto= "+ idTipoGasto);
       else
@@ -134,9 +129,8 @@ public class Gestor implements Serializable {
   
   public List<UISelectItem> loadTiposGastos() throws Exception {    
 		List<UISelectItem> regresar= null;    
-    Map<String,Object> params  = null;
+    Map<String,Object> params  = new HashMap();
     try {
-      params =  new HashMap();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			regresar= UISelect.seleccione("TcKeetTiposGastosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
     } // try

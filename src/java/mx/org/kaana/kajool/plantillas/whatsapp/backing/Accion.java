@@ -10,7 +10,6 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.wassenger.Bonanza;
 
-
 @Named(value = "manticPlantillasWhatsappAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {

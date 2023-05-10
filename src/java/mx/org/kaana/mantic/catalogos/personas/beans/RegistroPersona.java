@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.catalogos.personas.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -243,7 +244,7 @@ public class RegistroPersona implements Serializable {
 	}	
 
 	public boolean isActivo() {
-		return this.empresaPersona.getIdActivo().equals(1L);
+		return Objects.equals(this.empresaPersona.getIdActivo(), 1L);
 	}
 
 	public void setActivo(boolean activo) {
@@ -341,10 +342,10 @@ public class RegistroPersona implements Serializable {
 		PersonaDomicilio pivote= null;
 		try {			
 			pivote= this.personasDomicilio.get(this.personasDomicilio.indexOf(this.personaDomicilioSeleccion));
-			pivote.setModificar(true);
+			pivote.setModificar(Boolean.TRUE);
 			this.domicilioPivote= new Domicilio();
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
-			this.domicilioPivote.setPrincipal(pivote.getIdPrincipal().equals(1L));	
+			this.domicilioPivote.setPrincipal(Objects.equals(pivote.getIdPrincipal(), 1L) || Objects.equals(pivote.getIdPrincipal(), null));	
 			if(pivote.getDomicilio() != null) {
 				this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
 				this.domicilioPivote.setDomicilio(pivote.getDomicilio());
@@ -574,7 +575,7 @@ public class RegistroPersona implements Serializable {
 	public void doSeleccionarPrincipal(PersonaBanco principal) {
 		try {
 			for(PersonaBanco perBanco: this.personasBancos) {
-				if(!perBanco.equals(principal)) {
+				if(!Objects.equals(perBanco, principal)) {
 					perBanco.setIdPrincipal(2L);
 					perBanco.setPrincipal(false);
 				} // if					

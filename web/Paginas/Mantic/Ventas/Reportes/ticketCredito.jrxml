@@ -662,7 +662,7 @@
 				</textElement>
 				<text><![CDATA[COMPROMISO DE PAGO]]></text>
 			</staticText>
-			<textField>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement x="274" y="88" width="102" height="15" uuid="50d5d050-7232-4f9c-b18a-61e9a8030cd3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
@@ -675,7 +675,7 @@
 					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["                                                                                                       En "+ $P{REPORTE_EMPRESA_MUNICIPIO}+ " a "+ ((mx.org.kaana.libs.reportes.CantidadLetras)$P{REPORT_SCRIPTLET}).getFecha($F{REGISTRO_VENTA})+ "\n"+
-"Debo (mos) y pagaré (mos) incondicionalmente por este Documento a la orden de "+ $P{REPORTE_EMPRESA_RESPONSABLE}+ " en "+ $P{REPORTE_EMPRESA_MUNICIPIO}+ " el "+ ((mx.org.kaana.libs.reportes.CantidadLetras)$P{REPORT_SCRIPTLET}).getFecha($F{VIGENCIA})+ ". "+
+"Debo (mos) y pagaré (mos) incondicionalmente por este Documento a la orden de "+ $P{REPORTE_EMPRESA_RESPONSABLE}+ " en "+ $P{REPORTE_EMPRESA_MUNICIPIO}+ " el "+ ((mx.org.kaana.libs.reportes.CantidadLetras)$P{REPORT_SCRIPTLET}).getFecha($F{VIGENCIA}).toUpperCase()+ ". "+
 "La cantidad de "+ ((mx.org.kaana.libs.reportes.CantidadLetras)$P{REPORT_SCRIPTLET}).getLetras($F{TOTAL_VENTA})+ ", valor recibido a mi (nuestra) entera satisfacción. La suma que ampara este título causará interés a razón de "+ $P{REPORTE_PORCENTAJE}+ " % anual en caso de mora.\n\n"+
 "Además, ACEPTO la mercancía tal cual fue presentada, habiendo hecho una revisión general de la entrega, recibiéndola a mi entera satisfacción. Me compromento al pago de esta remisión, en los términos de plazo acordados, reconociendo el monto como adeudo."]]></textFieldExpression>
 			</textField>
@@ -892,7 +892,7 @@
 			<line>
 				<reportElement x="673" y="101" width="102" height="1" uuid="3ad19b1c-c631-4384-ac08-3a34fb6f383c"/>
 			</line>
-			<textField>
+			<textField pattern="#,##0.00">
 				<reportElement x="673" y="88" width="102" height="15" uuid="9612a616-c546-4c2f-93a0-12a89e956282"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Arial" size="7" isBold="true"/>
@@ -912,7 +912,7 @@
 					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["                                                                                                       En "+ $P{REPORTE_EMPRESA_MUNICIPIO}+ " a "+ ((mx.org.kaana.libs.reportes.CantidadLetras)$P{REPORT_SCRIPTLET}).getFecha($F{REGISTRO_VENTA})+ "\n"+
-"Debo (mos) y pagaré (mos) incondicionalmente por este Documento a la orden de "+ $P{REPORTE_EMPRESA_RESPONSABLE}+ " en "+ $P{REPORTE_EMPRESA_MUNICIPIO}+ " el "+ ((mx.org.kaana.libs.reportes.CantidadLetras)$P{REPORT_SCRIPTLET}).getFecha($F{VIGENCIA})+ ". "+
+"Debo (mos) y pagaré (mos) incondicionalmente por este Documento a la orden de "+ $P{REPORTE_EMPRESA_RESPONSABLE}+ " en "+ $P{REPORTE_EMPRESA_MUNICIPIO}+ " el "+ ((mx.org.kaana.libs.reportes.CantidadLetras)$P{REPORT_SCRIPTLET}).getFecha($F{VIGENCIA}).toUpperCase()+ ". "+
 "La cantidad de "+ ((mx.org.kaana.libs.reportes.CantidadLetras)$P{REPORT_SCRIPTLET}).getLetras($F{TOTAL_VENTA})+ ", valor recibido a mi (nuestra) entera satisfacción. La suma que ampara este título causará interés a razón de "+ $P{REPORTE_PORCENTAJE}+ " % anual en caso de mora.\n\n"+
 "Además, ACEPTO la mercancía tal cual fue presentada, habiendo hecho una revisión general de la entrega, recibiéndola a mi entera satisfacción. Me compromento al pago de esta remisión, en los términos de plazo acordados, reconociendo el monto como adeudo."]]></textFieldExpression>
 			</textField>

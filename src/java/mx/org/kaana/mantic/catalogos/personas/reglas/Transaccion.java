@@ -331,9 +331,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());			
 			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticIncidentesDto", "siguiente", params, "siguiente");
@@ -352,9 +351,8 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar                          = false;
 		TrManticEmpresaPersonalDto empresaPersonal= null;
 		TrManticEmpresaPersonalDto oldData        = null;
-		Map<String, Object>params                 = null;
+		Map<String, Object>params                 = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + idPersona);
 			empresaPersonal= (TrManticEmpresaPersonalDto) DaoFactory.getInstance().findFirst(TrManticEmpresaPersonalDto.class, "row", params);
 			if(empresaPersonal!= null && empresaPersonal.isValid()) {						
@@ -405,18 +403,18 @@ public class Transaccion extends IBaseTnx {
 			for(String key: old.keySet()) {
 				if(!Objects.equals(old.get(key),tmp.get(key))) {
 					if(key.equals("idActivo")) {
-						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdActivo().equals(1L) ? ETiposIncidentes.REINGRESO.getKey() : ETiposIncidentes.BAJA.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "REINGRESO DEL EMPLEADO" : "BAJA DEL EMPLEADO");						
+						this.registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdActivo().equals(1L) ? ETiposIncidentes.REINGRESO.getKey() : ETiposIncidentes.BAJA.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "REINGRESO DEL EMPLEADO" : "BAJA DEL EMPLEADO");						
 						if(empresaPersonal.getIdActivo().equals(1L))
 							empresaPersonal.setIngreso(new Date(Calendar.getInstance().getTimeInMillis()));
 						else
 							empresaPersonal.setBaja(new Date(Calendar.getInstance().getTimeInMillis()));
 					} // if
 					if(key.equals("idNomina"))
-						registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "ACTIVAR DEPOSITO" : "INACTIVAR DEPOSITO");						
-					if(key.equals("idPuesto") && ((Long)old.get("idPuesto")).equals(this.toIdContratista(sesion))) {
+						this.registrarIncidencia(sesion, empresaPersonal.getIdEmpresaPersona(), empresaPersonal.getIdNomina().equals(1L) ? ETiposIncidentes.DEPOSITO.getKey() : ETiposIncidentes.NO_DEPOSITO.getKey(), empresaPersonal.getIdActivo().equals(1L) ? "ACTIVAR DEPOSITO" : "INACTIVAR DEPOSITO");						
+					if(Objects.equals(key, "idPuesto") && Objects.equals((Long)old.get("idPuesto"), this.toIdContratista(sesion))) {
 						if(!cleanPersonalAsignado(sesion, empresaPersonal.getIdEmpresaPersona())){
 							empresaPersonal.setIdPuesto(empresaPersonalOld.getIdPuesto());
-							this.messageAlert= "No es posible, hacer el cambio de puesto, tiene trabajo realizado como contratista.";
+							this.messageAlert= "No es posible, hacer el cambio de puesto, tiene trabajo realizado como contratista";
 						} // if
 					} // if
 				} // if
@@ -804,13 +802,14 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toDomicilio
 	
-	private Long toIdContratista(Session sesion) throws Exception{
+	private Long toIdContratista(Session sesion) throws Exception {
 		Long regresar            = -1L;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "nombre='".concat(CONTRATISTA).concat("'"));
-			regresar= DaoFactory.getInstance().toField(sesion, "TcManticPuestosDto", "row", params, "idKey").toLong();
+			Value value= DaoFactory.getInstance().toField(sesion, "TcManticPuestosDto", "row", params, "idKey");
+      if(value!= null && !Objects.equals(value.getData(), null))
+        regresar= value.toLong();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -821,9 +820,8 @@ public class Transaccion extends IBaseTnx {
 	private boolean cleanPersonalAsignado(Session sesion, Long idEmpresaPersona) throws Exception{
 		boolean regresar         = false;
 		Long countLotesPersona   = 0L;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idEmpresaPersona", idEmpresaPersona);
 			countLotesPersona= DaoFactory.getInstance().toField(sesion, "TcKeetContratosLotesContratistasDto", "trabajoLotes", params, "total").toLong();
 			if(countLotesPersona.equals(0L)) {
@@ -841,9 +839,8 @@ public class Transaccion extends IBaseTnx {
   private Boolean toUpdateSueldos(Session sesion) throws Exception {
     boolean regresar= Boolean.FALSE;
     Long idLimpiar  = 1L;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       for(Empleado item: this.empleados) {
         idLimpiar= item.getLimpiar()? 1L: 2L;
         if(!Objects.equals(item.getSueldo(), item.getSueldoSemanal()) || !Objects.equals(item.getSobre(), item.getSobreSueldo()) || !Objects.equals(idLimpiar, item.getIdLimpiar())) {

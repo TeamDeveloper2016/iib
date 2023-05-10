@@ -1498,17 +1498,17 @@ public class Accion extends IBaseVenta implements Serializable {
 		String title     = event.getTab().getTitle();
     String transporta= JsfBase.getParametro("contenedorGrupos:transporta");
 		this.pagar= title.equals("Pagar") || title.equals("Apartado");
-  	((TicketVenta)this.getAdminOrden().getOrden()).setTransporta(!Cadena.isVacio(transporta)? transporta.toUpperCase(): "");
+    transporta= !Cadena.isVacio(transporta)? transporta.toUpperCase(): "";
+  	((TicketVenta)this.getAdminOrden().getOrden()).setTransporta(transporta);
+    this.attrs.put("transporta", transporta);
 		if(title.equals("Cliente") || title.equals("Tickets") || title.equals("Pagar") || title.equals("Apartado")) 
 			((TicketVenta)this.getAdminOrden().getOrden()).setObservaciones(!Cadena.isVacio(this.attrs.get("observaciones"))? ((String)this.attrs.get("observaciones")).toUpperCase(): "");
     if(title.equals("Tickets")) {
       this.doLoadTickets();			
       UIBackingUtilities.update("contenedorGrupos:tablaTicket");
     } // if
-    if(title.equals("Pagar")) {
-      this.attrs.put("transporta", ((TicketVenta)this.getAdminOrden().getOrden()).getTransporta());
+    if(title.equals("Pagar")) 
       UIBackingUtilities.execute("jsArticulos.focusCobro();");			
-    } // if  
     if(title.equals("Articulos")) 
       this.attrs.put("observaciones", ((TicketVenta)this.getAdminOrden().getOrden()).getObservaciones());
 		this.attrs.put("titleTab", title);		
