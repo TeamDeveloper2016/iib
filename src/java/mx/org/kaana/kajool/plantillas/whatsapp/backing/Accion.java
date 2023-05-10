@@ -53,8 +53,6 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-    this.attrs.put("persona", "");
-    this.attrs.put("celular", "");
     this.attrs.put("mensaje", "");
     return null;
   } // doCancelar

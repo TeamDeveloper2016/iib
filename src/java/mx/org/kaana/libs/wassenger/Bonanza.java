@@ -45,9 +45,9 @@ public final class Bonanza implements Serializable {
   private static final String BODY_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando notificaciones respecto a nosotros. Sobre todo promociones y avisos de tus citas agendadas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
   private static final String BODY_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando notificaciones respecto a nosotros. Sobre todo promociones y avisos de tus citas agendadas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
 
-  private static final String BODY_MESSAGE_TEST_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba \"{contenido}\" (_soy un chatbot_).\"";
-  private static final String BODY_MESSAGE_TEST_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba \"{contenido}\" (_soy un chatbot_).\"";
-  private static final String BODY_MESSAGE_TEST_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba \"{contenido}\" (_soy un chatbot_).\"";
+  private static final String BODY_MESSAGE_TEST_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_ (_imoxbot_).\"";
+  private static final String BODY_MESSAGE_TEST_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_ (_imoxbot_).\"";
+  private static final String BODY_MESSAGE_TEST_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_ (_imoxbot_).\"";
   
   private static final String BODY_MASIVO_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {contenido}.\\n\\nGracias por comprar en *_{empresa}_*.\"";
   private static final String BODY_MASIVO_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {contenido}.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
@@ -208,7 +208,7 @@ public final class Bonanza implements Serializable {
         else
           value= (Value)DaoFactory.getInstance().toField("TcManticMensajesDto", "existe", params, "idKey");
         if(value== null) {
-          if(!Configuracion.getInstance().isEtapaProduccion())
+          if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
             LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           else {  
             HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -280,7 +280,7 @@ public final class Bonanza implements Serializable {
         params.put("contenido", contenido);
         params.put("saludo", this.toSaludo());
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -342,7 +342,7 @@ public final class Bonanza implements Serializable {
         else
           value= (Value)DaoFactory.getInstance().toField("TcManticMensajesDto", "existe", params, "idKey");
         if(value== null) {
-          if(!Configuracion.getInstance().isEtapaProduccion())
+          if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
             LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
           else {  
             HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -402,7 +402,7 @@ public final class Bonanza implements Serializable {
       params.put("host", Configuracion.getInstance().getEmpresa("host"));
       params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
       params.put("saludo", this.toSaludo());
-      if(!Configuracion.getInstance().isEtapaProduccion())
+      if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
         LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_OPEN_NOMINA, params, true)+ "}");
       else {  
         HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -456,7 +456,7 @@ public final class Bonanza implements Serializable {
       params.put("host", Configuracion.getInstance().getEmpresa("host"));
       params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
       params.put("saludo", this.toSaludo());
-      if(!Configuracion.getInstance().isEtapaProduccion())
+      if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
         LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CLOSE_NOMINA, params, true)+ "}");
       else {  
         HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -535,7 +535,7 @@ public final class Bonanza implements Serializable {
             mensaje= BODY_FACTURA_TSAAK;
             break;
         } // swtich
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -611,7 +611,7 @@ public final class Bonanza implements Serializable {
             mensaje= BODY_TICKET_TSAAK;
             break;
         } // swtich
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -671,7 +671,7 @@ public final class Bonanza implements Serializable {
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_DEVOLUCION, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -731,7 +731,7 @@ public final class Bonanza implements Serializable {
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_PAGO_CUENTA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -795,7 +795,7 @@ public final class Bonanza implements Serializable {
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -855,7 +855,7 @@ public final class Bonanza implements Serializable {
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -915,7 +915,7 @@ public final class Bonanza implements Serializable {
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -979,7 +979,7 @@ public final class Bonanza implements Serializable {
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CHECK_CORREO, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -1043,7 +1043,7 @@ public final class Bonanza implements Serializable {
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_CHECK_RFC, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -1195,7 +1195,7 @@ public final class Bonanza implements Serializable {
             mensaje= BODY_MESSAGE_TSAAK;
             break;
         } // swtich
-        if(!Objects.equals(Configuracion.getInstance().getEtapaServidor(), EEtapaServidor.DESARROLLO))
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
         else {  
           HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
@@ -1264,7 +1264,7 @@ public final class Bonanza implements Serializable {
         params.put("saludo", this.toSaludo());
         params.put("contenido", contenido);
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
-        if(!Configuracion.getInstance().isEtapaProduccion())
+        if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
         else {  
           HttpResponse<String> response= Unirest.post("https://api.wassenger.com/v1/messages")

@@ -27,7 +27,7 @@
   <ui:define name="contenido">
 		<p:remoteCommand name="asignarIcono" actionListener="#{kajoolMantenimientoMenusAgregar.doAsignarIcono}" update="textoIcono,labelIcono,tamanio" onstart="PF('dialogoIconos').hide();" oncomplete="janal.desbloquear();"/>
     <p:fieldset legend="Menú" toggleable="true" collapsed="false" styleClass="Responsive100">
-			<p:panelGrid id="definicion" columns="2"  layout="grid" columnClasses="janal-wid-10, janal-wid-100" styleClass="janal-wid-100">
+			<p:panelGrid id="definicion" columns="2"  layout="grid" columnClasses="janal-wid-5, janal-wid-95" styleClass="janal-wid-100">
 				<p:outputLabel for="descripcion">Descripción:</p:outputLabel>
 				<p:inputText id="descripcion" styleClass="Wid98" value="#{kajoolMantenimientoMenusAgregar.current.descripcion}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
 				<p:outputLabel for="ayuda">Ayuda:</p:outputLabel>
