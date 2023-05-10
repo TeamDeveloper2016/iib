@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
-import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Fecha;
@@ -45,9 +44,13 @@ public final class Bonanza implements Serializable {
   private static final String BODY_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando notificaciones respecto a nosotros. Sobre todo promociones y avisos de tus citas agendadas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
   private static final String BODY_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando notificaciones respecto a nosotros. Sobre todo promociones y avisos de tus citas agendadas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
 
-  private static final String BODY_MESSAGE_TEST_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_ (_imoxbot_).\"";
-  private static final String BODY_MESSAGE_TEST_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_ (_imoxbot_).\"";
-  private static final String BODY_MESSAGE_TEST_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_ (_imoxbot_).\"";
+  private static final String BODY_MESSAGE_TEST_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_\\n\\n(_imoxbot_).\"";
+  private static final String BODY_MESSAGE_TEST_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_\\n\\n(_imoxbot_).\"";
+  private static final String BODY_MESSAGE_TEST_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_\\n\\n(_imoxbot_).\"";
+  
+  private static final String GROUP_MESSAGE_TEST_MANTIC= "\"group\":\"{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_\\n\\n(_imoxbot_).\"";
+  private static final String GROUP_MESSAGE_TEST_KALAN = "\"group\":\"{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_\\n\\n(_imoxbot_).\"";
+  private static final String GROUP_MESSAGE_TEST_TSAAK = "\"group\":\"{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_\\n\\n(_imoxbot_).\"";
   
   private static final String BODY_MASIVO_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {contenido}.\\n\\nGracias por comprar en *_{empresa}_*.\"";
   private static final String BODY_MASIVO_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {contenido}.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
@@ -66,11 +69,11 @@ public final class Bonanza implements Serializable {
   private static final String BODY_DEVOLUCION  = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, su cuenta presenta un movimiento, en el siguiente link se adjuntan el archivo PDF referente a ello\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
   private static final String BODY_PAGO_CUENTA = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, gracias por su pago, en el siguiente link se adjunta un PDF con un resumen y estatus de los tickets/facturas a los cuales fue abonado el pago\\n\\n https://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
   private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la sucursal de entrega.\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*.\\n\\n*_{empresa}_*.\"";
-  private static final String BODY_CHECK_CORREO= "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de correos de los clientes que fueron eliminados del servidor de *producción* por ser incorrectos o porque no son validos con corte al *{fecha}*\\n\\n{reporte}_{empresa}_\"";
-  private static final String BODY_CHECK_RFC   = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de *RFC's* de los clientes que fueron eliminados del servidor de *producción* por estar con formato incorrecto, no estan activos o no estan dados de alta en el SAT, con corte al *{fecha}*\\n\\n{reporte}\\n\\n*_{empresa}_*\"";
+  private static final String BODY_CHECK_CORREO= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de correos de los clientes que fueron eliminados del servidor de *producción* por ser incorrectos o porque no son validos con corte al *{fecha}*\\n\\n{reporte}_{empresa}_\"";
+  private static final String BODY_CHECK_RFC   = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de *RFC's* de los clientes que fueron eliminados del servidor de *producción* por estar con formato incorrecto, no estan activos o no estan dados de alta en el SAT, con corte al *{fecha}*\\n\\n{reporte}\\n\\n*_{empresa}_*\"";
   
-  private static final String BODY_GASTO_CHICA = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\n*_{empresa}_*\"";
-  private static final String BODY_CAJA_CHICA  = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://{host}/Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\n*_{empresa}_*\"";
+  private static final String BODY_GASTO_CHICA = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n\\n{saludo}, te notificamos que los gastos a pagar por concepto de caja chica ascienden a {reporte} pesos de la semana *{nomina}* del {periodo} \\nSi tienes alguna duda, favor de reportarlo de inmediato a tu administrativo.\\n\\n*_{empresa}_*\"";
+  private static final String BODY_CAJA_CHICA  = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de caja chica de los *residentes* de la semana *{nomina}* del {periodo}, hacer clic en el siguiente enlace: https://{host}/Temporal/Pdf/{reporte}\\nSe tienen *24 hrs* para descargar el reporte de gastos de caja chica.\\n\\n*_{empresa}_*\"";
   private static final String BODY_OPEN_NOMINA = "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho corte de la nómina *{nomina}* del {periodo}, con un total de *{reporte}* favor de verificar el registro de los destajos; se les hace saber tambien que a las *14:00 hrs* se hará el *corte de caja chica* para que de favor verifiquen el registro de sus gastos. Si se hace algún *ajuste* en los *destajos* a partir de este momento de algun *contratista* o *subcontratista* favor de *indicarlo* en este *chat* para reprocesar su nómina.\\n\\n*_{empresa}_*\"";
   private static final String BODY_CLOSE_NOMINA= "\"group\":\"{celular}\",\"message\":\"Estimad@s _{nombre}_,\\n\\n{saludo}, en este momento se ha hecho *cierre* de la nómina *{nomina}*; cualquier registro de destajos y de gasto de caja chica se vera reflejado para la siguiente nómina ó _semana_.\\n\\n_{empresa}_\"";
   
@@ -1246,13 +1249,13 @@ public final class Bonanza implements Serializable {
       Map<String, Object> params = new HashMap<>();   
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "iib":
-          mensaje= BODY_MESSAGE_TEST_MANTIC;
+          mensaje= this.celular.contains("@")? GROUP_MESSAGE_TEST_MANTIC: BODY_MESSAGE_TEST_MANTIC;
           break;
         case "kalan":
-          mensaje= BODY_MESSAGE_TEST_KALAN;
+          mensaje= this.celular.contains("@")? GROUP_MESSAGE_TEST_KALAN: BODY_MESSAGE_TEST_KALAN;
           break;
         case "tsaak":
-          mensaje= BODY_MESSAGE_TEST_TSAAK;
+          mensaje= this.celular.contains("@")? GROUP_MESSAGE_TEST_TSAAK: BODY_MESSAGE_TEST_TSAAK;
           break;
       } // swtich
       try {

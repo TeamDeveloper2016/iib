@@ -21,6 +21,7 @@ import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.models.response.CancelationStatus;
 import mx.org.kaana.libs.facturama.services.CfdiService;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -43,20 +44,23 @@ public class CFDIFactory implements Serializable {
 	private static final Log LOG=LogFactory.getLog(CFDIFactory.class);
 	private static final long serialVersionUID =-5361573067043698091L;
   
+  private static final String IMOX_CFDI         = "IMOX_CFDI";
+  private static final String IMOX_SANDBOX      = "IMOX_SANDBOX";
+  
   private static final String MANTIC_USER_PO    = "ELFRIJOLITO";
-  private static final String MANTIC_PASSWORD_PO= "20ElFrijolito23";
+  private static final String MANTIC_PASSWORD_PO= "48332229da6c974ff85af650f1322d21";
   private static final String MANTIC_USER_PU    = "ELFRIJOLITOSANDBOX";
-  private static final String MANTIC_PASSWORD_PU= "20ElFrijolito23sandbox";
+  private static final String MANTIC_PASSWORD_PU= "fb67d652f175ae5681c21fb818d44ec07a944efb103e84";
   
   private static final String KALAN_USER_PO    = "KALAN_USER";
-  private static final String KALAN_PASSWORD_PO= "KALAN2018";
+  private static final String KALAN_PASSWORD_PO= "83fc6c99b56f9946395e";
   private static final String KALAN_USER_PU    = "KALANSANDBOX";
-  private static final String KALAN_PASSWORD_PU= "kalan2018sandbox";
+  private static final String KALAN_PASSWORD_PU= "ca7fa140ee100b75e628ab3d9e50fb2aec";
   
   private static final String TSAAK_USER_PO    = "TSAAK_USER";
-  private static final String TSAAK_PASSWORD_PO= "TSAAK2018";
+  private static final String TSAAK_PASSWORD_PO= "afa89940fc133de658b9";
   private static final String TSAAK_USER_PU    = "TSAAKSANDBOX";
-  private static final String TSAAK_PASSWORD_PU= "tsaak2018sandbox";
+  private static final String TSAAK_PASSWORD_PU= "47f227c6679f9886f91fa23497a842f027";
   
   private static final String DESCRIPCION_IVA= "IVA";
   private static final String CURRENCY       = "MXN";  
@@ -76,28 +80,29 @@ public class CFDIFactory implements Serializable {
    * Contructor default
    */
   private CFDIFactory() {		
-    String user_po= MANTIC_USER_PO;
-    String user_pu= MANTIC_USER_PU;
-    String password_po= MANTIC_PASSWORD_PO;
-    String password_pu= MANTIC_PASSWORD_PU;
+    String user_po     = MANTIC_USER_PO;
+    String user_pu     = MANTIC_USER_PU;
+    Encriptar encriptar= new Encriptar();
+    String password_po= (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion())? System.getenv(IMOX_CFDI): encriptar.desencriptar(MANTIC_PASSWORD_PO);
+    String password_pu= (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion())? System.getenv(IMOX_SANDBOX): encriptar.desencriptar(MANTIC_PASSWORD_PU);
     switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
       case "iib":
         user_po    = MANTIC_USER_PO;
         user_pu    = MANTIC_USER_PU;
-        password_po= MANTIC_PASSWORD_PO;
-        password_pu= MANTIC_PASSWORD_PU;
+        password_po= (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion())? System.getenv(IMOX_CFDI): encriptar.desencriptar(MANTIC_PASSWORD_PO);
+        password_pu= (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion())? System.getenv(IMOX_SANDBOX): encriptar.desencriptar(MANTIC_PASSWORD_PU);
         break;
       case "kalan":
         user_po    = KALAN_USER_PO;
         user_pu    = KALAN_USER_PU;
-        password_po= KALAN_PASSWORD_PO;
-        password_pu= KALAN_PASSWORD_PU;
+        password_po= (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion())? System.getenv(IMOX_CFDI): encriptar.desencriptar(KALAN_PASSWORD_PO);
+        password_pu= (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion())? System.getenv(IMOX_SANDBOX): encriptar.desencriptar(KALAN_PASSWORD_PU);
         break;
       case "tsaak":
         user_po    = TSAAK_USER_PO;
         user_pu    = TSAAK_USER_PU;
-        password_po= TSAAK_PASSWORD_PO;
-        password_pu= TSAAK_PASSWORD_PU;
+        password_po= (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion())? System.getenv(IMOX_CFDI): encriptar.desencriptar(TSAAK_PASSWORD_PO);
+        password_pu= (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion())? System.getenv(IMOX_SANDBOX): encriptar.desencriptar(TSAAK_PASSWORD_PU);
         break;
     } // swtich
     try {
@@ -113,6 +118,9 @@ public class CFDIFactory implements Serializable {
       LOG.error("NO SE PUDO CREAR LA CONEXION HACIA FACTURAMA");
       Error.mensaje(e);
     } // catch
+    finally {
+      encriptar= null;
+    } // finally
   } // CFDIFactory
 
   /**

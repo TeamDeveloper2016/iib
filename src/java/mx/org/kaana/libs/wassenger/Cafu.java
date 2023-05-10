@@ -43,10 +43,10 @@ public final class Cafu implements Serializable {
   private static final Log LOG                = LogFactory.getLog(Cafu.class);
   
   private static final String IMOX_TOKEN        = "IMOX_TOKEN";
-  public static final String  IMOX_GROUP_CAFU   = "5214491813810-1598307650@g.us";
-  public static final String  IMOX_GROUP_GYLVI  = "5214491813810-1629149493@g.us"; 
-  public static final String  IMOX_GROUP_TRIANA = "120363022138069700@g.us";
-  private static final String BODY_MESSAGE      = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de {empresa}, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación (_soy un chatbot_).\"";
+  public static final String  IMOX_GROUP_CAFU   = "5214491813810-1598307653@g.us";
+  public static final String  IMOX_GROUP_GYLVI  = "5214491813810-1629149491@g.us"; 
+  public static final String  IMOX_GROUP_TRIANA = "120363022138069703@g.us";
+  private static final String BODY_MESSAGE      = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, somos de {empresa}, si deseas mantener una comunicación con nosotros por este medio, favor de aceptar el mensaje respondiendo con un *hola* en esta conversación\\n\\n(_imoxbot_).\"";
   private static final String BODY_DESTAJO      = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del {periodo}, hacer clic en el siguiente enlace: {url}Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\n{empresa}\"";
   private static final String GROUP_DESTAJO     = "\"group\":\"{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar el reporte de los destajos de la nómina *{nomina}* del {periodo}, hacer clic en el siguiente enlace: {url}Temporal/Pdf/{reporte}\\nSi tienes alguna duda, favor de reportarlo de inmediato a tu residente; tienes *24 hrs* para descargar el reporte de los destajos.\\n\\n{empresa}\"";
   private static final String BODY_RESIDENTE    = "\"phone\":\"+521{celular}\",\"message\":\"Hola _{nombre}_,\\n\\n{saludo}, te hacemos llegar los reportes de los destajos *{desarrollo}* de los *contratistas* o *subcontratistas* de la nómina *{nomina}* del {periodo}, hacer clic en los siguientes enlaces:\\n{reporte}\\nSe tienen *24 hrs* para descargar todos los reportes.\\n\\n{empresa}\"";
