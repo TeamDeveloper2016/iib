@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.catalogos.clientes.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -73,7 +74,7 @@ public class RegistroCliente implements Serializable {
 		this.personasTiposContacto = personasTiposContacto;
 		this.personaTipoContactoPivote= personaTipoContactoPivote;
 		this.personaTipoContacto   = personaTipoContactoPivote;
-		this.habilitarCredito      = cliente.getIdCredito()!= null && cliente.getIdCredito().equals(1L);
+		this.habilitarCredito      = !Objects.equals(cliente.getIdCredito(), null) && Objects.equals(cliente.getIdCredito(), 1L);
     this.index                 = -1;
     if(this.cliente!= null && this.cliente.getIdRegimenFiscal()!= null)
       this.ikRegimenFiscal= new UISelectEntity(this.cliente.getIdRegimenFiscal());
@@ -233,7 +234,7 @@ public class RegistroCliente implements Serializable {
 		try {
 			motorBusqueda= new MotorBusqueda(this.idCliente);
 			this.cliente= motorBusqueda.toCliente();		
-			this.habilitarCredito= this.cliente.getIdCredito().equals(1L);
+			this.habilitarCredito= Objects.equals(this.cliente.getIdCredito(), 1L);
       if(this.cliente!= null && this.cliente.getIdRegimenFiscal()!= null)
         this.setIkRegimenFiscal(new UISelectEntity(this.cliente.getIdRegimenFiscal()));
       else
@@ -303,7 +304,7 @@ public class RegistroCliente implements Serializable {
 			pivote.setModificar(true);
 			this.domicilioPivote= new Domicilio();
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
-			this.domicilioPivote.setPrincipal(pivote.getIdPrincipal().equals(1L));	
+			this.domicilioPivote.setPrincipal(Objects.equals(pivote.getIdPrincipal(), 1L) || Objects.equals(pivote.getIdPrincipal(), null));	
 			this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
 			this.domicilioPivote.setDomicilio(pivote.getDomicilio());
 			this.domicilioPivote.setIdEntidad(pivote.getIdEntidad());

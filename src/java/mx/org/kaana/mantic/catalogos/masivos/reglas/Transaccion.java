@@ -613,13 +613,12 @@ public class Transaccion extends IBaseTnx {
 							String nombre  = new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(costo> 0 && menudeo> 0 && medio> 0 && mayoreo> 0) {
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
+                fabricante= fabricante.replaceAll(Constantes.CLEAN_ART, "").trim();                
 								String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 								if(codigo.length()> 0) {
 									TcManticArticulosDto articulo= this.toFindArticulo(sesion, codigo, 1L);
 									if(articulo!= null) {
-										//articulo.setIdCategoria(null);
-										//articulo.setIdImagen(null);
 										articulo.setNombre(nombre);
 										articulo.setDescripcion(nombre);
 										articulo.setPrecio(costo);
@@ -627,15 +626,15 @@ public class Transaccion extends IBaseTnx {
 										articulo.setMedioMayoreo(Numero.toAjustarDecimales(medio, articulo.getIdRedondear().equals(1L)));
 										articulo.setMayoreo(Numero.toAjustarDecimales(mayoreo, articulo.getIdRedondear().equals(1L)));
 										// si trae nulo, blanco o cero se respeta el valor que tiene el campo
-										if(lmenudeo!= 0D)
+										if(lmenudeo!= -1D)
 											articulo.setLimiteMedioMayoreo(lmenudeo);
-										if(lmenudeo!= 0D)
+										if(lmenudeo!= -1D)
 											articulo.setLimiteMayoreo(lmayoreo);
-										if(minimo!= 0D)
+										if(minimo!= -1D)
 											articulo.setMinimo(minimo);
-										if(maximo!= 0D)
+										if(maximo!= -1D)
 											articulo.setMaximo(maximo);
-										if(iva!= 0D)
+										if(iva!= -1D)
 											articulo.setIva(iva< 1? iva* 100: iva);
                     if(!Cadena.isVacio(fabricante))
                       articulo.setFabricante(fabricante.replaceAll(Constantes.CLEAN_ART, "").trim());
@@ -670,10 +669,10 @@ public class Transaccion extends IBaseTnx {
 											JsfBase.getIdUsuario(), //  Long idUsuario, 
 											JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
 											0D, // Double cantidad, 
-											minimo== 0D? 10D: minimo, // Double minimo, 
-											maximo== 0D? 20D: maximo, // Double maximo, 
-											lmenudeo== 0D? 20D: lmenudeo, // Double limiteMedioMayoreo, 
-											lmayoreo== 0D? 50D: lmayoreo, // Double limiteMayoreo, 
+											minimo== 0D? 100000D: minimo, // Double minimo, 
+											maximo== 0D? 200000D: maximo, // Double maximo, 
+											lmenudeo, // Double limiteMedioMayoreo, 
+											lmayoreo, // Double limiteMayoreo, 
 											Cadena.isVacio(sat)? Constantes.CODIGO_SAT: sat, // String sat, 
 											1L, // Long idArticuloTipo, 
 											2L, // Long idBarras, 
@@ -691,18 +690,23 @@ public class Transaccion extends IBaseTnx {
 										else {
                       identico.setNombre(nombre);
                       identico.setDescripcion(nombre);
-											identico.setMinimo(minimo== 0D? 10D: minimo);
-											identico.setMaximo(maximo== 0D? 20D: maximo);
-											identico.setLimiteMedioMayoreo(lmenudeo== 0D? 20D: lmenudeo);
-											identico.setLimiteMayoreo(lmayoreo== 0D? 50D: lmayoreo);
+  										if(minimo!= -1D)
+ 											  identico.setMinimo(minimo== 0D? 100000D: minimo);
+  										if(maximo!= -1D)
+		  									identico.setMaximo(maximo== 0D? 200000D: maximo);
+  										if(lmenudeo!= -1D)
+  											identico.setLimiteMedioMayoreo(lmenudeo);
+  										if(lmayoreo!= -1D)
+	   										identico.setLimiteMayoreo(lmayoreo);
 											identico.setMenudeo(Numero.toAjustarDecimales(menudeo, identico.getIdRedondear().equals(1L)));
 											identico.setMedioMayoreo(Numero.toAjustarDecimales(medio, identico.getIdRedondear().equals(1L)));
 											identico.setMayoreo(Numero.toAjustarDecimales(mayoreo, identico.getIdRedondear().equals(1L)));
 											identico.setEspecial(Numero.toAjustarDecimales(menudeo, identico.getIdRedondear().equals(1L)));
-											identico.setIva(iva);
+  										if(iva!= -1D)
+  											identico.setIva(iva);
 											identico.setPrecio(costo);
                       if(!Cadena.isVacio(fabricante))
-                        identico.setFabricante(fabricante.replaceAll(Constantes.CLEAN_ART, "").trim());
+                        identico.setFabricante(fabricante);
 											DaoFactory.getInstance().update(sesion, identico);
 											articulo.setIdArticulo(identico.getIdArticulo());
 										} // if
@@ -735,20 +739,22 @@ public class Transaccion extends IBaseTnx {
 									// buscar si el codigo auxiliar existe para este articulo, en caso de que no insertarlo
 									codigo= new String(sheet.getCell(1, fila).getContents().getBytes(UTF_8), ISO_8859_1);
 									codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
-									Long auxiliar= this.toFindCodigoAuxiliar(sesion, codigo);
-									if(auxiliar< 0 && codigo.length()> 0) {
-										codigos= new TcManticArticulosCodigosDto(
-											codigo, // String codigo, 
-											null, // Long idProveedor, 
-											JsfBase.getIdUsuario(), // Long idUsuario, 
-											2L, // Long idPrincipal, 
-											null, // String observaciones, 
-											-1L, // Long idArticuloCodigo, 
-											this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden, 
-											articulo.getIdArticulo() // Long idArticulo
-										);
-										DaoFactory.getInstance().insert(sesion, codigos);
-									} // if
+                  if(!Cadena.isVacio(codigo)) {
+                    Long auxiliar= this.toFindCodigoAuxiliar(sesion, codigo);
+                    if(auxiliar< 0 && codigo.length()> 0) {
+                      codigos= new TcManticArticulosCodigosDto(
+                        codigo, // String codigo, 
+                        null, // Long idProveedor, 
+                        JsfBase.getIdUsuario(), // Long idUsuario, 
+                        2L, // Long idPrincipal, 
+                        null, // String observaciones, 
+                        -1L, // Long idArticuloCodigo, 
+                        this.toNextOrden(sesion, articulo.getIdArticulo()), // Long orden, 
+                        articulo.getIdArticulo() // Long idArticulo
+                      );
+                      DaoFactory.getInstance().insert(sesion, codigos);
+                    } // if
+                  } // if
 									// buscar si el codigo del fabricante existe para este articulo, en caso de que no insertarlo
                   if(!Cadena.isVacio(fabricante)) {
                     codigo= fabricante.replaceAll(Constantes.CLEAN_ART, "").trim();

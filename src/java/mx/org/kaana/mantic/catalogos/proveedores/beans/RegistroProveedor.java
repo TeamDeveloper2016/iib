@@ -3,11 +3,11 @@ package mx.org.kaana.mantic.catalogos.proveedores.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
-import mx.org.kaana.kajool.reglas.comun.Condicion;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -314,7 +314,7 @@ public class RegistroProveedor implements Serializable{
 			pivote.setModificar(true);
 			this.domicilioPivote= new Domicilio();
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
-			this.domicilioPivote.setPrincipal(pivote.getIdPrincipal().equals(1L));	
+			this.domicilioPivote.setPrincipal(Objects.equals(pivote.getIdPrincipal(), 1L) || Objects.equals(pivote.getIdPrincipal(), null));	
 			this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
 			this.domicilioPivote.setDomicilio(pivote.getDomicilio());
 			this.domicilioPivote.setIdEntidad(pivote.getIdEntidad());
@@ -625,10 +625,10 @@ public class RegistroProveedor implements Serializable{
 		try {
 			if(this.proveedoresCondicionPago.size()> 1) {
 				for(ProveedorCondicionPago record: this.proveedoresCondicionPago) {
-					if(record.getIdTipoPago().equals(1L) || record.getIdTipoPago().equals(3L))
+					if(Objects.equals(record.getIdTipoPago(), 1L) || Objects.equals(record.getIdTipoPago(), 3L))
 						countEfectivo++;
 				} // 
-				if(countEfectivo> 2 && (condicionPago.getIdTipoPago().equals(1L) || condicionPago.getIdTipoPago().equals(3L))) {
+				if(countEfectivo> 2 && (Objects.equals(condicionPago.getIdTipoPago(), 1L) || Objects.equals(condicionPago.getIdTipoPago(), 3L))) {
 					this.proveedoresCondicionPago.get(this.proveedoresCondicionPago.indexOf(condicionPago)).setIdTipoPago(2L);
 				} // if
 			} // if

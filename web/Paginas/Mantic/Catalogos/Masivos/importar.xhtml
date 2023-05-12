@@ -16,6 +16,10 @@
         'contenedorGrupos\\:observacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};	
 			
+      $(document).ready(function() {
+        setTimeout('reloadProveedor()', 1000);
+			});      
+      
 			function start() {
         PF('statusDialog').show();
       };
@@ -40,7 +44,7 @@
 			
 			function longProcess() {
 				var tuplas= parseInt($('#contenedorGrupos\\:tuplas').html().replace(/[,]/g, ''), 10);
-				if(tuplas> 1000) {
+				if(tuplas> 2000) {
   				janal.console("progreso.longProcess(): Entro para cambiar de pagina de seguimiento");
 					setTimeout("$('#progreso').click();", 6000);
 				} // if
@@ -57,6 +61,7 @@
 	<ui:define name="contenido">
 		<p:commandButton id="progreso" action="progreso?faces-redirect=true" process="@this" style="display: none;" immediate="true" ajax="false"/>
 		<p:remoteCommand name="viewFile" actionListener="#{manticCatalogosMasivosImportar.doViewFile}" process="@this" update="@(.viewXLS)" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
+    <p:remoteCommand name="reloadProveedor" process="@this" update="contenedorGrupos:idProveedor" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">

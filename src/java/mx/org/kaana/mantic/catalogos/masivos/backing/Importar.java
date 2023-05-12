@@ -94,7 +94,7 @@ public class Importar extends IBaseImportar implements Serializable {
 						break;
 				} // switch
 			else
-				this.categoria= ECargaMasiva.ARTICULOS;
+				this.categoria= ECargaMasiva.EGRESOS;
 			this.attrs.put("xls", ""); 
 			this.attrs.put("tuplas", 0L);
 			this.masivo = new TcManticMasivasArchivosDto(
@@ -128,9 +128,8 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doTabChange		
 	
 	protected void doLoadArhivos(String proceso, String idXml, Map<String, Object> params) {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
       columns.add(new Columna("ruta", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
@@ -286,10 +285,9 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doDetalles	
 
 	private void toLoadProveedores() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -303,6 +301,6 @@ public class Importar extends IBaseImportar implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-		
 	}
+  
 }
