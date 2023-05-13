@@ -167,9 +167,9 @@ public class Filtro extends Comun implements Serializable {
 			else
   		  regresar.put("almacen", " ");
 			if(Cadena.isVacio(sb.toString()))
-				regresar.put("condicion", Constantes.SQL_VERDADERO);
+				regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			else
-			  regresar.put("condicion", sb.substring(0, sb.length()- 4));			
+			  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));			
 		  if(Cadena.isVacio(this.attrs.get("idEmpresa")) || this.attrs.get("idEmpresa").toString().equals("-1"))
 			  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			else

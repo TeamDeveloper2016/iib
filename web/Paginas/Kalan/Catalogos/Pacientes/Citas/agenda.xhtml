@@ -62,7 +62,7 @@
             </p:tab>
             <p:tab title="Servicio">
               <p:selectOneMenu id="idServicio" value="#{kalanCatalogosPacientesCitasAgenda.attrs.idServicio}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{kalanCatalogosPacientesCitasAgenda.attrs.servicios}" var="element" itemValue="#{element.key}" itemLabel="#{element.codigo} #{empty(element.nombre.toString())? '': '|'} #{element.nombre}"/>
+                <f:selectItems value="#{kalanCatalogosPacientesCitasAgenda.attrs.servicios}" var="element" itemValue="#{element.key}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Código">
                   <h:outputText value="#{item.codigo}"/>
                 </p:column>   

@@ -10,11 +10,12 @@
     <unit id="TcKalanProductosDto">
       <select id="row">
 select      
-  *
+  tc_kalan_productos.id_producto as id_key,
+  tc_kalan_productos.*
 from      
   tc_kalan_productos
 where 
-  {condicion} 
+  (id_empresa in ({idEmpresa})) or ({idEmpresa}= -1)
       </select>
       <select id="identically">
 select      
@@ -28,11 +29,12 @@ where
     <unit id="TcKalanProductosClasesDto">
       <select id="row">
 select      
-  *
+  tc_kalan_productos_clases.id_producto_clase as id_key,
+  tc_kalan_productos_clases.*
 from      
   tc_kalan_productos_clases
 where 
-  {condicion} 
+  id_producto= {idProducto}
       </select>
       <select id="identically">
 select      
@@ -41,6 +43,25 @@ from
   tc_kalan_productos_clases
 where      
   clave = '{clave}' and id_producto = {idProducto}
+      </select>
+    </unit>    
+    <unit id="TcKalanProductosPesosDto">
+      <select id="row">
+select      
+  tc_kalan_productos_pesos.id_producto_peso as id_key,
+  tc_kalan_productos_pesos.*
+from      
+  tc_kalan_productos_pesos
+where 
+  id_producto= {idProducto}
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_productos_pesos
+where      
+  peso = {peso} and id_producto = {idProducto}
       </select>
     </unit>    
     <unit id="TcKalanDiagnosticosDto">

@@ -9,15 +9,21 @@ import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kalan.db.dto.TcKalanProductosDto;
 import mx.org.kaana.keet.db.dto.TcKeetArticulosClientesDto;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
 	private TcKeetArticulosClientesDto precio;	
+	private TcKalanProductosDto producto;	
+	private Map<String, Object> parametros;	
   private Long idCliente;
   private List<Articulo> articulos;
 	private String messageError;
@@ -31,6 +37,11 @@ public class Transaccion extends IBaseTnx {
     this.articulos= articulos;
 	}
 
+	public Transaccion(TcKalanProductosDto producto, Map<String, Object> parametros) {
+    this.producto= producto;
+    this.parametros= parametros;
+  }
+          
 	public String getMessageError() {
 		return messageError;
 	}
@@ -54,6 +65,9 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case PROCESAR:
 					regresar= this.toRegistrar(sesion);
+					break;
+				case REPROCESAR:
+					regresar= this.toRegistrarPrecios(sesion);
 					break;
 			} // switch
 			if(!regresar)
@@ -114,5 +128,43 @@ public class Transaccion extends IBaseTnx {
     } // finally
     return regresar;
   }
-	
+
+  private boolean toRegistrarPrecios(Session sesion) throws Exception {
+    Boolean regresar         = Boolean.FALSE;
+    Double costo             = 0D;
+    Double menudeo           = 0D;
+    Double medio             = 0D;
+    Double mayoreo           = 0D;
+    Map<String, Object>params= new HashMap<>(this.parametros);
+    try {      
+      this.producto.setIdUsuario(JsfBase.getIdUsuario());
+      this.producto.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      regresar= DaoFactory.getInstance().update(sesion, this.producto)>= 0L;
+      List<TcManticArticulosDto> items= (List<TcManticArticulosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticArticulosDto.class, "TcManticArticulosDto", "precio", params, Constantes.SQL_TODOS_REGISTROS);
+      for (TcManticArticulosDto item: items) {
+        costo = Numero.toRedondearSat(this.producto.getPrecio1());
+        menudeo= Numero.toRedondearSat(this.producto.getPrecio1()* item.getFactor());
+        medio  = Numero.toRedondearSat(this.producto.getPrecio2()* item.getFactor());
+        mayoreo= Numero.toRedondearSat(this.producto.getPrecio3()* item.getFactor());
+        if(!Objects.equals(item.getPrecio(), costo) || !Objects.equals(item.getMenudeo(), menudeo) || !Objects.equals(item.getMedioMayoreo(), medio) || !Objects.equals(item.getMayoreo(), mayoreo)) {
+          item.setPrecio(costo);
+          item.setMenudeo(menudeo);
+          item.setMedioMayoreo(medio);
+          item.setMayoreo(mayoreo);
+          item.setIdUsuario(JsfBase.getIdUsuario());
+          item.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+          DaoFactory.getInstance().update(sesion, item);
+        } // if  
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+			Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
 }

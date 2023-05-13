@@ -597,8 +597,8 @@ public class Transaccion extends IBaseTnx {
 					try {
 						if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 							String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-							// 0           1          2        3          4          5          6           7        8        9            10            11          12      13         14
-							//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT|CODIGOFABRICANTE
+							// 0           1          2        3          4          5          6           7        8        9            10            11          12      13         14         15
+							//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT|CODIGOFABRICANTE|FACTOR
 							double costo   = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							double menudeo = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							double medio   = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
@@ -610,8 +610,9 @@ public class Transaccion extends IBaseTnx {
 							double maximo  = Numero.getDouble(sheet.getCell(12, fila).getContents()!= null? sheet.getCell(12, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							String sat     = new String(sheet.getCell(13, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							String fabricante= new String(sheet.getCell(14, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							double factor  = Numero.getDouble(sheet.getCell(15, fila).getContents()!= null? sheet.getCell(15, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							String nombre  = new String(contenido.getBytes(ISO_8859_1), UTF_8);
-							if(costo> 0 && menudeo> 0 && medio> 0 && mayoreo> 0) {
+							if(costo>= 0 && menudeo>= 0 && medio>= 0 && mayoreo>= 0) {
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
                 fabricante= fabricante.replaceAll(Constantes.CLEAN_ART, "").trim();                
 								String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
@@ -626,20 +627,22 @@ public class Transaccion extends IBaseTnx {
 										articulo.setMedioMayoreo(Numero.toAjustarDecimales(medio, articulo.getIdRedondear().equals(1L)));
 										articulo.setMayoreo(Numero.toAjustarDecimales(mayoreo, articulo.getIdRedondear().equals(1L)));
 										// si trae nulo, blanco o cero se respeta el valor que tiene el campo
-										if(lmenudeo!= -1D)
+										if(lmenudeo>= 0D)
 											articulo.setLimiteMedioMayoreo(lmenudeo);
-										if(lmenudeo!= -1D)
+										if(lmenudeo>= 0D)
 											articulo.setLimiteMayoreo(lmayoreo);
-										if(minimo!= -1D)
+										if(minimo>= 0D)
 											articulo.setMinimo(minimo);
-										if(maximo!= -1D)
+										if(maximo>=0D)
 											articulo.setMaximo(maximo);
-										if(iva!= -1D)
+										if(iva>=0D)
 											articulo.setIva(iva< 1? iva* 100: iva);
                     if(!Cadena.isVacio(fabricante))
                       articulo.setFabricante(fabricante.replaceAll(Constantes.CLEAN_ART, "").trim());
 										if(!Cadena.isVacio(sat))
 											articulo.setSat(sat);
+										if(factor>= 0D)
+											articulo.setFactor(factor);
 										DaoFactory.getInstance().update(sesion, articulo);
 									} // if
 									else {
@@ -682,7 +685,8 @@ public class Transaccion extends IBaseTnx {
 											2L, // String idDescontinuado
                       !Cadena.isVacio(fabricante)? fabricante.replaceAll(Constantes.CLEAN_ART, "").trim(): null, // String fabricante
                       2L, // Long idVerificado 
-                      Numero.toAjustarDecimales(menudeo, costo<= 10) // especial
+                      Numero.toAjustarDecimales(menudeo, costo<= 10), // especial
+                      factor // Double factor
 										);
 										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
 										if(identico== null)
@@ -690,23 +694,25 @@ public class Transaccion extends IBaseTnx {
 										else {
                       identico.setNombre(nombre);
                       identico.setDescripcion(nombre);
-  										if(minimo!= -1D)
+  										if(minimo>= 0D)
  											  identico.setMinimo(minimo== 0D? 100000D: minimo);
-  										if(maximo!= -1D)
+  										if(maximo>= 0D)
 		  									identico.setMaximo(maximo== 0D? 200000D: maximo);
-  										if(lmenudeo!= -1D)
+  										if(lmenudeo>= 0D)
   											identico.setLimiteMedioMayoreo(lmenudeo);
-  										if(lmayoreo!= -1D)
+  										if(lmayoreo>= 0D)
 	   										identico.setLimiteMayoreo(lmayoreo);
 											identico.setMenudeo(Numero.toAjustarDecimales(menudeo, identico.getIdRedondear().equals(1L)));
 											identico.setMedioMayoreo(Numero.toAjustarDecimales(medio, identico.getIdRedondear().equals(1L)));
 											identico.setMayoreo(Numero.toAjustarDecimales(mayoreo, identico.getIdRedondear().equals(1L)));
 											identico.setEspecial(Numero.toAjustarDecimales(menudeo, identico.getIdRedondear().equals(1L)));
-  										if(iva!= -1D)
+  										if(iva>= 0D)
   											identico.setIva(iva);
 											identico.setPrecio(costo);
                       if(!Cadena.isVacio(fabricante))
                         identico.setFabricante(fabricante);
+  										if(factor>= 0D)
+  											identico.setFactor(factor);
 											DaoFactory.getInstance().update(sesion, identico);
 											articulo.setIdArticulo(identico.getIdArticulo());
 										} // if

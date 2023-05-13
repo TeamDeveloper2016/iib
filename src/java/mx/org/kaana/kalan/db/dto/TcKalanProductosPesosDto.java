@@ -1,6 +1,9 @@
 package mx.org.kaana.kalan.db.dto;
 
 import java.io.Serializable;
+import java.sql.Blob;
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -10,6 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -24,52 +30,40 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_kalan_productos")
-public class TcKalanProductosDto implements IBaseDto, Serializable {
+@Table(name="tc_kalan_productos_pesos")
+public class TcKalanProductosPesosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="descripcion")
   private String descripcion;
   @Column (name="clave")
   private String clave;
-  @Column (name="id_usuario")
-  private Long idUsuario;
+  @Column (name="peso")
+  private Double peso;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_producto")
+	@Column (name="id_producto_peso")
+  private Long idProductoPeso;
+  @Column (name="id_producto")
   private Long idProducto;
-  @Column (name="id_empresa")
-  private Long idEmpresa;
-  @Column (name="precio1")
-  private Double precio1;
-  @Column (name="precio2")
-  private Double precio2;
-  @Column (name="precio3")
-  private Double precio3;
-  @Column (name="actualizado")
-  private Timestamp actualizado;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcKalanProductosDto() {
+  public TcKalanProductosPesosDto() {
     this(new Long(-1L));
   }
 
-  public TcKalanProductosDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+  public TcKalanProductosPesosDto(Long key) {
+    this(null, null, null, new Long(-1L), null);
     setKey(key);
   }
 
-  public TcKalanProductosDto(String descripcion, String clave, Long idUsuario, Long idProducto, Long idEmpresa, Double precio1, Double precio2, Double precio3, Timestamp actualizado) {
+  public TcKalanProductosPesosDto(String descripcion, String clave, Double peso, Long idProductoPeso, Long idProducto) {
     setDescripcion(descripcion);
     setClave(clave);
-    setIdUsuario(idUsuario);
+    setPeso(peso);
+    setIdProductoPeso(idProductoPeso);
     setIdProducto(idProducto);
-    setIdEmpresa(idEmpresa);
-    setPrecio1(precio1);
-    setPrecio2(precio2);
-    setPrecio3(precio3);
-    setActualizado(actualizado);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -89,12 +83,20 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
     return clave;
   }
 
-  public void setIdUsuario(Long idUsuario) {
-    this.idUsuario = idUsuario;
+  public void setPeso(Double peso) {
+    this.peso = peso;
   }
 
-  public Long getIdUsuario() {
-    return idUsuario;
+  public Double getPeso() {
+    return peso;
+  }
+
+  public void setIdProductoPeso(Long idProductoPeso) {
+    this.idProductoPeso = idProductoPeso;
+  }
+
+  public Long getIdProductoPeso() {
+    return idProductoPeso;
   }
 
   public void setIdProducto(Long idProducto) {
@@ -103,46 +105,6 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
 
   public Long getIdProducto() {
     return idProducto;
-  }
-
-  public void setIdEmpresa(Long idEmpresa) {
-    this.idEmpresa = idEmpresa;
-  }
-
-  public Long getIdEmpresa() {
-    return idEmpresa;
-  }
-
-  public void setPrecio1(Double precio1) {
-    this.precio1 = precio1;
-  }
-
-  public Double getPrecio1() {
-    return precio1;
-  }
-
-  public void setPrecio2(Double precio2) {
-    this.precio2 = precio2;
-  }
-
-  public Double getPrecio2() {
-    return precio2;
-  }
-
-  public void setPrecio3(Double precio3) {
-    this.precio3 = precio3;
-  }
-
-  public Double getPrecio3() {
-    return precio3;
-  }
-
-  public void setActualizado(Timestamp actualizado) {
-    this.actualizado = actualizado;
-  }
-
-  public Timestamp getActualizado() {
-    return actualizado;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -156,12 +118,12 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdProducto();
+  	return getIdProductoPeso();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idProducto = key;
+  	this.idProductoPeso = key;
   }
 
   @Override
@@ -172,19 +134,11 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getClave());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdUsuario());
+		regresar.append(getPeso());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdProductoPeso());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProducto());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdEmpresa());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getPrecio1());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getPrecio2());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getPrecio3());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getActualizado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -196,13 +150,9 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
 		regresar.put("clave", getClave());
-		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("peso", getPeso());
+		regresar.put("idProductoPeso", getIdProductoPeso());
 		regresar.put("idProducto", getIdProducto());
-		regresar.put("idEmpresa", getIdEmpresa());
-		regresar.put("precio1", getPrecio1());
-		regresar.put("precio2", getPrecio2());
-		regresar.put("precio3", getPrecio3());
-		regresar.put("actualizado", getActualizado());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -210,7 +160,7 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getClave(), getIdUsuario(), getIdProducto(), getIdEmpresa(), getPrecio1(), getPrecio2(), getPrecio3(), getActualizado(), getRegistro()
+    getDescripcion(), getClave(), getPeso(), getIdProductoPeso(), getIdProducto(), getRegistro()
     };
     return regresar;
   }
@@ -224,8 +174,8 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idProducto~");
-    regresar.append(getIdProducto());
+    regresar.append("idProductoPeso~");
+    regresar.append(getIdProductoPeso());
     regresar.append("|");
     return regresar.toString();
   }
@@ -233,18 +183,18 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdProducto());
+    regresar.append(getIdProductoPeso());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKalanProductosDto.class;
+    return TcKalanProductosPesosDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdProducto()!= null && getIdProducto()!=-1L;
+  	return getIdProductoPeso()!= null && getIdProductoPeso()!=-1L;
   }
 
   @Override
@@ -255,8 +205,8 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKalanProductosDto other = (TcKalanProductosDto) obj;
-    if (getIdProducto() != other.idProducto && (getIdProducto() == null || !getIdProducto().equals(other.idProducto))) {
+    final TcKalanProductosPesosDto other = (TcKalanProductosPesosDto) obj;
+    if (getIdProductoPeso() != other.idProductoPeso && (getIdProductoPeso() == null || !getIdProductoPeso().equals(other.idProductoPeso))) {
       return false;
     }
     return true;
@@ -265,7 +215,7 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdProducto() != null ? getIdProducto().hashCode() : 0);
+    hash = 67 * hash + (getIdProductoPeso() != null ? getIdProductoPeso().hashCode() : 0);
     return hash;
   }
 
