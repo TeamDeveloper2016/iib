@@ -591,8 +591,9 @@ public class Transaccion extends IBaseTnx {
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
-				this.errores= 0;
-				int count   = 0; 
+				this.errores = 0;
+				int count    = 0; 
+        String codigo= null;
 				for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 					try {
 						if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
@@ -615,7 +616,7 @@ public class Transaccion extends IBaseTnx {
 							if(costo>= 0 && menudeo>= 0 && medio>= 0 && mayoreo>= 0) {
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
                 fabricante= fabricante.replaceAll(Constantes.CLEAN_ART, "").trim();                
-								String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+                codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 								codigo= codigo.replaceAll(Constantes.CLEAN_ART, "").trim();
 								if(codigo.length()> 0) {
 									TcManticArticulosDto articulo= this.toFindArticulo(sesion, codigo, 1L);
@@ -798,7 +799,6 @@ public class Transaccion extends IBaseTnx {
 									} // else
 									this.commit();
 									this.procesados= fila;
-									LOG.warn("Realizando proceso de commit en la fila "+ this.procesados);
 								} // if
 							} // if
 							else {
@@ -813,6 +813,7 @@ public class Transaccion extends IBaseTnx {
 								DaoFactory.getInstance().insert(sesion, detalle);
 							} // else	
 							count++;
+ 							LOG.error("Procesando "+ fila+ " de "+ sheet.getRows()+ " ["+ sheet.getCell(0, fila).getContents()+ "]");
 						} // if	
 	//					if(fila> 500)
 	//						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
