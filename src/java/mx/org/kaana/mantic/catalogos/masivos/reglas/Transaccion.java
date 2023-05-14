@@ -610,7 +610,7 @@ public class Transaccion extends IBaseTnx {
 							double maximo  = Numero.getDouble(sheet.getCell(12, fila).getContents()!= null? sheet.getCell(12, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							String sat     = new String(sheet.getCell(13, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							String fabricante= new String(sheet.getCell(14, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-							double factor  = Numero.getDouble(sheet.getCell(15, fila).getContents()!= null? sheet.getCell(15, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double pesoEstimado= Numero.getDouble(sheet.getCell(15, fila).getContents()!= null? sheet.getCell(15, fila).getContents().replaceAll("[$, ]", ""): "0", 1D);
 							String nombre  = new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(costo>= 0 && menudeo>= 0 && medio>= 0 && mayoreo>= 0) {
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
@@ -641,8 +641,8 @@ public class Transaccion extends IBaseTnx {
                       articulo.setFabricante(fabricante.replaceAll(Constantes.CLEAN_ART, "").trim());
 										if(!Cadena.isVacio(sat))
 											articulo.setSat(sat);
-										if(factor>= 0D)
-											articulo.setFactor(factor);
+										if(pesoEstimado>= 0D) 
+											articulo.setPesoEstimado(pesoEstimado);
 										DaoFactory.getInstance().update(sesion, articulo);
 									} // if
 									else {
@@ -663,7 +663,7 @@ public class Transaccion extends IBaseTnx {
 											-1L, // Long idArticulo, 
 											0D, // Double stock, 
 											Numero.toAjustarDecimales(medio, costo<= 10), // Double medioMayoreo, 
-											0D, // Double pesoEstimado, 
+											pesoEstimado, // Double pesoEstimado, 
 											this.toFindUnidadMedida(sesion, sheet.getCell(7, fila).getContents()), // Long idEmpaqueUnidadMedida, 
 											costo<= 10? 1L: 2L, // Long idRedondear, 
 											Numero.toAjustarDecimales(menudeo, costo<= 10), // Double menudeo, 
@@ -686,7 +686,7 @@ public class Transaccion extends IBaseTnx {
                       !Cadena.isVacio(fabricante)? fabricante.replaceAll(Constantes.CLEAN_ART, "").trim(): null, // String fabricante
                       2L, // Long idVerificado 
                       Numero.toAjustarDecimales(menudeo, costo<= 10), // especial
-                      factor // Double factor
+                      0D // Double factor
 										);
 										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
 										if(identico== null)
@@ -711,8 +711,8 @@ public class Transaccion extends IBaseTnx {
 											identico.setPrecio(costo);
                       if(!Cadena.isVacio(fabricante))
                         identico.setFabricante(fabricante);
-  										if(factor>= 0D)
-  											identico.setFactor(factor);
+  										if(pesoEstimado>= 0D) 
+                        identico.setPesoEstimado(pesoEstimado);
 											DaoFactory.getInstance().update(sesion, identico);
 											articulo.setIdArticulo(identico.getIdArticulo());
 										} // if
@@ -1936,9 +1936,8 @@ public class Transaccion extends IBaseTnx {
 		Sheet sheet             = null;
 		TcManticProveedoresDto proveedor   = null;
 		TcManticMasivasBitacoraDto bitacora= null;
-		Map<String, Object> params         = null;
+		Map<String, Object> params         = new HashMap<>();
 		try {
-			params=new HashMap<>();
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
 			workbookSettings.setExcelDisplayLanguage("MX");

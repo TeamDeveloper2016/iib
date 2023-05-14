@@ -133,8 +133,8 @@
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="pesoEstimado" value="Peso estimado:"/>
 								<p:inputNumber id="pesoEstimado" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.pesoEstimado}"/>                    																	
-								<p:outputLabel for="desperdicio" value="Desperdicio:"/>
-								<p:inputNumber id="desperdicio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.desperdicio}"/>                    																	
+                <p:outputLabel for="desperdicio" value="Desperdicio:" styleClass="janal-display-none"/>
+								<p:inputNumber id="desperdicio" inputStyleClass="janal-wid-100-txt janal-column-right janal-display-none" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.desperdicio}"/>                    																	
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
 								<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo}" styleClass="janal-wid-100-txt">
@@ -418,8 +418,8 @@
 								<p:selectOneMenu id="unidadMedida" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idEmpaqueUnidadMedida}" styleClass="janal-wid-100-txt">
 									<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.unidadesMedidas}"/>
 								</p:selectOneMenu>
-								<p:outputLabel for="cantidad" value="Cantidad:"/>
-								<p:inputNumber id="cantidad" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.cantidad}"/>                    
+                <p:outputLabel for="cantidad" value="Cantidad:" styleClass="janal-display-none"/>
+								<p:inputNumber id="cantidad" inputStyleClass="janal-wid-100-txt janal-column-right janal-display-none" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.cantidad}"/>                    
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="ancho" value="Ancho:"/>
 								<p:inputNumber id="ancho" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.ancho}"/>                    

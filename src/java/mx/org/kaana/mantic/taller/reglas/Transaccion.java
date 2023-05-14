@@ -480,9 +480,8 @@ public class Transaccion extends TransaccionFactura {
 	} // toFindUnidadMedida
   
   private void toSaveArticulos(Session sesion, TcManticServiciosDto servicio) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idServicio", servicio.getIdServicio());
       List<TcManticServiciosDetallesDto> items= (List<TcManticServiciosDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticServiciosDetallesDto.class, "TcManticServiciosDetallesDto", "detalle", params);
       for(TcManticServiciosDetallesDto item: items) {
