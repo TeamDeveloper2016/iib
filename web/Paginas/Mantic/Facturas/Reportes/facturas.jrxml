@@ -58,6 +58,10 @@
 	<parameter name="REPORTE_EMPRESA_RFC" class="java.lang.String"/>
 	<parameter name="REPORTE_EMPRESA_CLAVE" class="java.lang.String"/>
 	<parameter name="REPORTE_LOGO" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_RESPONSABLE" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_BANCO" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_CUENTA" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_CLABE" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[$P!{REPORTE_SQL}]]>
 	</queryString>
@@ -358,56 +362,56 @@
 				<textFieldExpression><![CDATA["Versión: "+$P{REPORTE_VERSION}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="139" y="51" width="241" height="10" uuid="b726bfec-2e3a-426d-b7e3-2070f0a335c7"/>
+				<reportElement x="139" y="51" width="314" height="10" uuid="b726bfec-2e3a-426d-b7e3-2070f0a335c7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["EMISOR: "+$P{REPORTE_EMPRESA_CONTACTO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="382" y="60" width="265" height="10" uuid="bf5f3353-90b8-4b8d-a646-92da68a0f916"/>
+				<reportElement x="453" y="60" width="296" height="10" uuid="bf5f3353-90b8-4b8d-a646-92da68a0f916"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["TELS. "+$P{REPORTE_EMPRESA_TELEFONOS}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="139" y="78" width="241" height="10" uuid="020bd58b-aade-4fd8-a0fd-66937d738775"/>
+				<reportElement x="139" y="78" width="314" height="10" uuid="020bd58b-aade-4fd8-a0fd-66937d738775"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_MUNICIPIO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="382" y="69" width="265" height="10" uuid="6ad9b489-b38f-4e43-bd41-dab785b58df3"/>
+				<reportElement x="453" y="69" width="296" height="14" uuid="6ad9b489-b38f-4e43-bd41-dab785b58df3"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["EMAILS: "+$P{REPORTE_EMPRESA_EMAILS}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="528" y="51" width="119" height="10" uuid="ad418d87-2fda-47bb-9df6-1ce885161722"/>
+				<reportElement x="630" y="51" width="119" height="10" uuid="ad418d87-2fda-47bb-9df6-1ce885161722"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["C.P. "+$P{REPORTE_EMPRESA_CP}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="139" y="69" width="241" height="10" uuid="e503c4c8-b773-427e-838b-01ecd06e553c"/>
+				<reportElement x="139" y="69" width="314" height="10" uuid="e503c4c8-b773-427e-838b-01ecd06e553c"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["COL. "+$P{REPORTE_EMPRESA_COLONIA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="139" y="60" width="241" height="10" uuid="90d9a1d1-8650-41a3-af84-a941afa64a3a"/>
+				<reportElement x="139" y="60" width="314" height="10" uuid="90d9a1d1-8650-41a3-af84-a941afa64a3a"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["DIRECCIÓN: "+$P{REPORTE_EMPRESA_DIRECCION}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="382" y="51" width="146" height="10" uuid="6718a95a-6f68-4b12-96f4-1e349815f6b8"/>
+				<reportElement x="453" y="51" width="177" height="10" uuid="6718a95a-6f68-4b12-96f4-1e349815f6b8"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="8" isBold="false"/>
 				</textElement>
@@ -420,12 +424,12 @@
 				</textElement>
 				<textFieldExpression><![CDATA["CLABE:"]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
+			<textField pattern="">
 				<reportElement x="580" y="10" width="67" height="10" uuid="98cbe263-b150-41b6-b504-c4287157293b"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["BBVA BANCOMER"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_BANCO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
 				<reportElement x="552" y="10" width="28" height="10" uuid="e24a2696-a4ce-4c7d-b3f4-a5f4244a3aed"/>
@@ -446,21 +450,21 @@
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["JOSE ANTONIO DAVALOS PADILLA"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_RESPONSABLE}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
+			<textField pattern="">
 				<reportElement x="580" y="19" width="67" height="10" uuid="15cc874f-221c-4abe-9588-1cfb3998d532"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["0132410869"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_CUENTA}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
+			<textField pattern="">
 				<reportElement x="580" y="28" width="67" height="10" uuid="891266f2-e48e-42c9-9790-ed01cd9dd2d4"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["012010001324108694"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_CLABE}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>

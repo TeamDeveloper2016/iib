@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facturaDetalle" pageWidth="792" pageHeight="612" orientation="Landscape" columnWidth="752" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" scriptletClass="mx.org.kaana.mantic.facturas.scriplet.FacturaDetalle" uuid="bb4277c3-ed80-4c79-b7ab-b51954ca7552">
-	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="80"/>
+	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -72,6 +72,10 @@
 	<parameter name="REPORTE_ALMACEN_MUNICIPIO" class="java.lang.String"/>
 	<parameter name="REPORTE_REGIMEN_FISCAL" class="java.lang.String"/>
 	<parameter name="REPORTE_LOGO" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_RESPONSABLE" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_BANCO" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_CUENTA" class="java.lang.String"/>
+	<parameter name="REPORTE_EMPRESA_CLABE" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[$P!{REPORTE_SQL}]]>
 	</queryString>
@@ -402,33 +406,33 @@
 					<text><![CDATA[Objeto Imp]]></text>
 				</staticText>
 			</frame>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
+			<textField pattern="">
 				<reportElement x="527" y="18" width="67" height="10" uuid="077914a7-c30b-4f55-bfda-a1dbba8b16f9"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["0132410869"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_CUENTA}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
+			<textField pattern="">
 				<reportElement x="527" y="9" width="67" height="10" uuid="d94b29ab-a2a6-485f-ad6f-ed60e6c87f72"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["BBVA BANCOMER"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_BANCO}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
+			<textField pattern="">
 				<reportElement x="499" y="0" width="95" height="10" uuid="59d378e0-3827-450e-8ee9-cc70e0b2cfe8"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["JOSE ANTONIO DAVALOS PADILLA"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_RESPONSABLE}]]></textFieldExpression>
 			</textField>
-			<textField pattern="dd/MM/yyyy HH.mm.ss">
+			<textField pattern="">
 				<reportElement x="527" y="27" width="67" height="10" uuid="cf589eb2-6b67-47e4-9486-b9ee469fbb15"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="6" isBold="false"/>
 				</textElement>
-				<textFieldExpression><![CDATA["012010001324108694"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{REPORTE_EMPRESA_CLABE}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy HH.mm.ss">
 				<reportElement x="499" y="18" width="28" height="10" uuid="084be382-9018-4bea-b145-d20b28fe5183"/>

@@ -74,8 +74,6 @@ public final class Parametros implements Serializable {
         regresar.put("REPORTE_EMPRESA_COLONIA", datosEmpresa.toString("colonia")!= null? datosEmpresa.toString("colonia"): " ");
         regresar.put("REPORTE_EMPRESA_CP", datosEmpresa.toString("codigoPostal")!= null? datosEmpresa.toString("codigoPostal"): " ");
         regresar.put("REPORTE_EMPRESA_CONTACTO", datosEmpresa.toString("responsableEmpresa")!= null? datosEmpresa.toString("responsableEmpresa"): " ");
-        //regresar.put("REPORTE_EMPRESA_CONTACTO", "JOSE ANTONIO DAVALOS PADILLA");
-        //regresar.put("REPORTE_EMPRESA_RFC", "DAPA580118TK4");
         regresar.put("REPORTE_EMPRESA_TELEFONOS", datosEmpresa.toString("telefonosEmpresa")!= null? datosEmpresa.toString("telefonosEmpresa"): " ");
         regresar.put("REPORTE_EMPRESA_EMAILS", datosEmpresa.toString("emailsEmpresa")!= null? datosEmpresa.toString("emailsEmpresa"): " ");
         regresar.put("REPORTE_EMPRESA_MUNICIPIO", datosEmpresa.toString("empresaRegion")!= null? datosEmpresa.toString("empresaRegion"): " ");

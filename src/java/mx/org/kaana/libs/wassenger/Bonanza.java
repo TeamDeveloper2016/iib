@@ -40,9 +40,9 @@ public final class Bonanza implements Serializable {
   public static final String IMOX_GROUP_KANAL  = "5214491813810-1598307659@g.us";
   public static final String IMOX_GROUP_TSAAK  = "5214491813810-1598307659@g.us";
   
-  private static final String BODY_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a compras con nosotros. Emisión y descarga de facturas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por comprar en *_{empresa}_*.\"";
-  private static final String BODY_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando notificaciones respecto a nosotros. Sobre todo promociones y avisos de tus citas agendadas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
-  private static final String BODY_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando notificaciones respecto a nosotros. Sobre todo promociones y avisos de tus citas agendadas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
+  private static final String BODY_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a compras con nosotros. Emisión y descarga de facturas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *{correo}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por comprar en *_{empresa}_*.\"";
+  private static final String BODY_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando notificaciones respecto a nosotros. Sobre todo promociones y avisos de tus citas agendadas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *{correo}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
+  private static final String BODY_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te estaremos enviando notificaciones respecto a nosotros. Sobre todo promociones y avisos de tus citas agendadas principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *{correo}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
 
   private static final String BODY_MESSAGE_TEST_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_\\n\\n( _imoxbot_ )\"";
   private static final String BODY_MESSAGE_TEST_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n\\n{saludo}, somos de la *{empresa}*, este es un mensaje de prueba _{contenido}_\\n\\n( _imoxbot_ )\"";
@@ -56,19 +56,19 @@ public final class Bonanza implements Serializable {
   private static final String BODY_MASIVO_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {contenido}.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
   private static final String BODY_MASIVO_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {contenido}.\\n\\nGracias por confiar en nosotros *_{empresa}_*.\"";
   
-  private static final String BODY_PROVEEDOR   = "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a las ordenes de compras que te haremos principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *ventas@{host}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por comprar en *_{empresa}_*.\"";
+  private static final String BODY_PROVEEDOR   = "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, te estaremos enviando únicamente las notificaciones más importantes respecto a las ordenes de compras que te haremos principalmente.\\n\\nNo podremos contestar a tus mensajes en este número.\\n\\nSi desea contactarnos puedes ser a *{correo}* y/o al telefono/whatsapp *{notifica}*\\n\\nPara aceptar estas notificaciones, puedes escribir *hola* en cualquier momento sobre este chat.\\n\\nGracias por comprar en *_{empresa}_*.\"";
   
-  private static final String BODY_FACTURA_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
-  private static final String BODY_FACTURA_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
-  private static final String BODY_FACTURA_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
+  private static final String BODY_FACTURA_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *{correo}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
+  private static final String BODY_FACTURA_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *{correo}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
+  private static final String BODY_FACTURA_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar la factura con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan sus archivos PDF y XML de su factura emitida\\n\\n{reporte}\\n\\nPara cualquier duda o aclaración *{correo}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
   
-  private static final String BODY_TICKET_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar el ticket con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan el archivo PDF del ticket\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar el documento.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
-  private static final String BODY_TICKET_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar el ticket con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan el archivo PDF del ticket\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar el documento.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
-  private static final String BODY_TICKET_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar el ticket con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan el archivo PDF del ticket\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar el documento.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
+  private static final String BODY_TICKET_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar el ticket con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan el archivo PDF del ticket\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *{correo}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar el documento.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
+  private static final String BODY_TICKET_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar el ticket con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan el archivo PDF del ticket\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *{correo}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar el documento.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
+  private static final String BODY_TICKET_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te hacemos llegar el ticket con folio *{ticket}* del día *{fecha}*, en el siguiente link se adjuntan el archivo PDF del ticket\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *{correo}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar el documento.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
   
-  private static final String BODY_DEVOLUCION  = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, su cuenta presenta un movimiento, en el siguiente link se adjuntan el archivo PDF referente a ello\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
-  private static final String BODY_PAGO_CUENTA = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, gracias por su pago, en el siguiente link se adjunta un PDF con un resumen y estatus de los tickets/facturas a los cuales fue abonado el pago\\n\\n https://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
-  private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la sucursal de entrega.\\n\\nPara cualquier duda o aclaración *ventas@{host}* y/o al telefono/whatsapp *{notifica}*.\\n\\n*_{empresa}_*.\"";
+  private static final String BODY_DEVOLUCION  = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, su cuenta presenta un movimiento, en el siguiente link se adjuntan el archivo PDF referente a ello\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *{correo}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
+  private static final String BODY_PAGO_CUENTA = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, gracias por su pago, en el siguiente link se adjunta un PDF con un resumen y estatus de los tickets/facturas a los cuales fue abonado el pago\\n\\n https://{host}/Temporal/Pdf/{reporte}\\n\\nPara cualquier duda o aclaración *{correo}* y/o al telefono/whatsapp *{notifica}*, se tienen *24 hrs* para descargar todos los documentos.\\n\\nAgradecemos su preferencia *_{empresa}_*.\"";
+  private static final String BODY_ORDEN_COMPRA= "\"phone\":\"+521{celular}\",\"message\":\"Estimado proveedor _{nombre}_:\\n\\n{saludo}, en el siguiente link se adjunta un PDF con una orden de compra\\n\\nhttps://{host}/Temporal/Pdf/{reporte}\\n\\nFavor de verificar en la misma orden la sucursal de entrega.\\n\\nPara cualquier duda o aclaración *{correo}* y/o al telefono/whatsapp *{notifica}*.\\n\\n*_{empresa}_*.\"";
   private static final String BODY_CHECK_CORREO= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de correos de los clientes que fueron eliminados del servidor de *producción* por ser incorrectos o porque no son validos con corte al *{fecha}*\\n\\n{reporte}_{empresa}_\"";
   private static final String BODY_CHECK_RFC   = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_,\\n\\n{saludo}, se te hace llegar la lista de *RFC's* de los clientes que fueron eliminados del servidor de *producción* por estar con formato incorrecto, no estan activos o no estan dados de alta en el SAT, con corte al *{fecha}*\\n\\n{reporte}\\n\\n*_{empresa}_*\"";
   
@@ -203,6 +203,7 @@ public final class Bonanza implements Serializable {
         params.put("celular", this.celular);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
@@ -279,6 +280,7 @@ public final class Bonanza implements Serializable {
         params.put("celular", this.celular);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("contenido", contenido);
         params.put("saludo", this.toSaludo());
@@ -338,6 +340,7 @@ public final class Bonanza implements Serializable {
         params.put("saludo", this.toSaludo());
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
         if(sesion!= null)
@@ -403,6 +406,7 @@ public final class Bonanza implements Serializable {
       params.put("fecha", this.fecha);
       params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));      
       params.put("host", Configuracion.getInstance().getEmpresa("host"));
+      params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
       params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
       params.put("saludo", this.toSaludo());
       if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
@@ -457,6 +461,7 @@ public final class Bonanza implements Serializable {
       params.put("fecha", this.fecha);
       params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));      
       params.put("host", Configuracion.getInstance().getEmpresa("host"));
+      params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
       params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
       params.put("saludo", this.toSaludo());
       if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
@@ -525,6 +530,7 @@ public final class Bonanza implements Serializable {
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
@@ -601,6 +607,7 @@ public final class Bonanza implements Serializable {
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
@@ -672,6 +679,7 @@ public final class Bonanza implements Serializable {
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
@@ -732,6 +740,7 @@ public final class Bonanza implements Serializable {
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
@@ -796,6 +805,7 @@ public final class Bonanza implements Serializable {
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
@@ -856,6 +866,7 @@ public final class Bonanza implements Serializable {
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
@@ -916,6 +927,7 @@ public final class Bonanza implements Serializable {
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
@@ -980,6 +992,7 @@ public final class Bonanza implements Serializable {
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
@@ -1044,6 +1057,7 @@ public final class Bonanza implements Serializable {
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
         params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
@@ -1095,15 +1109,15 @@ public final class Bonanza implements Serializable {
   private void prepare() {
     StringBuilder archivos= new StringBuilder();
     if(this.contratistas!= null && !this.contratistas.isEmpty()) {
-      Map<String, Object> params = null;
+      Map<String, Object> params = new HashMap<>();
       try {        
-        params= new HashMap<>();        
         int count= 1;
         for (String key: this.contratistas.keySet()) {
           params.put("numero", count++);
           params.put("contratista", key);
           params.put("reporte", this.contratistas.get(key));
           params.put("host", Configuracion.getInstance().getEmpresa("host"));
+          params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
           archivos.append(Cadena.replaceParams(PATH_REPORT, params, true));
         } // for
       } // try
