@@ -112,11 +112,10 @@ public class NotificaCliente implements Serializable {
 
   private void toReporteIndividal() throws Exception {
     Parametros comunes           = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		Map<String, Object>parametros= null;
     this.existe                  = Boolean.FALSE;
 		try{		
-      params= new HashMap<>();
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
       params.put("idCliente", this.idCliente);
       switch(this.reportes) {
@@ -136,6 +135,21 @@ public class NotificaCliente implements Serializable {
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", this.reportes.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
+			parametros.put("REPORTE_PORTAL", Configuracion.getInstance().getEmpresa("portal"));		
+      parametros.put("REPORTE_ECOMPRAS", Configuracion.getInstance().getEmpresa("compras"));		
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "iib":
+   			  parametros.put("REPORTE_SUB_TITULO", Configuracion.getInstance().getEmpresa("slogan"));		
+          break;
+        case "kalan":
+   			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
+          break;
+        case "tsaak":
+   			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
+          break;
+      } // swtich
+			parametros.put("REPORTE_NOTIFICA", Configuracion.getInstance().getEmpresa("celular"));		
       this.reporte.toAsignarReporte(new ParametrosReporte(this.reportes, params, parametros));		
       if(this.sesion!= null)
         this.reporte.toProcess(this.sesion);			

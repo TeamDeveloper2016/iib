@@ -143,16 +143,14 @@ public class IBaseMail implements Serializable {
 	}
 		
 	public void send(String content) throws MessagingException, UnsupportedEncodingException {
-    Properties properties= null;
+    Properties properties= new Properties();
     Session session      = null;
     MimeMessage message  = null;
     MimeBodyPart body    = null;
     DataSource ds        = null;
     Multipart multipart  = null;    
-		List<BodyPart> files = null;
+		List<BodyPart> files = new ArrayList<>();
     try {
-      properties= new Properties();
-			files     = new ArrayList<>();
       properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");

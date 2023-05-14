@@ -2227,7 +2227,10 @@
 				  tc_mantic_ventas.registro as fecha,
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
 					tc_mantic_tipos_medios_pagos.nombre as tipo_medio_pago,
-					tc_mantic_clientes.razon_social
+					tc_mantic_clientes.razon_social,
+          ifnull(tc_mantic_garantias.consecutivo, '') as garantia,
+          tc_mantic_garantias.total as devuelto,
+          tc_mantic_garantias.registro as cuando
 				from
 					tc_mantic_ventas    
 				inner join (
@@ -2257,6 +2260,8 @@
           tc_mantic_cierres_cajas on tr_mantic_venta_medio_pago.id_cierre = tc_mantic_cierres_cajas.id_cierre and tc_mantic_ventas.id_venta= tr_mantic_venta_medio_pago.id_venta     
         inner join
           tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja = tc_mantic_cajas.id_caja     
+				left join
+				  tc_mantic_garantias on tc_mantic_ventas.id_venta= tc_mantic_garantias.id_venta
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
 				  and {apartado}     
@@ -5865,7 +5870,7 @@ group by
 					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as nombre,
 					tc_mantic_domicilios.calle,
 					tc_mantic_domicilios.numero_exterior,
-					tc_mantic_domicilios.numero_interior,
+					ifnull(tc_mantic_domicilios.numero_interior, '') as numero_interior,
 					tc_mantic_domicilios.asentamiento as colonia,
 					tc_mantic_domicilios.codigo_postal,
 					tc_janal_localidades.descripcion as localidad,
@@ -5907,7 +5912,7 @@ group by
 					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as nombre,
 					tc_mantic_domicilios.calle,
 					tc_mantic_domicilios.numero_exterior,
-					tc_mantic_domicilios.numero_interior,
+					ifnull(tc_mantic_domicilios.numero_interior, '') as numero_interior,
 					tc_mantic_domicilios.asentamiento colonia,
 					tc_mantic_domicilios.codigo_postal,
 					tc_janal_localidades.descripcion localidad,
@@ -5951,7 +5956,7 @@ group by
 					tc_mantic_clientes.razon_social as nombre,       
 					tc_mantic_domicilios.calle,
 					tc_mantic_domicilios.numero_exterior,
-					tc_mantic_domicilios.numero_interior,
+					ifnull(tc_mantic_domicilios.numero_interior, '') as numero_interior,
 					tc_mantic_domicilios.asentamiento as colonia,
 					tc_mantic_domicilios.codigo_postal,
 					tc_janal_localidades.descripcion as localidad,
@@ -6075,7 +6080,7 @@ group by
 					tr_mantic_cliente_domicilio.id_cliente_domicilio as id_key,
 					tc_mantic_domicilios.calle,
 					tc_mantic_domicilios.numero_exterior,
-					tc_mantic_domicilios.numero_interior,
+					ifnull(tc_mantic_domicilios.numero_interior, '') as numero_interior,
 					tc_mantic_domicilios.asentamiento,
 					tc_mantic_domicilios.codigo_postal,					
 					tc_janal_localidades.descripcion as localidad,
@@ -10005,6 +10010,9 @@ order by
           tc_mantic_empresas.nombre,
           tc_mantic_empresas.rfc,
           tc_mantic_empresas.responsable,
+          tc_mantic_bancos.nombre as banco,
+          tc_mantic_empresas.cuenta,
+          tc_mantic_empresas.clabe,
 					domicilio_empresa.numero_interior,
 					concat(domicilio_empresa.calle, case  when domicilio_empresa.numero_exterior is null then ' ' else concat(' # ',domicilio_empresa.numero_exterior) end, case  when domicilio_empresa.numero_interior is null then ' ' else concat(' INT. ',domicilio_empresa.numero_interior) end) as empresa_direccion,
           domicilio_empresa.codigo_postal,
@@ -10014,15 +10022,15 @@ order by
 					 from 
 					   tc_mantic_empresas left join tr_mantic_empresa_tipo_contacto on tc_mantic_empresas.id_empresa in ({idEmpresa}) and tc_mantic_empresas.id_empresa= tr_mantic_empresa_tipo_contacto.id_empresa and tr_mantic_empresa_tipo_contacto.id_tipo_contacto between 1 and 8 and tr_mantic_empresa_tipo_contacto.id_preferido= 1
 					 where 
-        		 tc_mantic_empresas.id_empresa) telefonos_empresa,
+        		 tc_mantic_empresas.id_empresa) as telefonos_empresa,
         	(select 
 					   group_concat(tr_mantic_empresa_tipo_contacto.valor separator ', ') as emails 
 					 from 
 					   tc_mantic_empresas left join tr_mantic_empresa_tipo_contacto on tc_mantic_empresas.id_empresa in ({idEmpresa}) and tc_mantic_empresas.id_empresa= tr_mantic_empresa_tipo_contacto.id_empresa and tr_mantic_empresa_tipo_contacto.id_tipo_contacto between 9 and 11  and tr_mantic_empresa_tipo_contacto.id_preferido= 1
 					 where 
-        	   tc_mantic_empresas.id_empresa) emails_empresa,
+        	   tc_mantic_empresas.id_empresa) as emails_empresa,
         	concat(responsable_empresa.nombres, ' ' , responsable_empresa.paterno, ' ', responsable_empresa.materno) as responsable_empresa,
-          responsable_empresa.rfc rfc_empresa,	 
+          responsable_empresa.rfc as rfc_empresa,	 
           concat(replace(replace(upper(municipio_empresa.descripcion), char(10), ' '), char(13), ' '), ', ', upper(entidad_empresa.descripcion)) as empresa_region,            
           concat(replace(replace(upper(municipio_empresa.descripcion), char(10), ' '), char(13), ' '), ', ', upper(entidad_empresa.descripcion),', ',upper(pais_empresa.descripcion)) as empresa_poblacion,            
           (select 
@@ -10040,21 +10048,23 @@ order by
 				from 
 					tc_mantic_empresas 
 				inner join 
-					tr_mantic_empresa_domicilio  on tc_mantic_empresas.id_empresa= tr_mantic_empresa_domicilio.id_empresa
+					tr_mantic_empresa_domicilio on tc_mantic_empresas.id_empresa= tr_mantic_empresa_domicilio.id_empresa
 				inner join 
-					tc_mantic_domicilios  domicilio_empresa on tr_mantic_empresa_domicilio.id_domicilio = domicilio_empresa.id_domicilio				
+					tc_mantic_domicilios as domicilio_empresa on tr_mantic_empresa_domicilio.id_domicilio = domicilio_empresa.id_domicilio				
 				inner join 
-					tc_janal_localidades localidad_empresa on domicilio_empresa.id_localidad = localidad_empresa.id_localidad
+					tc_janal_localidades as localidad_empresa on domicilio_empresa.id_localidad = localidad_empresa.id_localidad
 				inner join
-          tc_janal_municipios municipio_empresa on localidad_empresa.id_municipio = municipio_empresa.id_municipio
+          tc_janal_municipios as municipio_empresa on localidad_empresa.id_municipio = municipio_empresa.id_municipio
         inner join
-					tc_janal_entidades  entidad_empresa on municipio_empresa.id_entidad= entidad_empresa.id_entidad
+					tc_janal_entidades as entidad_empresa on municipio_empresa.id_entidad= entidad_empresa.id_entidad
 				inner join
-					tc_janal_paises  pais_empresa on entidad_empresa.id_pais = pais_empresa.id_pais
+					tc_janal_paises as pais_empresa on entidad_empresa.id_pais = pais_empresa.id_pais
+        inner join
+          tc_mantic_bancos on tc_mantic_empresas.id_banco= tc_mantic_bancos.id_banco
 				left join 
-					tc_mantic_personas responsable_empresa on tc_mantic_empresas.id_responsable = responsable_empresa.id_persona
+					tc_mantic_personas as responsable_empresa on tc_mantic_empresas.id_responsable = responsable_empresa.id_persona
 				left join 
-					tr_mantic_persona_tipo_contacto telefono on responsable_empresa.id_persona = telefono.id_persona and telefono.id_tipo_contacto= 1
+					tr_mantic_persona_tipo_contacto as telefono on responsable_empresa.id_persona = telefono.id_persona and telefono.id_tipo_contacto= 1
 				left join 
 					tr_mantic_persona_tipo_contacto correo on telefono.id_persona= correo.id_persona and correo.id_tipo_contacto=9
 				where

@@ -19,9 +19,9 @@ public enum ECorreos {
 	COTIZACIONES  ("cotizacion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
 	ORDENES_COMPRA("ordenes.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Compras"),
 	CUENTAS       ("cuentas.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
-	CREDITO       ("cobrar.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
-	DEVOLUCION    ("devolucion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
-	PAGOS         ("pagos.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Ventas"),
+	CREDITO       ("cobrar.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Créditos"),
+	DEVOLUCION    ("devolucion.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Devoluciones"),
+	PAGOS         ("pagos.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Pagos"),
 	ORDENES_TALLER("taller.html", "resources/janal/img/sistema/", "correo.admin.user", "correo.admin.pass", "Taller");
 	 
 	private String template;
@@ -33,32 +33,40 @@ public enum ECorreos {
   
   static {
     empresas= new HashMap<>();
-    empresas.put("mantic.ticket.email", "facturas@casaelfrijolito.com");  
-    empresas.put("mantic.facturacion.email", "facturas@casaelfrijolito.com");  
-    empresas.put("mantic.facturacion.backup", "");  
-    empresas.put("mantic.cotizaciones.email", "ventas@casaelfrijolito.com");  
-    empresas.put("mantic.cotizaciones.backup", "compras@casaelfrijolito.com");  
-    empresas.put("mantic.ordenes_compra.email", "compras@casaelfrijolito.com");  
-    empresas.put("mantic.ordenes_compra.backup", "compras@casaelfrijolito.com");  
-    empresas.put("mantic.cuentas.email", "ventas@casaelfrijolito.com");  
-    empresas.put("mantic.cuentas.backup", "imox.soluciones.web@gmail.com");  
-    empresas.put("mantic.ventas.email", "ventas@casaelfrijolito.com");  
-    empresas.put("mantic.ventas.backup", "imox.soluciones.web@gmail.com");  
-    empresas.put("mantic.compras.email", "compras@casaelfrijolito.com");  
-    empresas.put("mantic.compras.backup", "imox.soluciones.web@gmail.com");  
-    empresas.put("mantic.administracion.email", "administracion@casaelfrijolito.com");  
-    empresas.put("mantic.administracion.backup", "imox.soluciones.web@gmail.com");  
-    empresas.put("mantic.control.email", "administrador@casaelfrijolito.com");  
+    empresas.put("iib.facturacion.email", "facturas@elfrijolito.com");  
+    empresas.put("iib.facturacion.backup", "");  
+    empresas.put("iib.ticket.email", "facturas@elfrijolito.com");  
+    empresas.put("iib.cotizaciones.email", "ventas@elfrijolito.com");  
+    empresas.put("iib.cotizaciones.backup", "");  
+    empresas.put("iib.ordenes_compra.email", "compras@elfrijolito.com");  
+    empresas.put("iib.ordenes_compra.backup", "");  
+    empresas.put("iib.cuentas.email", "ventas@elfrijolito.com");  
+    empresas.put("iib.cuentas.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("iib.credito.email", "ventas@elfrijolito.com");  
+    empresas.put("iib.credito.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("iib.pagos.email", "administracion@elfrijolito.com");  
+    empresas.put("iib.pagos.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("iib.ventas.email", "ventas@elfrijolito.com");  
+    empresas.put("iib.ventas.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("iib.compras.email", "compras@elfrijolito.com");  
+    empresas.put("iib.compras.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("iib.administracion.email", "administracion@elfrijolito.com");  
+    empresas.put("iib.administracion.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("iib.control.email", "administrador@elfrijolito.com");  
     
-    empresas.put("kalan.ticket.email", "facturas@kalan.com");  
     empresas.put("kalan.facturacion.email", "facturas@kalan.com");  
     empresas.put("kalan.facturacion.backup", "");  
+    empresas.put("kalan.ticket.email", "facturas@kalan.com");  
     empresas.put("kalan.cotizaciones.email", "ventas@kalan.com");  
-    empresas.put("kalan.cotizaciones.backup", "compras2@kalan.com");  
+    empresas.put("kalan.cotizaciones.backup", "");  
     empresas.put("kalan.ordenes_compra.email", "compras@kalan.com");  
-    empresas.put("kalan.ordenes_compra.backup", "compras@kalan.com");  
+    empresas.put("kalan.ordenes_compra.backup", "");  
     empresas.put("kalan.cuentas.email", "ventas@kalan.com");  
     empresas.put("kalan.cuentas.backup", "");  
+    empresas.put("kalan.credito.email", "ventas@casaelfrijolito.com");  
+    empresas.put("kalan.credito.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("kalan.pagos.email", "administracion@casaelfrijolito.com");  
+    empresas.put("kalan.pagos.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("kalan.ventas.email", "ventas@kalan.com");  
     empresas.put("kalan.ventas.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("kalan.compras.email", "compras@kalan.com");  
@@ -67,15 +75,19 @@ public enum ECorreos {
     empresas.put("kalan.administracion.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("kalan.control.email", "imox.soluciones.web@gmail.com");  
     
-    empresas.put("tsaak.ticket.email", "facturas@tsaak.com");  
     empresas.put("tsaak.facturacion.email", "facturas@tsaak.com");  
     empresas.put("tsaak.facturacion.backup", "");  
+    empresas.put("tsaak.ticket.email", "facturas@tsaak.com");  
     empresas.put("tsaak.cotizaciones.email", "ventas@tsaak.com");  
     empresas.put("tsaak.cotizaciones.backup", "compras@tsaak.com");  
     empresas.put("tsaak.ordenes_compra.email", "compras@tsaak.com");  
     empresas.put("tsaak.ordenes_compra.backup", "compras@tsaak.com");  
     empresas.put("tsaak.cuentas.email", "ventas@tsaak.com");  
     empresas.put("tsaak.cuentas.backup", "");  
+    empresas.put("tsaak.credito.email", "ventas@casaelfrijolito.com");  
+    empresas.put("tsaak.credito.backup", "imox.soluciones.web@gmail.com");  
+    empresas.put("tsaak.pagos.email", "administracion@casaelfrijolito.com");  
+    empresas.put("tsaak.pagos.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("tsaak.ventas.email", "ventas@tsaak.com");  
     empresas.put("tsaak.ventas.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("tsaak.compras.email", "compras@tsaak.com");  

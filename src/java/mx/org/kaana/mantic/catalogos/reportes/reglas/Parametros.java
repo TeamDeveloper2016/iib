@@ -39,7 +39,7 @@ public final class Parametros implements Serializable {
     this.idAlmacen   = idAlmacen;
     this.idProveedor = idProveedor;
     this.idCliente   = idCliente;
-    setComunes(toDatosEmpresa());
+    this.setComunes(this.toDatosEmpresa());
     if(this.idProveedor != -1L)
       this.toComplementarProveedor();
     if(this.idAlmacen != -1L)
@@ -67,10 +67,13 @@ public final class Parametros implements Serializable {
         regresar.put("REPORTE_EMPRESA",datosEmpresa.toString("nombre")!= null? datosEmpresa.toString("nombre"): " ");
         regresar.put("REPORTE_EMPRESA_RFC",datosEmpresa.toString("rfc")!= null? datosEmpresa.toString("rfc"): " ");
         regresar.put("REPORTE_EMPRESA_RESPONSABLE",datosEmpresa.toString("responsable")!= null? datosEmpresa.toString("responsable"): " ");
+        regresar.put("REPORTE_EMPRESA_BANCO",datosEmpresa.toString("banco")!= null? datosEmpresa.toString("banco"): " ");
+        regresar.put("REPORTE_EMPRESA_CUENTA",datosEmpresa.toString("cuenta")!= null? datosEmpresa.toString("cuenta"): " ");
+        regresar.put("REPORTE_EMPRESA_CLABE",datosEmpresa.toString("clabe")!= null? datosEmpresa.toString("clabe"): " ");
         regresar.put("REPORTE_EMPRESA_DIRECCION", datosEmpresa.toString("empresaDireccion")!= null? datosEmpresa.toString("empresaDireccion"): " ");
         regresar.put("REPORTE_EMPRESA_COLONIA", datosEmpresa.toString("colonia")!= null? datosEmpresa.toString("colonia"): " ");
-        regresar.put("REPORTE_EMPRESA_CP", datosEmpresa.toString("nombre")!= null? datosEmpresa.toString("codigoPostal"): " ");
-        regresar.put("REPORTE_EMPRESA_CONTACTO", datosEmpresa.toString("codigoPostal")!= null? datosEmpresa.toString("responsableEmpresa"): " ");
+        regresar.put("REPORTE_EMPRESA_CP", datosEmpresa.toString("codigoPostal")!= null? datosEmpresa.toString("codigoPostal"): " ");
+        regresar.put("REPORTE_EMPRESA_CONTACTO", datosEmpresa.toString("responsableEmpresa")!= null? datosEmpresa.toString("responsableEmpresa"): " ");
         //regresar.put("REPORTE_EMPRESA_CONTACTO", "JOSE ANTONIO DAVALOS PADILLA");
         //regresar.put("REPORTE_EMPRESA_RFC", "DAPA580118TK4");
         regresar.put("REPORTE_EMPRESA_TELEFONOS", datosEmpresa.toString("telefonosEmpresa")!= null? datosEmpresa.toString("telefonosEmpresa"): " ");

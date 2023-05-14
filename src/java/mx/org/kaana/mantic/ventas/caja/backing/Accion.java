@@ -194,7 +194,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("ticketLock", -1L);
 			this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
-			this.attrs.put("buscaPorCodigo", true);
+			this.attrs.put("buscaPorCodigo", Boolean.FALSE);
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("facturarVenta", false);
@@ -434,7 +434,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					else
 						UIBackingUtilities.addCallbackParam("facturacionOk", false);
 					tipoTicket= ventaFinalizada.getApartado() ? "APARTADO" : (ventaFinalizada.isFacturar() ? "FACTURA" : (ventaFinalizada.isCredito() ? "CREDITO" : "VENTA DE MOSTRADOR"));
-          if(tipoTicket.equals("CREDITO")) {
+          if(ventaFinalizada.isCredito()) {
             this.toPrintTicket(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), ((TicketVenta)this.getAdminOrden().getOrden()).getRegistro());
           } // if
           else {
@@ -1363,11 +1363,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.setTotales((Pago) this.attrs.get("pago"));
 			if(facturarVenta) {
 				cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
-				cfdi= (UISelectEntity) this.attrs.get("cfdi");
+				cfdi = (UISelectEntity) this.attrs.get("cfdi");
 				ticketVenta.setIdUsoCfdi(cfdis.get(cfdis.indexOf(cfdi)).getKey());
 				ticketVenta.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));				
-				ticketVenta.setIdTipoMedioPago(regresar.getTotales().getIdTipoMedioPago());
-				if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(regresar.getTotales().getIdTipoMedioPago())) {
+				ticketVenta.setIdTipoMedioPago(Objects.equals(regresar.getTotales().getIdTipoMedioPago(), null) || Objects.equals(regresar.getTotales().getIdTipoMedioPago(), -1L)? ETipoMediosPago.EFECTIVO.getIdTipoMedioPago(): regresar.getTotales().getIdTipoMedioPago());
+				if(!Objects.equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago(), regresar.getTotales().getIdTipoMedioPago())) {
 					ticketVenta.setIdBanco(regresar.getTotales().getIdBanco());
 					ticketVenta.setReferencia(regresar.getTotales().getReferencia());
 				} // if
@@ -1377,8 +1377,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			else 
         if(!((Boolean) this.attrs.get("creditoVenta"))) {
           ticketVenta.setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));				
-          ticketVenta.setIdTipoMedioPago(regresar.getTotales().getIdTipoMedioPago());
-          if(!ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(regresar.getTotales().getIdTipoMedioPago())) {
+  				ticketVenta.setIdTipoMedioPago(Objects.equals(regresar.getTotales().getIdTipoMedioPago(), null) || Objects.equals(regresar.getTotales().getIdTipoMedioPago(), -1L)? ETipoMediosPago.EFECTIVO.getIdTipoMedioPago(): regresar.getTotales().getIdTipoMedioPago());
+          if(!Objects.equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago(), regresar.getTotales().getIdTipoMedioPago())) {
             ticketVenta.setIdBanco(regresar.getTotales().getIdBanco());
             ticketVenta.setReferencia(regresar.getTotales().getReferencia());
           } // if
@@ -1478,9 +1478,8 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private void verificaLimiteCaja() throws Exception {
 		Entity alerta            = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put("idCaja", this.attrs.get("caja"));
 			alerta= (Entity) DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "alerta", params);

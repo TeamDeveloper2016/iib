@@ -93,7 +93,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.loadClienteDefault();
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", true);
-			this.attrs.put("buscaPorCodigo", true);
+			this.attrs.put("buscaPorCodigo", Boolean.FALSE);
 			this.attrs.put("activeLogin", false);
 			this.attrs.put("autorized", false);
 			this.attrs.put("expirada", false);

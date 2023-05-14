@@ -15,7 +15,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
-import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
@@ -90,7 +89,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private boolean isNuevoCierre;
 	private Double efectivo;
 	private Long idCierreVigente;
-	private Long idCaja;
 	private String cotizacion;
 	private Long idFactura;
 	private Long idVenta;
@@ -236,6 +234,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				case TRANSFORMACION:
 					regresar= this.assignStatusAutomatico(sesion);
 					break;
+        case DESTRANSFORMACION:
+          regresar= this.processNotificacionCredito(sesion);
+          break;
 			} // switch
 			if(!regresar)
         throw new Exception(getMessageError());
@@ -316,7 +317,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	} // toSiguienteCotizacion
 	
 	private boolean procesarVenta(Session sesion) throws Exception {
-		boolean regresar= this.pagarVenta(sesion, this.ventaFinalizada.getApartado()? EEstatusVentas.APARTADOS.getIdEstatusVenta(): (this.ventaFinalizada.isCredito() ? EEstatusVentas.CREDITO.getIdEstatusVenta() : EEstatusVentas.PAGADA.getIdEstatusVenta()));
+		boolean regresar= this.pagarVenta(sesion, this.ventaFinalizada.getApartado()? EEstatusVentas.APARTADOS.getIdEstatusVenta(): (this.ventaFinalizada.isCredito()? EEstatusVentas.CREDITO.getIdEstatusVenta() : EEstatusVentas.PAGADA.getIdEstatusVenta()));
 		if(regresar) {
 			if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
 				regresar= this.registrarFactura(sesion);
@@ -330,9 +331,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			} // if
 			if(this.ventaFinalizada.getApartado())
 				regresar= this.registrarApartado(sesion);
-			else if(this.ventaFinalizada.getTipoCuenta().equals(EEstatusVentas.APARTADOS.name()))
-				regresar= this.liquidarApartado(sesion);			
-			if(this.ventaFinalizada.getTicketVenta().getIdServicio() > 0L)
+			else 
+        if(Objects.equals(this.ventaFinalizada.getTipoCuenta(), EEstatusVentas.APARTADOS.name()))
+				  regresar= this.liquidarApartado(sesion);			
+			if(this.ventaFinalizada.getTicketVenta().getIdServicio()> 0L)
 				this.actualizarServicio(sesion);
 		} // if		
 		return regresar;
@@ -610,7 +612,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	private boolean pagarVenta(Session sesion, Long idEstatusVenta) throws Exception {
 		boolean regresar         = false;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		Siguiente consecutivo    = null;
 		boolean validacionEstatus= false;
 		try {									
@@ -641,7 +643,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			} // if						
 			if(DaoFactory.getInstance().update(sesion, this.getOrden())>= 1L) {				
 				if(this.registraBitacora(sesion, this.getOrden().getIdVenta(), idEstatusVenta, "LA VENTA HA SIDO FINALIZADA")) {
-					params= new HashMap<>();
 					params.put("idVenta", this.getOrden().getIdVenta());
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
 					this.toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
@@ -649,7 +650,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				} // if
 			} // if			
 		} // try		
-		finally{
+		finally {
 			Methods.clean(params);
 			this.setMessageError("ERROR AL REGISTRAR EL PAGO DE LA VENTA");
 		} // finally			
@@ -1532,9 +1533,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
     return regresar;
   }
 
-  private void processNotificacionCredito(Session sesion) throws Exception {
+  private Boolean processNotificacionCredito(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
     try {      
-      sesion.flush();
       NotificaCliente notifica= new NotificaCliente(sesion,
         this.ventaFinalizada.getCliente().getIdCliente(), // Long idCliente, 
         this.ventaFinalizada.getCliente().getRazonSocial(), // String razonSocial, 
@@ -1546,10 +1547,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
       );
       notifica.doSendMail();
       notifica.doSendWhatsup();
+      regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
       throw e;
     } // catch	
+    return regresar;
   }
     
 }

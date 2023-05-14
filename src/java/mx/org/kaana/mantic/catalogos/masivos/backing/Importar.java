@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -43,6 +44,7 @@ public class Importar extends IBaseImportar implements Serializable {
   private TcManticMasivasArchivosDto masivo;
 	protected FormatLazyModel lazyModel;
 	private ECargaMasiva categoria;
+  private Monitoreo monitoreo;
 
 	public TcManticMasivasArchivosDto getMasivo() {
 		return masivo;
@@ -56,10 +58,17 @@ public class Importar extends IBaseImportar implements Serializable {
 		return categoria;
 	}
 	
+	public Monitoreo getMonitoreo() {
+		return monitoreo;
+	}
+  
 	@PostConstruct
   @Override
   protected void init() {		
     try {
+			this.monitoreo= JsfBase.getAutentifica().getMonitoreo();
+      this.monitoreo.setProgreso(0L);
+      this.monitoreo.setTotal(0L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
