@@ -142,7 +142,7 @@ public class Transaccion extends IBaseTnx {
       regresar= DaoFactory.getInstance().update(sesion, this.producto)>= 0L;
       List<TcManticArticulosDto> items= (List<TcManticArticulosDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticArticulosDto.class, "TcManticArticulosDto", "precio", params, Constantes.SQL_TODOS_REGISTROS);
       for (TcManticArticulosDto item: items) {
-        costo = Numero.toRedondearSat(this.producto.getPrecio1());
+        costo = Numero.toRedondearSat(this.producto.getCosto());
         menudeo= Numero.toRedondearSat(this.producto.getPrecio1()* item.getPesoEstimado());
         medio  = Numero.toRedondearSat(this.producto.getPrecio2()* item.getPesoEstimado());
         mayoreo= Numero.toRedondearSat(this.producto.getPrecio3()* item.getPesoEstimado());

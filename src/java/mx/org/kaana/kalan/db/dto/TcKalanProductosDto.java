@@ -46,6 +46,8 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
   private Double precio2;
   @Column (name="precio3")
   private Double precio3;
+  @Column (name="costo")
+  private Double costo;
   @Column (name="actualizado")
   private Timestamp actualizado;
   @Column (name="registro")
@@ -56,11 +58,11 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
   }
 
   public TcKalanProductosDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    this(null, null, null, new Long(-1L), null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), 0D);
     setKey(key);
   }
 
-  public TcKalanProductosDto(String descripcion, String clave, Long idUsuario, Long idProducto, Long idEmpresa, Double precio1, Double precio2, Double precio3, Timestamp actualizado) {
+  public TcKalanProductosDto(String descripcion, String clave, Long idUsuario, Long idProducto, Long idEmpresa, Double precio1, Double precio2, Double precio3, Timestamp actualizado, Double costo) {
     setDescripcion(descripcion);
     setClave(clave);
     setIdUsuario(idUsuario);
@@ -70,6 +72,7 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
     setPrecio2(precio2);
     setPrecio3(precio3);
     setActualizado(actualizado);
+    setCosto(costo);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -145,6 +148,14 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
     return actualizado;
   }
 
+  public Double getCosto() {
+    return costo;
+  }
+
+  public void setCosto(Double costo) {
+    this.costo = costo;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -186,6 +197,8 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getActualizado());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCosto());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -202,6 +215,7 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
 		regresar.put("precio1", getPrecio1());
 		regresar.put("precio2", getPrecio2());
 		regresar.put("precio3", getPrecio3());
+		regresar.put("costo", getCosto());
 		regresar.put("actualizado", getActualizado());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -210,7 +224,7 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getClave(), getIdUsuario(), getIdProducto(), getIdEmpresa(), getPrecio1(), getPrecio2(), getPrecio3(), getActualizado(), getRegistro()
+      getDescripcion(), getClave(), getIdUsuario(), getIdProducto(), getIdEmpresa(), getPrecio1(), getPrecio2(), getPrecio3(), getCosto(), getActualizado(), getRegistro()
     };
     return regresar;
   }
@@ -249,16 +263,13 @@ public class TcKalanProductosDto implements IBaseDto, Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null) {
+    if (obj == null) 
       return false;
-    }
-    if (getClass() != obj.getClass()) {
+    if (getClass() != obj.getClass()) 
       return false;
-    }
     final TcKalanProductosDto other = (TcKalanProductosDto) obj;
-    if (getIdProducto() != other.idProducto && (getIdProducto() == null || !getIdProducto().equals(other.idProducto))) {
+    if (getIdProducto() != other.idProducto && (getIdProducto() == null || !getIdProducto().equals(other.idProducto))) 
       return false;
-    }
     return true;
   }
 

@@ -15,6 +15,7 @@
 				idProducto: {validaciones: 'libre', mascara: 'libre', group: 'general'},
 				idClase   : {validaciones: 'libre', mascara: 'libre', group: 'general'},
 				idPeso    : {validaciones: 'libre', mascara: 'libre', group: 'general'},
+				costo     : {validaciones: 'requerido|flotante', mascara: 'libre', group: 'precio'},
 				precio1   : {validaciones: 'requerido|flotante', mascara: 'libre', group: 'precio'},
 				precio2   : {validaciones: 'requerido|flotante', mascara: 'libre', group: 'precio'},
 				precio3   : {validaciones: 'requerido|flotante', mascara: 'libre', group: 'precio'}
@@ -89,18 +90,22 @@
 				<p:spacer width="5px"/>
 				<div id="collapse-content" class="ui-grid-col-9">
           <div class="ui-grid-col-12">
-            <p:panelGrid id="precios" columns="4" styleClass="janal-wid-100-txt" columnClasses="#{kajoolUtilAplicacion.isMobile? 'janal-fix-25 janal-column-center, janal-fix-25 janal-column-center, janal-fix-25 janal-column-center, janal-fix-25 janal-column-right': 'janal-fix-30 janal-column-center, janal-fix-30 janal-column-center, janal-fix-30 janal-column-center, janal-fix-10 janal-column-right'}">
-              <p:panelGrid columns="1" styleClass="janal-wid-96">
+            <p:panelGrid id="precios" columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-fix-23, janal-fix-23, janal-fix-23, janal-fix-23, janal-fix-8 janal-column-right">
+              <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                <p:outputLabel for="costo" value="Costo:"/>
+                <p:inputNumber placeholder="Ej. 17.00" id="costo" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.costo}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+              </p:panelGrid>
+              <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                 <p:outputLabel for="precio1" value="Precio 1:"/>
-                <p:inputNumber placeholder="Ej. 19.00" id="precio1" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio1}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                <p:inputNumber placeholder="Ej. 19.00" id="precio1" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio1}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
               </p:panelGrid>
-              <p:panelGrid columns="1" styleClass="janal-wid-96">
+              <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                 <p:outputLabel for="precio2" value="Precio 2:"/>
-                <p:inputNumber placeholder="Ej. 18.50" id="precio2" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio2}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                <p:inputNumber placeholder="Ej. 18.50" id="precio2" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio2}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
               </p:panelGrid>
-              <p:panelGrid columns="1" styleClass="janal-wid-96">
+              <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                 <p:outputLabel for="precio3" value="Precio 3:"/>
-                <p:inputNumber placeholder="Ej. 18.00" id="precio3" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio3}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                <p:inputNumber placeholder="Ej. 18.00" id="precio3" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio3}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
               </p:panelGrid>
               <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                 <p:spacer/>
