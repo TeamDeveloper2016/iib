@@ -33,9 +33,9 @@ public enum ECorreos {
   
   static {
     empresas= new HashMap<>();
-    empresas.put("iib.facturacion.email", "facturas@elfrijolito.com");  
+    empresas.put("iib.facturacion.email", "ventas@elfrijolito.com");  
     empresas.put("iib.facturacion.backup", "");  
-    empresas.put("iib.ticket.email", "facturas@elfrijolito.com");  
+    empresas.put("iib.ticket.email", "ventas@elfrijolito.com");  
     empresas.put("iib.cotizaciones.email", "ventas@elfrijolito.com");  
     empresas.put("iib.cotizaciones.backup", "");  
     empresas.put("iib.ordenes_compra.email", "compras@elfrijolito.com");  

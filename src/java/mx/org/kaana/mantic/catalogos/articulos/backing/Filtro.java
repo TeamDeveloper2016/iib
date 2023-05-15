@@ -307,8 +307,10 @@ public class Filtro extends Comun implements Serializable {
 			gestor= new CFDIGestor(((Entity)this.attrs.get("seleccionado")).getKey());
 			articulo= gestor.toArticuloFactura();			
 			transaccion= new TransaccionFactura(articulo);
-			if(transaccion.ejecutar(EAccion.AGREGAR))
+			if(transaccion.ejecutar(EAccion.AGREGAR)) {
 				JsfBase.addMessage("Registrar articulo en facturama", "Se registro de forma correcta");
+        this.doLoad();
+      } // if  
 			else
 				JsfBase.addMessage("Registrar articulo en facturama", "Ocurrio un error al registrar el articulo en facturama");			
 		} // try

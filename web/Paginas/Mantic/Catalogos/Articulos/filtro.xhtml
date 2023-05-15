@@ -268,18 +268,18 @@
 							</f:facet>
 						</p:dataTable>
 						<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-							<p:menuitem id="express" icon="fa fa-file-text-o" value="Express" onstart="janal.bloquear();" process="@this tabla" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();">
+							<p:menuitem id="express" icon="fa fa-file-text-o" value="Express" process="@this tabla" update="dialogoArtExpress" onstart="janal.bloquear();" oncomplete="PF('dlgArtExpress').show();">
 								<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" />
 							</p:menuitem>	
 							<p:separator/>
 							<p:menuitem action="#{manticCatalogosArticulosFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 							<p:separator/>
 							<p:menuitem action="#{manticCatalogosArticulosFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-							<p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+							<p:menuitem icon="fa fa-close" value="Eliminar" process="@this tabla"  update="confirmacion" onstart="return janal.bloquear()" oncomplete="PF('dialogoConfirmacion').show();"/>					
 							<p:separator/>
 							<p:menuitem action="#{manticCatalogosArticulosFiltro.doAccion('COPIAR')}" process="@this tabla" icon="fa fa-copy" value="Clonar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 							<p:separator rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
-							<p:menuitem icon="fa fa-gear" value="Sincronizar" title="Registrar articulo en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosArticulosFiltro.doPublicarFacturama}"/>
+							<p:menuitem icon="fa fa-gear" value="Sincronizar" title="Registrar articulo en facturama" onstart="return janal.bloquear()" process="@this tabla" update="tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosArticulosFiltro.doPublicarFacturama}"/>
 							<p:separator rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idImagen.toLong ne 0}"/>
 							<p:menuitem action="#{manticCatalogosArticulosFiltro.doReplicar()}" process="@this tabla" icon="fa fa-file-picture-o" value="Replicar imagen" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idImagen.toLong ne 0}"/>
 							<p:separator rendered="#{manticCatalogosArticulosFiltro.attrs.isGerente and manticCatalogosArticulosFiltro.attrs.seleccionado.idVigente eq '2'}"/>

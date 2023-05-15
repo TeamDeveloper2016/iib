@@ -32,9 +32,9 @@ public class Respaldos extends IBaseJob {
 	@Override
 	public void procesar(JobExecutionContext jec) throws JobExecutionException {
 		Transaccion transaccion   = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
+			if(Configuracion.getInstance().isEtapaProduccion()) {
         LOG.error("----------------ENTRO A REALIZAR UN RESPALDO A LA BD -----------------------------");
 				transaccion= new Transaccion();
 				if(transaccion.ejecutar(EAccion.AGREGAR))
@@ -43,11 +43,10 @@ public class Respaldos extends IBaseJob {
 					LOG.error("Ocurrio un error al realizar el respaldo de la BD");			
 				Periodo periodo= new Periodo();
 				periodo.addDias(-20);
-  			params=new HashMap<>();
 				params.put("registro", periodo.toString());
   			LOG.error("Iniciando el proceso de limpieza de ventas perdidas con fecha de "+ periodo.toString());
 				Long actualizados= DaoFactory.getInstance().updateAll(TcManticFaltantesDto.class, params, "olds");
-  			LOG.error("Se actulizarón "+ actualizados+ " registros del catalogo de ventas perdidas.");
+  			LOG.error("Se actulizarón "+ actualizados+ " registros del catalogo de ventas perdidas");
 			} // if
 	  } // try
 		catch (Exception e) {
@@ -58,5 +57,6 @@ public class Respaldos extends IBaseJob {
 			Methods.clean(params);
 		} // finally
 	} // execute
+  
 }
 

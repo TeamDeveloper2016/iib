@@ -148,11 +148,10 @@ public class Timbrado extends IBaseJob {
 	} // toFacturasPendientes
 
 	private String toCorreosCliente(Long idCliente) throws Exception {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder("");
 		MotorBusqueda motor   = null;
 		List<ClienteTipoContacto> contactos=null;
 		try {
-			regresar = new StringBuilder("");
 			motor    = new MotorBusqueda(-1L, idCliente);
 			contactos= motor.toClientesTipoContacto();
 			for (ClienteTipoContacto contacto: contactos) {
@@ -274,15 +273,15 @@ public class Timbrado extends IBaseJob {
 			} // if      
 			params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
 			params.put("idFicticia", facturacion.getIdVenta());
-			comunes=new Parametros(facturacion.getIdEmpresa(), -1L, -1L, facturacion.getIdCliente());
-			parametros=comunes.getComunes();
-			reporteSeleccion=EReportes.valueOf(nombre);
+			comunes= new Parametros(facturacion.getIdEmpresa(), -1L, -1L, facturacion.getIdCliente());
+			parametros= comunes.getComunes();
+			reporteSeleccion= EReportes.valueOf(nombre);
 			parametros.put("ENCUESTA", facturacion.getNombreEmpresa().toUpperCase());
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
 			parametros.put("REPORTE_ICON", Especial.getInstance().getPath().concat("resources/iktan/icon/acciones/"));
-			this.ireporte=new ParametrosReporte(reporteSeleccion, params, parametros);
+			this.ireporte= new ParametrosReporte(reporteSeleccion, params, parametros);
 			this.reporte.toAsignarReporte(this.ireporte, this.nameFacturaPdf.replaceFirst(".pdf", ""));
-			path=Especial.getInstance().getPath();
+			path= Especial.getInstance().getPath();
 			this.reporte.setPrevisualizar(Boolean.FALSE);
 			this.reporte.doAceptarSimple(path.substring(0, path.length()-2).concat(this.ireporte.getJrxml()).concat(".jasper"), path.substring(0, path.length()-2).concat(Constantes.RUTA_IMAGENES).concat(File.separator), path.substring(0, path.length()-1));
 		} // try
@@ -292,7 +291,7 @@ public class Timbrado extends IBaseJob {
 	} // doReporte	
 
   private void toWhatsup(Facturacion facturacion, Entity factura) {
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
     try {      
       List<Entity> celulares= null;
       params.put("idCliente", facturacion.getIdCliente());

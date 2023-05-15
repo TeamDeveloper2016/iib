@@ -132,11 +132,11 @@
             <p:menuitem id="consultar" action="#{manticCatalogosClientesFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
             <p:menuitem id="modificar" action="#{manticCatalogosClientesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" update="confirmacion" oncomplete="PF('dialogoConfirmacion').show();"/>					
 						<p:separator/>
-						<p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosClientesFiltro.doImportar}"/>
+						<p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" process="@this tabla" action="#{manticCatalogosClientesFiltro.doImportar}" onstart="return janal.bloquear()"/>
 						<p:separator rendered="#{manticCatalogosClientesFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
-						<p:menuitem id="facturama" icon="fa fa-gear" value="Sincronizar" title="Registrar cliente en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosClientesFiltro.doPublicarFacturama}"/>
+						<p:menuitem id="facturama" icon="fa fa-gear" value="Sincronizar" title="Registrar cliente en facturama" process="@this tabla" update="tabla" action="#{manticCatalogosClientesFiltro.doPublicarFacturama}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
           </p:contextMenu>
         </div>
       </div>

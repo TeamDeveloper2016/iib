@@ -1540,8 +1540,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
         this.ventaFinalizada.getCliente().getIdCliente(), // Long idCliente, 
         this.ventaFinalizada.getCliente().getRazonSocial(), // String razonSocial, 
         null, // String correos, 
-        EReportes.valueOf("CUENTAS_POR_COBRAR"), // EReportes reportes, 
-        ECorreos.valueOf("CREDITO"), // ECorreos correo, 
+        EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
+        ECorreos.CREDITO, // ECorreos correo, 
         true, // boolean notifica
         this.ventaFinalizada.getTicketVenta().getIdVenta() // idVenta
       );

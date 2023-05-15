@@ -214,13 +214,15 @@ public class Filtro extends IBaseFilter implements Serializable {
 		CFDIGestor gestor             = null;
 		ClienteFactura cliente        = null;
 		try {
-			gestor= new CFDIGestor(((Entity)this.attrs.get("seleccionado")).getKey());
+			gestor = new CFDIGestor(((Entity)this.attrs.get("seleccionado")).getKey());
 			cliente= gestor.toClienteFactura();			
 			transaccion= new TransaccionFactura(cliente);
-			if(transaccion.ejecutar(EAccion.ACTIVAR))
-				JsfBase.addMessage("Registrar cliente en facturama", "Se registro de forma correcta.");
+			if(transaccion.ejecutar(EAccion.ACTIVAR)) {
+				JsfBase.addMessage("Registrar cliente en facturama", "Se registro de forma correcta");
+        this.doLoad();
+      } // if  
 			else
-				JsfBase.addMessage("Registrar cliente en facturama", "Ocurrio un error al registrar el cliente en facturama.");			
+				JsfBase.addMessage("Registrar cliente en facturama", "Ocurrio un error al registrar el cliente en facturama");			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

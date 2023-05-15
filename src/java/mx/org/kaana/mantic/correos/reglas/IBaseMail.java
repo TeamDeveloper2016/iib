@@ -149,7 +149,7 @@ public class IBaseMail implements Serializable {
     MimeBodyPart body    = null;
     DataSource ds        = null;
     Multipart multipart  = null;    
-		List<BodyPart> files = new ArrayList<>();
+		List<BodyPart> items = new ArrayList<>();
     try {
       properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
       properties.put("mail.transport.protocol", "smtp");
@@ -166,8 +166,8 @@ public class IBaseMail implements Serializable {
 			if(this.copies!= null)
         message.addRecipients(javax.mail.Message.RecipientType.BCC, this.toPrepare(this.copies));
       message.setSubject(this.subject);
-      // ESTO ES PARA SOLICITA LA CONFIRMACIÓN DE LECTURA DEL CORREO
-      // message.addHeader("Disposition-Notification-To", "info@deckerix.com");
+      // ESTO ES PARA SOLICITAR LA CONFIRMACIÓN DE LECTURA DEL CORREO
+      // message.addHeader("Disposition-Notification-To", "info@imox.com");
 			if(this.files!= null && !this.files.isEmpty()) {
 				multipart = new MimeMultipart(); // Multipart
 				for(Attachment item: this.files) {                   
@@ -185,21 +185,22 @@ public class IBaseMail implements Serializable {
             LOG.info("Add file to attachment to email :" + item.getAbsolute());
             body.setDataHandler(new DataHandler(new FileDataSource(item.getAbsolute())));
             body.setFileName(item.getName());
-            files.add(body);          
+            items.add(body);          
           }
 				} // for item
 				body = new MimeBodyPart(); // MimeBodyPart
 				body.setContent(Cadena.toCharSet(content), "text/html");
 				multipart.addBodyPart(body);
 				// add files to attachment for email
-        for(BodyPart bp: files)
+        for(BodyPart bp: items)
           multipart.addBodyPart(bp);
 				message.setContent(multipart);   
       } // if
 			else
   			message.setContent(Cadena.toCharSet(content), "text/html");
       Transport.send(message);
-			LOG.info("Correo enviado al buzon de: "+ this.to);
+      LOG.info("Correo ["+ content+ "]");
+      LOG.info("Correo enviado al buzon de: "+ this.to);
 		} // try
     finally {
       if(properties!= null)
@@ -214,7 +215,7 @@ public class IBaseMail implements Serializable {
         ds = null;
       if(multipart!=null)
         multipart = null;      
-			Methods.clean(files);
+			Methods.clean(items);
     } // finally
   } 
 

@@ -244,7 +244,7 @@ public class NotificaCliente implements Serializable {
   			comprobante= new Attachment(this.voucher.getNombre(), Boolean.FALSE);
 	  		files.add(comprobante);
       } // if
-			files.add(new Attachment("logo", this.correo.getImages().concat("logo.png"), Boolean.TRUE));
+			files.add(new Attachment("logo", this.correo.getImages().concat(Configuracion.getInstance().getEmpresa("logo")), Boolean.TRUE));
 			params.put("attach", documento.getId());
 			for (String item: emails) {
 				try {
