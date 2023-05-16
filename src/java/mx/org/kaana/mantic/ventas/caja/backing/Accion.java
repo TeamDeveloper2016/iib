@@ -1000,7 +1000,6 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("pagarVenta", false);
 				this.attrs.put("facturarVenta", false);
 				this.attrs.put("cobroVenta", false);
-				this.attrs.put("clienteAsignado", false);
 				this.attrs.put("tabIndex", 0);
 				this.attrs.put("creditoCliente", false);		
 				this.attrs.put("observaciones", "");
@@ -1035,9 +1034,9 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			motorBusqueda= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
-			this.attrs.put("mostrarCorreos", seleccion.getKey().equals(-1L) || seleccion.getKey().equals(motorBusqueda.toClienteDefault().getKey()));
-			this.attrs.put("clienteAsignado", !seleccion.toString("clave").equals(Constantes.VENTA_AL_PUBLICO_GENERAL_CLAVE));
-			this.attrs.put("clienteRegistrado", seleccion.toString("clave").equals(Constantes.VENTA_AL_PUBLICO_GENERAL_CLAVE));
+			this.attrs.put("mostrarCorreos", Objects.equals(seleccion.getKey(), -1L) || Objects.equals(seleccion.getKey(), motorBusqueda.toClienteDefault().getKey()));
+			this.attrs.put("clienteAsignado", !Objects.equals(seleccion.toString("clave"), Constantes.VENTA_AL_PUBLICO_GENERAL_CLAVE));
+			this.attrs.put("clienteRegistrado", Objects.equals(seleccion.toString("clave"), Constantes.VENTA_AL_PUBLICO_GENERAL_CLAVE));
 			this.attrs.put("nombreCliente", seleccion.toString("razonSocial"));
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);

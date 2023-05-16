@@ -194,9 +194,8 @@ public class Transaccion extends Inventarios implements Serializable {
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 		  params.put("operador", this.getCurrentSign());
@@ -270,9 +269,8 @@ public class Transaccion extends Inventarios implements Serializable {
 	
 	public List<ProveedorTipoContacto> toProveedoresTipoContacto() throws Exception {
 		List<ProveedorTipoContacto> regresar= null;
-		Map<String, Object>params           = null;
+		Map<String, Object>params           = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_proveedor=" + this.idProveedor + " and id_tipo_contacto=" + ETiposContactos.CORREO.getKey());
 			regresar= DaoFactory.getInstance().toEntitySet(ProveedorTipoContacto.class, "TrManticProveedorTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try

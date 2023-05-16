@@ -1,4 +1,4 @@
-m<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
@@ -56,7 +56,7 @@ m<?xml version="1.0" encoding="ISO-8859-1" ?>
       <p:menuitem value="Eliminar"  icon="fa fa-trash" update=":datos:confirmacion tabla" oncomplete="janal.bloquear();PF('dialogoConfirmacion').show()" process="@this tabla"/>
       <p:menuitem value="Modificar" icon="fa fa-edit" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doEvento('MODIFICAR')}" update=":datos:tabla" process="@this tabla"/>
       <p:separator/>
-      <p:menuitem value="Perfiles del grupo" icon="fa fa-group" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrPerfiles}" process="@this tabla"/>
+      <p:menuitem value="Perfiles" icon="fa fa-group" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrPerfiles}" process="@this tabla"/>
     </p:contextMenu>
   </ui:define>
   <ui:param name="componenteBloqueo" value="tabla,buscar"/>

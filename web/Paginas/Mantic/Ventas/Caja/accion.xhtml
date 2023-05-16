@@ -779,7 +779,7 @@
 											<p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" placeholder="Ej. nombre.apellido@empresa.com.mx" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"  />                    																																			
 										</p:column>
                     <p:column styleClass="janal-wid-col-38 janal-column-center">
-											<p:commandButton update="tablaCorreos" icon="fa fa-trash" title="Eliminar" action="#{manticVentasCajaAccion.doEliminarClienteTipoContacto}">
+											<p:commandButton update="tablaCorreos" icon="fa fa-trash" title="Eliminar" action="#{manticVentasCajaAccion.doEliminarClienteTipoContacto}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}">
 												<f:setPropertyActionListener value="#{contacto}" target="#{manticVentasCajaAccion.clienteTipoContactoSeleccion}" />
 											</p:commandButton>
 										</p:column>

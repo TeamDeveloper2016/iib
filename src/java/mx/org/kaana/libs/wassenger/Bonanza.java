@@ -202,7 +202,7 @@ public final class Bonanza implements Serializable {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
@@ -279,7 +279,7 @@ public final class Bonanza implements Serializable {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("contenido", contenido);
@@ -339,7 +339,7 @@ public final class Bonanza implements Serializable {
         params.put("celular", this.celular);
         params.put("saludo", this.toSaludo());
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
@@ -405,7 +405,7 @@ public final class Bonanza implements Serializable {
       params.put("ticket", this.ticket);
       params.put("fecha", this.fecha);
       params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));      
-      params.put("host", Configuracion.getInstance().getEmpresa("host"));
+      params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
       params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
       params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
       params.put("saludo", this.toSaludo());
@@ -460,7 +460,7 @@ public final class Bonanza implements Serializable {
       params.put("ticket", this.ticket);
       params.put("fecha", this.fecha);
       params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));      
-      params.put("host", Configuracion.getInstance().getEmpresa("host"));
+      params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
       params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
       params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
       params.put("saludo", this.toSaludo());
@@ -510,9 +510,9 @@ public final class Bonanza implements Serializable {
   }
   
   public static String toPathFiles(String pdf, String xml) {
-    StringBuilder regresar= new StringBuilder("(PDF) https://".concat(Configuracion.getInstance().getEmpresa("host")).concat("/Temporal/Pdf/"));
+    StringBuilder regresar= new StringBuilder("(PDF) ".concat(Configuracion.getInstance().getPropiedadServidor("sistema.dns")).concat("/Temporal/Pdf/"));
     regresar.append(pdf);
-    regresar.append("\\n(XML) https://").append(Configuracion.getInstance().getEmpresa("host")).append("/Temporal/Pdf/");
+    regresar.append("\\n(XML) ").append(Configuracion.getInstance().getPropiedadServidor("sistema.dns")).append("/Temporal/Pdf/");
     regresar.append(xml);
     return regresar.toString();
   }
@@ -529,7 +529,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
@@ -606,7 +606,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
@@ -678,7 +678,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
@@ -739,7 +739,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
@@ -804,7 +804,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
@@ -865,7 +865,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
@@ -926,7 +926,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
@@ -991,7 +991,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
@@ -1056,7 +1056,7 @@ public final class Bonanza implements Serializable {
         params.put("ticket", this.ticket);
         params.put("fecha", this.fecha);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
@@ -1116,7 +1116,7 @@ public final class Bonanza implements Serializable {
           params.put("numero", count++);
           params.put("contratista", key);
           params.put("reporte", this.contratistas.get(key));
-          params.put("host", Configuracion.getInstance().getEmpresa("host"));
+          params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
           params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
           archivos.append(Cadena.replaceParams(PATH_REPORT, params, true));
         } // for
@@ -1140,7 +1140,7 @@ public final class Bonanza implements Serializable {
       params.put("ticket", this.ticket);
       params.put("fecha", this.fecha);
       params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-      params.put("host", Configuracion.getInstance().getEmpresa("host"));
+      params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
       params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
       params.put("saludo", this.toSaludo());
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
@@ -1197,7 +1197,7 @@ public final class Bonanza implements Serializable {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));        
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
@@ -1276,7 +1276,7 @@ public final class Bonanza implements Serializable {
         params.put("nombre", this.nombre);
         params.put("celular", this.celular);
         params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         params.put("contenido", contenido);

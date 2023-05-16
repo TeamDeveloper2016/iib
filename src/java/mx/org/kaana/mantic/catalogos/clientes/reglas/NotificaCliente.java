@@ -291,13 +291,13 @@ public class NotificaCliente implements Serializable {
         if(this.idVenta> 0L) {
           if(!this.ticket)
             this.toReporteTicket();
-          alias.append("\\n\\n*Ticket de venta:*\\nhttps://").append(Configuracion.getInstance().getEmpresa("host")).append("/Temporal/Pdf/").append(this.voucher.getAlias());
+          alias.append("\\n\\n*Ticket de venta:*\\nhttps://").append(Configuracion.getInstance().getPropiedadServidor("sistema.dns")).append("/Temporal/Pdf/").append(this.voucher.getAlias());
         } // if  
         Bonanza notificar= new Bonanza(this.razonSocial, "celular", alias.toString(), "ticket", "fecha");
         String[] phones= this.celulares.substring(0, this.celulares.length()- 2).split("[,]");
         for (String phone: phones) {
           notificar.setCelular(phone, Boolean.TRUE);
-          LOG.info("Enviando mensaje por whatsapp al celular: "+ phone);
+          LOG.info("Enviando whatsapp: "+ phone);
           switch(this.correo) {
             case DEVOLUCION:
               notificar.doSendDevolucion(sesion);
