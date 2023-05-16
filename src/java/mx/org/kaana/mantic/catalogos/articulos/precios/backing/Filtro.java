@@ -64,6 +64,7 @@ public class Filtro extends Comun implements Serializable {
 		Map<String, Object> params= this.toPrepare();
     try {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("precio", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("menudeo", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("mayoreo", EFormatoDinamicos.MILES_SAT_DECIMALES));
@@ -217,6 +218,7 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("clases", clases);
 			this.attrs.put("idClase", UIBackingUtilities.toFirstKeySelectEntity(clases));
       this.doPesos();
+      this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

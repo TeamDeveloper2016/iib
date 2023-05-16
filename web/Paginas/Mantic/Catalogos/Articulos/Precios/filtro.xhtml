@@ -49,7 +49,7 @@
               </p:selectOneMenu>
               <p:outputLabel for="idProducto" value="Producto:"/>
               <p:selectOneMenu id="idProducto" value="#{manticCatalogosArticulosPreciosFiltro.attrs.idProducto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-								<p:ajax event="change" process="@this" update="precios idClase idPeso" listener="#{manticCatalogosArticulosPreciosFiltro.doClases}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="change" process="@this" update="precios idClase idPeso tabla" listener="#{manticCatalogosArticulosPreciosFiltro.doClases}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 <f:selectItems value="#{manticCatalogosArticulosPreciosFiltro.attrs.productos}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.descripcion or element.descripcion eq ''? '': '|'} #{element.descripcion}"/>
                 <p:column headerText="Clave" styleClass="janal-wid-30">
                   <h:outputText value="#{item.clave}"/>
@@ -90,28 +90,34 @@
 				<p:spacer width="5px"/>
 				<div id="collapse-content" class="ui-grid-col-9">
           <div class="ui-grid-col-12">
-            <p:panelGrid id="precios" columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-fix-23, janal-fix-23, janal-fix-23, janal-fix-23, janal-fix-8 janal-column-right">
+            <p:panelGrid id="precios" columns="1" styleClass="janal-wid-100-txt">
               <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                <p:outputLabel for="costo" value="Costo:"/>
-                <p:inputNumber placeholder="Ej. 17.00" id="costo" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.costo}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                <p:outputLabel for="producto" value="Producto:"/>
+                <p:inputText id="producto" value="#{manticCatalogosArticulosPreciosFiltro.producto.clave} | #{manticCatalogosArticulosPreciosFiltro.producto.descripcion}" styleClass="janal-wid-100-txt" readonly="true"/>
               </p:panelGrid>
-              <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                <p:outputLabel for="precio1" value="Precio 1:"/>
-                <p:inputNumber placeholder="Ej. 19.00" id="precio1" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio1}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
-              </p:panelGrid>
-              <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                <p:outputLabel for="precio2" value="Precio 2:"/>
-                <p:inputNumber placeholder="Ej. 18.50" id="precio2" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio2}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
-              </p:panelGrid>
-              <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                <p:outputLabel for="precio3" value="Precio 3:"/>
-                <p:inputNumber placeholder="Ej. 18.00" id="precio3" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio3}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
-              </p:panelGrid>
-              <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                <p:spacer/>
+              <p:panelGrid columns="5" styleClass="janal-wid-100-txt" columnClasses="janal-fix-23, janal-fix-23, janal-fix-23, janal-fix-23, janal-fix-8 janal-column-right">
                 <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                  <p:commandButton id="aceptar" style="float: right;" value="Aplicar" icon="fa fa-check" styleClass="lg-pantalla" accesskey="a" process="@form" update="tabla" actionListener="#{manticCatalogosArticulosPreciosFiltro.doAceptar}" onstart="return janal.partial('precio')" oncomplete="janal.desbloquear()"/>
-                  <p:commandButton id="aceptarIcon" style="float: right;" title="Aplicar" icon="fa fa-check" styleClass="xs-pantalla" process="@form" update="tabla" actionListener="#{manticCatalogosArticulosPreciosFiltro.doAceptar(manticCatalogosArticulosPreciosFiltro.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+                  <p:outputLabel for="costo" value="Costo:"/>
+                  <p:inputNumber placeholder="Ej. 17.00" id="costo" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.costo}" styleClass="janal-wid-100-txt janal-color-black" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                </p:panelGrid>
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                  <p:outputLabel for="precio1" value="Precio 1:"/>
+                  <p:inputNumber placeholder="Ej. 19.00" id="precio1" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio1}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                </p:panelGrid>
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                  <p:outputLabel for="precio2" value="Precio 2:"/>
+                  <p:inputNumber placeholder="Ej. 18.50" id="precio2" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio2}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                </p:panelGrid>
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                  <p:outputLabel for="precio3" value="Precio 3:"/>
+                  <p:inputNumber placeholder="Ej. 18.00" id="precio3" size="8" value="#{manticCatalogosArticulosPreciosFiltro.producto.precio3}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" emptyValue="zero" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                </p:panelGrid>
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                  <p:spacer/>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:commandButton id="aceptar" style="float: right;" value="Aplicar" icon="fa fa-check" styleClass="lg-pantalla" accesskey="a" process="@form" update="tabla" actionListener="#{manticCatalogosArticulosPreciosFiltro.doAceptar}" onstart="return janal.partial('precio')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton id="aceptarIcon" style="float: right;" title="Aplicar" icon="fa fa-check" styleClass="xs-pantalla" process="@form" update="tabla" actionListener="#{manticCatalogosArticulosPreciosFiltro.doAceptar(manticCatalogosArticulosPreciosFiltro.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+                  </p:panelGrid>
                 </p:panelGrid>
               </p:panelGrid>
             </p:panelGrid>
@@ -142,6 +148,12 @@
                 </f:facet>
                 <h:outputText value="#{row['nombre']}"/>
               </p:column>														
+              <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
+                <f:facet name="header">
+                  <h:outputText value="Costo"/>
+                </f:facet>
+                <h:outputText value="#{row['precio']}"/>
+              </p:column>					
               <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
                 <f:facet name="header">
                   <h:outputText value="Menudeo"/>
