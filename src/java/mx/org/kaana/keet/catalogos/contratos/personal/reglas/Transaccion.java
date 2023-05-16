@@ -36,6 +36,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 	private ScheduleModel eventModel;
 	private List<DocumentoIncidencia> incidencias;
 	private List<Incidente> incidenciasDelete;
+  private String messageError;
 
 	public Transaccion(Incidente incidente, String observaciones) {
 		super(incidente, observaciones);
@@ -76,6 +77,7 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 		boolean procesaEmpleado           = true;
 		Long numeroRegistros              = null;
 		try {
+      this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" catalogo de personal ");
 			switch(accion) {
 				case COMPLEMENTAR:									
 					params= new HashMap<>();
@@ -160,7 +162,12 @@ public class Transaccion extends mx.org.kaana.mantic.incidentes.reglas.Transacci
 			} // switch
 		} // try
 		catch (Exception e) {			
-			throw new Exception((e!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		finally{
 			Methods.clean(params);

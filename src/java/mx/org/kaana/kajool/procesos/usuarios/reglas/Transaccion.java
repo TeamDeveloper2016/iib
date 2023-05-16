@@ -47,8 +47,7 @@ public class Transaccion extends IBaseTnx {
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar          = false;
     IBaseDto usuarioExiste    = null;
-    Map<String, Object> params= null;
-		params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
 		switch (accion) {
 			case AGREGAR:
 				params.put("idPersona", this.persona.getIdPersona());
@@ -103,18 +102,16 @@ public class Transaccion extends IBaseTnx {
 
   private boolean toSearch(Session sesion, String cuenta) {
     boolean regresar                       = false;
-    Map<String, Object> params             = null;
+    Map<String, Object> params             = new HashMap<>();
 		List<TcManticPersonasDto> listaPersonas= null;
 		boolean mismaPersona                   = false;
 		int count                              = 0;
     try {
-      params = new HashMap<>();
       params.put("cuenta", cuenta);
       listaPersonas = DaoFactory.getInstance().findViewCriteria(sesion, TcManticPersonasDto.class, params, "findUsuario");
 			for(TcManticPersonasDto recordPersona: listaPersonas){
-				if(recordPersona.getIdPersona().equals(this.persona.getIdPersona())){
+				if(recordPersona.getIdPersona().equals(this.persona.getIdPersona())) 
 					count++;					
-				} // if
 			} // for
 			mismaPersona= count== listaPersonas.size();					
       regresar = !listaPersonas.isEmpty() && !mismaPersona;
@@ -124,4 +121,5 @@ public class Transaccion extends IBaseTnx {
     } // catch
     return regresar;
   }	// toSearch
+  
 }

@@ -58,11 +58,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("isModificar", this.accion.equals(EAccion.MODIFICAR));
 			this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);
 			this.attrs.put("nuevo", JsfBase.getFlashAttribute("idUsuario")!= null);
-      loadPerfiles();
-      loadPersonas();      
-      loadUsuario();
+      this.loadPerfiles();
+      this.loadPersonas();      
+      this.loadUsuario();
       this.attrs.put("titulo", this.accion.equals(EAccion.MODIFICAR) ? "Modificar usuario cuenta [".concat(((TcManticPersonasDto) this.attrs.get("tcManticPersonasDto")).getCuenta()).concat("]") : "Agregar usuario [...]");      
-			buscar();
+			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -70,11 +70,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   }  
 
   private void loadPersonas() {
-    List<Columna> columns     = null;
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-      columns= new ArrayList<>();
-      params = new HashMap<>();
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
@@ -104,7 +102,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       transaccion = new Transaccion(usuario, persona);
       if (transaccion.ejecutar(this.accion)) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Usuarios", this.accion.equals(EAccion.AGREGAR) ? "Se agregó el usuario con éxito." : "Se modificó el usuario con éxito.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Usuarios", this.accion.equals(EAccion.AGREGAR) ? "Se agregó el usuario con éxito" : "Se modificó el usuario con éxito", ETipoMensaje.INFORMACION);
       } // if
       else {
         String perfil= this.criteriosBusqueda.getListaPerfiles().get(this.criteriosBusqueda.getListaPerfiles().indexOf(new UISelectEntity(this.criteriosBusqueda.getPerfil().getKey().toString()))).toString("descripcion");
@@ -142,7 +140,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			ciu= new CargaInformacionUsuarios(this.criteriosBusqueda);
 			ciu.cargarPerfilesDisponible();	
 			this.attrs.put("tcManticPersonasDto", (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, this.criteriosBusqueda.getPersona().getKey()));			
-			buscar();
+			this.doLoad();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -150,7 +148,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // doBuscar
 	
-  public void buscar() {
+  public void doLoad() {
     TcJanalUsuariosDto usuario= null;
     int index                 = -1;
     try {

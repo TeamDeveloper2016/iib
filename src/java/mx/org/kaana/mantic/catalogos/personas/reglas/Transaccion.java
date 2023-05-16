@@ -26,6 +26,7 @@ import mx.org.kaana.keet.db.dto.TcKeetPersonasBeneficiariosDto;
 import mx.org.kaana.keet.enums.ETiposIncidentes;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.BouncyEncryption;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -114,7 +115,12 @@ public class Transaccion extends IBaseTnx {
         throw new Exception("");
 		} // try
 		catch (Exception e) {			
-			throw new Exception(this.messageError.concat("<br/>")+ e+ (e!= null && e.getCause()!= null? e.getCause().toString(): ""));
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		return regresar;
 	}	// ejecutar
@@ -128,7 +134,7 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {			
 			throw e;
 		} // catch
-	} // toCuenta
+	} 
 	
 	private boolean procesarPersona(Session sesion) throws Exception {
     boolean regresar= false;
@@ -137,7 +143,7 @@ public class Transaccion extends IBaseTnx {
       this.messageError = "Error al registrar el articulo";
       if (this.eliminarRegistros(sesion)) {
 				this.toCuenta();
-				this.persona.getPersona().setContrasenia(BouncyEncryption.encrypt(this.persona.getPersona().getPaterno()));
+				this.persona.getPersona().setContrasenia(BouncyEncryption.encrypt(Cadena.isVacio(this.persona.getPersona().getMaterno())? this.persona.getPersona().getPaterno(): this.persona.getPersona().getMaterno()));
 				this.persona.getPersona().setCuenta(this.cuenta);
         this.persona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
         idPersona = DaoFactory.getInstance().insert(sesion, this.persona.getPersona());
