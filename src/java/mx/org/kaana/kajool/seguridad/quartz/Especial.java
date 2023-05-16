@@ -165,6 +165,7 @@ public final class Especial implements Serializable {
     this.scheduler.pauseAll();
     this.scheduler.clear();
 	  this.jobs.toBuild();
+    this.scheduler.start();
   }  
   
 }

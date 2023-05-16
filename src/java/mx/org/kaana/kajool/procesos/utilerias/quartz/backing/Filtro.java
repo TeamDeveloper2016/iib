@@ -19,6 +19,8 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.quartz.CronExpression;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.CronTrigger;
@@ -33,6 +35,7 @@ import org.quartz.impl.matchers.GroupMatcher;
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID= 5801122739416502243L;
+  private static final Log LOG = LogFactory.getLog(Filtro.class);
 	
   @PostConstruct
   @Override
@@ -42,7 +45,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("jobName", "");
 			this.attrs.put("size", 0);
 			this.attrs.put("paginator", false);			
-      doLoad();
+      this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -56,7 +59,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		String server      = null;
 		try {
 			scheduler= Especial.getInstance().getScheduler();			
-			if(scheduler!= null){				
+			if(scheduler!= null) {				
 				regresar= new ArrayList<>();				
 				for (String groupName: scheduler.getJobGroupNames()) { 
 					for (JobKey jobKey: scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName))) { 																							
@@ -73,6 +76,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	} // doLoadInit
 	
+  public void doReload() {
+    try {			
+      if(Especial.getInstance().getScheduler()!= null) {				
+        LOG.error("ENTRO A RECAR LAS TAREAS DEL QUARTZ");
+        Especial.getInstance().reload();
+        this.doLoad();
+      } // if   
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+  }
+  
   @Override
   public void doLoad() {
     List<Jobs>search= null;		
@@ -109,6 +126,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 					scheduler.pauseJob(jobKey);
 					break;
 				case EJECUTAR:
+          LOG.error("ENTRO A EJECUTAR LA TAREAS "+ proceso);
 					scheduler.triggerJob(jobKey);
 					break;
 			} // switch
@@ -222,16 +240,5 @@ public class Filtro extends IBaseFilter implements Serializable {
   public boolean doAplicarEstilo(String pathJob){
     return Especial.getInstance().getPath().equals(pathJob) || pathJob.equals("*");
   } // doAplicarEstilo	
-  
-	public void doReload() {
-    try {      
-      Especial.getInstance().reload();
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-  }
-  
   
 }

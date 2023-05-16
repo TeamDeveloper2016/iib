@@ -43,7 +43,7 @@ public class Rfcs extends IBaseJob implements Serializable {
     Encriptar encriptar        = new Encriptar();
 		try {
       StringBuilder sb= new StringBuilder();
-			if(Configuracion.getInstance().isEtapaProduccion()) {
+			if(!Configuracion.getInstance().getPropiedad("sistema.corre.local").equalsIgnoreCase("si") && (Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaProduccion())) {
           LOG.error("----------------ENTRO A CHECK RFC's-----------------------------");
           Rfc rfc  = new Rfc();
           Sat token= null;

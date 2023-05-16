@@ -27,7 +27,7 @@ public class Facturas extends IBaseJob {
 	public void procesar(JobExecutionContext jec) throws JobExecutionException {
 		Transferir transferir= null;
 		try {
-			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
+			if(!Configuracion.getInstance().getPropiedad("sistema.corre.local").equalsIgnoreCase("si") && (Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaProduccion())) {
 				transferir = new Transferir();
 				if (transferir.ejecutar(EAccion.GENERAR)) 
 					LOG.error("Se realizo la sincronización de las facturas de forma correcta");
