@@ -35,8 +35,8 @@ public class Respaldos extends IBaseJob {
 		Map<String, Object> params= new HashMap<>();
 		try {
       LOG.error("RESPALDAR BD: ["+ Configuracion.getInstance().getPropiedad("sistema.servidor")+ "]");
-			if(Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaProduccion()) {
-        LOG.error("----------------ENTRO A REALIZAR UN RESPALDO A LA BD -----------------------------");
+			if(Configuracion.getInstance().isEtapaProduccion()) {
+        LOG.error("---------------- ENTRO A REALIZAR UN RESPALDO A LA BD -----------------------------");
 				transaccion= new Transaccion();
 				if(transaccion.ejecutar(EAccion.AGREGAR))
 					LOG.error("Se realizo el respaldo de la BD de forma correcta");

@@ -138,7 +138,7 @@ public class Autentifica implements Serializable {
       privilegios = new Privilegios(this.persona);
       this.credenciales.setPerfilesDelega(privilegios.verificarDelega());
       this.credenciales.setPerfiles(privilegios.verificarPerfiles());
-      validaRedirect();
+      this.validaRedirect();
     }// try
     catch (Exception e) {
       throw e;

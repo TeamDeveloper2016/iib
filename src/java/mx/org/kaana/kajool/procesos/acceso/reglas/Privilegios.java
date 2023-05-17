@@ -141,19 +141,16 @@ public class Privilegios implements Serializable {
   } // procesarModulosEncabezado
 
   public Long getIdPersona(String cuenta) throws Exception {
-    Long regresar = -1L;
-    Map<String, Object> params = null;
-    Entity persona = null;
+    Long regresar= -1L;
+    Entity acceso= null;
+    Map<String, Object> params = new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("cuenta", cuenta);
-      persona = (Entity) DaoFactory.getInstance().toEntity("TrJanalUsuariosDelegaDto", "findLoginActivo", params);
-      if (persona == null) {
-        persona = (Entity) DaoFactory.getInstance().toEntity("VistaTcJanalUsuariosDto", "acceso", params);
-      }
-      if (persona != null) {
-        regresar = persona.toLong("idPersona");
-      }
+      acceso = (Entity) DaoFactory.getInstance().toEntity("TrJanalUsuariosDelegaDto", "findLoginActivo", params);
+      if (acceso== null) 
+        acceso = (Entity) DaoFactory.getInstance().toEntity("VistaTcJanalUsuariosDto", "acceso", params);
+      if (acceso!= null) 
+        regresar = acceso.toLong("idPersona");
     } // try
     catch (Exception e) {
       throw e;
