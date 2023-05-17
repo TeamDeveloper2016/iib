@@ -384,6 +384,8 @@ inner join
   tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and tc_mantic_articulos_codigos.id_proveedor is null
 where  
   tc_mantic_articulos.id_articulo_tipo in ({idArticuloTipo})
+  and {condicion}
+{sortOrder}        
 			</select>		
   	  <select id="detalle">
 select

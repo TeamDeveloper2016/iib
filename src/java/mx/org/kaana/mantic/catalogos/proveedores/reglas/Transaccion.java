@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.wassenger.Bonanza;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
@@ -43,7 +44,6 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 
   private static final Log LOG = LogFactory.getLog(Transaccion.class);
-  private static final String ESTILO= "sentinel";
 	private IBaseDto dto;
 	private RegistroProveedor registroProveedor;
 	private String messageError;
@@ -275,7 +275,7 @@ public class Transaccion extends IBaseTnx {
 			representante.setMaterno(proveedorAgente.getMaterno());
 			representante.setIdTipoPersona(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona());	
 			representante.setIdTipoSexo(1L);
-			representante.setEstilo(ESTILO);
+			representante.setEstilo(Configuracion.getInstance().getEmpresa("theme"));
 			representante.setIdPersonaTitulo(1L);		
 			regresar= DaoFactory.getInstance().insert(sesion, representante);
 			if(regresar > -1L)

@@ -31,6 +31,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.Especialidad;
@@ -50,7 +51,6 @@ import org.primefaces.event.TabChangeEvent;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-	private static final String TEMA   = "sentinel";
   
 	private RegistroPersona registroPersona;
 	private UISelectEntity domicilioBusqueda;
@@ -303,7 +303,7 @@ public class Accion extends IBaseAttribute implements Serializable {
             this.registroPersona.setIdContratista(-1L);
           break;
       } // switch
-			this.registroPersona.getPersona().setEstilo(TEMA);
+			this.registroPersona.getPersona().setEstilo(Configuracion.getInstance().getEmpresa("theme"));
 			this.registroPersona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
       this.doLoadPuestos();
       this.loadContratistas();

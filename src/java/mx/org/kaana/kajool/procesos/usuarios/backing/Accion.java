@@ -35,6 +35,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
 @Named(value = "kajoolUsuariosAccion")
@@ -97,7 +98,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       persona= (TcManticPersonasDto)this.attrs.get("tcManticPersonasDto");
       usuario= (TcJanalUsuariosDto)this.attrs.get("tcJanalUsuariosDto");
       usuario.setIdPerfil(this.criteriosBusqueda.getPerfil().getKey());
-      persona.setEstilo("sentinel");
+      persona.setEstilo(Configuracion.getInstance().getEmpresa("theme"));
       persona.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       transaccion = new Transaccion(usuario, persona);
       if (transaccion.ejecutar(this.accion)) {

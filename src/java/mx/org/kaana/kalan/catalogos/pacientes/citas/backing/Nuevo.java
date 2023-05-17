@@ -34,6 +34,7 @@ import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.event.SelectEvent;
 
 
 @Named(value = "kalanCatalogosPacientesCitasNuevo")
@@ -93,7 +94,7 @@ public class Nuevo extends IBaseFilter implements Serializable {
       this.attrs.put("trabajos", 0);
       this.seleccionados= new Entity[]{};      
       this.toLoadPersonal();
-      this.toLoadServicios();
+      this.doLoadServicios();
       this.doLoad();   
       if(Objects.equals(this.paciente.getIdCitaEstatus(), 7L))
         this.attrs.put("activeIndex", 2);
@@ -150,11 +151,15 @@ public class Nuevo extends IBaseFilter implements Serializable {
     } // finally    
 	}
 	  
-  private void toLoadServicios() {
+  public void doLoadServicios() {
 		List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
 			params.put("idArticuloTipo", "4,5");			
+      if(!Cadena.isVacio(this.attrs.get("servicio")))
+        params.put(Constantes.SQL_CONDICION, "((tc_mantic_articulos.nombre like upper('%"+ (String)this.attrs.get("servicio")+ "%')) or (tc_mantic_articulos.descripcion like upper('%"+ (String)this.attrs.get("servicio")+ "%')))");
+      else
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.lazyModel = new FormatCustomLazy("VistaClientesCitasDto", "servicios", params, columns);
@@ -423,6 +428,28 @@ public class Nuevo extends IBaseFilter implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+  }
+ 
+  public void doLoadGenerales(SelectEvent event) {
+    try {      
+       UISelectEntity cliente= (UISelectEntity)this.attrs.get("cliente");
+       List<UISelectEntity> clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+       if(clientes!= null && !clientes.isEmpty()) {
+         if(cliente!= null && !cliente.isEmpty()) {
+           int index= clientes.indexOf(cliente);
+           if(index>= 0) {
+             this.attrs.put("cliente", clientes.get(index));
+             this.toLoadPaciente(cliente.getKey());
+             this.attrs.put("activeIndex", 1);
+          } // if  
+         } // if
+       } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+   
   }
   
 }

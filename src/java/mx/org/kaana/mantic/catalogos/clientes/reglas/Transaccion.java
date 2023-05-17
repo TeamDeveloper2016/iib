@@ -53,7 +53,6 @@ public class Transaccion extends TransaccionFactura {
 
 	private static final Log LOG=LogFactory.getLog(Transaccion.class);
 	
-	private static final String ESTILO= "sentinel";
   private IBaseDto dto;
   private RegistroCliente registroCliente;
   private String messageError;
@@ -377,7 +376,7 @@ public class Transaccion extends TransaccionFactura {
 			persona.setMaterno(clienteRepresentante.getMaterno());
 			persona.setIdTipoPersona(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona());	
 			persona.setIdTipoSexo(1L);
-			persona.setEstilo(ESTILO);
+			persona.setEstilo(Configuracion.getInstance().getEmpresa("theme"));
 			persona.setIdPersonaTitulo(1L);		
 			regresar= DaoFactory.getInstance().insert(sesion, persona);
 			if(regresar > -1L)

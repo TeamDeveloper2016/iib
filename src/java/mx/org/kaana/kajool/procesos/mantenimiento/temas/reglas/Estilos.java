@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mx.org.kaana.kajool.procesos.mantenimiento.temas.beans.Tema;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -28,6 +30,8 @@ public final class Estilos implements Serializable {
   static {
     mutex = new Object();
     themes= new ArrayList<>();
+    String propio= Configuracion.getInstance().getEmpresa("theme");
+		themes.add(new Tema(Cadena.letraCapital(propio), propio, "sentinel.png"));
 		themes.add(new Tema("Sentinel", "sentinel", "sentinel.png"));
 		themes.add(new Tema("Spark", "spark", "spark.png"));
 		themes.add(new Tema("Modena", "modena", "modena.png"));

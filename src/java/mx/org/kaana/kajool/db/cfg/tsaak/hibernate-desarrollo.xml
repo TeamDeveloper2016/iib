@@ -3,9 +3,9 @@
   <session-factory>  
     <property name="hibernate.dialect">org.hibernate.dialect.MariaDB53Dialect</property>  
     <property name="hibernate.connection.driver_class">org.mariadb.jdbc.Driver</property>
-    <property name="hibernate.connection.url">jdbc:mariadb://localhost:3306/mantic?zeroDateTimeBehavior=convertToNull</property>
-    <property name="hibernate.connection.username">mantic</property>
-    <property name="hibernate.connection.password">mantic</property>
+    <property name="hibernate.connection.url">jdbc:mariadb://localhost:3306/tsaak?zeroDateTimeBehavior=convertToNull</property>
+    <property name="hibernate.connection.username">tsaak_admin</property>
+    <property name="hibernate.connection.password">admin_tsaak</property>
     <property name="hibernate.connection.pool_size">5</property>
     <property name="hibernate.current_session_context_class">thread</property>
     <property name="show_sql">true</property>

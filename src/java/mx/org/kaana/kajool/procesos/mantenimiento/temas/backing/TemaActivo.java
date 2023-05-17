@@ -6,6 +6,7 @@ import javax.enterprise.context.SessionScoped;
 
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
+import mx.org.kaana.libs.recurso.Configuracion;
 
 /**
  * @company KAANA
@@ -23,7 +24,7 @@ public class TemaActivo implements Serializable {
   private String name;
 
   public TemaActivo() {
-    this.name = "sentinel";
+    this.name = Configuracion.getInstance().getEmpresa("theme");
   }
 
   public String getName() {
