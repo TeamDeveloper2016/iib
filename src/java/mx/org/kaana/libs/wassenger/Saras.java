@@ -40,13 +40,17 @@ public final class Saras implements Serializable {
   private static final Log LOG = LogFactory.getLog(Saras.class);
   
   private static final String IMOX_TOKEN       = "IMOX_TOKEN";
-  public static final String IMOX_GROUP_MANTIC = "5214491813810-1598307650@g.us";
+  public static final String IMOX_GROUP_MANTIC = "120363047127791736@g.us";
   public static final String IMOX_GROUP_KANAL  = "5214491813810-1598307650@g.us";
   public static final String IMOX_GROUP_TSAAK  = "5214491813810-1598307650@g.us";
   
-  private static final String CITA_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
-  private static final String CITA_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
-  private static final String CITA_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfeno *{notifica}*\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  private static final String CITA_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  private static final String CITA_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  private static final String CITA_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfeno *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  
+  private static final String RECORDATORIO_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, le *recordamos* que en {horas}hrs. se llevará a cabo su cita, la cual se {estatus} para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  private static final String RECORDATORIO_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, le *recordamos* que en {horas}hrs. se llevará a cabo su cita, la cual se {estatus} para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
+  private static final String RECORDATORIO_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, le *recordamos* que en {horas}hrs. se llevará a cabo su cita, la cual se {estatus} para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfeno *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
   
   private static final String ATIENDE_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
   private static final String ATIENDE_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
@@ -60,7 +64,7 @@ public final class Saras implements Serializable {
   private static final String PROMOCION_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {mensaje}\\n\\nCualquier duda con respecto al mensaje favor de notificarlos al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
   private static final String PROMOCION_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, {mensaje}\\n\\nCualquier duda con respecto al mensaje favor de notificarlos al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\nchatbot *IMOX* _Soluciones web_ (4492090586)\"";
   
-  private static final String PATH_REPORT   = "{numero}.- {documento}; https://{host}/Temporal/Pdf/{reporte}\\n";
+  private static final String PATH_REPORT   = "{numero}.- {documento}; /Temporal/Pdf/{reporte}\\n";
   private static final int LENGTH_CELL_PHONE= 10;
 
   private String token;
@@ -68,6 +72,7 @@ public final class Saras implements Serializable {
   private String celular;
   private Timestamp fecha;
   private String estatus;
+  private String observaciones;
   private List<Entity> servicios;
 
   public Saras() {
@@ -79,15 +84,16 @@ public final class Saras implements Serializable {
   }
   
   public Saras(String nombre, String celular, Timestamp fecha, String estatus) {
-    this(nombre, celular, fecha, estatus, Collections.EMPTY_LIST);
+    this(nombre, celular, fecha, estatus, Collections.EMPTY_LIST, "");
   }
   
-  public Saras(String nombre, String celular, Timestamp fecha, String estatus, List<Entity> servicios) {
+  public Saras(String nombre, String celular, Timestamp fecha, String estatus, List<Entity> servicios, String observaciones) {
     this.nombre   = Cadena.nombrePersona(nombre);
     this.celular  = this.clean(celular);
     this.fecha    = fecha;
     this.estatus  = estatus;
     this.servicios= servicios;
+    this.observaciones= observaciones;
     this.token    = System.getenv(IMOX_TOKEN);
   }
 
@@ -125,6 +131,14 @@ public final class Saras implements Serializable {
 
   public void setEstatus(String estatus) {
     this.estatus = estatus;
+  }
+
+  public String getObservaciones() {
+    return observaciones;
+  }
+
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
   }
 
   public List<Entity> getServicios() {
@@ -204,9 +218,10 @@ public final class Saras implements Serializable {
         params.put("estatus", this.estatus);
         params.put("servicios", this.toServicios());
         params.put("empresa", Cadena.nombrePersona(Configuracion.getInstance().getEmpresa("titulo")));
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
+        params.put("observaciones", this.observaciones);
         params.put("idTipoMensaje", ETypeMessage.CITAS.getId());
         if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
@@ -226,7 +241,7 @@ public final class Saras implements Serializable {
               message= new Message();
           } // if  
           else {
-            LOG.error("[doSendCitaCliente] No se envio el mensaje whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendCitaCliente] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // else  
@@ -249,7 +264,84 @@ public final class Saras implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendCitaCliente] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendCitaCliente] No se envio el mensaje ["+ this.celular+ "]");
+  }
+  
+  public void doSendRecordatorioCliente(Long horas) {
+    this.doSendRecordatorioCliente(null, horas);
+  }
+
+  public void doSendRecordatorioCliente(Session sesion, Long horas) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
+      Message message= null;
+      String mensaje = CITA_MESSAGE_MANTIC;
+      Map<String, Object> params = new HashMap<>();   
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "iib":
+          mensaje= RECORDATORIO_MESSAGE_MANTIC;
+          break;
+        case "kalan":
+          mensaje= RECORDATORIO_MESSAGE_KALAN;
+          break;
+        case "tsaak":
+          mensaje= RECORDATORIO_MESSAGE_TSAAK;
+          break;
+      } // swtich
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("fecha", Fecha.formatear(Fecha.DIA_FECHA_HORA_CORTA, this.fecha));
+        params.put("estatus", this.estatus);
+        params.put("servicios", this.toServicios());
+        params.put("empresa", Cadena.nombrePersona(Configuracion.getInstance().getEmpresa("titulo")));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
+        params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+        params.put("saludo", this.toSaludo());
+        params.put("observaciones", this.observaciones);
+        params.put("horas", horas);
+        params.put("idTipoMensaje", ETypeMessage.CITAS.getId());
+        if(!Configuracion.getInstance().isEtapaProduccion())
+          LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
+        else {  
+          HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+          .header("Content-Type", "application/json")
+          .header("Token", this.token)
+          .body("{"+ Cadena.replaceParams(mensaje, params, true)+ "}")
+          .asString();
+          LOG.error("Enviado: "+ response.getBody());
+          if(Objects.equals(response.getStatus(), 201)) {
+            Gson gson= new Gson();
+            message  = gson.fromJson(response.getBody(), Message.class);
+            if(message!= null)
+              message.init();
+            else
+              message= new Message();
+          } // if  
+          else {
+            LOG.error("[doSendRecordatorioCliente] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            message= new Message();
+            message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
+          } // else  
+          message.setTelefono(this.celular);
+          message.setIdSendStatus(new Long(response.getStatus()));
+          message.setSendStatus(response.getStatusText());
+          message.setIdTipoMensaje((Long)params.get("idTipoMensaje"));
+          message.setIdUsuario(JsfBase.getIdUsuario());
+          if(sesion!= null)
+            DaoFactory.getInstance().insert(sesion, message);
+          else
+            DaoFactory.getInstance().insert(message);
+        } // else  
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendRecordatorioCliente] No se envio el mensaje ["+ this.celular+ "]");
   }
   
   public void doSendCitaAtiende(String cliente) {
@@ -280,7 +372,7 @@ public final class Saras implements Serializable {
         params.put("cliente", cliente);
         params.put("servicios", this.toServicios());
         params.put("empresa", Cadena.nombrePersona(Configuracion.getInstance().getEmpresa("titulo")));
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         params.put("idTipoMensaje", ETypeMessage.CITAS.getId());
@@ -325,7 +417,7 @@ public final class Saras implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendCitaAtiende] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendCitaAtiende] No se envio el mensaje ["+ this.celular+ "]");
   }
   
   public void doSendAgenda(Map<Long, Citado> clientes) {
@@ -354,7 +446,7 @@ public final class Saras implements Serializable {
         params.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, this.fecha));
         params.put("clientes", this.toClientes(clientes));
         params.put("empresa", Cadena.nombrePersona(Configuracion.getInstance().getEmpresa("titulo")));
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         params.put("idTipoMensaje", ETypeMessage.CITAS.getId());
@@ -399,7 +491,7 @@ public final class Saras implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendAgenda] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendAgenda] No se envio el mensaje ["+ this.celular+ "]");
   }  
   
   public void doSendPromocion(String texto) {
@@ -428,7 +520,7 @@ public final class Saras implements Serializable {
         params.put("fecha", Fecha.formatear(Fecha.FECHA_CORTA, this.fecha));
         params.put("mensaje", texto);
         params.put("empresa", Cadena.nombrePersona(Configuracion.getInstance().getEmpresa("titulo")));
-        params.put("host", Configuracion.getInstance().getEmpresa("host"));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         params.put("idTipoMensaje", ETypeMessage.CITAS.getId());
@@ -473,7 +565,7 @@ public final class Saras implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendPromocion] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendPromocion] No se envio el mensaje ["+ this.celular+ "]");
   }  
   
   private String toClientes(Map<Long, Citado> clientes) throws Exception {

@@ -102,13 +102,13 @@ public class UtilAplicacion {
     String regresar= "width: 35px !important;";
     switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
       case "iib":
-        regresar= "width: 3em !important; margin-left: 2.5em;";
+        regresar= "width: 3em !important; margin-left: 5.5em;";
         break;
       case "kalan":
         regresar= "width: 105px !important;";
         break;
       case "tsaak":
-        regresar= "width: 85px !important;";
+        regresar= "width: 3em !important; margin-left: 5.5em;";
         break;
     } // switch
     return regresar;

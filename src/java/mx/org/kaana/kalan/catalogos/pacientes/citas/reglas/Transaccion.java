@@ -165,7 +165,7 @@ public class Transaccion extends IBaseTnx {
           JsfBase.getIdUsuario(), // Long idUsuario, 
           this.paciente.getRecordatorio(), // Long recordatorio, 
           null, // String otro, 
-          null, // String observaciones, 
+          this.paciente.getComentarios(), // String observaciones, 
           this.paciente.getTermino(), // Timestamp termino, 
           consecutivo.getOrden(), // Long orden, 
           null // Long idVenta
@@ -184,14 +184,15 @@ public class Transaccion extends IBaseTnx {
           -1L, // Long idCitaBitacora, 
           JsfBase.getIdUsuario(), // Long idUsuario, 
           cita.getIdCitaEstatus(), // Long idCitaEstatus, 
-          this.paciente.getComentarios(), // String observaciones, 
+          null, // String observaciones, 
           cita.getIdCita() // Long idCita
         );
         this.paciente.setIdCita(cita.getIdCita());
         regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
         // NOTIFICAR POR WHASTAPP AL CLIENTE
-        Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendada", this.servicios);
-        notificar.doSendCitaCliente(sesion);
+        Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendada", this.servicios, this.paciente.getComentarios());
+        if(this.paciente.getWhatsapp())
+          notificar.doSendCitaCliente(sesion);
 
         // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
         if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
@@ -286,7 +287,7 @@ public class Transaccion extends IBaseTnx {
         JsfBase.getIdUsuario(), // Long idUsuario, 
         this.paciente.getRecordatorio(), // Long recordatorio, 
         null, // String otro, 
-        null, // String observaciones, 
+        this.paciente.getComentarios(), // String observaciones, 
         this.paciente.getTermino(), // Timestamp termino, 
         consecutivo.getOrden(), // Long orden, 
         null // Long idVenta
@@ -312,8 +313,10 @@ public class Transaccion extends IBaseTnx {
       regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
       
       // NOTIFICAR POR WHASTAPP AL CLIENTE
-      Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendado", this.servicios);
-      notificar.doSendCitaCliente(sesion);
+      Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendado", this.servicios, this.paciente.getComentarios());
+      if(this.paciente.getWhatsapp())
+        notificar.doSendCitaCliente(sesion);
+      
       // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
       if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
         notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));
@@ -368,8 +371,10 @@ public class Transaccion extends IBaseTnx {
           cita.setIdCitaEstatus(5L);
 
           // NOTIFICAR POR WHASTAPP AL CLIENTE
-          Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "reprogramo", this.servicios);
-          notificar.doSendCitaCliente(sesion);
+          Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "reprogramo", this.servicios, this.paciente.getComentarios());
+          if(this.paciente.getWhatsapp())
+            notificar.doSendCitaCliente(sesion);
+          
           // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
           if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
             notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));
@@ -483,8 +488,10 @@ public class Transaccion extends IBaseTnx {
         DaoFactory.getInstance().insert(sesion, bitacora);
 
         // NOTIFICAR POR WHASTAPP AL CLIENTE
-        Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), estatus, this.servicios);
-        notificar.doSendCitaCliente(sesion);
+        Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), estatus, this.servicios, this.paciente.getComentarios());
+        if(this.paciente.getWhatsapp())
+          notificar.doSendCitaCliente(sesion);
+        
         // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
         if(this.paciente.getIkAtendio()!= null && !Objects.equals(this.paciente.getIkAtendio().getKey(), -1L)) {
           notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));

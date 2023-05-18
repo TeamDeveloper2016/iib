@@ -159,7 +159,7 @@ public class Citas extends IBaseFilter implements Serializable {
           List<Entity> servicios= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaClientesCitasDto", "detalle", params);
           if(servicios== null || servicios.isEmpty()) 
             servicios= new ArrayList<>();
-          Saras notificar= new Saras(item.toString("cliente"), citado.toString("celular"), item.toTimestamp("inicia"), citado.toString("estatus"), servicios);
+          Saras notificar= new Saras(item.toString("cliente"), citado.toString("celular"), item.toTimestamp("inicia"), citado.toString("estatus"), servicios, "");
           notificar.doSendCitaCliente();
           JsfBase.addMessage("WhatsApp", "El mensaje fué enviado con éxito !", ETipoMensaje.INFORMACION);
         } // if

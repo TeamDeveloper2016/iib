@@ -87,6 +87,80 @@ where
   and {condicion}
 {sortOrder}        
       </select>
+      <select id="recordatorios">
+select
+  tc_kalan_citas.id_cita as id_key,
+  tc_kalan_citas.id_cita,
+  timestampdiff(hour, now(), tc_kalan_citas.inicio) as horas,
+  concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as cliente,
+  tt_mantic_cliente_celular.celular,
+  tc_kalan_citas.inicio,
+  tc_kalan_citas.recordatorio,
+  tc_kalan_citas.observaciones
+from
+  tc_kalan_citas
+inner join  
+  tc_mantic_clientes on tc_kalan_citas.id_cliente= tc_mantic_clientes.id_cliente
+left join (
+  select
+    tr_mantic_cliente_tipo_contacto.id_cliente,
+    tr_mantic_cliente_tipo_contacto.valor as celular
+  from
+    tr_mantic_cliente_tipo_contacto
+  where
+    tr_mantic_cliente_tipo_contacto.id_tipo_contacto in (6, 7, 8)
+    and tr_mantic_cliente_tipo_contacto.id_preferido= 1
+  group by
+    tr_mantic_cliente_tipo_contacto.id_cliente              
+  order by
+    tr_mantic_cliente_tipo_contacto.orden      
+) as tt_mantic_cliente_celular on tc_mantic_clientes.id_cliente= tt_mantic_cliente_celular.id_cliente
+where
+  timestampdiff(hour, now(), tc_kalan_citas.inicio)<= tc_kalan_citas.recordatorio
+  and tc_kalan_citas.recordado is null
+  and tc_kalan_citas.id_cita_estatus in (1, 5)  
+  and tt_mantic_cliente_celular.celular is not null
+group by
+  tc_kalan_citas.id_cita,
+  tc_mantic_clientes.id_cliente
+      </select>  
+      <select id="notificaciones">
+select
+  tc_kalan_citas.id_cita as id_key,
+  tc_kalan_citas.id_cita,
+  timestampdiff(hour, now(), tc_kalan_citas.inicio) as horas,
+  concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as cliente,
+  tt_mantic_cliente_celular.celular,
+  tc_kalan_citas.inicio,
+  tc_kalan_citas.notificacion,
+  tc_kalan_citas.observaciones
+from
+  tc_kalan_citas
+inner join  
+  tc_mantic_clientes on tc_kalan_citas.id_cliente= tc_mantic_clientes.id_cliente
+left join (
+  select
+    tr_mantic_cliente_tipo_contacto.id_cliente,
+    tr_mantic_cliente_tipo_contacto.valor as celular
+  from
+    tr_mantic_cliente_tipo_contacto
+  where
+    tr_mantic_cliente_tipo_contacto.id_tipo_contacto in (6, 7, 8)
+    and tr_mantic_cliente_tipo_contacto.id_preferido= 1
+  group by
+    tr_mantic_cliente_tipo_contacto.id_cliente              
+  order by
+    tr_mantic_cliente_tipo_contacto.orden      
+) as tt_mantic_cliente_celular on tc_mantic_clientes.id_cliente= tt_mantic_cliente_celular.id_cliente
+where
+  timestampdiff(hour, now(), tc_kalan_citas.inicio)<= tc_kalan_citas.notificacion
+  and tc_kalan_citas.notificado is null
+  and tc_kalan_citas.id_cita_estatus in (1, 5)  
+  and tt_mantic_cliente_celular.celular is not null
+group by
+  tc_kalan_citas.id_cita,
+  tc_mantic_clientes.id_cliente
+      </select>  
     </unit>    
     <unit id="VistaClientesCitasDto">
       <select id="lazy">
@@ -108,6 +182,7 @@ select
   tc_mantic_clientes.saldo,
   tc_kalan_citas_estatus.nombre as estatus,
   concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as atendio,      
+  tc_kalan_citas.observaciones as comentarios,
   tc_kalan_citas.registro,
   group_concat(tc_mantic_articulos.nombre separator ', ') as servicios        
 from      
@@ -285,6 +360,8 @@ where
   and tr_mantic_empresa_personal.id_activo= 1
   and tc_mantic_personas.id_tipo_persona!= 1
   and {condicion}
+group by
+  tc_mantic_personas.id_persona               
 order by
   tc_mantic_personas.nombres, 
   tc_mantic_personas.paterno,

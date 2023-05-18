@@ -68,6 +68,10 @@ public class TcKalanCitasDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="id_venta")
   private Long idVenta;
+  @Column (name="recordado")
+  private Timestamp recordado;
+  @Column (name="notificado")
+  private Timestamp notificado;
 
   public TcKalanCitasDto() {
     this(new Long(-1L));
@@ -225,6 +229,22 @@ public class TcKalanCitasDto implements IBaseDto, Serializable {
     return idVenta;
   }
 
+  public Timestamp getRecordado() {
+    return recordado;
+  }
+
+  public void setRecordado(Timestamp recordado) {
+    this.recordado = recordado;
+  }
+
+  public Timestamp getNotificado() {
+    return notificado;
+  }
+
+  public void setNotificado(Timestamp notificado) {
+    this.notificado = notificado;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -271,6 +291,10 @@ public class TcKalanCitasDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVenta());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRecordado());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNotificado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -294,13 +318,15 @@ public class TcKalanCitasDto implements IBaseDto, Serializable {
 		regresar.put("termino", getTermino());
 		regresar.put("orden", getOrden());
 		regresar.put("idVenta", getIdVenta());
+		regresar.put("recordado", getRecordado());
+		regresar.put("notificado", getNotificado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdCliente(), getIdCitaEstatus(), getInicio(), getIdCita(), getNotificacion(), getEjercicio(), getRegistro(), getConsecutivo(), getIdAtendio(), getIdUsuario(), getRecordatorio(), getOtro(), getObservaciones(), getTermino(), getOrden(), getIdVenta()
+    Object[] regresar = new Object[] {
+      getIdCliente(), getIdCitaEstatus(), getInicio(), getIdCita(), getNotificacion(), getEjercicio(), getRegistro(), getConsecutivo(), getIdAtendio(), getIdUsuario(), getRecordatorio(), getOtro(), getObservaciones(), getTermino(), getOrden(), getIdVenta(), getRecordado(), getNotificado()
     };
     return regresar;
   }

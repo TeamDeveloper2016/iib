@@ -180,6 +180,22 @@ where
   ejercicio= {ejercicio} 
   and orden{operador} 900000			
 			</select>
+      <update id="recordatorio">
+update 
+  tc_kalan_citas
+set
+  recordado= now()
+where
+  id_cita= {idCita}                
+      </update>
+      <update id="notificacion">
+update 
+  tc_kalan_citas
+set
+  notificado= now()
+where
+  id_cita= {idCita}                
+      </update>
     </unit>   
     <unit id="TcKalanCitasBitacoraDto">
       <select id="row">

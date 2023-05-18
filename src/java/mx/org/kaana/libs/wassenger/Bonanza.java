@@ -230,7 +230,7 @@ public final class Bonanza implements Serializable {
                 message= new Message();
             } // if  
             else {
-              LOG.error("[doSendMessage] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              LOG.error("[doSendMessage] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
               message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
             } // else  
@@ -256,7 +256,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendMessage] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendMessage] No se envio el mensaje ["+ this.celular+ "]");
   }
   
   public void doSendMasivo(Session sesion, String contenido) {
@@ -303,7 +303,7 @@ public final class Bonanza implements Serializable {
               message= new Message();
           } // if  
           else {
-            LOG.error("[doSendMasivo] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendMasivo] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // else  
@@ -326,7 +326,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendMasivo] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendMasivo] No se envio el mensaje ["+ this.celular+ "]");
   }
 
   public void doSendProveedor(Session sesion) {
@@ -366,7 +366,7 @@ public final class Bonanza implements Serializable {
                 message= new Message();
             } // if  
             else {
-              LOG.error("[doSendProveedor] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              LOG.error("[doSendProveedor] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
               message= new Message();
               message.setMessage(" {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
             } // else  
@@ -392,7 +392,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendProveedor] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendProveedor] No se envio el mensaje ["+ this.celular+ "]");
   }
 
   public void doSendCorteNomina(Session sesion) {
@@ -564,7 +564,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendFactura] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendFactura] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // if  
@@ -587,7 +587,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendFactura]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendFactura]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendFactura
   
   public void doSendTicket() {
@@ -641,7 +641,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendFactura] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendFactura] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // if  
@@ -664,7 +664,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendFactura]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendFactura]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendTicket
   
   public void doSendDevolucion(Session sesion) {
@@ -702,7 +702,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendDevolucion] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendDevolucion] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_DEVOLUCION, params, true)+ "}");
           } // if  
@@ -725,7 +725,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendDevolucion]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendDevolucion]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendDevolucion
   
   public void doSendPagoCuenta(Session sesion) {
@@ -763,7 +763,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendPagoCuenta] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendPagoCuenta] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_PAGO_CUENTA, params, true)+ "}");
           } // if  
@@ -786,7 +786,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendPagoCuenta]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendPagoCuenta]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendPagoCuenta
   
   public void doSendOrdenCompra() {
@@ -828,7 +828,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendOrdenCompra] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendOrdenCompra] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_ORDEN_COMPRA, params, true)+ "}");
           } // if  
@@ -851,7 +851,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendOrdenCompra]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendOrdenCompra]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendOrdenCompra
 
   public void doSendGasto(Session sesion) {
@@ -889,7 +889,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendGasto] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendGasto] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_GASTO_CHICA, params, true)+ "}");
           } // if  
@@ -912,7 +912,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendGasto] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendGasto] No se envio el mensaje ["+ this.celular+ "]");
   }
   
   public void doSendCajaChica(Session sesion) {
@@ -950,7 +950,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendCajaChica] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendCajaChica] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_CAJA_CHICA, params, true)+ "}");
           } // if  
@@ -973,7 +973,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendCajaChica] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendCajaChica] No se envio el mensaje ["+ this.celular+ "]");
   }
   
   public void doSendCorreo() {
@@ -1015,7 +1015,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendCorreo] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendCorreo] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_CHECK_CORREO, params, true)+ "}");
           } // if  
@@ -1038,7 +1038,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendCorreo]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendCorreo]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendCorreo
   
   public void doSendRfc() {
@@ -1080,7 +1080,7 @@ public final class Bonanza implements Serializable {
             } // else  
           } // if  
           else {
-            LOG.error("[doSendRfc] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendRfc] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(BODY_CHECK_RFC, params, true)+ "}");
           } // if  
@@ -1103,7 +1103,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendRfc]No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendRfc]No se envio el mensaje ["+ this.celular+ "]");
   } // doSendRfc
   
   private void prepare() {
@@ -1230,7 +1230,7 @@ public final class Bonanza implements Serializable {
               message= new Message();
           } // if  
           else {
-            LOG.error("[doSendSaludo] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendSaludo] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // else  
@@ -1248,7 +1248,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendSaludo] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendSaludo] No se envio el mensaje ["+ this.celular+ "]");
   }
 
   public Boolean doSendPrueba(String contenido) {
@@ -1299,7 +1299,7 @@ public final class Bonanza implements Serializable {
               message= new Message();
           } // if  
           else {
-            LOG.error("[doSendPrueba] No se envio el mensaje por whatsapp  ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+            LOG.error("[doSendPrueba] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
             message= new Message();
             message.setMessage(" {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
           } // else  
@@ -1323,7 +1323,7 @@ public final class Bonanza implements Serializable {
       } // finally
     } // if
     else 
-      LOG.error("[doSendPrueba] No se envio el mensaje por whatsapp  ["+ this.celular+ "]");
+      LOG.error("[doSendPrueba] No se envio el mensaje ["+ this.celular+ "]");
     return regresar;
   }
     

@@ -370,7 +370,8 @@ public class Nuevo extends IBaseFilter implements Serializable {
       params.put("idCliente", idCliente);      
       this.paciente= (Paciente)DaoFactory.getInstance().toEntity(Paciente.class, "VistaClientesCitasDto", "paciente", params);
       if(this.paciente!= null) {
-        this.paciente.init();
+        this.paciente.setInicio((Timestamp)this.attrs.get("fecha"));
+        this.paciente.start();
         this.toAtendio();
         this.doCompleteCliente(this.paciente.getRfc());
         this.toLoadCliente();
