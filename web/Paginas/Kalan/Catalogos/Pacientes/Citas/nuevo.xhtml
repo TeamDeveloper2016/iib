@@ -70,7 +70,7 @@
                   <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesCitasNuevo.doUpdateTermino}" process="@this contenedorGrupos:inicio" update="contenedorGrupos:inicio"/>
                 </p:calendar>                    
                 <p:outputLabel value="Recordatorio:" styleClass="janal-color-black FsBold"/>
-                <p:inputNumber id="recordatorio" value="#{kalanCatalogosPacientesCitasNuevo.paciente.recordatorio}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="0" maxValue="24" minValue="2" thousandSeparator=","/>
+                <p:inputNumber id="recordatorio" value="#{kalanCatalogosPacientesCitasNuevo.paciente.recordatorio}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="0" maxValue="48" minValue="25" thousandSeparator=","/>
                 <p:outputLabel value="Notificar mismo día:" styleClass="janal-color-black FsBold"/>
                 <p:inputNumber id="notificacion" value="#{kalanCatalogosPacientesCitasNuevo.paciente.notificacion}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="0" maxValue="12" minValue="2" thousandSeparator=","/>
               </p:panelGrid>

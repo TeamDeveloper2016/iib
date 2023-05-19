@@ -91,6 +91,7 @@ where
 select
   tc_kalan_citas.id_cita as id_key,
   tc_kalan_citas.id_cita,
+  tc_mantic_clientes.id_cliente,        
   timestampdiff(hour, now(), tc_kalan_citas.inicio) as horas,
   concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as cliente,
   tt_mantic_cliente_celular.celular,
@@ -116,10 +117,11 @@ left join (
     tr_mantic_cliente_tipo_contacto.orden      
 ) as tt_mantic_cliente_celular on tc_mantic_clientes.id_cliente= tt_mantic_cliente_celular.id_cliente
 where
-  timestampdiff(hour, now(), tc_kalan_citas.inicio)<= tc_kalan_citas.recordatorio
+  timestampdiff(hour, now(), tc_kalan_citas.inicio)&lt;= tc_kalan_citas.recordatorio
   and tc_kalan_citas.recordado is null
   and tc_kalan_citas.id_cita_estatus in (1, 5)  
   and tt_mantic_cliente_celular.celular is not null
+  and tc_kalan_citas.recordatorio> 0
 group by
   tc_kalan_citas.id_cita,
   tc_mantic_clientes.id_cliente
@@ -128,6 +130,7 @@ group by
 select
   tc_kalan_citas.id_cita as id_key,
   tc_kalan_citas.id_cita,
+  tc_mantic_clientes.id_cliente,
   timestampdiff(hour, now(), tc_kalan_citas.inicio) as horas,
   concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as cliente,
   tt_mantic_cliente_celular.celular,
@@ -153,10 +156,11 @@ left join (
     tr_mantic_cliente_tipo_contacto.orden      
 ) as tt_mantic_cliente_celular on tc_mantic_clientes.id_cliente= tt_mantic_cliente_celular.id_cliente
 where
-  timestampdiff(hour, now(), tc_kalan_citas.inicio)<= tc_kalan_citas.notificacion
+  timestampdiff(hour, now(), tc_kalan_citas.inicio)&lt;= tc_kalan_citas.notificacion
   and tc_kalan_citas.notificado is null
   and tc_kalan_citas.id_cita_estatus in (1, 5)  
   and tt_mantic_cliente_celular.celular is not null
+  and tc_kalan_citas.notificacion> 0
 group by
   tc_kalan_citas.id_cita,
   tc_mantic_clientes.id_cliente
