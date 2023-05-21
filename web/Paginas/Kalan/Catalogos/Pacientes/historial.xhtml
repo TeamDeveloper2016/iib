@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="#{kalanCatalogosPacientesHistorial.attrs.nombreAccion} historia clínica del paciente/cliente" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'contenedorGrupos\\:c01': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c02': {validaciones: 'fecha', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:c03': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:c04': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:c05': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c06': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c07': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c08': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c09': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c10': {validaciones: 'fecha', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:c11': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c12': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c13': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c14': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c15': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c16': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c17': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c18': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c19': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c20': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c21': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c22': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c23': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c24': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c25': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c26': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c27': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c28': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c29': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c30': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c31': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c32': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c33': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c34': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c35': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c36': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c37': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c38': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c39': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c40': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:c41': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'}
+      };
+
+      $(document).ready(function () {
+        janal.readingMode('#{kalanCatalogosPacientesHistorial.attrs.nombreAccion}');
+      });
+    </script>   
+  </ui:define>
+  <ui:define name="contenido">		
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">					          
+          <p:spacer/>
+          <p:tabView id="contenedorGrupos">            
+            <p:ajax event="tabChange" process="@this" oncomplete="janal.refresh();"/>
+            <p:tab title="General">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">	
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c01" value="Sexo asignado al nacer:"/>
+                  <p:outputLabel value="[ C01 ]"/>
+                </p:panelGrid>  
+                <p:selectOneMenu id="c01" value="#{kalanCatalogosPacientesHistorial.paciente.c01}" var="item" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="@(.c38)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                  <f:selectItem itemLabel="FEMENINO" itemValue="1"/>
+                  <f:selectItem itemLabel="MASCULINO" itemValue="2"/>
+                  <f:selectItem itemLabel="OTRO" itemValue="3"/>
+                </p:selectOneMenu>  
+                <p:outputLabel for="c38" value="Especifique:" styleClass="c38 #{kalanCatalogosPacientesHistorial.paciente.c01 eq 3? '': 'janal-display-none'}"/>
+                <p:inputText id="c38" styleClass="janal-wid-100-txt c38 #{kalanCatalogosPacientesHistorial.paciente.c01 eq 3? '': 'janal-display-none'}" value="#{kalanCatalogosPacientesHistorial.paciente.c38}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c02" value="Fecha de nacimiento:"/>
+                  <p:outputLabel value="[ C02 ]"/>
+                </p:panelGrid>  
+                <p:calendar id="c02" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCatalogosPacientesHistorial.paciente.c02}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario">
+                  <p:ajax event="dateSelect" process="@this" update="c03" listener="#{kalanCatalogosPacientesHistorial.doCalculateEdad()}"/>
+                </p:calendar>   
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c03" value="Edad:"/>
+                  <p:outputLabel value="[ C03 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c03" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c03}" readonly="true"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c04" value="Estado civil:"/>
+                  <p:outputLabel value="[ C04 ]"/>
+                </p:panelGrid>  
+                <p:selectOneMenu id="c04" value="#{kalanCatalogosPacientesHistorial.paciente.c04}" var="item" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="@(.c39)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                  <f:selectItem itemLabel="SOLTERO" itemValue="1"/>
+                  <f:selectItem itemLabel="CASADO" itemValue="2"/>
+                  <f:selectItem itemLabel="DIVORCIADO" itemValue="3"/>
+                  <f:selectItem itemLabel="SEPARADO" itemValue="4"/>
+                  <f:selectItem itemLabel="VIUDO" itemValue="5"/>
+                  <f:selectItem itemLabel="CONCUBINATO" itemValue="6"/>
+                  <f:selectItem itemLabel="OTRO" itemValue="7"/>
+                </p:selectOneMenu>  
+                <p:outputLabel for="c39" value="Especifique:" styleClass="c39 #{kalanCatalogosPacientesHistorial.paciente.c04 eq 7? '': 'janal-display-none'}"/>
+                <p:inputText id="c39" styleClass="janal-wid-100-txt c39 #{kalanCatalogosPacientesHistorial.paciente.c04 eq 7? '': 'janal-display-none'}" value="#{kalanCatalogosPacientesHistorial.paciente.c39}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c05" value="Nacionalidad:"/>
+                  <p:outputLabel value="[ C05 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c05" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c05}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c06" value="Ciudad de residencia:"/>
+                  <p:outputLabel value="[ C06 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c06" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c06}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c07" value="Profesión:"/>
+                  <p:outputLabel value="[ C07 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c07" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c07}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c08" value="¿Quién le recomendó?:"/>
+                  <p:outputLabel value="[ C08 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c08" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c08}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c09" value="¿Quién le acompaña?:"/>
+                  <p:outputLabel value="[ C09 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c09" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c09}"/>
+                
+                <br/>
+                <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header">
+                   <span>Historia Clínica</span>
+                </div>  
+                <p:separator/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c10" value="Fecha:"/>
+                  <p:outputLabel value="[ C10 ]"/>
+                </p:panelGrid>  
+                <p:calendar id="c10" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCatalogosPacientesHistorial.paciente.c10}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c11" value="Alergias:"/>
+                  <p:outputLabel value="[ C11 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c11" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c11}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c12" value="Religión:"/>
+                  <p:outputLabel value="[ C12 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c12" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c12}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c13" value="Tipo de sangre:"/>
+                  <p:outputLabel value="[ C13 ]"/>
+                </p:panelGrid>  
+                <p:selectOneMenu id="c13" value="#{kalanCatalogosPacientesHistorial.paciente.c13}" var="item" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" process="@this" update="@(.c40)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                  <f:selectItem itemLabel="A+" itemValue="1"/>
+                  <f:selectItem itemLabel="A-" itemValue="2"/>
+                  <f:selectItem itemLabel="B+" itemValue="3"/>
+                  <f:selectItem itemLabel="B-" itemValue="4"/>
+                  <f:selectItem itemLabel="AB+" itemValue="5"/>
+                  <f:selectItem itemLabel="AB-" itemValue="6"/>
+                  <f:selectItem itemLabel="O+" itemValue="7"/>
+                  <f:selectItem itemLabel="O-" itemValue="8"/>
+                  <f:selectItem itemLabel="OTRO" itemValue="9"/>
+                </p:selectOneMenu>  
+                <p:outputLabel for="c40" value="Especifique:" styleClass="c40 #{kalanCatalogosPacientesHistorial.paciente.c13 eq 9? '': 'janal-display-none'}"/>
+                <p:inputText id="c40" styleClass="janal-wid-100-txt c40 #{kalanCatalogosPacientesHistorial.paciente.c13 eq 9? '': 'janal-display-none'}" value="#{kalanCatalogosPacientesHistorial.paciente.c40}"/>
+                
+                <br/>
+                <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header">
+                   <span>A.- Antecedentes familiares</span>
+                </div>  
+                <p:separator/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c14" value="Antecedentes familiares:"/>
+                  <p:outputLabel value="[ C14 ]"/>
+                </p:panelGrid>  
+                <p:selectManyCheckbox id="c14" layout="grid" columns="1" value="#{kalanCatalogosPacientesHistorial.paciente.k14}" styleClass="janal-wid-100-txt">
+                  <p:ajax event="change" process="@this" update="@(.c41)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItem itemLabel="HIPERTENSION ARTERIAL" itemValue="1"/>
+                  <f:selectItem itemLabel="DIABETES MELITUS" itemValue="2"/>
+                  <f:selectItem itemLabel="OBESIDAD" itemValue="3"/>
+                  <f:selectItem itemLabel="CANCER" itemValue="4"/>
+                  <f:selectItem itemLabel="ASMA" itemValue="5"/>
+                  <f:selectItem itemLabel="EPILEPSIA" itemValue="6"/>
+                  <f:selectItem itemLabel="HEMOFILIAS" itemValue="7"/>
+                  <f:selectItem itemLabel="PSIQUIATRICO" itemValue="8"/>
+                  <f:selectItem itemLabel="ALERGIAS" itemValue="9"/>
+                  <f:selectItem itemLabel="OTROS" itemValue="10"/>
+                </p:selectManyCheckbox>  
+                <p:outputLabel for="c41" value="Especifique:" styleClass="c41 #{kalanCatalogosPacientesHistorial.paciente.isC14? '': 'janal-display-none'}"/>
+                <p:inputText id="c41" styleClass="janal-wid-100-txt c41 #{kalanCatalogosPacientesHistorial.paciente.isC14? '': 'janal-display-none'}" value="#{kalanCatalogosPacientesHistorial.paciente.c41}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c15" value="Hipertensión arterial:"/>
+                  <p:outputLabel value="[ C15 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c15" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c15}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c16" value="Obesidad:"/>
+                  <p:outputLabel value="[ C16 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c16" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c16}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c17" value="Asma:"/>
+                  <p:outputLabel value="[ C17 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c17" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c17}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c18" value="Hemofilias:"/>
+                  <p:outputLabel value="[ C18 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c18" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c18}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c19" value="Alergias:"/>
+                  <p:outputLabel value="[ C19 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c19" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c19}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c20" value="Diabetes mellitus:"/>
+                  <p:outputLabel value="[ C20 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c20" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c20}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c21" value="Cáncer:"/>
+                  <p:outputLabel value="[ C21 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c21" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c21}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c22" value="Epilepsia:"/>
+                  <p:outputLabel value="[ C22 ]"/>
+                </p:panelGrid>
+                <p:inputText id="c22" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c22}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c23" value="Psiquiátricos:"/>
+                  <p:outputLabel value="[ C23 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c23" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c23}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c24" value="Otros antecedentes:"/>
+                  <p:outputLabel value="[ C24 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c24" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c24}"/>
+                
+                <br/>
+                <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header">
+                   <span>B.- Antecedentes personales</span>
+                </div>  
+                <p:separator/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c25" value="Antecedentes personales:"/>
+                  <p:outputLabel value="[ C25 ]"/>
+                </p:panelGrid>  
+                <p:selectManyCheckbox id="c25" layout="grid" columns="1" value="#{kalanCatalogosPacientesHistorial.paciente.k25}" styleClass="janal-wid-100-txt">
+                  <f:selectItem itemLabel="TABACO" itemValue="1"/>
+                  <f:selectItem itemLabel="ALCOHOL" itemValue="2"/>
+                  <f:selectItem itemLabel="DROGAS" itemValue="3"/>
+                  <f:selectItem itemLabel="MASCOTAS" itemValue="4"/>
+                  <f:selectItem itemLabel="DEPORTE / ACTIVIDAD FISICA" itemValue="5"/>
+                  <f:selectItem itemLabel="ENFERMEDADES ACTUALES" itemValue="6"/>
+                  <f:selectItem itemLabel="CIRUGIAS PREVIAS" itemValue="7"/>
+                  <f:selectItem itemLabel="TRANSFUSIONES DE SANGRE" itemValue="8"/>
+                  <f:selectItem itemLabel="TRAUMATISMOS" itemValue="9"/>
+                  <f:selectItem itemLabel="MEDICAMENTOS ACTUALES (HORMONALES,SUPLEMENTOS,VITAMINAS)" itemValue="10"/>
+                  <f:selectItem itemLabel="SKINCARE" itemValue="11"/>
+                </p:selectManyCheckbox>  
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c26" value="Tabaco:"/>
+                  <p:outputLabel value="[ C26 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c26" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c26}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c27" value="Drogas:"/>
+                  <p:outputLabel value="[ C27 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c27" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c27}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c28" value="Deporte / Actividad Física:"/>
+                  <p:outputLabel value="[ C28 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c28" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c28}"/>
+                
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c29" value="Cirugías previas:"/>
+                  <p:outputLabel value="[ C29 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c29" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c29}"/>
+
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c30" value="Traumatismos:"/>
+                  <p:outputLabel value="[ C30 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c30" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c30}"/>
+
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c31" value="Skincare:"/>
+                  <p:outputLabel value="[ C31 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c31" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c31}"/>
+
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c32" value="Alcohol:"/>
+                  <p:outputLabel value="[ C32 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c32" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c32}"/>
+
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c33" value="Drogas:"/>
+                  <p:outputLabel value="[ C33 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c33" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c33}"/>
+
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c34" value="Mascotas:"/>
+                  <p:outputLabel value="[ C34 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c34" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c34}"/>
+
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c35" value="Enfermedades actuales:"/>
+                  <p:outputLabel value="[ C35 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c35" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c35}"/>
+
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c36" value="Transfusiones de sangre:"/>
+                  <p:outputLabel value="[ C36 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c36" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c36}"/>
+
+                <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-90, janal-fix-10 janal-column-right">	
+                  <p:outputLabel for="c37" value="Medicamentos actuales:"/>
+                  <p:outputLabel value="[ C37 ]"/>
+                </p:panelGrid>  
+                <p:inputText id="c37" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesHistorial.paciente.c37}"/>
+                
+              </p:panelGrid>
+            </p:tab>
+          </p:tabView>
+        </div>
+      </div>
+    </div>	
+  </ui:define>    
+  <ui:define name="acciones">
+    <div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanCatalogosPacientesHistorial.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanCatalogosPacientesHistorial.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+    <div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCatalogosPacientesHistorial.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanCatalogosPacientesHistorial.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+  </ui:define>
+</ui:composition>

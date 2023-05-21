@@ -135,7 +135,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));		
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("idCliente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("idCliente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -184,7 +184,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(codigo)) {
-  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);
@@ -231,9 +231,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doPublicarFacturama
 
   public String doMasivo() {
-    JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/filtro");
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/filtro");
     JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.CLIENTES.getId());
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
-	
+
+  public String doHistorial() {
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/filtro");
+    JsfBase.setFlashAttribute("idCliente", seleccionado.toLong("idCliente"));
+    JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+    return "historial".concat(Constantes.REDIRECIONAR);
+  }
+  
 }

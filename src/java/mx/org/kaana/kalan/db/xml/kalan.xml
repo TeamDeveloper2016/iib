@@ -7,6 +7,24 @@
   </model>
 
   <dml>
+    <unit id="TcKalanHistorialesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_historiales
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_historiales
+where      
+  id_cliente = {idCliente}
+      </select>
+    </unit>    
     <unit id="TcKalanProductosDto">
       <select id="row">
 select      
