@@ -348,4 +348,11 @@ public class Clientes extends IBaseFilter implements Serializable {
     return regresar;
   }
 
+  public String doHistorial() {
+    JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+    JsfBase.setFlashAttribute("idCliente", this.seleccionado.getKey());
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes");
+    return "historial".concat(Constantes.REDIRECIONAR);
+  }
+  
 }
