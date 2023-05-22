@@ -62,6 +62,10 @@ public class UtilAplicacion {
   private static final String FUSION= "jquery.janal.fusion.charts-3.3.1.js";
 	private static final String ECHART= "jquery.janal.echarts.core-0.5.1.js";
 
+  public String getEmpresa() {
+    return Configuracion.getInstance().getEmpresa("theme");
+  }
+
   public String getTituloSistema() {
     return Configuracion.getInstance().getEmpresa("titulo").toUpperCase();
   }
@@ -105,7 +109,7 @@ public class UtilAplicacion {
         regresar= "width: 3em !important; margin-left: 5.5em;";
         break;
       case "kalan":
-        regresar= "width: 7.1em !important; margin-left: 4.5em;";
+        regresar= "width: 7.1em !important; margin-left: 0.5em;";
         break;
       case "tsaak":
         regresar= "width: 3em !important; margin-left: 5.5em;";
