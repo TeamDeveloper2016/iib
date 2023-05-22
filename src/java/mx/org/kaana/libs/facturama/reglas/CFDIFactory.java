@@ -52,15 +52,15 @@ public class CFDIFactory implements Serializable {
   private static final String MANTIC_USER_PU    = "ELFRIJOLITOSANDBOX";
   private static final String MANTIC_PASSWORD_PU= "fb67d652f175ae5681c21fb818d44ec07a944efb103e84";
   
-  private static final String KALAN_USER_PO    = "KALAN_USER";
-  private static final String KALAN_PASSWORD_PO= "83fc6c99b56f9946395e";
-  private static final String KALAN_USER_PU    = "KALANSANDBOX";
-  private static final String KALAN_PASSWORD_PU= "ca7fa140ee100b75e628ab3d9e50fb2aec";
+  private static final String KALAN_USER_PO    = "IMOXMX";
+  private static final String KALAN_PASSWORD_PO= "74ef61e41dc1738e464a4d";
+  private static final String KALAN_USER_PU    = "IMOXMXSANDBOX";
+  private static final String KALAN_PASSWORD_PU= "1b0475f011cd0f12cbcf33b62dc86487b87e";
   
-  private static final String TSAAK_USER_PO    = "TSAAK_USER";
-  private static final String TSAAK_PASSWORD_PO= "afa89940fc133de658b9";
-  private static final String TSAAK_USER_PU    = "TSAAKSANDBOX";
-  private static final String TSAAK_PASSWORD_PU= "47f227c6679f9886f91fa23497a842f027";
+  private static final String TSAAK_USER_PO    = "IMOXMX";
+  private static final String TSAAK_PASSWORD_PO= "74ef61e41dc1738e464a4d";
+  private static final String TSAAK_USER_PU    = "IMOXMXSANDBOX";
+  private static final String TSAAK_PASSWORD_PU= "1b0475f011cd0f12cbcf33b62dc86487b87e";	
   
   private static final String DESCRIPCION_IVA= "IVA";
   private static final String CURRENCY       = "MXN";  

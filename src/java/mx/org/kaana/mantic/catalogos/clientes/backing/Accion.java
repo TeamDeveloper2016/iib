@@ -76,6 +76,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("cpNuevo", false);						
       this.doLoad();      					
 			this.attrs.put("renderedFacturacion", false);
@@ -153,9 +154,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         this.registroCliente.getCliente().setIdRegimenFiscal(null);
       transaccion = new Transaccion(this.registroCliente);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
-				JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
-    		JsfBase.setFlashAttribute("idClienteProcess", this.registroCliente.getCliente().getIdCliente());
-        regresar = "filtro".concat(Constantes.REDIRECIONAR);
+        regresar= this.doCancelar();
         JsfBase.addMessage("Se registro el cliente de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else 
@@ -173,7 +172,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String doCancelar() {
 		JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
 		JsfBase.setFlashAttribute("idClienteProcess", this.registroCliente.getCliente().getIdCliente());
-    return "filtro".concat(Constantes.REDIRECIONAR);
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doAccion
 
   private void loadRepresentantes() {

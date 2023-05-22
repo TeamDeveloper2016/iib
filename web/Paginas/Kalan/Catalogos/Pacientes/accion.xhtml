@@ -84,8 +84,8 @@
 								<p:selectOneMenu id="tipoVenta" value="#{kalanCatalogosPacientesAccion.registroCliente.cliente.idTipoVenta}" styleClass="janal-wid-100-txt" rendered="#{kalanCatalogosPacientesAccion.attrs.admin}">
 									<f:selectItems value="#{kalanCatalogosPacientesAccion.attrs.tiposVentas}"/>
 								</p:selectOneMenu>
-								<p:outputLabel for="idEspecial" value="Precio especial:" rendered="#{kalanCatalogosPacientesAccion.attrs.admin}"/>
-								<p:selectOneMenu id="idEspecial" value="#{kalanCatalogosPacientesAccion.attrs.idEspecial}" styleClass="janal-wid-100-txt" rendered="#{kalanCatalogosPacientesAccion.attrs.admin}">
+                <p:outputLabel for="idEspecial" value="Precio especial:" rendered="#{kalanCatalogosPacientesAccion.attrs.admin}" styleClass="janal-display-none"/>
+								<p:selectOneMenu id="idEspecial" value="#{kalanCatalogosPacientesAccion.attrs.idEspecial}" styleClass="janal-wid-100-txt janal-display-none" rendered="#{kalanCatalogosPacientesAccion.attrs.admin}">
                   <p:ajax event="change" update="@(.especial)" process="@this" listener="#{kalanCatalogosPacientesAccion.doLoadEspecial}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <f:selectItem itemLabel="NO" itemValue="2"/>
                   <f:selectItem itemLabel="SI" itemValue="1"/>

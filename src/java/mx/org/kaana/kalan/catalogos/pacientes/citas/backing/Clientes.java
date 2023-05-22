@@ -109,7 +109,7 @@ public class Clientes extends IBaseFilter implements Serializable {
       else {
         cliente = (UISelectEntity)this.attrs.get("cliente");
         clientes= (List<UISelectEntity>)this.attrs.get("clientes");
-        if(!Cadena.isVacio(this.attrs.get("idClienteProcess"))) 
+        if(!Cadena.isVacio(this.attrs.get("idClienteProcess")) && !Objects.equals(this.attrs.get("idClienteProcess"), -1L)) 
           sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idClienteProcess")).append(") and");
         switch(this.idCriterio) {
           case 0: // BUSCAR POR CLIENTE
@@ -157,13 +157,14 @@ public class Clientes extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("idCliente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes");
+			JsfBase.setFlashAttribute("idCliente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR))? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Kalan/Catalogos/Pacientes/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
 	public List<UISelectEntity> doCompleteCliente(String codigo) {
@@ -319,6 +320,8 @@ public class Clientes extends IBaseFilter implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {      
 			params.put("idArticuloTipo", "4");			
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
+			params.put("sortOrder", "order by tc_mantic_articulos.nombre");			
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("servicios", UIEntity.build("VistaClientesCitasDto", "servicios", params, columns));
@@ -352,7 +355,14 @@ public class Clientes extends IBaseFilter implements Serializable {
     JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
     JsfBase.setFlashAttribute("idCliente", this.seleccionado.getKey());
     JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes");
-    return "historial".concat(Constantes.REDIRECIONAR);
+    return "/Paginas/Kalan/Catalogos/Pacientes/historial".concat(Constantes.REDIRECIONAR);
+  }
+  
+  public String doActualizar() {
+    JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);		
+    JsfBase.setFlashAttribute("idCliente", this.seleccionado.getKey());
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes");
+    return "/Paginas/Kalan/Catalogos/Pacientes/accion".concat(Constantes.REDIRECIONAR);
   }
   
 }

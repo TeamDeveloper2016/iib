@@ -105,7 +105,7 @@ public class UtilAplicacion {
         regresar= "width: 3em !important; margin-left: 5.5em;";
         break;
       case "kalan":
-        regresar= "width: 105px !important;";
+        regresar= "width: 7.1em !important; margin-left: 4.5em;";
         break;
       case "tsaak":
         regresar= "width: 3em !important; margin-left: 5.5em;";

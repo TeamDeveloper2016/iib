@@ -266,7 +266,9 @@ public class Agenda extends IBaseFilter implements Serializable {
     Map<String, Object> params= new HashMap<>();
     List<UISelectEntity> servicios= null;
     try {      
-			params.put("idArticuloTipo", "4,5");			
+			params.put("idArticuloTipo", "4, 5");	
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);	
+			params.put("sortOrder", "order by tc_mantic_articulos.nombre");			
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       servicios = (List<UISelectEntity>)UIEntity.seleccione("VistaClientesCitasDto", "servicios", params, columns, "codigo");
