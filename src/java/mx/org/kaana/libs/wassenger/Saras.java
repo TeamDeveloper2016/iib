@@ -44,17 +44,17 @@ public final class Saras implements Serializable {
   public static final String IMOX_GROUP_KANAL  = "5214491813810-1598307650@g.us";
   public static final String IMOX_GROUP_TSAAK  = "5214491813810-1598307650@g.us";
   
-  private static final String CITA_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
-  private static final String CITA_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
-  private static final String CITA_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
+  private static final String CITA_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, le notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
+  private static final String CITA_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, le notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
+  private static final String CITA_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, le notificamos que se ha *{estatus}* la cita para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
   
   private static final String RECORDATORIO_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, le *recordamos* que en {horas}hrs. se llevará a cabo su cita, la cual se {estatus} para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
   private static final String RECORDATORIO_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, le *recordamos* que en {horas}hrs. se llevará a cabo su cita, la cual se {estatus} para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
   private static final String RECORDATORIO_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, le *recordamos* que en {horas}hrs. se llevará a cabo su cita, la cual se {estatus} para el día *{fecha}* hrs. para realizar los siguientes servicios:\\n{servicios}\\nPara cualquier cambio en su cita, por favor no dude en contactarnos al teléfono *{notifica}*\\n\\nComentarios generales:\\n{observaciones}\\n\\nGracias por preferirnos *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
   
-  private static final String ATIENDE_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
-  private static final String ATIENDE_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
-  private static final String ATIENDE_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\nAtentamente *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
+  private static final String ATIENDE_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
+  private static final String ATIENDE_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
+  private static final String ATIENDE_MESSAGE_TSAAK = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te notificamos que *{cliente}* ha *{estatus}* una cita para que lo atiendas el día *{fecha}* hrs. para realizarle los siguientes servicios:\\n{servicios}\\nEn caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
   
   private static final String AGENDA_MESSAGE_MANTIC= "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te enviamos las citas por atender el día de hoy *{fecha}*\\n\\n{clientes}En caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
   private static final String AGENDA_MESSAGE_KALAN = "\"phone\":\"+521{celular}\",\"message\":\"Estimad@ _{nombre}_:\\n\\n{saludo}, te enviamos las citas por atender el día de hoy *{fecha}*\\n\\n{clientes}En caso de no poder atender al cliente en el horario indicado, favor de notificar de inmediato al teléfono *{notifica}*\\n\\nAtentamente *_{empresa}_*.\\n\\n( _imoxbot_ )\"";
@@ -93,7 +93,7 @@ public final class Saras implements Serializable {
     this.fecha    = fecha;
     this.estatus  = estatus;
     this.servicios= servicios;
-    this.observaciones= observaciones;
+    this.observaciones= Cadena.isVacio(observaciones)? "Sin comentarios": observaciones;
     this.token    = System.getenv(IMOX_TOKEN);
   }
 
@@ -150,16 +150,16 @@ public final class Saras implements Serializable {
   }
 
   private String toServicios() {
-    return toServicios(this.servicios);
+    return this.toServicios(this.servicios);
   }
   
   private String toServicios(List<Entity> items) {
     StringBuilder regresar= new StringBuilder();
     if(items!= null && !items.isEmpty())
       for (Entity item: items) {
-        regresar.append("   - *").append(item.toString("nombre")).append("*\\n");
+        regresar.append("   - *").append(Cadena.letraCapital(item.toString("nombre"))).append("*\\n");
       } // for
-    return regresar.length()> 0? regresar.toString(): "*SIN SERVICIOS*\\n";
+    return regresar.length()> 0? regresar.toString(): "*Sin servicios*\\n";
   }
           
   @Override
@@ -221,7 +221,7 @@ public final class Saras implements Serializable {
         params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        params.put("observaciones", this.observaciones);
+        params.put("observaciones", Cadena.letraCapital(this.observaciones));
         params.put("idTipoMensaje", ETypeMessage.CITAS.getId());
         if(!Configuracion.getInstance().isEtapaProduccion())
           LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(mensaje, params, true)+ "}");
@@ -274,7 +274,7 @@ public final class Saras implements Serializable {
   public void doSendRecordatorioCliente(Session sesion, Long horas) {
     if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
       Message message= null;
-      String mensaje = CITA_MESSAGE_MANTIC;
+      String mensaje = RECORDATORIO_MESSAGE_MANTIC;
       Map<String, Object> params = new HashMap<>();   
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "iib":
@@ -288,7 +288,7 @@ public final class Saras implements Serializable {
           break;
       } // swtich
       try {
-        params.put("nombre", this.nombre);
+        params.put("nombre", Cadena.nombrePersona(this.nombre));
         params.put("celular", this.celular);
         params.put("fecha", Fecha.formatear(Fecha.DIA_FECHA_HORA_CORTA, this.fecha));
         params.put("estatus", this.estatus);
@@ -297,7 +297,7 @@ public final class Saras implements Serializable {
         params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        params.put("observaciones", this.observaciones);
+        params.put("observaciones", Cadena.letraCapital(this.observaciones));
         params.put("horas", horas);
         params.put("idTipoMensaje", ETypeMessage.CITAS.getId());
         if(!Configuracion.getInstance().isEtapaProduccion())
@@ -365,11 +365,11 @@ public final class Saras implements Serializable {
           break;
       } // swtich
       try {
-        params.put("nombre", this.nombre);
+        params.put("nombre", Cadena.nombrePersona(this.nombre));
         params.put("celular", this.celular);
         params.put("fecha", Fecha.formatear(Fecha.DIA_FECHA_HORA_CORTA, this.fecha));
         params.put("estatus", this.estatus);
-        params.put("cliente", cliente);
+        params.put("cliente", Cadena.nombrePersona(cliente));
         params.put("servicios", this.toServicios());
         params.put("empresa", Cadena.nombrePersona(Configuracion.getInstance().getEmpresa("titulo")));
         params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));

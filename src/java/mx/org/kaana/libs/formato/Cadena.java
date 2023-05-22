@@ -98,16 +98,18 @@ public final class Cadena {
    */
   public static String nombrePersona(String nombre) {
     StringBuilder sb = new StringBuilder();
-    StringTokenizer st = new StringTokenizer(nombre, " ", false);
-    String token = null;
-    while (st.hasMoreTokens()) {
-      token = st.nextToken();
-      if (token.length() > 3) {
-        sb.append(letraCapital(token).concat(" "));
-      } else {
-        sb.append(token.toLowerCase().concat(" "));
-      }
-    } // while
+    if(nombre!= null && nombre.trim().length()> 0) {
+      StringTokenizer st = new StringTokenizer(nombre, " ", false);
+      String token = null;
+      while (st.hasMoreTokens()) {
+        token = st.nextToken();
+        if (token.length()> 3) {
+          sb.append(letraCapital(token).concat(" "));
+        } else {
+          sb.append(token.toLowerCase().concat(" "));
+        }
+      } // while
+    } // if  
     return sb.toString().trim();
   } // nombrePersona
 

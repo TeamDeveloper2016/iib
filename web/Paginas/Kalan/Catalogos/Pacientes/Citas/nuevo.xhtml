@@ -19,6 +19,7 @@
         'comentarios':{validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
         'servicios': {validaciones: 'requerido|mayor({\"cuanto\":1})', mascara: 'libre', mensaje: 'Se tiene que seleccionar al menos 1 servicio'}
       };
+      
 			$(document).ready(function(){janal.readingMode('#{kalanCatalogosPacientesCitasNuevo.attrs.nombreAccion}');});
     </script>		
   </ui:define>
@@ -70,9 +71,9 @@
                   <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesCitasNuevo.doUpdateTermino}" process="@this contenedorGrupos:inicio" update="contenedorGrupos:inicio"/>
                 </p:calendar>                    
                 <p:outputLabel value="Recordatorio:" styleClass="janal-color-black FsBold"/>
-                <p:inputNumber id="recordatorio" value="#{kalanCatalogosPacientesCitasNuevo.paciente.recordatorio}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="0" maxValue="48" minValue="25" thousandSeparator=","/>
+                <p:inputNumber id="recordatorio" value="#{kalanCatalogosPacientesCitasNuevo.paciente.recordatorio}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="24" maxValue="26" minValue="24" thousandSeparator=","/>
                 <p:outputLabel value="Notificar mismo día:" styleClass="janal-color-black FsBold"/>
-                <p:inputNumber id="notificacion" value="#{kalanCatalogosPacientesCitasNuevo.paciente.notificacion}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="0" maxValue="12" minValue="2" thousandSeparator=","/>
+                <p:inputNumber id="notificacion" value="#{kalanCatalogosPacientesCitasNuevo.paciente.notificacion}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="2" maxValue="12" minValue="2" thousandSeparator=","/>
               </p:panelGrid>
             </p:tab>  
             <p:tab title="Asignar:" titleStyle="display: #{kalanCatalogosPacientesCitasNuevo.visualizar? '': 'none'}">  
