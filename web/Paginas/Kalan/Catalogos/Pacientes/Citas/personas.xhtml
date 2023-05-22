@@ -24,7 +24,7 @@
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-find" class="ui-grid-col-12">
           <p:focus context="razonSocial"/>
-          <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-80, janal-wid-20">
+          <p:panelGrid columns="3" styleClass="janal-wid-100-txt" columnClasses="janal-fix-80, janal-fix-15, janal-fix-5">
             <p:autoComplete id="razonSocial" var="item" placeholder="BUSCAR EMPLEADO Ej. JUAN PEREZ LOPEZ" itemLabel="#{item.empleado}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{kalanCatalogosPacientesCitasPersonas.attrs.persona}" completeMethod="#{kalanCatalogosPacientesCitasPersonas.doCompletePersona}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
               <f:facet name="itemtip">
                 <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
@@ -40,11 +40,11 @@
               </f:facet>
             </p:autoComplete>	
             <p:calendar id="fecha" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesCitasPersonas.attrs.fecha}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
+            <p:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-icons-message, janal-icons-message">
+              <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this razonSocial fecha" actionListener="#{kalanCatalogosPacientesCitasPersonas.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+              <p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" style="margin-top: -9px;" icon="fa fa-filter" onstart="return janal.execute();" process="@this razonSocial fecha" actionListener="#{kalanCatalogosPacientesCitasPersonas.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+            </p:panelGrid>  
           </p:panelGrid>
-          <div class="janal-align-right janal-wid-100">
-            <p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this razonSocial fecha" actionListener="#{kalanCatalogosPacientesCitasPersonas.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-            <p:commandButton id="buscarIcon" value="Buscar" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this razonSocial fecha" actionListener="#{kalanCatalogosPacientesCitasPersonas.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
-          </div>
           <p:spacer width="5px"/>
           <center>
             <p:dataGrid lazy="true" id="tabla" var="row" styleClass="janal-wid-99" value="#{kalanCatalogosPacientesCitasPersonas.lazyModel}" columns="3" layout="grid" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kalanCatalogosPacientesCitasPersonas.lazyModel.rowCount gt kalanCatalogosPacientesCitasPersonas.lazyModel.pageSize}" rowIndexVar="index" paginatorPosition="bottom">
