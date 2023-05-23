@@ -365,6 +365,7 @@ where
   tr_mantic_empresa_personal.id_empresa in ({sucursales})
   and tr_mantic_empresa_personal.id_activo= 1
   and tc_mantic_personas.id_tipo_persona!= 1
+  and tr_mantic_empresa_personal.id_puesto in (1, 2, 3, 4, 5)
   and {condicion}
 group by
   tc_mantic_personas.id_persona               

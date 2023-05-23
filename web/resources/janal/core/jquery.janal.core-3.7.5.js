@@ -126,7 +126,7 @@
       return value.replace(new RegExp(characters.join('|'), 'g'), '');
     }, // remove
     cleanToken: function(value, minus) {
-      var separators= typeof(minus)!== 'undefined' && minus? ['\\\ ', '\\\,', '\\\$', '\\\(', '\\\)', '\\\-']: ['\\\ ', '\\\,', '\\\$', '\\\(', '\\\)'];
+      var separators= typeof(minus)!== 'undefined' && minus? ['\\\ ', '\\\,', '\\\$', '\\\(', '\\\)', '\\\-', '\\\%', 'HRS', 'MIN']: ['\\\ ', '\\\,', '\\\$', '\\\(', '\\\)', '\\\%', 'HRS', 'MIN'];
       return this.remove(value, separators);
     }, // cleanToken
     isNonnegativeInteger: function(s) {
@@ -1316,7 +1316,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.3.7.4';
+      return '0.3.7.5';
     }, // version
     align: function(pixels) {
       try {
