@@ -218,6 +218,7 @@ left join
   tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 where 
   tc_mantic_clientes.id_empresa in ({sucursales})
+  and tc_mantic_clientes.id_cliente> 1
   and {condicion}
 group by
   tc_mantic_clientes.id_cliente,
@@ -268,6 +269,7 @@ left join
   tc_mantic_articulos on tc_kalan_citas_detalles.id_articulo= tc_mantic_articulos.id_articulo
 where 
   tc_mantic_clientes.id_empresa in ({sucursales})
+  and tc_mantic_clientes.id_cliente> 1
   and {condicion}
 group by
   tc_mantic_clientes.id_cliente       

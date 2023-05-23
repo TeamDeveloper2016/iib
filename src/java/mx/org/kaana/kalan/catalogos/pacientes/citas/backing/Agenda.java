@@ -2,6 +2,7 @@ package mx.org.kaana.kalan.catalogos.pacientes.citas.backing;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,10 +41,15 @@ public class Agenda extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428879L;
   
   private ScheduleModel lazyEventModel;
+  private String serverTimeZone= ZoneId.systemDefault().toString();  
   private Integer idCriterio;
 
   public ScheduleModel getLazyEventModel() {
     return lazyEventModel;
+  }
+
+  public String getServerTimeZone() {
+    return serverTimeZone;
   }
 
   @PostConstruct
@@ -248,7 +254,7 @@ public class Agenda extends IBaseFilter implements Serializable {
         Entity sinDoctor= new Entity(0L);
         sinDoctor.put("idPersona", new Value("idPersona", 0L, "id_persona"));
         sinDoctor.put("idEmpresaPersona", new Value("idEmpresaPersona", 0L, "id_empresa_persona"));
-        sinDoctor.put("empleado", new Value("empleado", "SIN DOCTOR"));
+        sinDoctor.put("empleado", new Value("empleado", "SIN TRABAJADOR"));
         personas.add(1, new UISelectEntity(sinDoctor));
       } // if  
     } // try
@@ -288,17 +294,18 @@ public class Agenda extends IBaseFilter implements Serializable {
   }
 
 	public void doTabChange(TabChangeEvent event) {
-    switch(event.getTab().getTitle()) {
-      case "Cliente":
-    		this.idCriterio= 0;
-        break;
-      case "Servicio":
-    		this.idCriterio= 1;
-        break;
-      case "Atiende":
-    		this.idCriterio= 2;
-        break;
-    } // switch
+    if(!Objects.equals(event.getTab(), null))
+      switch(event.getTab().getTitle()) {
+        case "Cliente":
+          this.idCriterio= 0;
+          break;
+        case "Servicio":
+          this.idCriterio= 1;
+          break;
+        case "Atiende":
+          this.idCriterio= 2;
+          break;
+      } // switch
   }  
   
 }

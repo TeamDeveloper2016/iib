@@ -54,7 +54,9 @@ public class EventosLazyModel extends LazyScheduleModel implements Serializable 
         UIBackingUtilities.toFormatEntitySet(eventos, this.columns);
         for (Entity item: eventos) {
           String cliente= item.toString("cliente");
-          cita= new DefaultScheduleEvent(Objects.equals(cliente.trim().length(), 0)? item.toString("servicios"): cliente, item.toTimestamp("inicio"), item.toTimestamp("termino"), item);
+          Date inicio   = new Date(item.toTimestamp("inicio").getTime());
+          Date termino  = new Date(item.toTimestamp("termino").getTime());
+          cita= new DefaultScheduleEvent(Objects.equals(cliente.trim().length(), 0)? item.toString("servicios"): cliente, inicio, termino, item);
           cita.setStyleClass("janal-cita-".concat(Objects.equals(cliente.trim().length(), 0)? "extras": item.toString("estatus").toLowerCase()));
           cita.setDescription(item.toString("servicios"));
           cita.setEditable(Boolean.TRUE);

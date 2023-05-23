@@ -103,7 +103,7 @@ left join
   tc_keet_articulos_clientes on tc_mantic_articulos.id_articulo= tc_keet_articulos_clientes.id_articulo and tc_keet_articulos_clientes.id_cliente= {idCliente}
 where 
   tc_mantic_empresas.id_empresa in ({sucursales})
-  and tc_mantic_articulos.id_articulo_tipo in (1, 2)
+  and tc_mantic_articulos.id_articulo_tipo in (1, 2, 4)
   and tc_mantic_articulos.id_vigente= 1
   and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*' or tc_mantic_articulos.id_articulo= {idArticulo})
 group by
@@ -157,7 +157,7 @@ left join
   tc_keet_articulos_clientes on tc_mantic_articulos.id_articulo= tc_keet_articulos_clientes.id_articulo and tc_keet_articulos_clientes.id_cliente= {idCliente}
 where 
   tc_mantic_empresas.id_empresa in ({sucursales})
-  and tc_mantic_articulos.id_articulo_tipo in (1, 2)
+  and tc_mantic_articulos.id_articulo_tipo in (1, 2, 4)
   and tc_mantic_articulos.id_vigente= 1
   and (
     (upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and tc_mantic_articulos_codigos.id_proveedor is null)
@@ -217,7 +217,7 @@ left join
   tc_keet_articulos_clientes on tc_mantic_articulos.id_articulo= tc_keet_articulos_clientes.id_articulo and tc_keet_articulos_clientes.id_cliente= {idCliente}
 where 
   tc_mantic_empresas.id_empresa in ({sucursales})
-  and tc_mantic_articulos.id_articulo_tipo in (1, 2)
+  and tc_mantic_articulos.id_articulo_tipo in (1, 2, 4)
   and tc_mantic_articulos.id_vigente= 1
   and (
     (upper(tc_mantic_articulos_codigos.codigo)= '{codigo}' and tc_mantic_articulos_codigos.id_proveedor is null)

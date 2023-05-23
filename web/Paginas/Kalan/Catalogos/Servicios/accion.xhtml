@@ -47,7 +47,7 @@
 			};
 																			
 			$(document).ready(function(){
-				janal.readingMode('#{manticCatalogosArticulosAccion.attrs.nombreAccion}');
+				janal.readingMode('#{kalanCatalogosServiciosAccion.attrs.nombreAccion}');
 			});			
       
       function checkItemString(item, index) {
@@ -70,7 +70,7 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
-		<pe:remoteCommand name="lookForCodigo" process="@this @(.proveedores-codigo)" actionListener="#{manticCatalogosArticulosAccion.doLookForCodigo}">  
+		<pe:remoteCommand name="lookForCodigo" process="@this @(.proveedores-codigo)" actionListener="#{kalanCatalogosServiciosAccion.doLookForCodigo}">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.String, java.lang.Long"/>  
 			<pe:methodParam name="id"/>  
 			<pe:methodParam name="codigo"/>  
@@ -80,79 +80,80 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
+          <p:accordionPanel id="contenedorGrupos" activeIndex="0" onTabChange="simpleProcess();">            
 						<p:ajax event="tabChange" process="@this" update="tablaTiposVenta tablaPreciosSugeridos tablaDescuentosEspeciales tablaEspecificaciones tablaDescuentos tablaArticulosProveedores" oncomplete="janal.refresh();"/>
             <p:tab title="General">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">								
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:outputLabel for="nombre" value="Nombre:"/>
-								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.nombre}" />                    
+								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.nombre}" />                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
-								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.descripcion}"/>                    
+								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.descripcion}"/>                    
 								<p:outputLabel for="precio" value="Costo:"/>
-								<p:inputNumber id="precio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.precio}">                    
-									<p:ajax event="blur" process="@this" update="menudeo medio mayoreo especial @(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePrecio()}"/>
+								<p:inputNumber id="precio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.precio}">                    
+									<p:ajax event="blur" process="@this" update="menudeo medio mayoreo especial @(.calculos)" listener="#{kalanCatalogosServiciosAccion.doUpdatePrecio()}"/>
 								</p:inputNumber>
-								<p:spacer width="1px"/><p:separator/>
+								<p:separator/>
 								<p:outputLabel for="menudeo" value="Menudeo:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
-									<p:inputNumber id="menudeo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.menudeo}">
-  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+									<p:inputNumber id="menudeo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.menudeo}">
+  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{kalanCatalogosServiciosAccion.doUpdatePreciosVenta()}"/>
 									</p:inputNumber>
-									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.menudeo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
+									<p:outputLabel value="#{kalanCatalogosServiciosAccion.attrs.menudeo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
 								</p:panelGrid>
 								<p:outputLabel for="medio" value="Medio mayoreo:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
-	  							<p:inputNumber id="medio" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.medioMayoreo}">
-  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+	  							<p:inputNumber id="medio" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.medioMayoreo}">
+  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{kalanCatalogosServiciosAccion.doUpdatePreciosVenta()}"/>
 									</p:inputNumber>
-									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.medioMayoreo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
+									<p:outputLabel value="#{kalanCatalogosServiciosAccion.attrs.medioMayoreo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
 								</p:panelGrid>
 								<p:outputLabel for="mayoreo" value="Mayoreo:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
-  								<p:inputNumber id="mayoreo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.mayoreo}">
-  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+  								<p:inputNumber id="mayoreo" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.mayoreo}">
+  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{kalanCatalogosServiciosAccion.doUpdatePreciosVenta()}"/>
 									</p:inputNumber>
-									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.mayoreo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
+									<p:outputLabel value="#{kalanCatalogosServiciosAccion.attrs.mayoreo} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
 								</p:panelGrid>
 								<p:outputLabel for="especial" value="Especial:"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 calculos" columnClasses="janal-wid-100, janal-wid-col-80 janal-column-right">
-  								<p:inputNumber id="especial" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.especial}">
-  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+  								<p:inputNumber id="especial" styleClass="calculos" inputStyleClass="janal-wid-100-txt janal-color-blue janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.especial}">
+  									<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{kalanCatalogosServiciosAccion.doUpdatePreciosVenta()}"/>
 									</p:inputNumber>
-									<p:outputLabel value="#{manticCatalogosArticulosAccion.attrs.especial} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
+									<p:outputLabel value="#{kalanCatalogosServiciosAccion.attrs.especial} %" styleClass="janal-font-bold calculos porcentajes" title="Utilidad"/>
 								</p:panelGrid>
-								<p:spacer width="1px"/><p:separator/>
+								<p:separator/>
 								<p:outputLabel for="sat" value="Código SAT:"/>
-								<p:inputText id="sat" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.sat}"/>                    
+								<p:inputText id="sat" styleClass="janal-wid-100-txt" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.sat}"/>                    
 								<p:outputLabel for="iva" value="Iva:"/>
-								<p:inputNumber id="iva" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    
+								<p:inputNumber id="iva" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.iva}">
+  								<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{kalanCatalogosServiciosAccion.doUpdatePreciosVenta()}"/>
+  							</p:inputNumber>
 								<p:outputLabel for="redondear" value="Redondear:"/>
-								<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.redondear}" offLabel="NO" onLabel="SI">
- 									<p:ajax event="change" process="@this" update="@(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+								<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt" value="#{kalanCatalogosServiciosAccion.registroArticulo.redondear}" offLabel="NO" onLabel="SI">
+ 									<p:ajax event="change" process="@this" update="@(.calculos)" listener="#{kalanCatalogosServiciosAccion.doUpdatePreciosVenta()}"/>
 								</p:inputSwitch>
-								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="pesoEstimado" value="Peso estimado:"/>
-								<p:inputNumber id="pesoEstimado" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.pesoEstimado}"/>                    																	
-								<p:outputLabel for="desperdicio" value="Desperdicio:"/>
-								<p:inputNumber id="desperdicio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.desperdicio}"/>                    																	
-								<p:spacer width="1px"/><p:separator/>
+								<!--p:separator styleClass="janal-display-none"/-->
+								<p:outputLabel for="pesoEstimado" value="Peso estimado:" styleClass="janal-display-none"/>
+								<p:inputNumber id="pesoEstimado" styleClass="janal-display-none" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.pesoEstimado}"/>                    																	
+                <p:outputLabel for="desperdicio" value="Desperdicio:" styleClass="janal-display-none"/>
+								<p:inputNumber id="desperdicio" styleClass="janal-display-none" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.desperdicio}"/>                    																	
+								<p:separator/>
 								<p:outputLabel for="idTipoArticulo" value="Tipo:"/>
-								<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo}" styleClass="janal-wid-100-txt">
+								<p:selectOneMenu id="idTipoArticulo" value="#{kalanCatalogosServiciosAccion.registroArticulo.idTipoArticulo}" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" onstart="janal.bloquear()" process="@this contenedorGrupos" update="contenedorGrupos" oncomplete="janal.desbloquear();janal.refresh();"/>
-									<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
 									<f:selectItem itemLabel="SERVICIO" itemValue="4"/>
 									<f:selectItem itemLabel="RESERVADO" itemValue="5"/>
 								</p:selectOneMenu>								
 								<p:outputLabel for="idBarras" value="Código de barras:"/>
-								<p:inputSwitch id="idBarras" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idBarras}" offLabel="NO" onLabel="SI"/>
-								<p:spacer width="1px"/><p:separator/>
+								<p:inputSwitch id="idBarras" styleClass="janal-wid-100-txt" value="#{kalanCatalogosServiciosAccion.registroArticulo.idBarras}" offLabel="NO" onLabel="SI"/>
+								<p:separator/>
 								<p:outputLabel for="idVigente" value="Vigente:" styleClass="janal-color-blue strong janal-display-none"/>
-								<p:selectOneMenu id="idVigente" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idVigente}" styleClass="janal-wid-100-txt janal-display-none">									
+								<p:selectOneMenu id="idVigente" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.idVigente}" styleClass="janal-wid-100-txt janal-display-none">									
 									<f:selectItem itemLabel="SI" itemValue="1"/>
 									<f:selectItem itemLabel="NO" itemValue="2"/>
 								</p:selectOneMenu>								
 								<p:outputLabel for="idDescontinuado" value="Descontinuado:" styleClass="janal-color-blue strong janal-display-none"/>
-								<p:selectOneMenu id="idDescontinuado" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idDescontinuado}" styleClass="janal-wid-100-txt janal-display-none">									
+								<p:selectOneMenu id="idDescontinuado" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.idDescontinuado}" styleClass="janal-wid-100-txt janal-display-none">									
 									<f:selectItem itemLabel="SI" itemValue="1"/>
 									<f:selectItem itemLabel="NO" itemValue="2"/>
 								</p:selectOneMenu>								
@@ -160,11 +161,11 @@
 						</p:tab>						
             <p:tab id="tabCodigos" title="Códigos">	
               <p:outputLabel for="fabricante" value="Código fabricante:" rendered="false"/>
-              <p:inputText id="fabricante" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.fabricante}" rendered="false"/>
-              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">
+              <p:inputText id="fabricante" styleClass="janal-wid-100-txt" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.fabricante}" rendered="false"/>
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:outputLabel for="idArticuloImpuesto" value="Objeto impuesto:"/>
-                <p:selectOneMenu id="idArticuloImpuesto" value="#{manticCatalogosArticulosAccion.registroArticulo.ikArticuloImpuesto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{manticCatalogosArticulosAccion.attrs.articulosImpuestos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:selectOneMenu id="idArticuloImpuesto" value="#{kalanCatalogosServiciosAccion.registroArticulo.ikArticuloImpuesto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{kalanCatalogosServiciosAccion.attrs.articulosImpuestos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Código">
                     <h:outputText value="#{item.codigo}"/>
                   </p:column>   
@@ -174,12 +175,12 @@
 								</p:selectOneMenu>
               </p:panelGrid>
 							<p:panelGrid id="panelTablaCodigos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigos}" rows="15" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated"  rowStyleClass="#{manticCatalogosArticulosAccion.toColor(codigo)}">
+								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulosCodigos}" rows="15" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated"  rowStyleClass="#{kalanCatalogosServiciosAccion.toColor(codigo)}">
 									<p:column headerText="Proveedor">										
 										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt proveedores-codigo" value="#{codigo.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
 											<p:ajax update="tablaCodigos @(.multiplo)" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.refresh(); janal.desbloquear();"/>
 											<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
-											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
+											<f:selectItems value="#{kalanCatalogosServiciosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>				
 									<p:column headerText="Código" styleClass="janal-wid-20 codigo">		
@@ -190,23 +191,23 @@
 									</p:column>
 									<p:column headerText="Principal" styleClass="janal-wid-5" style="text-align: center">
 										<p:selectBooleanCheckbox value="#{codigo.principal}" rendered="#{codigo.candidatoPrincipal}" onblur="simpleProcess();">
-											<p:ajax listener="#{manticCatalogosArticulosAccion.registroArticulo.doSeleccionarPrincipal(codigo)}" update="tablaCodigos" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<p:ajax listener="#{kalanCatalogosServiciosAccion.registroArticulo.doSeleccionarPrincipal(codigo)}" update="tablaCodigos" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 										</p:selectBooleanCheckbox>
 									</p:column>
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaCodigos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarArticuloCodigo}">
-											<f:setPropertyActionListener value="#{codigo}" target="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigosSeleccion}" />
+										 <p:commandButton update="tablaCodigos" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosServiciosAccion.registroArticulo.doEliminarArticuloCodigo}">
+											<f:setPropertyActionListener value="#{codigo}" target="#{kalanCatalogosServiciosAccion.registroArticulo.articulosCodigosSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarArticuloCodigo}" process="@this tablaCodigos" update="tablaCodigos" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+										<p:commandButton actionListener="#{kalanCatalogosServiciosAccion.registroArticulo.doAgregarArticuloCodigo}" process="@this tablaCodigos" update="tablaCodigos" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>															
 						</p:tab>
 						<p:tab id="tabEspecificaciones" title="Especificaciones">
 							<p:panelGrid id="panelTablaEspecificaciones" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-								<p:dataTable id="tablaEspecificaciones" rowIndexVar="index" var="especificacion" value="#{manticCatalogosArticulosAccion.registroArticulo.especificaciones}" rows="6" paginator="false" reflow="true" rowKey="#{especificacion.key}" emptyMessage=" " styleClass="paginated">												
+								<p:dataTable id="tablaEspecificaciones" rowIndexVar="index" var="especificacion" value="#{kalanCatalogosServiciosAccion.registroArticulo.especificaciones}" rows="6" paginator="false" reflow="true" rowKey="#{especificacion.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Nombre" styleClass="janal-wid-30 nombres">		
 										<p:inputText id="nombres#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.nombre}" onblur="simpleProcess();"/>
 									</p:column>
@@ -214,30 +215,30 @@
 										<p:inputText id="valor#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.valor}" onblur="simpleProcess();"/>	
 									</p:column>				
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaEspecificaciones" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarEspecificacion}">
-											 <f:setPropertyActionListener value="#{especificacion}" target="#{manticCatalogosArticulosAccion.registroArticulo.especificacionSeleccion}" />
+										 <p:commandButton update="tablaEspecificaciones" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosServiciosAccion.registroArticulo.doEliminarEspecificacion}">
+											 <f:setPropertyActionListener value="#{especificacion}" target="#{kalanCatalogosServiciosAccion.registroArticulo.especificacionSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarEspecificacion}" process="@this tablaEspecificaciones" update="tablaEspecificaciones" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+										<p:commandButton actionListener="#{kalanCatalogosServiciosAccion.registroArticulo.doAgregarEspecificacion}" process="@this tablaEspecificaciones" update="tablaEspecificaciones" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>	
 						</p:tab>
-            <p:tab id="tabImagen" title="Imagen" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">								
+            <p:tab id="tabImagen" title="Imagen" rendered="#{kalanCatalogosServiciosAccion.registroArticulo.idTipoArticulo eq '1'}">								
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">								
-                <p:fileUpload id="imagen" update="@(.detalle)" fileUploadListener="#{manticCatalogosArticulosAccion.registroArticulo.doFileUpload}" uploadLabel="Importar" cancelLabel="Cancelar" label="Seleccionar" mode="advanced" dragDropSupport="true" allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="5242880" invalidSizeMessage="El tamaño maximo permitido es de 5 Megabytes !" invalidFileMessage="Solo se permiten importar archivos con extensión .PNG y .JPG !" auto="true"/>																
+                <p:fileUpload id="imagen" update="@(.detalle)" fileUploadListener="#{kalanCatalogosServiciosAccion.registroArticulo.doFileUpload}" uploadLabel="Importar" cancelLabel="Cancelar" label="Seleccionar" mode="advanced" dragDropSupport="true" allowTypes="/(\.|\/)(jpe?g|png)$/" sizeLimit="5242880" invalidSizeMessage="El tamaño maximo permitido es de 5 Megabytes !" invalidFileMessage="Solo se permiten importar archivos con extensión .PNG y .JPG !" auto="true"/>																
                 <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-2, janal-fix-98">
-								  <p:selectBooleanCheckbox value="#{manticCatalogosArticulosAccion.registroArticulo.imagen}"/>
+								  <p:selectBooleanCheckbox value="#{kalanCatalogosServiciosAccion.registroArticulo.imagen}"/>
 								  <p:outputLabel value="Respetar todos los articulos que cuentan con esta imagen" styleClass="janal-color-blue"/>								
                 </p:panelGrid>  
 							</p:panelGrid>
-              <p:dataGrid id="imagenes" lazy="false" value="#{manticCatalogosArticulosAccion.registroArticulo.imagenes}" var="row" columns="3" paginator="#{manticCatalogosArticulosAccion.registroArticulo.imagenes.size() gt 9}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="jana-wid-100-txt detalle">
+              <p:dataGrid id="imagenes" lazy="false" value="#{kalanCatalogosServiciosAccion.registroArticulo.imagenes}" var="row" columns="3" paginator="#{kalanCatalogosServiciosAccion.registroArticulo.imagenes.size() gt 9}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" styleClass="jana-wid-100-txt detalle">
                 <div class="producto">
                   <div class="producto-list-item p-p-1">
                     <div class="producto-item-search">
-                      <a id="view#{row.id}" data-magnify="gallery" href="#{manticCatalogosArticulosAccion.path}#{row.importado.name}" data-caption="#{row.importado.name}" data-group="icon-image" class="icon">
-                        <p:graphicImage url="#{manticCatalogosArticulosAccion.path}#{row.importado.name}" style="cursor:zoom-in;"/>
+                      <a id="view#{row.id}" data-magnify="gallery" href="#{kalanCatalogosServiciosAccion.path}#{row.importado.name}" data-caption="#{row.importado.name}" data-group="icon-image" class="icon">
+                        <p:graphicImage url="#{kalanCatalogosServiciosAccion.path}#{row.importado.name}" style="cursor:zoom-in;"/>
                       </a>  
                       <span>#{row.importado.name}</span>
                     </div> 
@@ -255,21 +256,21 @@
                       <div class="producto-actions">
                         <span class="janal-align-left janal-color-orange detalle" style="display:#{row['sqlAccion'] eq 'DELETE'? 'none': ''}">
                           <p:selectBooleanButton value="#{row.principal}" onLabel="SI" offLabel="NO" style="width:60px;">
-                            <p:ajax event="change" process="@this" update="@(.detalle)" listener="#{manticCatalogosArticulosAccion.doUpdatePrinicipal(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                            <p:ajax event="change" process="@this" update="@(.detalle)" listener="#{kalanCatalogosServiciosAccion.doUpdatePrinicipal(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                           </p:selectBooleanButton>   
                           es la imagen principal
                         </span>
-                        <p:commandButton title="Eliminar" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosArticulosAccion.doDeleteImage(row)}" process="@this" update="@(.detalle)" style="display:#{row['sqlAccion'] eq 'DELETE'? 'none': ''}"/>
-                        <p:commandButton title="Recuperar" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{manticCatalogosArticulosAccion.doRecoverImage(row)}" process="@this" update="@(.detalle)" style="display:#{row['sqlAccion'] eq 'DELETE'? '': 'none'}"/>
+                        <p:commandButton title="Eliminar" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{kalanCatalogosServiciosAccion.doDeleteImage(row)}" process="@this" update="@(.detalle)" style="display:#{row['sqlAccion'] eq 'DELETE'? 'none': ''}"/>
+                        <p:commandButton title="Recuperar" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{kalanCatalogosServiciosAccion.doRecoverImage(row)}" process="@this" update="@(.detalle)" style="display:#{row['sqlAccion'] eq 'DELETE'? '': 'none'}"/>
                       </div>
                     </div>
                   </div>
                 </div>  
               </p:dataGrid>
 						</p:tab>
-						<p:tab id="tabDescuentos" title="Descuentos" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
+						<p:tab id="tabDescuentos" title="Descuentos" rendered="#{kalanCatalogosServiciosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid id="panelTablaDescuentos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-								<p:dataTable id="tablaDescuentos" rowIndexVar="index" var="descuento" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuento.key}" emptyMessage=" " styleClass="paginated">												
+								<p:dataTable id="tablaDescuentos" rowIndexVar="index" var="descuento" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulosDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuento.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Porcentaje" styleClass="janal-wid-20 porcDesc">		
 										<p:inputNumber id="porcDesc#{descuento.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{descuento.porcentaje}"  symbol="%" emptyValue="zero" symbolPosition="s" onblur="simpleProcess();"/>
 									</p:column>
@@ -280,22 +281,22 @@
 										<p:calendar id="vigenciaFinal#{descuento.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" styleClass="janal-wid-100-txt" value="#{descuento.vigenciaFin}" mode="popup" onblur="simpleProcess();"/>																																				
 									</p:column>				
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaDescuentos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarDescuento}">
-											 <f:setPropertyActionListener value="#{descuento}" target="#{manticCatalogosArticulosAccion.registroArticulo.articuloDescuentoSeleccion}" />
+										 <p:commandButton update="tablaDescuentos" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosServiciosAccion.registroArticulo.doEliminarDescuento}">
+											 <f:setPropertyActionListener value="#{descuento}" target="#{kalanCatalogosServiciosAccion.registroArticulo.articuloDescuentoSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarDescuento}" process="@this tablaDescuentos" update="tablaDescuentos" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+										<p:commandButton actionListener="#{kalanCatalogosServiciosAccion.registroArticulo.doAgregarDescuento}" process="@this tablaDescuentos" update="tablaDescuentos" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>							
 						</p:tab>
-						<p:tab title="Grupos" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
+						<p:tab title="Grupos" rendered="#{kalanCatalogosServiciosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid id="panelTablaDescuentosEspeciales" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-								<p:dataTable id="tablaDescuentosEspeciales" var="descuentoEspecial" value="#{manticCatalogosArticulosAccion.registroArticulo.clientesDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuentoEspecial.key}" emptyMessage=" " styleClass="paginated">												
+								<p:dataTable id="tablaDescuentosEspeciales" var="descuentoEspecial" value="#{kalanCatalogosServiciosAccion.registroArticulo.clientesDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuentoEspecial.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Grupo">										
 										<p:selectOneMenu id="cliente#{descuentoEspecial.key}" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.idGrupo}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
-											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.gruposGeneral}"/>
+											<f:selectItems value="#{kalanCatalogosServiciosAccion.attrs.gruposGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>		
 									<p:column headerText="Porcentaje" styleClass="janal-wid-10 pocentaje">		
@@ -308,30 +309,30 @@
 										<p:calendar id="vigenciaFinal#{descuentoEspecial.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.vigenciaFin}" mode="popup" onblur="simpleProcess();"/>
 									</p:column>				
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaDescuentosEspeciales" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarDescuentoEspecial}">
-											 <f:setPropertyActionListener value="#{descuentoEspecial}" target="#{manticCatalogosArticulosAccion.registroArticulo.clienteDescuentoSeleccion}" />
+										 <p:commandButton update="tablaDescuentosEspeciales" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosServiciosAccion.registroArticulo.doEliminarDescuentoEspecial}">
+											 <f:setPropertyActionListener value="#{descuentoEspecial}" target="#{kalanCatalogosServiciosAccion.registroArticulo.clienteDescuentoSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarDescuentoEspecial}" process="@this tablaDescuentosEspeciales" update="tablaDescuentosEspeciales" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+										<p:commandButton actionListener="#{kalanCatalogosServiciosAccion.registroArticulo.doAgregarDescuentoEspecial}" process="@this tablaDescuentosEspeciales" update="tablaDescuentosEspeciales" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>								
 						</p:tab>
-						<p:tab title="Categoría" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">
+						<p:tab title="Categoría" rendered="#{kalanCatalogosServiciosAccion.registroArticulo.idTipoArticulo eq '1'}">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:outputLabel for="categoria" value="Categoría:"/>
-								<p:selectOneMenu id="categoria" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idCategoria}" styleClass="janal-wid-100-txt">									
-									<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.categorias}"/>
+								<p:selectOneMenu id="categoria" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.idCategoria}" styleClass="janal-wid-100-txt">									
+									<f:selectItems value="#{kalanCatalogosServiciosAccion.attrs.categorias}"/>
 								</p:selectOneMenu>								
 							</p:panelGrid>	
 						</p:tab>
-						<p:tab title="Ofertas" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
+						<p:tab title="Ofertas" rendered="#{kalanCatalogosServiciosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid id="panelTablaPreciosSugeridos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-								<p:dataTable id="tablaPreciosSugeridos" rowIndexVar="index" var="precioSugerido" value="#{manticCatalogosArticulosAccion.registroArticulo.preciosSugeridos}" rows="6" paginator="false" reflow="true" rowKey="#{precioSugerido.key}" emptyMessage=" " styleClass="paginated">												
+								<p:dataTable id="tablaPreciosSugeridos" rowIndexVar="index" var="precioSugerido" value="#{kalanCatalogosServiciosAccion.registroArticulo.preciosSugeridos}" rows="6" paginator="false" reflow="true" rowKey="#{precioSugerido.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
 										<p:selectOneMenu id="proveedorPrecioSugerido#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
-											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
+											<f:selectItems value="#{kalanCatalogosServiciosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>		
 									<p:column headerText="Precio" styleClass="janal-wid-10 precio">		
@@ -344,22 +345,22 @@
 										<p:inputText id="obsv#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.observaciones}" onblur="simpleProcess();"/>
 									</p:column>												
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaPreciosSugeridos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarPrecioSugerido}">
-											 <f:setPropertyActionListener value="#{precioSugerido}" target="#{manticCatalogosArticulosAccion.registroArticulo.precioSugeridoSeleccion}" />
+										 <p:commandButton update="tablaPreciosSugeridos" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosServiciosAccion.registroArticulo.doEliminarPrecioSugerido}">
+											 <f:setPropertyActionListener value="#{precioSugerido}" target="#{kalanCatalogosServiciosAccion.registroArticulo.precioSugeridoSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarPrecioSugerido}" process="@this tablaPreciosSugeridos" update="tablaPreciosSugeridos" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+										<p:commandButton actionListener="#{kalanCatalogosServiciosAccion.registroArticulo.doAgregarPrecioSugerido}" process="@this tablaPreciosSugeridos" update="tablaPreciosSugeridos" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>		
 						</p:tab>
-						<p:tab title="Proveedores" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
+						<p:tab title="Proveedores" rendered="#{kalanCatalogosServiciosAccion.registroArticulo.idTipoArticulo eq '1'}">
 							<p:panelGrid id="panelTablaArticulosProveedores" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-								<p:dataTable id="tablaArticulosProveedores" var="articuloProveedor" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosProveedores}" rows="6" paginator="false" reflow="true" rowKey="#{articuloProveedor.key}" emptyMessage=" " styleClass="paginated">												
+								<p:dataTable id="tablaArticulosProveedores" var="articuloProveedor" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulosProveedores}" rows="6" paginator="false" reflow="true" rowKey="#{articuloProveedor.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
 										<p:selectOneMenu id="proveedorPrecioSugerido#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.idProveedor}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
-											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
+											<f:selectItems value="#{kalanCatalogosServiciosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>											
 									<p:column headerText="Cantidad" styleClass="janal-wid-10 provcantidad">		
@@ -375,67 +376,67 @@
 										<p:calendar id="fechaCompra#{articuloProveedor.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{articuloProveedor.compra}" mode="popup" showOn="button" onblur="simpleProcess();"/>
 									</p:column>												
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaArticulosProveedores" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarArticuloProveedor}">
-											 <f:setPropertyActionListener value="#{articuloProveedor}" target="#{manticCatalogosArticulosAccion.registroArticulo.articuloProveedorSeleccion}" />
+										 <p:commandButton update="tablaArticulosProveedores" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosServiciosAccion.registroArticulo.doEliminarArticuloProveedor}">
+											 <f:setPropertyActionListener value="#{articuloProveedor}" target="#{kalanCatalogosServiciosAccion.registroArticulo.articuloProveedorSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarArticuloProveedor}" process="@this tablaArticulosProveedores" update="tablaArticulosProveedores" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+										<p:commandButton actionListener="#{kalanCatalogosServiciosAccion.registroArticulo.doAgregarArticuloProveedor}" process="@this tablaArticulosProveedores" update="tablaArticulosProveedores" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>
 						</p:tab>
 						<p:tab title="Tipo de venta" rendered="false">
 							<p:panelGrid id="panelTablaTiposVenta" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-								<p:dataTable id="tablaTiposVenta" var="tipoVenta" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosTiposVenta}" rows="6" paginator="false" reflow="true" rowKey="#{tipoVenta.key}" emptyMessage=" " styleClass="paginated">												
+								<p:dataTable id="tablaTiposVenta" var="tipoVenta" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulosTiposVenta}" rows="6" paginator="false" reflow="true" rowKey="#{tipoVenta.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Tipo venta">										
 										<p:selectOneMenu id="tipoVenta#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.idTipoVenta}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" onblur="simpleProcess();">
-											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.tiposVentasGeneral}"/>
+											<f:selectItems value="#{kalanCatalogosServiciosAccion.attrs.tiposVentasGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>											
 									<p:column headerText="Porcentaje" styleClass="janal-wid-30 porcentaje">		
 										<p:inputNumber id="porcentaje#{tipoVenta.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{tipoVenta.porcentaje}" symbol="%" emptyValue="zero" symbolPosition="s" onblur="simpleProcess();"/>
 									</p:column>									
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaTiposVenta" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarTipoVenta}">
-											 <f:setPropertyActionListener value="#{tipoVenta}" target="#{manticCatalogosArticulosAccion.registroArticulo.articuloTiposVentaSeleccion}" />
+										 <p:commandButton update="tablaTiposVenta" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosServiciosAccion.registroArticulo.doEliminarTipoVenta}">
+											 <f:setPropertyActionListener value="#{tipoVenta}" target="#{kalanCatalogosServiciosAccion.registroArticulo.articuloTiposVentaSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarTipoVenta}" process="@this tablaTiposVenta" update="tablaTiposVenta" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
+										<p:commandButton actionListener="#{kalanCatalogosServiciosAccion.registroArticulo.doAgregarTipoVenta}" process="@this tablaTiposVenta" update="tablaTiposVenta" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>
 						</p:tab>
-						<p:tab title="Empaque" rendered="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo eq '1'}">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">
+						<p:tab title="Empaque" rendered="#{kalanCatalogosServiciosAccion.registroArticulo.idTipoArticulo eq '1'}">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:outputLabel for="empaque" value="Empaque:"/>
-								<p:selectOneMenu id="empaque" value="#{manticCatalogosArticulosAccion.registroArticulo.idEmpaque}" styleClass="janal-wid-100-txt">
-									<p:ajax event="change" listener="#{manticCatalogosArticulosAccion.doLoadUnidadesMedidas}" process="@this" update="unidadMedida" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.empaques}"/>
+								<p:selectOneMenu id="empaque" value="#{kalanCatalogosServiciosAccion.registroArticulo.idEmpaque}" styleClass="janal-wid-100-txt">
+									<p:ajax event="change" listener="#{kalanCatalogosServiciosAccion.doLoadUnidadesMedidas}" process="@this" update="unidadMedida" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{kalanCatalogosServiciosAccion.attrs.empaques}"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="unidadMedida" value="Unidad medida:"/>
-								<p:selectOneMenu id="unidadMedida" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idEmpaqueUnidadMedida}" styleClass="janal-wid-100-txt">
-									<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.unidadesMedidas}"/>
+								<p:selectOneMenu id="unidadMedida" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.idEmpaqueUnidadMedida}" styleClass="janal-wid-100-txt">
+									<f:selectItems value="#{kalanCatalogosServiciosAccion.attrs.unidadesMedidas}"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
-								<p:inputNumber id="cantidad" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.cantidad}"/>                    
-								<p:spacer width="1px"/><p:separator/>
+								<p:inputNumber id="cantidad" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.cantidad}"/>                    
+								<p:separator/>
 								<p:outputLabel for="ancho" value="Ancho:"/>
-								<p:inputNumber id="ancho" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.ancho}"/>                    
+								<p:inputNumber id="ancho" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articuloDimencion.ancho}"/>                    
 								<p:outputLabel for="largo" value="Largo:"/>
-								<p:inputNumber id="largo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.largo}"/>                    
+								<p:inputNumber id="largo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articuloDimencion.largo}"/>                    
 								<p:outputLabel for="alto" value="Alto:"/>
-								<p:inputNumber id="alto" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.alto}"/>                    
-								<p:spacer width="1px"/><p:separator/>
+								<p:inputNumber id="alto" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articuloDimencion.alto}"/>                    
+								<p:separator/>
 								<p:outputLabel for="stock" value="Existencias:"/>
-								<p:inputNumber id="stock" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.stock}"/>                    
+								<p:inputNumber id="stock" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.stock}"/>                    
 								<p:outputLabel for="minimo" value="Stock mínimo:"/>
-								<p:inputNumber id="minimo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.minimo}"/>                    
+								<p:inputNumber id="minimo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.minimo}"/>                    
 								<p:outputLabel for="maximo" value="Stock máximo:"/>
-								<p:inputNumber id="maximo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.maximo}"/>                    
+								<p:inputNumber id="maximo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.maximo}"/>                    
 								<p:outputLabel for="idVerificado" value="Stock verificado:"/>
-								<p:selectOneMenu id="idVerificado" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idVerificado}" styleClass="janal-wid-100-txt">									
+								<p:selectOneMenu id="idVerificado" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.idVerificado}" styleClass="janal-wid-100-txt">									
 									<f:selectItem itemLabel="SI" itemValue="1"/>
 									<f:selectItem itemLabel="NO" itemValue="2"/>
 								</p:selectOneMenu>								
@@ -443,19 +444,19 @@
 						</p:tab>
 						<p:tab title="Observaciones">
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
-								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.observaciones}"/>  
+								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{kalanCatalogosServiciosAccion.registroArticulo.observaciones}"/>  
 							</p:panelGrid>
 							<p:separator/>
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
 								<p:outputLabel for="meta" value="Meta tag:" styleClass="janal-wid-100-txt"/>
-								<p:inputText id="meta" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTag}"/>                    
+								<p:inputText id="meta" styleClass="janal-wid-100-txt" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.metaTag}"/>                    
 								<p:outputLabel for="metaDescripcion" value="Meta descripción:" styleClass="janal-wid-100-txt"/>
-								<p:inputTextarea id="metaDescripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagDescipcion}"/>                    
+								<p:inputTextarea id="metaDescripcion" styleClass="janal-wid-100-txt" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.metaTagDescipcion}"/>                    
 								<p:outputLabel for="metaTeclado" value="Meta referencia:" styleClass="janal-wid-100-txt"/>
-								<p:inputTextarea id="metaTeclado" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagTeclado}"/>                    																	
+								<p:inputTextarea id="metaTeclado" styleClass="janal-wid-100-txt" value="#{kalanCatalogosServiciosAccion.registroArticulo.articulo.metaTagTeclado}"/>                    																	
 							</p:panelGrid>	
 						</p:tab>
-					</p:tabView>
+					</p:accordionPanel>
 					<p:remoteCommand name="simpleProcess" process="@this contenedorGrupos:tablaTiposVenta contenedorGrupos:tablaPreciosSugeridos contenedorGrupos:tablaDescuentosEspeciales contenedorGrupos:tablaEspecificaciones contenedorGrupos:tablaDescuentos contenedorGrupos:tablaArticulosProveedores"/>
 				</div>
 			</div>
@@ -463,16 +464,16 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="kardex" value="Kardex" icon="fa fa-cart-plus" process="@form" action="#{manticCatalogosArticulosAccion.doKardex()}" rendered="#{manticCatalogosArticulosAccion.attrs.goKardex}"/>
-			<p:commandButton id="clonar" value="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="kardex" value="Kardex" icon="fa fa-cart-plus" process="@form" action="#{kalanCatalogosServiciosAccion.doKardex()}" rendered="#{kalanCatalogosServiciosAccion.attrs.goKardex}"/>
+			<p:commandButton id="clonar" value="Clonar" icon="fa fa-copy" process="@form" action="#{kalanCatalogosServiciosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{kalanCatalogosServiciosAccion.attrs.activeClon}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{kalanCatalogosServiciosAccion.doAceptar(kalanCatalogosServiciosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanCatalogosServiciosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="kardexIcon" title="Kardex" icon="fa fa-cart-plus" process="@form" action="#{manticCatalogosArticulosAccion.doKardex()}" rendered="#{manticCatalogosArticulosAccion.attrs.goKardex}"/>
-			<p:commandButton id="clonarIcon" title="Clonar" icon="fa fa-copy" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosArticulosAccion.attrs.activeClon}"/>
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar(manticCatalogosArticulosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="kardexIcon" title="Kardex" icon="fa fa-cart-plus" process="@form" action="#{kalanCatalogosServiciosAccion.doKardex()}" rendered="#{kalanCatalogosServiciosAccion.attrs.goKardex}"/>
+			<p:commandButton id="clonarIcon" title="Clonar" icon="fa fa-copy" process="@form" action="#{kalanCatalogosServiciosAccion.doAceptar('COPIAR')}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{kalanCatalogosServiciosAccion.attrs.activeClon}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCatalogosServiciosAccion.doAceptar(kalanCatalogosServiciosAccion.attrs.nombreAccion)}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanCatalogosServiciosAccion.doCancelar}" ajax="false" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
 </ui:composition>

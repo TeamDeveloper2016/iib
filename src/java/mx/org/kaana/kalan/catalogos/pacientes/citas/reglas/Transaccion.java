@@ -191,7 +191,7 @@ public class Transaccion extends IBaseTnx {
         regresar= DaoFactory.getInstance().insert(sesion, bitacora)> 0L;
         // NOTIFICAR POR WHASTAPP AL CLIENTE
         Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendada", this.servicios, this.paciente.getComentarios());
-        if(this.paciente.getWhatsapp())
+        if(this.paciente.getCliente())
           notificar.doSendCitaCliente(sesion);
 
         // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
@@ -199,7 +199,8 @@ public class Transaccion extends IBaseTnx {
           notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));
           if(this.paciente.getIkAtendio().toString("celular")!= null && !Objects.equals(this.paciente.getIkAtendio().toString("celular"), null)) { 
             notificar.setCelular(this.paciente.getIkAtendio().toString("celular"));
-            notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
+            if(this.paciente.getTrabajador())
+              notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
           } // if  
         } // if
       } // if
@@ -314,7 +315,7 @@ public class Transaccion extends IBaseTnx {
       
       // NOTIFICAR POR WHASTAPP AL CLIENTE
       Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "agendado", this.servicios, this.paciente.getComentarios());
-      if(this.paciente.getWhatsapp())
+      if(this.paciente.getCliente())
         notificar.doSendCitaCliente(sesion);
       
       // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
@@ -322,7 +323,8 @@ public class Transaccion extends IBaseTnx {
         notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));
         if(this.paciente.getIkAtendio().toString("celular")!= null && !Objects.equals(this.paciente.getIkAtendio().toString("celular"), null)) { 
           notificar.setCelular(this.paciente.getIkAtendio().toString("celular"));
-          notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
+          if(this.paciente.getTrabajador())
+            notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
         } // if  
       } // if
     } // try // try
@@ -372,7 +374,7 @@ public class Transaccion extends IBaseTnx {
 
           // NOTIFICAR POR WHASTAPP AL CLIENTE
           Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), "reprogramo", this.servicios, this.paciente.getComentarios());
-          if(this.paciente.getWhatsapp())
+          if(this.paciente.getCliente())
             notificar.doSendCitaCliente(sesion);
           
           // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
@@ -380,7 +382,8 @@ public class Transaccion extends IBaseTnx {
             notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));
             if(this.paciente.getIkAtendio().toString("celular")!= null && !Objects.equals(this.paciente.getIkAtendio().toString("celular"), null)) { 
               notificar.setCelular(this.paciente.getIkAtendio().toString("celular"));
-              notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
+              if(this.paciente.getTrabajador())
+                notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
             } // if  
           } // if
         } // if  
@@ -489,7 +492,7 @@ public class Transaccion extends IBaseTnx {
 
         // NOTIFICAR POR WHASTAPP AL CLIENTE
         Saras notificar= new Saras(this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()), this.paciente.getCelular(), this.paciente.getInicio(), estatus, this.servicios, this.paciente.getComentarios());
-        if(this.paciente.getWhatsapp())
+        if(this.paciente.getCliente())
           notificar.doSendCitaCliente(sesion);
         
         // NOTIFICAR POR WHASTAPP A LA PERSONA QUE LO VA ATENDER
@@ -497,7 +500,8 @@ public class Transaccion extends IBaseTnx {
           notificar.setNombre(this.paciente.getIkAtendio().toString("empleado"));
           if(this.paciente.getIkAtendio().toString("celular")!= null && !Objects.equals(this.paciente.getIkAtendio().toString("celular"), null)) { 
             notificar.setCelular(this.paciente.getIkAtendio().toString("celular"));
-            notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
+            if(this.paciente.getTrabajador())
+              notificar.doSendCitaAtiende(sesion, this.paciente.getRazonSocial().concat(" ").concat(this.paciente.getPaterno()));
           } // if  
         } // if
       } // if

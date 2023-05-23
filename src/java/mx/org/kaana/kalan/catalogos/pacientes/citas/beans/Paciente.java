@@ -31,7 +31,8 @@ public class Paciente extends TcManticClientesDto implements Serializable {
   private Long recordatorio;
   private Long notificacion;
   private String comentarios;
-  private Boolean whatsapp;
+  private Boolean cliente;
+  private Boolean trabajador;
   
   private UISelectEntity ikAtendio;
   
@@ -60,7 +61,8 @@ public class Paciente extends TcManticClientesDto implements Serializable {
     this.recordatorio = 24L;
     this.notificacion = 2L;
     this.comentarios  = "";
-    this.whatsapp     = Boolean.TRUE;
+    this.cliente      = Boolean.TRUE;
+    this.trabajador   = Boolean.TRUE;
     this.ikAtendio    = new UISelectEntity(this.idAtendio);
     this.start();
   }
@@ -163,12 +165,20 @@ public class Paciente extends TcManticClientesDto implements Serializable {
     this.comentarios = comentarios;
   }
 
-  public Boolean getWhatsapp() {
-    return whatsapp;
+  public Boolean getCliente() {
+    return cliente;
   }
 
-  public void setWhatsapp(Boolean whatsapp) {
-    this.whatsapp = whatsapp;
+  public void setCliente(Boolean cliente) {
+    this.cliente = cliente;
+  }
+
+  public Boolean getTrabajador() {
+    return trabajador;
+  }
+
+  public void setTrabajador(Boolean trabajador) {
+    this.trabajador = trabajador;
   }
 
   public void start() {

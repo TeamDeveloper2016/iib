@@ -52,8 +52,7 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">					          
-					<p:spacer/>
-					<p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">            
+          <p:accordionPanel id="contenedorGrupos" activeIndex="0" onTabChange="simpleProcess();">            
             <p:ajax event="tabChange" process="@this" update="tablaContactos tablaPreferidos" oncomplete="janal.refresh();"/>
             <p:tab title="General">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">								
@@ -94,7 +93,7 @@
                 <p:inputText id="especial" styleClass="janal-wid-100-txt especial" value="#{kalanCatalogosPacientesAccion.registroCliente.cliente.especial}" style="display: #{kalanCatalogosPacientesAccion.attrs.idEspecial eq '1'? '': 'none'}" rendered="#{kalanCatalogosPacientesAccion.attrs.admin}"/>
               </p:panelGrid>
             </p:tab>
-            <p:tab title="Domicilios">
+            <p:tab title="Domicilio(s)">
               <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-15, janal-wid-100">
                 <p:dataList id="tablaDomicilios" value="#{kalanCatalogosPacientesAccion.registroCliente.clientesDomicilio}" var="domicilio" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
                   <p:commandLink update="contenedorGrupos:formularioDomicilio tablaDomicilios contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:codigoPostal contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" title="Eliminar" action="#{kalanCatalogosPacientesAccion.doEliminarDomicilio}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
@@ -373,7 +372,7 @@
                 <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{kalanCatalogosPacientesAccion.registroCliente.cliente.observaciones}"/>  
               </p:panelGrid>
             </p:tab>
-          </p:tabView>
+          </p:accordionPanel>
 					<p:remoteCommand name="simpleProcess" actionListener="#{kalanCatalogosPacientesAccion.doCreateMessage}" process="@this contenedorGrupos @(.contacto)"/>
         </div>
       </div>

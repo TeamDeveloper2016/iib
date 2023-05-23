@@ -71,7 +71,7 @@
                   <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesCitasNuevo.doUpdateTermino}" process="@this contenedorGrupos:inicio" update="contenedorGrupos:inicio"/>
                 </p:calendar>                    
                 <p:outputLabel value="Recordatorio:" styleClass="janal-color-black FsBold"/>
-                <p:inputNumber id="recordatorio" value="#{kalanCatalogosPacientesCitasNuevo.paciente.recordatorio}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="24" maxValue="26" minValue="24" thousandSeparator=","/>
+                <p:inputNumber id="recordatorio" value="#{kalanCatalogosPacientesCitasNuevo.paciente.recordatorio}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="24" maxValue="36" minValue="24" thousandSeparator=","/>
                 <p:outputLabel value="Notificar mismo día:" styleClass="janal-color-black FsBold"/>
                 <p:inputNumber id="notificacion" value="#{kalanCatalogosPacientesCitasNuevo.paciente.notificacion}" inputStyleClass="janal-wid-100-txt janal-column-center generales" symbol=" HRS" symbolPosition="s" converter="javax.faces.Long" decimalPlaces="0" emptyValue="2" maxValue="12" minValue="2" thousandSeparator=","/>
               </p:panelGrid>
@@ -132,10 +132,14 @@
             </f:facet>
           </p:dataTable>
           <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-            <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-50, janal-fix-47 janal-column-right, janal-fix-3 janal-column-right">
+            <p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-fix-40, janal-fix-32 janal-column-right, janal-fix-3 janal-column-right, janal-fix-32 janal-column-right, janal-fix-3 janal-column-right">
               <p:outputLabel for="comentarios" value="Comentario(s) general(es):"/>
-              <p:outputLabel value="Enviar whatsapp:"/>
-							<p:selectBooleanCheckbox value="#{kalanCatalogosPacientesCitasNuevo.paciente.whatsapp}" title="Enviar mensaje">
+              <p:outputLabel value="Enviar cliente:"/>
+							<p:selectBooleanCheckbox value="#{kalanCatalogosPacientesCitasNuevo.paciente.cliente}" title="Enviar mensaje cliente">
+								<p:ajax event="change" process="@this" update="@this"/>
+							</p:selectBooleanCheckbox>
+              <p:outputLabel value="Enviar trabajador:"/>
+							<p:selectBooleanCheckbox value="#{kalanCatalogosPacientesCitasNuevo.paciente.trabajador}" title="Enviar mensaje personal">
 								<p:ajax event="change" process="@this" update="@this"/>
 							</p:selectBooleanCheckbox>
             </p:panelGrid>   

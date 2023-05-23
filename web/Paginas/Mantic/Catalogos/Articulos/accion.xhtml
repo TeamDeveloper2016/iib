@@ -125,7 +125,9 @@
 								<p:outputLabel for="sat" value="Código SAT:"/>
 								<p:inputText id="sat" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.sat}"/>                    
 								<p:outputLabel for="iva" value="Iva:"/>
-								<p:inputNumber id="iva" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    
+								<p:inputNumber id="iva" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}">
+  								<p:ajax event="blur" process="@this" update="@(.porcentajes)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>
+  							</p:inputNumber>
 								<p:outputLabel for="redondear" value="Redondear:"/>
 								<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.redondear}" offLabel="NO" onLabel="SI">
  									<p:ajax event="change" process="@this" update="@(.calculos)" listener="#{manticCatalogosArticulosAccion.doUpdatePreciosVenta()}"/>

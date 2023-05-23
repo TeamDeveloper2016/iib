@@ -5365,6 +5365,7 @@ group by
 					{condicion}					
 				  and tc_mantic_clientes.id_empresa in ({idEmpresa}) 
 				  and tc_mantic_clientes.id_credito in ({credito})
+          and tc_mantic_clientes.id_cliente!= 1
         group by
           tc_mantic_clientes.id_cliente
 				{sortOrder}            

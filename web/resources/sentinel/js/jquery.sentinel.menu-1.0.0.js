@@ -97,5 +97,5 @@ $(document).ready(function(){
 	$("#searchArea input").on("keyup", function(e){
 		jsSentinel.searchSentinel(e);
 	});
-	console.info("Janal.Control.SentinelMenu.Core initialized")
+	console.info("Janal.Control.SentinelMenu.Core initialized");
 });
