@@ -719,10 +719,9 @@ public class Accion extends IBaseVenta implements Serializable {
       } // else
       else
         this.setIkRegimenFiscal(new UISelectEntity(-1L));
-      
       if(cliente!= null && !Objects.equals(cliente.getKey(), -1L) && !Objects.equals(cliente.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY) && this.getIkRegimenFiscal()!= null && Objects.equals(this.getIkRegimenFiscal().getKey(), -1L)) 
         UIBackingUtilities.execute("janal.alert('¡ Por favor solicite el Regimen Fiscal al cliente !\\n\\n Y capture la información donde corresponde ...');");
-      if(cliente!= null && !Objects.equals(((TicketVenta)this.getAdminOrden().getOrden()).getIkCliente().getKey(), cliente.getKey())) 
+      if(cliente!= null && !Objects.equals(cliente.toLong("idCliente"), -1L) && !Objects.equals(((TicketVenta)this.getAdminOrden().getOrden()).getIkCliente().getKey(), cliente.getKey())) 
         ((TicketVenta)this.getAdminOrden().getOrden()).setIkCliente(cliente);
     } // try
     catch (Exception e) {

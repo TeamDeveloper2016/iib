@@ -1,11 +1,11 @@
 package mx.org.kaana.kajool.procesos.mantenimiento.menus.encabezado.backing;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -143,13 +143,14 @@ public class Agregar implements Serializable {
 	public String doAceptar() {
 		Transaccion transaccion=null;
 		try {
-			this.actual.setIcono(this.actual.getIcono().concat(" ").concat(this.tamanio));
-			transaccion=new Transaccion(this.actual);
+      if(!Objects.equals(this.actual.getIcono(), null) && !this.actual.getIcono().contains(this.titulo))
+			  this.actual.setIcono(this.actual.getIcono().concat(" ").concat(this.tamanio));
+			transaccion= new Transaccion(this.actual);
 			if (transaccion.ejecutar(this.accion)) {
-				JsfBase.addMessage("La acción de ".concat(this.accion.name()).concat(" se realizó con éxito."));
+				JsfBase.addMessage("La acción de ".concat(this.accion.name()).concat(" se realizó con éxito"));
 			} // if
 			else {
-				throw new RuntimeException("La acción de ".concat(this.accion.name()).concat(" no se puedo realizar, verifiquelo."));
+				throw new RuntimeException("La acción de ".concat(this.accion.name()).concat(" no se puedo realizar, verifiquelo"));
 			} // esle
 		} // try
 		catch (Exception e) {

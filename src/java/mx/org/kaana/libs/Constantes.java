@@ -51,7 +51,7 @@ public final class Constantes {
   // Perfiles de acceso globales
   public static final String ADMIN  = "ADMINISTRADOR";
   public static final String ADMINS = "SUPERUSUARIO";
-	public static final String ADMINISTRATIVO= "GERENTEDESERVICIOSADMIN";
+	public static final String ADMINISTRATIVO= "GERENTEDESERVICIOS";
   public static final String GERENTE= "GERENTE";
   public static final String CAJERO = "CAJERO";
   public static final String VENDEDOR_DE_PISO= "VENDEDORDEPISO";

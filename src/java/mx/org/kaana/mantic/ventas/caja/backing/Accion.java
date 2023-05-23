@@ -433,7 +433,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					} // if
 					else
 						UIBackingUtilities.addCallbackParam("facturacionOk", false);
-					tipoTicket= ventaFinalizada.getApartado() ? "APARTADO" : (ventaFinalizada.isFacturar() ? "FACTURA" : (ventaFinalizada.isCredito() ? "CREDITO" : "VENTA DE MOSTRADOR"));
+					tipoTicket= ventaFinalizada.getApartado() ? "APARTADO": (ventaFinalizada.isFacturar()? "FACTURA": (ventaFinalizada.isCredito()? "CREDITO": "VENTA DE MOSTRADOR"));
           if(ventaFinalizada.isCredito()) {
             this.toPrintTicket(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), ((TicketVenta)this.getAdminOrden().getOrden()).getRegistro());
           } // if
@@ -1329,7 +1329,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch			
 	} // doEliminarClienteTipoContacto
 	
-	private void addDeleteList(IBaseDto dto) throws Exception{
+	private void addDeleteList(IBaseDto dto) throws Exception {
 		Transaccion transaccion= null;
 		try {
 			transaccion= new Transaccion(dto);
@@ -2035,7 +2035,7 @@ public class Accion extends IBaseVenta implements Serializable {
       } // else
       else
         this.setIkRegimenFiscal(new UISelectEntity(-1L));
-      if(cliente!= null && !Objects.equals(((TicketVenta)this.getAdminOrden().getOrden()).getIkCliente().getKey(), cliente.getKey())) 
+      if(cliente!= null && !Objects.equals(cliente.getIdCliente(), -1L) && !Objects.equals(((TicketVenta)this.getAdminOrden().getOrden()).getIkCliente().getKey(), cliente.getKey())) 
         ((TicketVenta)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(cliente.getIdCliente()));
     } // try
     catch (Exception e) {

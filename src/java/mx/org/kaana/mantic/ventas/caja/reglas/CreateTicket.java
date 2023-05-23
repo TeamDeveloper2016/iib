@@ -107,7 +107,7 @@ public class CreateTicket implements Serializable {
       } // swtich
       regresar.append("<td><img src=\"").append(image).append("\" alt=\"Logotipo\" width=\"70px\"/></td>");
       regresar.append("<td><p style=\"text-align: center;align-content: center;font-family: sans-serif;font-size: 13px;font-weight: bold;\">");
-      regresar.append(this.principal.getTitulo());
+      regresar.append(Cadena.eliminaCaracter(this.principal.getTitulo(), '\''));
       regresar.append("</p>");
       regresar.append(this.toDomicilio());
       regresar.append("</td>");
@@ -130,8 +130,10 @@ public class CreateTicket implements Serializable {
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("<p style=\"text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;\">").append(this.toFindDomicilio());	
     if(!Cadena.isVacio(Configuracion.getInstance().getEmpresa("portal")))
- 		  regresar.append("<br><span style=\"width: 290px;font-size: 12px;\">").append(Configuracion.getInstance().getEmpresa("portal")).append("<br>").append(Configuracion.getInstance().getEmpresa("compras")).append("</span>");		
-    regresar.append("</p>");
+ 		  regresar.append("<br><span style=\"width: 290px;font-size: 12px;\">").append(Configuracion.getInstance().getEmpresa("portal"));		
+    if(!Cadena.isVacio(Configuracion.getInstance().getEmpresa("compras")))
+      regresar.append("<br>").append(Configuracion.getInstance().getEmpresa("compras"));
+    regresar.append("</span></p>");
 		return regresar.toString();
 	} // toDomicilio
 	
