@@ -96,10 +96,9 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	
 	@Override
 	public void doLoad() {
-    List<Columna> columns= null;
+    List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -126,7 +125,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 
 	public void doChange() {
-		String codigo= new String((String)this.attrs.get("buscarPor"));
+		String codigo= (String)this.attrs.get("buscarPor");
 		if(codigo== null || codigo.equals(".*.")) 
 			this.lazyModel= null;
 		else {
@@ -146,15 +145,13 @@ public class Encabezado extends IBaseFilter implements Serializable {
   public void doRowDblSelectEvent(SelectEvent event) {
 		Entity entity= (Entity)event.getObject();
 		LOG.info("doRowSelectEvent: "+ entity.getKey());
-		List<Columna> columns     = null;
-		Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
 		try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("ubicacion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-			params=new HashMap<>();
 			params.put("idArticulo", entity.toLong("idArticulo"));
 			this.attrs.put("almacenes", UIEntity.build("VistaKardexDto", "localizado", params, columns));
 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
@@ -233,7 +230,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 	
 	public void doLoadFaltantes() {
-    List<Columna> columns= null;
+    List<Columna> columns= new ArrayList<>();
     try {
 			Long idSucursal= this.faltante.getIdEmpresa()== null? -1L: this.faltante.getIdEmpresa();
 			this.attrs.put("idSucursal", idSucursal);
@@ -243,7 +240,6 @@ public class Encabezado extends IBaseFilter implements Serializable {
 				String nombre= ((String)this.attrs.get("lookForFaltantes")).replaceAll(Constantes.CLEAN_SQL, "").trim();
 				this.attrs.put("codigoPerdido", nombre.toUpperCase());
 			} // else
-      columns = new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
@@ -265,17 +261,16 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 
 	public void doUpdateArticulos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			String search= new String((String)this.attrs.get("codigoFaltantes")); 
+			String search= (String)this.attrs.get("codigoFaltantes"); 
 			if(!Cadena.isVacio(search)) {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
@@ -311,7 +306,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 		try {
 			Entity eliminado= (Entity)this.attrs.get("eliminado");
 			if(DaoFactory.getInstance().delete(TcManticFaltantesDto.class, eliminado.getKey())> 0L)
-				JsfBase.addMessage("Eliminado:", "El articulo fue eliminado de la relación de faltantes. !", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminado:", "El articulo fue eliminado de la relación de faltantes !", ETipoMensaje.INFORMACION);
 			UIBackingUtilities.execute("$('#codigosFaltantes').focus();");
 			UIBackingUtilities.update("@(.faltantes)");
 		} // try
@@ -343,7 +338,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 	
 	public void doChangeListaPrecios() {
-		String codigo= new String((String)this.attrs.get("buscarPor"));
+		String codigo= (String)this.attrs.get("buscarPor");
 		if(codigo== null || codigo.equals(".*.")) 
 			this.lazyListaPrecios= null;
 		else {
@@ -395,9 +390,8 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 
 	public void doLoadCatalogoArticulos() {
-    List<Columna> columns= null;
+    List<Columna> columns= new ArrayList<>();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
   		this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -460,10 +454,9 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 
   private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
