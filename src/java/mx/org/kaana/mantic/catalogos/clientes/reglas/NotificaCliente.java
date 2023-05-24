@@ -191,13 +191,12 @@ public class NotificaCliente implements Serializable {
 			parametros.put("REPORTE_PORTAL", Configuracion.getInstance().getEmpresa("portal"));		
 			parametros.put("REPORTE_ECOMPRAS", Configuracion.getInstance().getEmpresa("compras"));		
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-        case "iib":
+        case "iib"  :
+        case "kalan":
+        case "tsaak":
    			  parametros.put("REPORTE_SUB_TITULO", Configuracion.getInstance().getEmpresa("slogan"));		
           break;
-        case "kalan":
-   			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
-          break;
-        case "tsaak":
+        default:
    			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
           break;
       } // swtich

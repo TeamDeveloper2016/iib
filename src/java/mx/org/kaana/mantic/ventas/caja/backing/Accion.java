@@ -2086,6 +2086,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		Map<String, Object>params    = new HashMap<>();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = EReportes.TICKET_VENTA_CREDITO;
+    Encriptar encriptado         = new Encriptar();
 		try{				
 			this.reporte= JsfBase.toReporte();
 			params.put("idVenta", idVenta);
@@ -2100,17 +2101,14 @@ public class Accion extends IBaseVenta implements Serializable {
 			parametros.put("REPORTE_ECOMPRAS", Configuracion.getInstance().getEmpresa("compras"));		
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "iib":
-   			  parametros.put("REPORTE_SUB_TITULO", Configuracion.getInstance().getEmpresa("slogan"));		
-          break;
         case "kalan":
-   			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
-          break;
         case "tsaak":
+   			  parametros.put("REPORTE_SUB_TITULO", Configuracion.getInstance().getEmpresa("slogan"));		
+        default:
    			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
           break;
       } // swtich
 			parametros.put("REPORTE_NOTIFICA", Configuracion.getInstance().getEmpresa("celular"));		
-      Encriptar encriptado= new Encriptar();
       String codigo= encriptado.encriptar(Fecha.formatear(Fecha.CODIGO_SEGURIDAD, registro));
 			parametros.put("REPORTE_CODIGO_SEGURIDAD", codigo);			
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
