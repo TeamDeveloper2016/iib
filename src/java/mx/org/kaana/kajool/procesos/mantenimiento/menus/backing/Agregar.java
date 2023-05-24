@@ -1,6 +1,7 @@
 package mx.org.kaana.kajool.procesos.mantenimiento.menus.backing;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
@@ -148,7 +149,7 @@ public class Agregar implements Serializable {
 					break;
 				} // if
 			} // for
-			if(inicio)
+			if(inicio && !Objects.equals(this.current.getIcono(), null) && !this.current.getIcono().contains(this.tamanio))
 				this.current.setIcono(this.current.getIcono().concat(" ").concat(this.tamanio));
 		} // try
 		catch (Exception e) {
@@ -160,7 +161,8 @@ public class Agregar implements Serializable {
 	public String doAceptar() {
 		Transaccion transaccion=null;
 		try {
-			this.current.setIcono(this.current.getIcono().concat(" ").concat(this.tamanio));
+      if(!Objects.equals(this.current.getIcono(), null) && !this.current.getIcono().contains(this.tamanio))
+  			this.current.setIcono(this.current.getIcono().concat(" ").concat(this.tamanio));
 			transaccion=new Transaccion(this.current);
 			if (transaccion.ejecutar(this.accion)) {
 				JsfBase.addMessage("La acción de ".concat(this.accion.name()).concat(" se realizó con éxito."));

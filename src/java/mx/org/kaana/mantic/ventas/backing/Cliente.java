@@ -239,7 +239,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
 					else
 						JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));					
 					JsfBase.setFlashAttribute("accion", (this.attrs.get("idFicticia")!= null && !Long.valueOf(this.attrs.get("idFicticia").toString()).equals(-1L)) || this.attrs.get("idVenta")!= null && !Long.valueOf(this.attrs.get("idVenta").toString()).equals(-1L) ? EAccion.MODIFICAR : EAccion.AGREGAR);
-					regresar= this.attrs.get("regreso").toString().concat(Constantes.REDIRECIONAR);
+					regresar= ((String)this.attrs.get("regreso")).concat(Constantes.REDIRECIONAR);
 				} // if
 				else
 					regresar = "accion".concat(Constantes.REDIRECIONAR);
@@ -310,13 +310,13 @@ public class Cliente extends IBaseAttribute implements Serializable {
 	
   public String doCancelar() {
 		String regresar= "accion".concat(Constantes.REDIRECIONAR);
-		if(this.attrs.get("regreso")!= null){
+		if(this.attrs.get("regreso")!= null) {
 			JsfBase.setFlashAttribute("idFicticia", this.attrs.get("idFicticia"));																							
 			JsfBase.setFlashAttribute("idVenta", this.attrs.get("idVenta"));
 			JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));					
 			JsfBase.setFlashAttribute("observaciones", this.attrs.get("observaciones"));					
 			JsfBase.setFlashAttribute("accion", (this.attrs.get("idFicticia")!= null && !Long.valueOf(this.attrs.get("idFicticia").toString()).equals(-1L)) || this.attrs.get("idVenta")!= null && !Long.valueOf(this.attrs.get("idVenta").toString()).equals(-1L) ? EAccion.MODIFICAR : EAccion.AGREGAR);
-			regresar= this.attrs.get("regreso").toString().concat(Constantes.REDIRECIONAR);						
+			regresar= ((String)this.attrs.get("regreso")).concat(Constantes.REDIRECIONAR);						
 		} // if
     return regresar;
   } // doAccion

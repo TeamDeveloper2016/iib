@@ -62,9 +62,6 @@ public class Notificar extends IBaseFilter implements Serializable {
 			if(JsfBase.getFlashAttribute("criterio")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.criterio= (Map<String, Object>)JsfBase.getFlashAttribute("criterio");
-//      this.criterio= new HashMap<>();
-//      this.criterio.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
-//      this.criterio.put(Constantes.SQL_CONDICION, "(tc_mantic_clientes.id_cliente!= 1)");			
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Catalogos/Pacientes/Citas/clientes": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("idProgramar", 2);
       this.toLoadMensajes();

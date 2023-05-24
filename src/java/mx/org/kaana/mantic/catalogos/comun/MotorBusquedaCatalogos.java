@@ -16,7 +16,6 @@ import org.hibernate.Session;
 
 public abstract class MotorBusquedaCatalogos {
 
-	public static final String VENTA= "VENTA";
 	protected Long idCliente;
 	
 	public MotorBusquedaCatalogos() {
@@ -55,9 +54,8 @@ public abstract class MotorBusquedaCatalogos {
 	protected Long toIdMunicipio(Long idLocalidad) throws Exception{
 		Long regresar            = -1L;
 		Entity localidad         = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_localidad=" + idLocalidad);
 			localidad=  (Entity) DaoFactory.getInstance().toEntity("TcJanalLocalidadesDto", "row", params);
 			if(localidad!= null)
@@ -75,9 +73,8 @@ public abstract class MotorBusquedaCatalogos {
 	protected Long toIdEntidad(Long idMunicipio) throws Exception{
 		Long regresar            = -1L;
 		Entity municipio         = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_municipio=" + idMunicipio);
 			municipio=  (Entity) DaoFactory.getInstance().toEntity("TcJanalMunicipiosDto", "row", params);
 			if(municipio!= null)
@@ -94,9 +91,8 @@ public abstract class MotorBusquedaCatalogos {
 	
 	protected Entity toEntidad(Long idMunicipio) throws Exception{
 		Entity regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idPais", 1);
       params.put(Constantes.SQL_CONDICION, "id_entidad=" + toIdEntidad(idMunicipio));
 			regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalEntidadesDto", "comboEntidades", params);
@@ -112,9 +108,8 @@ public abstract class MotorBusquedaCatalogos {
 	
 	protected Entity toMunicipio(Long idLocalidad) throws Exception{
 		Entity regresar           = null;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_municipio=" + toIdMunicipio(idLocalidad));
       regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalMunicipiosDto", "row", params);							
 		} // try
@@ -129,9 +124,8 @@ public abstract class MotorBusquedaCatalogos {
 	
 	protected Entity toLocalidad(Long idDomicilio) throws Exception{
 		Entity regresar           = null;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_localidad=" + toIdLocalidad(idDomicilio));
       regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalLocalidadesDto", "row", params);							
 		} // try
@@ -146,9 +140,8 @@ public abstract class MotorBusquedaCatalogos {
 	
 	protected List<PersonaTipoContacto> toPersonaContacto(Long idPersona) throws Exception{
 		List<PersonaTipoContacto> regresar= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params         = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + idPersona);
 			regresar= DaoFactory.getInstance().toEntitySet(PersonaTipoContacto.class, "TrManticPersonaTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -174,9 +167,8 @@ public abstract class MotorBusquedaCatalogos {
 	
 	public List<ClienteTipoContacto> toClientesTipoContacto() throws Exception {
 		List<ClienteTipoContacto> regresar= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params         = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -191,9 +183,8 @@ public abstract class MotorBusquedaCatalogos {
 	
 	public List<ClienteTipoContacto> toAllClientesTipoContacto() throws Exception {
 		List<ClienteTipoContacto> regresar= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params         = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "contacto", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -208,9 +199,8 @@ public abstract class MotorBusquedaCatalogos {
 	
 	public List<ClienteTipoContacto> toClientesTipoContacto(Session sesion) throws Exception {
 		List<ClienteTipoContacto> regresar= null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params         = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
@@ -225,10 +215,9 @@ public abstract class MotorBusquedaCatalogos {
 	
 	public Entity toClienteDefault() throws Exception {
 		Entity regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
-			params.put("clave", VENTA);
+			params.put("clave", Constantes.VENTA_AL_PUBLICO_GENERAL_CLAVE);
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "clienteDefault", params);			
 		} // try
@@ -240,9 +229,8 @@ public abstract class MotorBusquedaCatalogos {
 
 	public Entity toClienteFuente() throws Exception {
 		Entity regresar          = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "cliente", params);			

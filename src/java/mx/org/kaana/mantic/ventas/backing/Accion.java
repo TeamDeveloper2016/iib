@@ -495,7 +495,7 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch
 	} // doLogin		
 	
-	public String doClientes(){
+	public String doClientes() {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		try {
@@ -528,7 +528,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);
 		} // catch		
 		return regresar;
-	} // doCatalogos
+	}
 	
 	public void doLoadUsers() {
 		List<UISelectEntity> vendedores= null;

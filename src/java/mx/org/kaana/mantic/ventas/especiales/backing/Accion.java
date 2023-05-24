@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -17,6 +19,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -31,6 +34,14 @@ public class Accion extends mx.org.kaana.mantic.ventas.backing.Accion implements
 	private static final Log LOG = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID = 327393488562639267L;
    
+	@PostConstruct
+  @Override
+  protected void init() {				
+    super.init();
+    this.attrs.put("titulo", Objects.equals(Configuracion.getInstance().getEmpresa(), "iib")? "embarques": "notas de remisión");
+    this.idEspecial= 1L;
+  }
+  
 	@Override
   public void doLoad() {
     EAccion eaccion= null;
@@ -38,7 +49,7 @@ public class Accion extends mx.org.kaana.mantic.ventas.backing.Accion implements
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
-			LOG.warn("Inicializando admin orden.");
+			LOG.warn("Inicializando admin orden");
 			LOG.warn("Accion:" + eaccion.name());
       switch (eaccion) {
         case AGREGAR:											

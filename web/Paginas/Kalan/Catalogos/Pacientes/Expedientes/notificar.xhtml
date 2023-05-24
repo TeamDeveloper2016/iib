@@ -72,7 +72,7 @@
             <p:inputText id="texto" value="#{kalanCatalogosPacientesExpedientesNotificar.attrs.mensaje}" styleClass="janal-wid-100-txt" readonly="true"/>
             <p:commandButton id="clean" title="Aceptar" icon="fa fa-check" process="@form" update="texto" actionListener="#{kalanCatalogosPacientesExpedientesNotificar.doCleanMensaje()}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();"/>
           </p:panelGrid>  
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosPacientesExpedientesNotificar.lazyModel}" styleClass="mensaje" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosPacientesExpedientesNotificar.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCatalogosPacientesExpedientesNotificar.lazyModel.rowCount gt kalanCatalogosPacientesExpedientesNotificar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{kalanCatalogosPacientesExpedientesNotificar.toColor(row)}">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosPacientesExpedientesNotificar.lazyModel}" styleClass="mensaje" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosPacientesExpedientesNotificar.attrs.seleccionado}" selectionMode="multiple" paginator="#{kalanCatalogosPacientesExpedientesNotificar.lazyModel.rowCount gt kalanCatalogosPacientesExpedientesNotificar.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" rowStyleClass="#{kalanCatalogosPacientesExpedientesNotificar.toColor(row)}">
             <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<f:facet name="header" >
               <div style="float: left;">
@@ -89,7 +89,7 @@
 								<p:commandButton title="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column styleClass="MarAuto Responsive janal-wid-6" sortBy="#{row.clave}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>

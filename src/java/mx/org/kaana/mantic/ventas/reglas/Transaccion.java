@@ -156,10 +156,9 @@ public class Transaccion extends TransaccionFactura {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
-		Long idEstatusVenta       = null;
+		Long idEstatusVenta       = EEstatusVentas.ELABORADA.getIdEstatusVenta();
 		Siguiente consecutivo     = null;
 		try {
-			idEstatusVenta= EEstatusVentas.ELABORADA.getIdEstatusVenta();
 			if(this.orden!= null)
 				params.put("idVenta", this.orden.getIdVenta());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el ticket de venta");

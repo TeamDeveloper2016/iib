@@ -148,12 +148,12 @@ public class Transaccion extends TransaccionFactura {
 			this.registroServicio.getServicio().setIdUsuario(JsfBase.getIdUsuario());
 			this.registroServicio.getServicio().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.registroServicio.getServicio().setIdServicioEstatus(ELABORADA);
-			this.registroServicio.getServicio().setIdCliente(Objects.equals(MotorBusquedaCatalogos.VENTA, this.registroServicio.getCliente().getClave()) || this.registroServicio.getCliente().getIdCliente().equals(-1L) ? null : this.registroServicio.getCliente().getIdCliente());			
+			this.registroServicio.getServicio().setIdCliente(Objects.equals(Constantes.VENTA_AL_PUBLICO_GENERAL_CLAVE, this.registroServicio.getCliente().getClave()) || this.registroServicio.getCliente().getIdCliente().equals(-1L) ? null : this.registroServicio.getCliente().getIdCliente());			
 			insertado= DaoFactory.getInstance().insert(sesion, this.registroServicio.getServicio());
 			if(insertado>= 1L) {
 				if(DaoFactory.getInstance().insert(sesion, this.loadBitacora(insertado, this.registroServicio.getServicio().getObservaciones()))>= 1L) {
 					if(this.registroServicio.isRegistrarCliente()) {
-						if(this.registroServicio.getCliente().getIdCliente()== null || Objects.equals(MotorBusquedaCatalogos.VENTA, this.registroServicio.getCliente().getClave()) || this.registroServicio.getCliente().getIdCliente().equals(-1L)) {
+						if(this.registroServicio.getCliente().getIdCliente()== null || Objects.equals(Constantes.VENTA_AL_PUBLICO_GENERAL_CLAVE, this.registroServicio.getCliente().getClave()) || this.registroServicio.getCliente().getIdCliente().equals(-1L)) {
 							idCliente= this.registraCliente(sesion);
 							this.registroServicio.getServicio().setIdCliente(idCliente);
 							regresar= DaoFactory.getInstance().update(sesion, this.registroServicio.getServicio())>= 1L;

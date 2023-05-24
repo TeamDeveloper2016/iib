@@ -131,7 +131,7 @@ public class Agregar implements Serializable {
 					break;
 				} // if
 			} // for
-			if(inicio)
+			if(inicio && !Objects.equals(this.actual.getIcono(), null) && !this.actual.getIcono().contains(this.tamanio))
 				this.actual.setIcono(this.actual.getIcono().concat(" ").concat(this.tamanio));
 		} // try
 		catch (Exception e) {
@@ -143,7 +143,7 @@ public class Agregar implements Serializable {
 	public String doAceptar() {
 		Transaccion transaccion=null;
 		try {
-      if(!Objects.equals(this.actual.getIcono(), null) && !this.actual.getIcono().contains(this.titulo))
+      if(!Objects.equals(this.actual.getIcono(), null) && !this.actual.getIcono().contains(this.tamanio))
 			  this.actual.setIcono(this.actual.getIcono().concat(" ").concat(this.tamanio));
 			transaccion= new Transaccion(this.actual);
 			if (transaccion.ejecutar(this.accion)) {

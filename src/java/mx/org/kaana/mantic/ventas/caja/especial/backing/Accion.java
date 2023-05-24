@@ -27,6 +27,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
@@ -59,6 +60,7 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
   @Override
   protected void init() {				
     super.init();
+    this.attrs.put("titulo", Objects.equals(Configuracion.getInstance().getEmpresa(), "iib")? "embarques": "notas de remisión");
     this.idEspecial= 1L;
   }
   
@@ -755,4 +757,11 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
     } // finally
   }
 
+  @Override
+	public String doClientes() {
+    String regresar= super.doClientes();
+  	JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Ventas/Caja/Especial/accion");								
+    return regresar;
+  }
+  
 }

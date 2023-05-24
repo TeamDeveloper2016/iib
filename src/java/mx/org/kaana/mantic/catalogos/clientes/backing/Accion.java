@@ -72,11 +72,11 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {
     try {
-      this.attrs.put("puntoVenta", JsfBase.getFlashAttribute("puntoVenta"));
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
+      this.attrs.put("puntoVenta", JsfBase.getFlashAttribute("puntoVenta")== null? Boolean.TRUE: JsfBase.getFlashAttribute("puntoVenta"));
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
-      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Catalogos/Clientes/filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("cpNuevo", false);						
       this.doLoad();      					
 			this.attrs.put("renderedFacturacion", false);

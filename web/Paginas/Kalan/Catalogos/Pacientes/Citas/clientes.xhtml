@@ -65,8 +65,8 @@
               </p:panelGrid>
 						</p:tab>				
 						<p:tab title="Periodo">
-              <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-97 janal-icons-message, janal-fix-3 janal-column-right">
-                <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-40, janal-wid-20 janal-column-center, janal-fix-40">
+              <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-fix-80, janal-fix-20 janal-column-right">
+                <p:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-fix-48, janal-fix-4 janal-column-center, janal-fix-48">
                   <p:calendar id="inicio" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100 generales" value="#{kalanCatalogosPacientesCitasClientes.attrs.inicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario">
                     <p:ajax event="dateSelect" listener="#{kalanCatalogosPacientesCitasClientes.doUpdateInicio}" process="@this contenedorGrupos:termino" update="contenedorGrupos:termino"/>
                   </p:calendar>  

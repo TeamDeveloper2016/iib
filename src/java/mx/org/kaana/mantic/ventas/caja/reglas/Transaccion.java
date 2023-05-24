@@ -166,13 +166,31 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar   = false;
-		this.isNuevoCierre = false;
-		this.efectivo      = 0D;		
-		Long idEstatusVenta= null;
+		boolean regresar       = false;
+		this.isNuevoCierre     = false;
+		this.efectivo          = 0D;	
+		Long idEstatusVenta    = null;
 		try {						
 			this.totalDetalle= 0D;
-			switch(accion) {					
+			switch(accion) {		
+				case COMPLEMENTAR:
+					this.getOrden().setCandado(EBooleanos.NO.getIdBooleano());
+          if(this.getOrden().getIdBanco()!= null && this.getOrden().getIdBanco()<= 0L)
+            this.getOrden().setIdBanco(null);
+          if(this.getOrden().getIdTipoMedioPago()!= null && this.getOrden().getIdTipoMedioPago()<= 0L)
+            this.getOrden().setIdTipoMedioPago(null);
+          if(this.getOrden().getIdTipoPago()!= null && this.getOrden().getIdTipoPago()<= 0L)
+            this.getOrden().setIdTipoPago(null);
+					regresar= this.actualizarClienteVenta(sesion);
+					this.toFillArticulos(sesion, this.getArticulos());
+					this.validarCabecera(sesion);
+          if(this.getOrden().getIdBanco()== null)
+            this.getOrden().setIdBanco(-1L);
+          if(this.getOrden().getIdTipoMedioPago()== null)
+            this.getOrden().setIdTipoMedioPago(-1L);
+          if(this.getOrden().getIdTipoPago()== null)
+            this.getOrden().setIdTipoPago(-1L);
+					break;
 				case RESTAURAR:				
 					regresar= this.procesarCancela(sesion);
 					break;
