@@ -2099,11 +2099,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
 			parametros.put("REPORTE_PORTAL", Configuracion.getInstance().getEmpresa("portal"));		
 			parametros.put("REPORTE_ECOMPRAS", Configuracion.getInstance().getEmpresa("compras"));		
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
         case "kalan":
         case "tsaak":
    			  parametros.put("REPORTE_SUB_TITULO", Configuracion.getInstance().getEmpresa("slogan"));		
+          break;
         default:
    			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
           break;

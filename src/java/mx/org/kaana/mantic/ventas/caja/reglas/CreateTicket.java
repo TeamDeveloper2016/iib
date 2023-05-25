@@ -91,7 +91,7 @@ public class CreateTicket implements Serializable {
     String image= null;
 		try {
       regresar.append("<table style=\"width: 290px;\"><tr>");
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
       		image= this.toImageIib(); 
           break;

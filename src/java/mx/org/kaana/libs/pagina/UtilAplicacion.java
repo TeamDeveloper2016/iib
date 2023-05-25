@@ -104,7 +104,7 @@ public class UtilAplicacion {
   
   public String getLogoWidth() {
     String regresar= "width: 35px !important;";
-    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+    switch(Configuracion.getInstance().getEmpresa()) {
       case "iib":
         regresar= "width: 3em !important; margin-left: 5.5em;";
         break;

@@ -121,7 +121,7 @@ public final class Portal implements Serializable {
     Boolean menus             = Boolean.TRUE;
     try {      
       this.nombres= new ArrayList<>();
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           menus= Boolean.FALSE;
           break;

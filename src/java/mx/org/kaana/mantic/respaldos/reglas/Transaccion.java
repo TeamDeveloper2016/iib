@@ -120,7 +120,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		if (!result.exists())
 			result.mkdirs();
 		LOG.error("Ruta generada: "+ path.toString());
-		name.append(Configuracion.getInstance().getPropiedad("sistema.empresa.principal"));
+		name.append(Configuracion.getInstance().getEmpresa());
     name.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
     name.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
     name.append(".");

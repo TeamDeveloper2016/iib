@@ -524,7 +524,7 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
 					else
 						UIBackingUtilities.addCallbackParam("facturacionOk", false);
 					tipoTicket= ventaFinalizada.getApartado() ? "APARTADO" : (ventaFinalizada.isFacturar() ? "FACTURA" : (ventaFinalizada.isCredito() ? "CREDITO" : "VENTA DE MOSTRADOR"));
-          if(tipoTicket.equals("CREDITO")) {
+          if(ventaFinalizada.isCredito()) {
             this.toPrintTicket(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), ((TicketVenta)this.getAdminOrden().getOrden()).getRegistro());
           } // if
           else {

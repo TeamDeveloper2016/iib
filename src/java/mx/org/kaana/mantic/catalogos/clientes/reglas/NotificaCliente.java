@@ -138,7 +138,7 @@ public class NotificaCliente implements Serializable {
 			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
 			parametros.put("REPORTE_PORTAL", Configuracion.getInstance().getEmpresa("portal"));		
       parametros.put("REPORTE_ECOMPRAS", Configuracion.getInstance().getEmpresa("compras"));		
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
    			  parametros.put("REPORTE_SUB_TITULO", Configuracion.getInstance().getEmpresa("slogan"));		
           break;
@@ -190,7 +190,7 @@ public class NotificaCliente implements Serializable {
 			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
 			parametros.put("REPORTE_PORTAL", Configuracion.getInstance().getEmpresa("portal"));		
 			parametros.put("REPORTE_ECOMPRAS", Configuracion.getInstance().getEmpresa("compras"));		
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib"  :
         case "kalan":
         case "tsaak":

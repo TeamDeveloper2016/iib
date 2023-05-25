@@ -665,7 +665,7 @@ public final class Cafu implements Serializable {
   
   private void prepare() {
     StringBuilder archivos= new StringBuilder();
-    String construccion   = this.desarrollo== null || this.desarrollo.length()== 0? Configuracion.getInstance().getPropiedad("sistema.empresa.principal"): this.desarrollo;
+    String construccion   = this.desarrollo== null || this.desarrollo.length()== 0? Configuracion.getInstance().getEmpresa(): this.desarrollo;
     if(this.contratistas!= null && !this.contratistas.isEmpty()) {
       Map<String, Object> params= new HashMap<>();
       List<String> files        = new ArrayList<>();

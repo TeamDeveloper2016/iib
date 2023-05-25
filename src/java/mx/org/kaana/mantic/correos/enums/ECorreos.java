@@ -124,7 +124,7 @@ public enum ECorreos {
 	}
 
 	public String getEmail() {
-    String token   = Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("email");
+    String token   = Configuracion.getInstance().getEmpresa().toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("email");
     String regresar= "";
     if(empresas.containsKey(token))
       regresar= empresas.get(token);
@@ -132,11 +132,11 @@ public enum ECorreos {
 	}
 
 	public String getAlias() {
-		return alias.concat(" | ").concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toUpperCase());
+		return alias.concat(" | ").concat(Configuracion.getInstance().getEmpresa().toUpperCase());
 	}
 
   public String getBackup() {
-    String token   = Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("backup");
+    String token   = Configuracion.getInstance().getEmpresa().toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("backup");
     String regresar= "";
     if(empresas.containsKey(token))
       regresar= empresas.get(token);
@@ -144,7 +144,7 @@ public enum ECorreos {
   }
 	
   public String getControl() {
-    String token   = Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase().concat(".control.").concat("email");
+    String token   = Configuracion.getInstance().getEmpresa().toLowerCase().concat(".control.").concat("email");
     String regresar= "";
     if(empresas.containsKey(token))
       regresar= empresas.get(token);
@@ -152,7 +152,7 @@ public enum ECorreos {
   }
 	
   public String getRespaldo() {
-    String token   = Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase().concat(".administracion.").concat("backup");
+    String token   = Configuracion.getInstance().getEmpresa().toLowerCase().concat(".administracion.").concat("backup");
     String regresar= "";
     if(empresas.containsKey(token))
       regresar= empresas.get(token);
@@ -160,7 +160,7 @@ public enum ECorreos {
   }
   
   public String getSource() {
-	  return "/mx/org/kaana/".concat(Configuracion.getInstance().getPropiedad("sistema.empresa.principal").toLowerCase()).concat("/correos/templates/");
+	  return "/mx/org/kaana/".concat(Configuracion.getInstance().getEmpresa().toLowerCase()).concat("/correos/templates/");
   }          
   
 }

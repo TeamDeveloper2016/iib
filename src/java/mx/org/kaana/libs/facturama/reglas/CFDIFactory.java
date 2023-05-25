@@ -85,7 +85,7 @@ public class CFDIFactory implements Serializable {
     Encriptar encriptar= new Encriptar();
     String password_po= (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion())? System.getenv(IMOX_CFDI): encriptar.desencriptar(MANTIC_PASSWORD_PO);
     String password_pu= (!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion())? System.getenv(IMOX_SANDBOX): encriptar.desencriptar(MANTIC_PASSWORD_PU);
-    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+    switch(Configuracion.getInstance().getEmpresa()) {
       case "iib":
         user_po    = MANTIC_USER_PO;
         user_pu    = MANTIC_USER_PU;

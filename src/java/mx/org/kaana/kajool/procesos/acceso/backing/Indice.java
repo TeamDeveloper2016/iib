@@ -34,7 +34,7 @@ public class Indice extends BaseMenu implements Serializable {
   
   public Boolean getActivar() {
     Boolean regresar= Boolean.TRUE;
-    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+    switch(Configuracion.getInstance().getEmpresa()) {
       case "iib":
         regresar= Boolean.TRUE;
         break;

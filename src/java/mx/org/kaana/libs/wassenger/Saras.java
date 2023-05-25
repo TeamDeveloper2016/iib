@@ -200,7 +200,7 @@ public final class Saras implements Serializable {
       Message message= null;
       String mensaje = CITA_MESSAGE_MANTIC;
       Map<String, Object> params = new HashMap<>();   
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           mensaje= CITA_MESSAGE_MANTIC;
           break;
@@ -276,7 +276,7 @@ public final class Saras implements Serializable {
       Message message= null;
       String mensaje = RECORDATORIO_MESSAGE_MANTIC;
       Map<String, Object> params = new HashMap<>();   
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           mensaje= RECORDATORIO_MESSAGE_MANTIC;
           break;
@@ -353,7 +353,7 @@ public final class Saras implements Serializable {
       Message message= null;
       String mensaje = ATIENDE_MESSAGE_MANTIC;
       Map<String, Object> params = new HashMap<>();   
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           mensaje= ATIENDE_MESSAGE_MANTIC;
           break;
@@ -429,7 +429,7 @@ public final class Saras implements Serializable {
       Message message= null;
       String mensaje = ATIENDE_MESSAGE_MANTIC;
       Map<String, Object> params = new HashMap<>();   
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           mensaje= AGENDA_MESSAGE_MANTIC;
           break;
@@ -503,7 +503,7 @@ public final class Saras implements Serializable {
       Message message= null;
       String mensaje = PROMOCION_MESSAGE_MANTIC;
       Map<String, Object> params = new HashMap<>();   
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           mensaje= PROMOCION_MESSAGE_MANTIC;
           break;

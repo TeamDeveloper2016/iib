@@ -30,7 +30,7 @@ public class Ubicacion extends IBaseAttribute implements Serializable {
   @PostConstruct
   protected void init() {
     StringBuilder sb= new StringBuilder();
-    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+    switch(Configuracion.getInstance().getEmpresa()) {
       case "iib":
         sb.append("['<span class=janal-font-bold>").append(Configuracion.getInstance().getEmpresa("titulo")).append(" (Matriz)</span><br/><br/>Telefono:").append(Configuracion.getInstance().getEmpresa("telefono")).append("<br/>Whatsapp:").append(Configuracion.getInstance().getEmpresa("celular")).append("<br/><br/>Centro Comercial Agropecuario, Local 66, Centro Comercial Agropecuario, C.P. 20135<br/>Aguascalientes, Ags.', 21.9047858, -102.2947087, 1],");
         sb.append("['<span class=janal-font-bold>").append(Configuracion.getInstance().getEmpresa("titulo")).append(" (Sucursal)</span><br/><br/>Telefono:").append(Configuracion.getInstance().getEmpresa("telefono")).append("<br/>Whatsapp:").append(Configuracion.getInstance().getEmpresa("celular")).append("<br/><br/>Ferrocarril 105, Desarrollo Especial Boulevar a Zacatecas, C.P. 20126 <br/>Aguascalientes, Ags.', 21.9138923, -102.2874127, 2]");

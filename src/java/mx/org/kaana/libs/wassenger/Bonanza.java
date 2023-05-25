@@ -187,7 +187,7 @@ public final class Bonanza implements Serializable {
       Value value    = null; 
       String mensaje = BODY_MESSAGE_MANTIC;
       Map<String, Object> params = new HashMap<>();   
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           mensaje= BODY_MESSAGE_MANTIC;
           break;
@@ -264,7 +264,7 @@ public final class Bonanza implements Serializable {
       Message message= null;
       String mensaje = BODY_MASIVO_MANTIC;
       Map<String, Object> params = new HashMap<>();   
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           mensaje= BODY_MASIVO_MANTIC;
           break;
@@ -533,7 +533,7 @@ public final class Bonanza implements Serializable {
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        switch(Configuracion.getInstance().getEmpresa()) {
           case "iib":
             mensaje= BODY_FACTURA_MANTIC;
             break;
@@ -610,7 +610,7 @@ public final class Bonanza implements Serializable {
         params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
-        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        switch(Configuracion.getInstance().getEmpresa()) {
           case "iib":
             mensaje= BODY_TICKET_MANTIC;
             break;
@@ -1143,7 +1143,7 @@ public final class Bonanza implements Serializable {
       params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
       params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
       params.put("saludo", this.toSaludo());
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           LOG.info("{"+ Cadena.replaceParams(BODY_FACTURA_MANTIC, params, true)+ "}");
           break;
@@ -1154,7 +1154,7 @@ public final class Bonanza implements Serializable {
           LOG.info("{"+ Cadena.replaceParams(BODY_FACTURA_TSAAK, params, true)+ "}");
           break;
       } // swtich
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           LOG.info("{"+ Cadena.replaceParams(BODY_MESSAGE_MANTIC, params, true)+ "}");
           break;
@@ -1201,7 +1201,7 @@ public final class Bonanza implements Serializable {
         params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
         params.put("saludo", this.toSaludo());
         params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
-        switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        switch(Configuracion.getInstance().getEmpresa()) {
           case "iib":
             mensaje= BODY_MESSAGE_MANTIC;
             break;
@@ -1261,7 +1261,7 @@ public final class Bonanza implements Serializable {
       Message message= null;
       String mensaje = BODY_MESSAGE_TEST_MANTIC;
       Map<String, Object> params = new HashMap<>();   
-      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      switch(Configuracion.getInstance().getEmpresa()) {
         case "iib":
           mensaje= this.celular.contains("@")? GROUP_MESSAGE_TEST_MANTIC: BODY_MESSAGE_TEST_MANTIC;
           break;
