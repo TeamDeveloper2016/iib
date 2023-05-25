@@ -136,8 +136,8 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 	public Long getIdCliente() {
 		return this.orden.getIdCliente();
 	}
-  
-	private Long toServicio(){
+
+	private Long toServicio() {
 		Long regresar            = -1L;
 		Entity servicio          = null;
 		Map<String, Object>params= new HashMap<>();

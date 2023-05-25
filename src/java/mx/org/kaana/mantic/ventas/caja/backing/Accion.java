@@ -439,12 +439,12 @@ public class Accion extends IBaseVenta implements Serializable {
           } // if
           else {
             if(tipoTicket.equals("FACTURA"))						
-              ticket= new CreateTicket((AdminTickets)getAdminOrden(), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
+              ticket= new CreateTicket((AdminTickets)this.getAdminOrden(), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
             else
               if(Objects.equals(seleccionado.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY))
-                ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), tipoTicket);
+                ticket= new CreateTicket(((AdminTickets)this.getAdminOrden()), (Pago) this.attrs.get("pago"), tipoTicket);
               else
-                ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
+                ticket= new CreateTicket(((AdminTickets)this.getAdminOrden()), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
             UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
             UIBackingUtilities.execute("jsTicket.clicTicket();");
           } // if  

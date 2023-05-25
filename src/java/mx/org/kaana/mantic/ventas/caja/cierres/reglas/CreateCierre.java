@@ -12,6 +12,8 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
 public class CreateCierre extends CreateTicket {
+
+  private static final long serialVersionUID = 4667701502864853161L;
 	
 	private Double cantidad;
 	private Long idAutorizo;
@@ -24,7 +26,6 @@ public class CreateCierre extends CreateTicket {
 		super(null, null, tipo);
 		this.cantidad  = cantidad;
 		this.idAutorizo= idAutorizo;
-		super.init();
 	}	
 	
 	@Override

@@ -362,5 +362,5 @@ public abstract class IAdminArticulos implements Serializable {
 		Methods.clean(this.articulos);
 		Methods.clean(this.filtrados);
   }	
-	
+  
 }

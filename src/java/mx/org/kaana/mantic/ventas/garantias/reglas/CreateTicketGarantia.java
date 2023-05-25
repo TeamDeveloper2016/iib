@@ -17,7 +17,9 @@ import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
 import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 
-public class CreateTicketGarantia extends CreateTicket{
+public class CreateTicketGarantia extends CreateTicket {
+
+  private static final long serialVersionUID = 1270415452252614588L;
 	
 	private TicketVenta ticket;		
 	private Garantia garantia;
@@ -26,7 +28,6 @@ public class CreateTicketGarantia extends CreateTicket{
 
 	public CreateTicketGarantia(Pago pago, String tipo, boolean isGarantia) {
 		super(pago, tipo);
-		super.init();
 		this.isGarantia= isGarantia;
 	} // CreateTicketGarantia
 
@@ -47,10 +48,10 @@ public class CreateTicketGarantia extends CreateTicket{
 	}	
 	
 	@Override
-	public String toHtml() throws Exception{
+	public String toHtml() throws Exception {
 		StringBuilder sb= new StringBuilder();		
-		this.pago= this.garantia.getTotales();
-		this.ticket= this.garantia.getGarantia();		
+		this.pago     = this.garantia.getTotales();
+		this.ticket   = this.garantia.getGarantia();		
 		this.articulos= this.garantia.getArticulosGarantia();
 		sb.append(toHeader());
 		sb.append(toBlackBar());		

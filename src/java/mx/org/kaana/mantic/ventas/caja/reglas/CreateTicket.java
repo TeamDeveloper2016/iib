@@ -16,17 +16,17 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.Abono;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
-import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 
 public class CreateTicket implements Serializable {
 
   private static final long serialVersionUID = 2708311485895423674L;
 
-	private AdminTickets ticket;
+	private IAdminArticulos ticket;
 	protected Pago pago;
 	protected Sucursal principal;
 	protected String tipo;
@@ -36,11 +36,11 @@ public class CreateTicket implements Serializable {
 		this(null, pago, tipo);
 	}
 	
-	public CreateTicket(AdminTickets ticket, Pago pago, String tipo) {
+	public CreateTicket(IAdminArticulos ticket, Pago pago, String tipo) {
 		this(ticket, pago, tipo, "");
 	} 
 	
-	public CreateTicket(AdminTickets ticket, Pago pago, String tipo, String cliente) {
+	public CreateTicket(IAdminArticulos ticket, Pago pago, String tipo, String cliente) {
 		this.ticket = ticket;
 		this.pago   = pago;
 		this.tipo   = tipo;
@@ -53,7 +53,7 @@ public class CreateTicket implements Serializable {
 		this.init();
 	} // CreateTicket
 	
-	protected void init() {		
+	private void init() {		
 		Sucursal matriz= null;		
 		for(Sucursal sucursal: JsfBase.getAutentifica().getSucursales()) {
 			if(sucursal.isMatriz())

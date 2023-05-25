@@ -18,7 +18,6 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -43,7 +42,6 @@ import mx.org.kaana.mantic.ventas.caja.especial.beans.Producto;
 import mx.org.kaana.mantic.ventas.caja.especial.reglas.AdminEspecial;
 import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
 import mx.org.kaana.mantic.ventas.caja.reglas.Transaccion;
-import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.apache.commons.logging.Log;
@@ -531,13 +529,13 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
           } // if
           else {
             if(tipoTicket.equals("FACTURA"))						
-              ticket= new CreateTicket((AdminTickets)getAdminOrden(), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
+              ticket= new CreateTicket((AdminEspecial)this.getAdminOrden(), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
             else
               if(Objects.equals(seleccionado.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY))
-                ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), tipoTicket);
+                ticket= new CreateTicket(((AdminEspecial)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket);
               else
-                ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
-            UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
+                ticket= new CreateTicket(((AdminEspecial)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
+            UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminEspecial)this.getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
             UIBackingUtilities.execute("jsTicket.clicTicket();");
           } // if  
 					JsfBase.addMessage("Se finalizó el pago del ticket de venta", ETipoMensaje.INFORMACION);
@@ -589,8 +587,8 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
       transaccion= new Transaccion(ticketVenta, this.getAdminOrden().getArticulos());
 			confirmacion= transaccion.ejecutar(EAccion.MOVIMIENTOS);				
 			if(confirmacion) {
-				((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).setCotizacion(transaccion.getCotizacion());
-				ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago)this.attrs.get("pago"), "COTIZACIÓN");				
+				((TicketVenta)(((AdminEspecial)this.getAdminOrden()).getOrden())).setCotizacion(transaccion.getCotizacion());
+				ticket= new CreateTicket(((AdminEspecial)this.getAdminOrden()), (Pago)this.attrs.get("pago"), "COTIZACIÓN");				
 				UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion() + "','" + ticket.toHtml() + "');");
 				UIBackingUtilities.execute("jsTicket.clicTicket();");
 				JsfBase.addMessage("Se finalizó la cotización del ticket.", ETipoMensaje.INFORMACION);								

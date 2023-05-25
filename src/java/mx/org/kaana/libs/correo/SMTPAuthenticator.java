@@ -16,7 +16,7 @@ public class SMTPAuthenticator extends javax.mail.Authenticator {
     Encriptar encriptado = new Encriptar();
     String username = TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user");
     String password = TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.pass");
-    LOG.warn("Uusuario: "+ username +"  contraseña: "+ encriptado.encriptar(password));
+    LOG.warn("Usuario: "+ username);
     return new PasswordAuthentication(username, password);
   }
 

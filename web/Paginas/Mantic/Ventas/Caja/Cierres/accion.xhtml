@@ -44,69 +44,54 @@
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticVentasCajaCierresAccion.doTabChange}" process="@this" update="@(.ambos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>						
 						<p:tab title="General">
-							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
-								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
-     								<p:outputLabel for="idEmpresa" value="Sucursal:"/>
-									</div>	
-									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresAccion.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
-											<p:column headerText="Clave">
-												<h:outputText value="#{item.clave}"/>
-											</p:column>   
-											<p:column headerText="Nombre">
-												<h:outputText value="#{item.nombre}"/>
-											</p:column>   
-										</p:selectOneMenu>
-  	  						</div>	
-								</div>	
-								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
-								    <p:outputLabel for="idCajas" value="Caja:"/>
-									</div>
-									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idCajas" value="#{manticVentasCajaCierresAccion.attrs.idCajas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
-											<p:column headerText="Clave">
-												<h:outputText value="#{item.clave}"/>
-											</p:column>   
-											<p:column headerText="Nombre">
-												<h:outputText value="#{item.nombre}"/>
-											</p:column>   
-											<p:column styleClass="janal-column-right" headerText="Limite">
-												<h:outputText value="#{manticVentasCajaCierresAccion.doMonedaSat(item.limite)}"/>
-											</p:column>   
-										</p:selectOneMenu>
-									</div>		
-								</div>	
-								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
-								    <p:outputLabel for="idCuenta" value="Cuentas abiertas:"/>
-									</div>
-									<div class="ui-grid-col-10">
-										<p:selectOneMenu id="idCuenta" value="#{manticVentasCajaCierresAccion.attrs.idCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.cuentas}"  var="element" itemValue="#{element}" itemLabel="#{element.dia}-#{element.consecutivo} #{element.nombre} #{element.importe}"/>
-											<p:column headerText="No. cuenta">
-												<h:outputText value="#{item.dia}-#{item.consecutivo}"/>
-											</p:column>   
-											<p:column headerText="Vendedor">
-												<h:outputText value="#{item.nombre}"/>
-											</p:column>   
-											<p:column styleClass="janal-column-right" headerText="Importe">
-												<h:outputText value="#{item.total}"/>
-											</p:column>   
-										</p:selectOneMenu>
-									</div>		
-									<div class="ui-grid-col-1 janal-column-right">
-								    <p:outputLabel value="[Total: #{manticVentasCajaCierresAccion.attrs.cuentas.size()}]"/>
-									</div>
-								</div>	
+							<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+                <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt">
+                  <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+                  <p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresAccion.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <f:selectItems value="#{manticVentasCajaCierresAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                  <p:outputLabel for="idCajas" value="Caja:"/>
+                  <p:selectOneMenu id="idCajas" value="#{manticVentasCajaCierresAccion.attrs.idCajas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <f:selectItems value="#{manticVentasCajaCierresAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                    <p:column headerText="Clave">
+                      <h:outputText value="#{item.clave}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.nombre}"/>
+                    </p:column>   
+                    <p:column styleClass="janal-column-right" headerText="Limite">
+                      <h:outputText value="#{manticVentasCajaCierresAccion.doMonedaSat(item.limite)}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                  <p:outputLabel for="idCuenta" value="Cuentas abiertas:"/>
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-95, janal-fix-5 janal-column-right">
+                    <p:selectOneMenu id="idCuenta" value="#{manticVentasCajaCierresAccion.attrs.idCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <f:selectItems value="#{manticVentasCajaCierresAccion.attrs.cuentas}"  var="element" itemValue="#{element}" itemLabel="#{element.dia}-#{element.consecutivo} #{element.nombre} #{element.importe}"/>
+                      <p:column headerText="No. cuenta">
+                        <h:outputText value="#{item.dia}-#{item.consecutivo}"/>
+                      </p:column>   
+                      <p:column headerText="Vendedor">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                      <p:column styleClass="janal-column-right" headerText="Importe">
+                        <h:outputText value="#{item.total}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                    <p:outputLabel value="[Total: #{manticVentasCajaCierresAccion.attrs.cuentas.size()}]"/>
+                  </p:panelGrid>  
+                </p:panelGrid>  
 								<p:spacer height="3px"/>
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-4">
-										<p:dataTable id="moneda" var="row" value="#{manticVentasCajaCierresAccion.denominaciones}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
+										<p:dataTable id="moneda" var="row" value="#{manticVentasCajaCierresAccion.denominaciones}" styleClass="janal-wid-100-txt" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
 											<f:facet name="header" >
+                        <p:outputLabel value="DINERO EN EFECTIVO EN CAJA" styleClass="janal-text-white janal-icons-header"/>
 												<div class="lg-pantalla">
 													<p:menuButton value="Opciones">
 														<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()"/>
@@ -147,10 +132,10 @@
 											</f:facet>
 										</p:dataTable>		
 									</div>	
-  								<p:spacer width="3px"/>
 									<div class="ui-grid-col-8">
-										<p:dataTable id="tabla" var="row" value="#{manticVentasCajaCierresAccion.importes}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
+										<p:dataTable id="tabla" var="row" value="#{manticVentasCajaCierresAccion.importes}" styleClass="janal-wid-99" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
 											<f:facet name="header" >
+                        <p:outputLabel value="SUMA DE IMPORTES POR TIPO" styleClass="janal-text-white janal-icons-header"/>
 												<div class="lg-pantalla">
 													<p:menuButton value="Opciones">
 														<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -204,7 +189,7 @@
 											</f:facet>
 										</p:dataTable>
 										<p:spacer height="3px"/>
-										<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+										<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 											<div class="ui-grid-row janal-grid-row">
 												<div class="ui-grid-col-12">
 													<p:outputLabel value="Venta(s) a crédito: [#{manticVentasCajaCierresAccion.attrs.totalCreditos}]"/>
@@ -246,7 +231,7 @@
 							</div>
 						</p:tab>
 						<p:tab title="Fondo de caja" rendered="#{manticVentasCajaCierresAccion.attrs.nombreAccion eq 'Consultar'}">
-							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+							<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
 										<p:dataTable id="fondos" var="row" value="#{manticVentasCajaCierresAccion.fondos}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
