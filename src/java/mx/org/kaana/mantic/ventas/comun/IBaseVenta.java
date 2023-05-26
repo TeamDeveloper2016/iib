@@ -1241,6 +1241,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
     try {
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put("precioCliente", "menudeo");
 			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());

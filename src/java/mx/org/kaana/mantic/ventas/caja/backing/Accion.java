@@ -424,7 +424,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(validarCredito) {
 				ventaFinalizada= this.loadVentaFinalizada();
         // ACTUALIZAR EL REGIMEN FISCAL DEL CLIENTE 
-        DaoFactory.getInstance().update(ventaFinalizada.getCliente());
+        if(!Objects.equals(ventaFinalizada.getCliente().getIdRegimenFiscal(), -1L))
+          DaoFactory.getInstance().update(ventaFinalizada.getCliente());
 				transaccion = new Transaccion(ventaFinalizada);
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
 					if(ventaFinalizada.isFacturar() && !ventaFinalizada.getApartado()) {
@@ -1834,6 +1835,7 @@ public class Accion extends IBaseVenta implements Serializable {
     try {
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put("precioCliente", "menudeo");
 			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());

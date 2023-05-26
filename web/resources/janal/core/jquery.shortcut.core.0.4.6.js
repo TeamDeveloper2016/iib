@@ -129,7 +129,7 @@ shortcut = {
 				'f10':121,
 				'f11':122,
 				'f12':123,
-				
+        'question': 221,
 				'minus': 109
 			}
 	
@@ -411,6 +411,19 @@ shortcut.add("Shift+P", function() {
 });
 
 shortcut.add("Ctrl+I", function() {
+	janal.console('Shortcut finalizar cobro venta:');	
+  if(janal.session() && PF('contenedorCaja')) {
+    if(PF('contenedorCaja') && PF('contenedorCaja').getActiveIndex()=== 1 && ((janal.session() && PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') || (PF('wAceptarCompraIcon') && $('#' + PF('wAceptarCompraIcon').id).css('display')!== 'none'))) {
+      $('#' + ((PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') ? 'aceptar' : 'aceptarIcon')).click();
+    } // if
+    else 
+      if((PF('wAceptarCotizacion') && $('#' + PF('wAceptarCotizacion').id).css('display')!== 'none') || (PF('wAceptarCotizacionIcon') && $('#' + PF('wAceptarCotizacionIcon').id).css('display')!== 'none')) {
+        cleanSelection();		
+      } // if
+  } // if  
+});
+
+shortcut.add("question", function() {
 	janal.console('Shortcut finalizar cobro venta:');	
   if(janal.session() && PF('contenedorCaja')) {
     if(PF('contenedorCaja') && PF('contenedorCaja').getActiveIndex()=== 1 && ((janal.session() && PF('wAceptarCompra') && $('#' + PF('wAceptarCompra').id).css('display')!== 'none') || (PF('wAceptarCompraIcon') && $('#' + PF('wAceptarCompraIcon').id).css('display')!== 'none'))) {

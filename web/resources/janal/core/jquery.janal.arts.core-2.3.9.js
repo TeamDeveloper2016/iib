@@ -40,7 +40,10 @@
 		continue    : false,
 		leavePage   : true,
 		paginator   : false,
-		VK_ENTER    : 13, 
+		VK_MAS       : 187,
+    VK_ICONGNITA : 221,
+    VK_APOSTROFE : 186,
+		VK_ENTER     : 13, 
 		VK_FIRST_PAGE: 36, 
 		VK_LAST_PAGE : 35, 
 		VK_PREV_PAGE : 33, 
@@ -66,7 +69,7 @@
 		VK_BRACKET   : 222,
 		VK_FIN       : 35,
 		VK_PAGINATOR : 19,
-	  change       : [13, 19, 27, 106, 107, 110, 111, 188, 121, 189, 191, 220, 222, 226],
+	  change       : [13, 19, 27, 106, 107, 110, 111, 186, 187, 188, 121, 189, 191, 220, 221, 222, 226],
 	  teclas       : [9, 13, 17, 27, 33, 34, 35, 36, 38, 40, 220, 118, 121, 122],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
@@ -267,7 +270,7 @@
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
 			});  
-      $(document).on('focus', this.selector, function() {
+      $(document).on('focus', '.key-down-event', function() {
 				janal.console('jsArticulos.focus: '+ $(this).attr('id')+ ' value: '+ $(this).val());
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
@@ -326,7 +329,7 @@
 						break;
 				} // switch
 			});	
-      $(document).on('keydown', this.selector, function(e) {
+      $(document).on('keydown', '.key-down-event', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.keydown [key-down-event]: '+ $(this).attr('id')+ ' key: '+ key);
 				if(($articulos.change.indexOf(key)>= 0)) {
@@ -347,6 +350,7 @@
   						return $articulos.down(true);
 						break;
 					case $articulos.VK_ASTERISK:
+          case $articulos.VK_MAS:
 						if(calculate)
 						  return true;
 						else

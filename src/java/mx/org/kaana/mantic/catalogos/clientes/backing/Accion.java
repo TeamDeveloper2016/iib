@@ -88,7 +88,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // init
 
-	private void loadCollections(){
+	private void loadCollections() {
 		this.loadRepresentantes();
 		this.loadTiposContactos();
 		this.loadTiposDomicilios();	
@@ -145,13 +145,15 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doLoad
 
   public String doAceptar() {
-    Transaccion transaccion = null;
-    String regresar = null;
+    Transaccion transaccion= null;
+    String regresar        = null;
     try {
       if(this.registroCliente.getClienteDomicilioSelecion()!= null)
         this.registroCliente.toUpdateClientePivote(this.registroCliente.getClienteDomicilioSelecion(), Boolean.TRUE);
       if(this.registroCliente.getCliente().getIdRegimenFiscal()== null || this.registroCliente.getCliente().getIdRegimenFiscal()< 1L)
         this.registroCliente.getCliente().setIdRegimenFiscal(null);
+      if(this.registroCliente.getCliente().getIdCredito()== null || this.registroCliente.getCliente().getIdCredito()< 1L)
+        this.registroCliente.getCliente().setIdCredito(2L);
       transaccion = new Transaccion(this.registroCliente);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
         regresar= this.doCancelar();

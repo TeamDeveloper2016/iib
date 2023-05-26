@@ -36,6 +36,9 @@
 		doneInterval: 10000,
 		continue    : false,
 		leavePage   : true,
+		VK_MAS      : 187,
+    VK_ICONGNITA: 221,
+    VK_APOSTROFE: 186,
 		VK_TAB      : 9, 
 		VK_ENTER    : 13, 
 		VK_ESC      : 27,
@@ -57,9 +60,9 @@
 		VK_MAYOR    : 226,
 		VK_F7       : 118,
 		VK_F8       : 119,
-		VK_F10       : 121,
+		VK_F10      : 121,
 		VK_SAT	    : 188,
-	  change      : [13, 27, 106, 107, 110, 111, 121, 188, 189, 191, 220, 222, 226],
+	  change      : [13, 27, 106, 107, 110, 111, 121, 186, 187, 188, 189, 191, 220, 221, 222, 226],
 	  control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
@@ -181,7 +184,7 @@
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
 			});  
-      $(document).on('focus', this.selector, function() {
+      $(document).on('focus', '.key-down-event', function() {
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
 			});  
@@ -242,7 +245,7 @@
 						break;
 				} // switch
 			});	
-      $(document).on('keydown', this.selector, function(e) {
+      $(document).on('keydown', '.key-down-event', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsVentas.keydown: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) {
@@ -263,6 +266,7 @@
   						return $articulos.down(true);
 						break;
 					case $articulos.VK_ASTERISK:
+					case $articulos.VK_MAS:
 						if(calculate)
 						  return true;
 						else

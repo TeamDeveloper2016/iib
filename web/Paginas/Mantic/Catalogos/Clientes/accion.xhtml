@@ -362,7 +362,7 @@
                 </p:column>
               </p:dataTable>	
 						</p:tab>
-            <p:tab title="Cuentas usuario">
+            <p:tab title="Cuentas usuario" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
               <p:dataGrid id="usuarios" rowIndexVar="index" var="row" value="#{manticCatalogosClientesAccion.registroCliente.personasTiposContacto}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginator="false" columns="1" rows="1000">
                 <p:panel header="Representante: #{row['nombres']} #{row['paterno']} #{row['materno']}" styleClass="janal-wid-100-txt #{(row['sqlAccion'] ne 'UPDATE') and (row['sqlAccion'] ne 'UPSERT')? 'janal-display-none': ''}">
                   <p:panelGrid columns="3" styleClass="janal-wid-100-txt" columnClasses="janal-fix-10 janal-column-center, janal-fix-60 janal-column-center, janal-fix-30 janal-column-center">

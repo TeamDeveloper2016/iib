@@ -514,7 +514,8 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
 			if(validarCredito) {
 				ventaFinalizada= this.loadVentaFinalizada();
         // ACTUALIZAR EL REGIMEN FISCAL DEL CLIENTE 
-        DaoFactory.getInstance().update(ventaFinalizada.getCliente());
+        if(!Objects.equals(ventaFinalizada.getCliente().getIdRegimenFiscal(), -1L))
+          DaoFactory.getInstance().update(ventaFinalizada.getCliente());
 				transaccion = new Transaccion(ventaFinalizada);
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
 					if(ventaFinalizada.isFacturar() && !ventaFinalizada.getApartado()) {

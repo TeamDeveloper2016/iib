@@ -132,7 +132,7 @@ public class Gestor implements Serializable {
     Map<String,Object> params  = new HashMap();
     try {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			regresar= UISelect.seleccione("TcKeetTiposGastosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			regresar= UISelect.seleccione("TcKeetTiposGastosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS, "idKey");
     } // try
     catch (Exception e) {
       throw e;
