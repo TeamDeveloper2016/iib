@@ -12,7 +12,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:rfc': {validaciones: 'rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoCliente': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idRegimenFiscal': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
@@ -92,23 +92,23 @@
                 <p:inputText id="paterno" styleClass="cliente janal-wid-100-txt #{manticCatalogosClientesAccion.registroCliente.cliente.idTipoCliente eq 2? '': 'janal-display-none'}" value="#{manticCatalogosClientesAccion.registroCliente.cliente.paterno}"/>
                 <p:outputLabel for="materno" value="2do apellido:" styleClass="cliente #{manticCatalogosClientesAccion.registroCliente.cliente.idTipoCliente eq 2? '': 'janal-display-none'}"/>
                 <p:inputText id="materno" styleClass="cliente janal-wid-100-txt #{manticCatalogosClientesAccion.registroCliente.cliente.idTipoCliente eq 2? '': 'janal-display-none'}" value="#{manticCatalogosClientesAccion.registroCliente.cliente.materno}"/>
-								<p:outputLabel for="tipoVenta" value="Tipo de venta:" rendered="#{manticCatalogosClientesAccion.attrs.admin}"/>
-								<p:selectOneMenu id="tipoVenta" value="#{manticCatalogosClientesAccion.registroCliente.cliente.idTipoVenta}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
+                <p:outputLabel for="tipoVenta" value="Tipo de venta:" styleClass="#{manticCatalogosClientesAccion.attrs.admin? '': 'janal-display-none'}"/>
+								<p:selectOneMenu id="tipoVenta" value="#{manticCatalogosClientesAccion.registroCliente.cliente.idTipoVenta}" styleClass="janal-wid-100-txt #{manticCatalogosClientesAccion.attrs.admin? '': 'janal-display-none'}">
 									<f:selectItems value="#{manticCatalogosClientesAccion.attrs.tiposVentas}"/>
 								</p:selectOneMenu>
-								<p:outputLabel for="idEspecial" value="Precio especial:" rendered="#{manticCatalogosClientesAccion.attrs.admin}"/>
-								<p:selectOneMenu id="idEspecial" value="#{manticCatalogosClientesAccion.attrs.idEspecial}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
+								<p:outputLabel for="idEspecial" value="Precio especial:" styleClass="#{manticCatalogosClientesAccion.attrs.admin? '': 'janal-display-none'}"/>
+								<p:selectOneMenu id="idEspecial" value="#{manticCatalogosClientesAccion.attrs.idEspecial}" styleClass="janal-wid-100-txt #{manticCatalogosClientesAccion.attrs.admin? '': 'janal-display-none'}">
                   <p:ajax event="change" update="@(.especial)" process="@this" listener="#{manticCatalogosClientesAccion.doLoadEspecial}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <f:selectItem itemLabel="NO" itemValue="2"/>
                   <f:selectItem itemLabel="SI" itemValue="1"/>
 								</p:selectOneMenu>
-                <p:outputLabel for="especial" value="Porcentaje:" styleClass="especial" style="display: #{manticCatalogosClientesAccion.attrs.idEspecial eq '1'? '': 'none'}" rendered="#{manticCatalogosClientesAccion.attrs.admin}"/>
-                <p:inputText id="especial" styleClass="janal-wid-100-txt especial" value="#{manticCatalogosClientesAccion.registroCliente.cliente.especial}" style="display: #{manticCatalogosClientesAccion.attrs.idEspecial eq '1'? '': 'none'}" rendered="#{manticCatalogosClientesAccion.attrs.admin}"/>
+                <p:outputLabel for="especial" value="Porcentaje:" styleClass="especial #{manticCatalogosClientesAccion.attrs.admin? '': 'janal-display-none'}" style="display: #{manticCatalogosClientesAccion.attrs.idEspecial eq '1'? '': 'none'}"/>
+                <p:inputText id="especial" styleClass="janal-wid-100-txt especial #{manticCatalogosClientesAccion.attrs.admin? '': 'janal-display-none'}" value="#{manticCatalogosClientesAccion.registroCliente.cliente.especial}" style="display: #{manticCatalogosClientesAccion.attrs.idEspecial eq '1'? '': 'none'}"/>
               </p:panelGrid>
             </p:tab>
             <p:tab title="Domicilios">
               <p:panelGrid id="panelTablaDomicilios" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-15, janal-wid-100">
-                <p:dataList id="tablaDomicilios" value="#{manticCatalogosClientesAccion.registroCliente.clientesDomicilio}" var="domicilio" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
+                <p:dataList id="tablaDomicilios" value="#{manticCatalogosClientesAccion.registroCliente.clientesDomicilio}" var="domicilio" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">
                   <p:commandLink update="contenedorGrupos:formularioDomicilio tablaDomicilios contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:codigoPostal contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" title="Eliminar" action="#{manticCatalogosClientesAccion.doEliminarDomicilio}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
 										<f:setPropertyActionListener value="#{domicilio}" target="#{manticCatalogosClientesAccion.registroCliente.clienteDomicilioSelecion}" />
 										<i class="fa fa-minus-square fa-lg"></i>   
@@ -128,10 +128,9 @@
                   </f:facet>
                 </p:dataList>
                 <p:panelGrid id="formularioDomicilio" columns="1" layout="grid" styleClass="janal-wid-100">
-                  <p:spacer/>
-									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
-									<p:outputLabel for="domicilio" value="Domicilio:"/>
-                  <p:selectOneMenu id="domicilio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important" styleClass="janal-display-none"/>
+                  <p:outputLabel for="domicilio" value="Domicilio:" styleClass="janal-display-none"/>
+                  <p:selectOneMenu id="domicilio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.domicilio}" styleClass="janal-wid-100-txt janal-display-none" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">
                     <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doLoadAtributos}" process="@this domicilio" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
                     <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
                     <f:selectItems value="#{manticCatalogosClientesAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>

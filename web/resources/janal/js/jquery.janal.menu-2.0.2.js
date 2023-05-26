@@ -26,7 +26,7 @@
             showSubPanels: true
           },
           navbar: {
-            title: 'Menu principal'
+            title: 'Menú principal'
           },
           navbars: [{
               position: 'top',

@@ -126,10 +126,9 @@
                   </f:facet>
                 </p:dataList>
                 <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100 codigoPostal" columnClasses="janal-wid-col-120, janal-wid-100-txt">
-                  <p:spacer/>
-									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
-									<p:outputLabel for="domicilio" value="Domicilio:"/>
-                  <p:selectOneMenu id="domicilio" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
+                  <p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important" styleClass="janal-display-none"/>
+                  <p:outputLabel for="domicilio" value="Domicilio:" styleClass="janal-display-none"/>
+                  <p:selectOneMenu id="domicilio" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.domicilio}" styleClass="janal-wid-100-txt janal-display-none" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">
                     <p:ajax event="change" listener="#{manticCatalogosProveedoresAccion.doLoadAtributos}" process="@this domicilio" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
                     <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
                     <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
@@ -146,7 +145,6 @@
 											<h:outputText value="#{item.asentamiento}"/>
 										</p:column>  
                   </p:selectOneMenu>	
-									<p:spacer height="10px"/><p:spacer height="10px"/>
 									<p:outputLabel for="entidad" value="Entidad:"/>
                   <p:selectOneMenu id="entidad" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosProveedoresAccion.doActualizaMunicipios}" process="@this" update="@(.codigoPostal)" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
