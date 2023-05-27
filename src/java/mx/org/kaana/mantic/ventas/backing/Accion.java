@@ -716,6 +716,7 @@ public class Accion extends IBaseVenta implements Serializable {
           this.setIkRegimenFiscal(regimenesFiscales.get(0));
         else
           this.setIkRegimenFiscal(regimenesFiscales.get(index));
+        UIBackingUtilities.toMovilColumnLength("nombre", 25, regimenesFiscales);
       } // else
       else
         this.setIkRegimenFiscal(new UISelectEntity(-1L));

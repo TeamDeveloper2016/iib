@@ -13,6 +13,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import javax.faces.application.FacesMessage;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -127,5 +128,13 @@ public class UIBackingUtilities {
 	public static RequestContext getCurrentInstance() {
 	  return RequestContext.getCurrentInstance();	
 	}
-	
+
+  public static void toMovilColumnLength(String field, Integer length, List<UISelectEntity> items) {
+    if(items!= null && !items.isEmpty() && JsfUtilities.getBrowser().isMobile())
+      for (UISelectEntity item: items) {
+        if(!Objects.equals(item.toString(field), null) && item.toString(field).length()> length)
+          item.getValue(field).setData(item.getValue(field).getToString().substring(0, length).concat(" ..."));
+      } // for
+  }
+  
 }

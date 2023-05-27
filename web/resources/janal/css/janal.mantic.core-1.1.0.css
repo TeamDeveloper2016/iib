@@ -157,6 +157,7 @@ div.ui-panelgrid-content {
 .janal-data-table-opciones, .janal-steps-boton-siguiente {
   float:right !important;
 }
+.janal-content-ventas {height:350px !important;}
 .janal-help-icon {cursor:help;}
 .janal-wid-1 {width: 1% !important;}
 .janal-wid-2 {width: 2% !important;}
@@ -479,8 +480,10 @@ div.ui-panelgrid-content {
   .margin-fecha {padding-left: 0px;}
   .margin-desarrollo {margin-top: 0px !important;}
   .margin-version {margin-top: 0px !important;}
+  .janal-content-ventas {height:100% !important;}
   .janal-wid-3 {width: 97% !important}
   .janal-wid-5 {width: 97% !important}
+  .janal-wid-6 {width: 97% !important}
   .janal-wid-8 {width: 97% !important}
   .janal-wid-10 {width: 97% !important}
   .janal-wid-12 {width: 97% !important}
@@ -548,8 +551,10 @@ div.ui-panelgrid-content {
   .margin-fecha {padding-left: 0px;}
   .margin-desarrollo {margin-top: 0px !important;}
   .margin-version {margin-top: 0px !important;}
+  .janal-content-ventas {height: 100% !important;}
   .janal-wid-3 {width: 97% !important}
   .janal-wid-5 {width: 97% !important}
+  .janal-wid-6 {width: 97% !important}
   .janal-wid-8 {width: 97% !important}
   .janal-wid-10 {width: 97% !important}
   .janal-wid-12 {width: 97% !important}
