@@ -161,7 +161,7 @@
 			<p:commandButton value="Aceptar" icon="fa fa-check" onstart="janal.monitor(0);" oncomplete="janal.globalTimeout= false; PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
 		</div>				
 	</p:dialog>
-	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val('');janal.bloquear();setTimeout($('#verificadorValue').focus(), 300);" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val('');janal.bloquear();setTimeout($('#verificadorValue').focus(), 300);" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="430px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form prependId="false">
 			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
       <p:remoteCommand name="verificadorKeyEnter" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1"/>
@@ -429,7 +429,7 @@
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-cart-plus"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+A]</strong></td><td>Cuentas de apartados</td>	
 							</tr>
 							<tr>
-								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-clipboard"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+P]</strong></td><td>Mostrar los ticket abiertos</td>	
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-clipboard"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+P]</strong></td><td>Ticket's abiertos</td>	
 							</tr>
 							<tr>
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-list-ol"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+Q]</strong></td><td>Desbloquear cuentas</td>	

@@ -178,10 +178,10 @@
             </p:column>
             <f:facet name="footer">
 							<p:outputLabel value="Key: #{manticVentasCajaCierresFiltro.attrs.seleccionado}" style="float:left" styleClass="parche"/>
-              <p:outputLabel value="Total [#{manticVentasCajaCierresFiltro.lazyModel==null?0:manticVentasCajaCierresFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticVentasCajaCierresFiltro.lazyModel== null? 0: manticVentasCajaCierresFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
-          <h:outputText value="Nota: Las filas que estan en color son cajas donde su efectivo sobrepasa a limite establecido !"/>
+          <h:outputText value="Nota: Las filas que estan en color son cajas donde su efectivo sobrepasa al limite establecido !"/>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
            <p:menuitem action="#{manticVentasCajaCierresFiltro.doAccion('AGREGAR')}" icon="fa fa-briefcase" ajax="false" value="Realizar cierre" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
             <p:menuitem action="#{manticVentasCajaCierresFiltro.doFondoCaja}" icon="fa fa-briefcase" ajax="false" value="Fondo de caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus) and manticVentasCajaCierresFiltro.admin}"/>

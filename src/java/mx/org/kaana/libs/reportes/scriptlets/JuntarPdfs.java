@@ -16,15 +16,15 @@ public class JuntarPdfs {
   private boolean intercalar;
 
   public JuntarPdfs(List origen, String destino, boolean intercalar) {
-    this.origen=origen;
-    this.destino=destino;
-    this.intercalar=intercalar;
+    this.origen    = origen;
+    this.destino   = destino;
+    this.intercalar= intercalar;
   }
 
   public boolean concatenar() throws Exception{
     boolean regresa= false;
     try {
-      String outFile        = destino;
+      String outFile        = this.destino;
       Document document     = null;
       PdfCopy writer        = null;
       PdfReader reader      = new PdfReader((String)this.origen.get(0));

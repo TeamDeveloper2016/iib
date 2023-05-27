@@ -226,26 +226,24 @@ public class Filtro extends Factura implements Serializable {
 	} // doReporte	
   
   public void doReporteFacturas(String nombre) throws Exception {
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = this.toPrepare();
 		EReportes reporteSeleccion   = null;
-    List<Definicion> definiciones= null;
-		try{		
-      params= this.toPrepare();	
+    List<Definicion> definiciones= new ArrayList<>();
+		try {		
       //es importante este orden para los grupos en el reporte	
-      definiciones = new ArrayList<>();
       params.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
       this.reporte= JsfBase.toReporte();	
       definiciones.add(new Definicion((Map<String, Object>) ((HashMap) params).clone(), params, reporteSeleccion.getProceso(), reporteSeleccion.getIdXml(), reporteSeleccion.getJrxml()));
       this.reporte.toAsignarReportes(new JuntarReporte(definiciones, reporteSeleccion, "/Paginas/Mantic/Facturas/filtro", false, false));
-      if(doVerificarReporte())
+      if(this.doVerificarReporte()) 
         this.reporte.doAceptar();
     } // try
     catch(Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
-  } // doReporte	
+  } 
 	
 	public void doLoadDocumentoEstatus() {
 		List<Columna> columns     = null;
@@ -355,13 +353,13 @@ public class Filtro extends Factura implements Serializable {
 				transaccion= new Transaccion(copia);
 				if(transaccion.ejecutar(EAccion.COPIAR)) {
 					UIBackingUtilities.execute("janal.back('clon\\u00F3 la factura ', '"+ copia.getConsecutivo()+ "');");
-					JsfBase.addMessage("Clonar", "La factura se ha clonó correctamente.", ETipoMensaje.ERROR);
+					JsfBase.addMessage("Clonar", "La factura se ha clonó correctamente", ETipoMensaje.ERROR);
 				} // if	
 				else
-					JsfBase.addMessage("Clonar", "Ocurrió un error al clonar la factura.", ETipoMensaje.ERROR);								
+					JsfBase.addMessage("Clonar", "Ocurrió un error al clonar la factura", ETipoMensaje.ERROR);								
 			} // if	
 			else
-				JsfBase.addMessage("Clonar", "Ocurrió un error al clonar la factura, por favor intentelo de nuevo.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Clonar", "Ocurrió un error al clonar la factura, por favor intentelo de nuevo", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

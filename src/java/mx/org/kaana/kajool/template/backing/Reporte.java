@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -32,6 +33,8 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reportes.scriptlets.JuntarPdfs;
 import mx.org.kaana.xml.Dml;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
@@ -49,6 +52,8 @@ import org.primefaces.model.StreamedContent;
 public class Reporte extends BaseReportes implements Serializable{
   
   private static final long serialVersionUID = -741532999302110919L;
+  private static final Log LOG = LogFactory.getLog(Reporte.class);
+  
   private IJuntar ijuntar;	
   private List<String>listaPDFs;
 
@@ -137,18 +142,22 @@ public class Reporte extends BaseReportes implements Serializable{
 	
 	public void doAceptar() {
     try {
-      if(this.ijuntar!= null)
+      if(this.ijuntar!= null) {
         if(this.ijuntar.getDefiniciones().size()> 1L)
           this.doAceptarVarios();
         else
           this.doAceptarVariosPdf();
+      } // if
       else
         this.doAceptarSimple();
-    }
+    } // try
     catch (Exception e) {
 	 	  Error.mensaje(e);
 		  JsfBase.addMessage("Detalle del error", "No se pudo generar el reporte "+ e, ETipoMensaje.ERROR);
 	  } // catch
+    finally {
+      JsfBase.getAutentifica().getMonitoreo().terminar();      
+    } // finally
   } // doAceptar
 	
 	public void doAceptarSimple() throws Exception {
@@ -251,11 +260,11 @@ public class Reporte extends BaseReportes implements Serializable{
     List<Entity> facturas = null;
     try {
       this.listaPDFs= new ArrayList<>();
-      if(this.nombre.equals("")){
-        this.nombre=this.idFormato.toPath().concat(this.fileName.concat(".")).concat(this.idFormato.name().toLowerCase());
+      if(Objects.equals(this.nombre, "")) {
+        this.nombre= this.idFormato.toPath().concat(this.fileName.concat(".")).concat(this.idFormato.name().toLowerCase());
         this.nombre= Cadena.reemplazarCaracter(this.nombre, '/' , File.separatorChar);      
       } // if
-      archivo   = Archivo.toFormatNameFile(ijuntar.getNombre());
+      archivo    = Archivo.toFormatNameFile(ijuntar.getNombre());
       this.nombre= EFormatos.PDF.toPath().concat(archivo.concat(".")).concat(EFormatos.PDF.name().toLowerCase());
       facturas= DaoFactory.getInstance().toEntitySet(this.ijuntar.getDefiniciones().get(0).getProceso(), this.ijuntar.getDefiniciones().get(0).getIdXml(), this.ijuntar.getDefiniciones().get(0).getParams(),Constantes.SQL_TODOS_REGISTROS);
       for(Entity factura: facturas)
@@ -265,8 +274,11 @@ public class Reporte extends BaseReportes implements Serializable{
       archivo= Archivo.toFormatNameFile(ijuntar.getNombre());
       this.nombre= JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name())).concat(File.separator).concat(archivo.concat(".")).concat(EFormatos.PDF.name().toLowerCase()));
       juntar= new JuntarPdfs(listaPDFs, this.nombre, this.ijuntar.getIntercalar());
-      if(!juntar.concatenar()) {
-        throw new RuntimeException(" Ocurrio un error en la generación del reporte. "+ this.nombre);
+      if(listaPDFs== null || listaPDFs.isEmpty())
+        LOG.error(" No existen documentos que visualizar ");
+      else
+        if(!juntar.concatenar()) {
+          LOG.error(" Ocurrio un error en la generación del reporte "+ this.nombre);
       } // if
 		} // try
 		catch(Exception e) {

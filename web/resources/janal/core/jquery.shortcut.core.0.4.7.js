@@ -308,6 +308,16 @@ shortcut.add("Ctrl+P", function() {
 	} // if
 });
 
+shortcut.add("Alt+P", function() {
+	janal.console('Shortcut tickets abiertos:');
+	if(janal.session() && PF('dlgOpenTickets') && !PF('dlgOpenTickets').isVisible()) {
+		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)) {
+			janal.bloquear();
+			loadTicketAbiertos();
+		} // if
+	} // if
+});
+
 shortcut.add("Ctrl+A", function() {
 	janal.console('Shortcut apartados:');
 	if(janal.session() && PF('dlgApartados') && !PF('dlgApartados').isVisible()) {
@@ -395,7 +405,7 @@ shortcut.add("escape", function() {
 shortcut.add("Shift+P", function() {
 	janal.console('Shortcut cobrar venta:');
 	if(janal.session() && PF('dlgOpenTickets') && !PF('dlgOpenTickets').isVisible()) {
-		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)){
+		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)) {
 			janal.bloquear();
 			loadTicketAbiertos();
 		} // if

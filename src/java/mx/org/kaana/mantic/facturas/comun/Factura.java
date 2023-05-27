@@ -238,7 +238,7 @@ public abstract class Factura extends IBaseTicket {
       params= this.toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
 			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
-			if(seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
+			if(seleccionado!= null && seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
 				Transferir transferir= null;
 				try {
           transferir= new Transferir(seleccionado.toString("idFacturama"));
@@ -286,16 +286,13 @@ public abstract class Factura extends IBaseTicket {
   } // doReporte
 	
 	public boolean doVerificarReporte() {
-    boolean regresar = false;
+    boolean regresar = this.reporte.getTotal()> 0L;
 		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L) {
+		if(regresar) 
 			rc.execute("start(" + this.reporte.getTotal() + ")");	
-      regresar = true;
-    }
 		else {
 			rc.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-      regresar = false;
 		} // else
     return regresar;
 	} // doVerificarReporte	
