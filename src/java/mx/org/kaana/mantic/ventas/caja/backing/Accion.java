@@ -730,7 +730,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("mostrarCorreos", seleccion== null || seleccion.getKey().equals(-1L) || Objects.equals(seleccion.getKey(), motor.toClienteDefault().getKey()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
-			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
+			facturarVenta= (Boolean)this.attrs.get("facturarVenta") && !(Boolean)this.attrs.get("mostrarCorreos");
 			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()) {				
         ((TicketVenta)this.getAdminOrden().getOrden()).setIkCliente(seleccion);
 				this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
