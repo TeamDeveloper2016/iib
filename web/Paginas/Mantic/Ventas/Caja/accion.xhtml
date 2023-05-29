@@ -993,7 +993,7 @@
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
-    <p:dialog id="dialogoLimiteCaja" widgetVar="dlgLimiteCaja" header="Limite de efectivo en caja" resizable="false" closable="true" closeOnEscape="true" responsive="true" width="40%">
+    <p:dialog id="dialogoLimiteCaja" widgetVar="dlgLimiteCaja" header="Limite de efectivo en caja" resizable="false" closable="true" closeOnEscape="true" responsive="true" width="40%" onHide="janal.desbloquear()">
 			<p:outputLabel value="Es necesario realizar un retiro de caja, se a sobrepasado el limite permitido."/>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">

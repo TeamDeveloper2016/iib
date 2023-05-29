@@ -235,7 +235,7 @@
 										<p:outputLabel value="Dirección #{domicilio.consecutivo} #{domicilio.idPrincipal eq 1 ? ' * ' : ''}"/>
                   </p:commandLink>                                                                        
                   <f:facet name="footer" class="alinear-izquierda">																
-                    <p:commandLink title="Agregar domicilio" action="#{manticCatalogosPersonasAccion.doAgregarCliente}" process="@this contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" update="contenedorGrupos:tablaDomicilios contenedorGrupos:formularioDomicilio" onstart="return janal.partial('domicilio', true);" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();">
+                    <p:commandLink title="Agregar dirección" action="#{manticCatalogosPersonasAccion.doAgregarCliente}" process="@this contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" update="contenedorGrupos:tablaDomicilios contenedorGrupos:formularioDomicilio" onstart="return janal.partial('domicilio', true);" oncomplete="janal.refresh();janal.desbloquear();janal.alignCp();">
 											<i class="fa fa-plus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Agregar dirección"/></i>
 										</p:commandLink>		              										
                   </f:facet>
@@ -261,7 +261,7 @@
 										</p:selectOneMenu>	
                     <p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>
 									</p:panelGrid>
-                  <p:outputLabel value="Cuando finalice la captura por favor dar clic en + agregar domicilio" styleClass="janal-color-black janal-font-bold"/>
+                  <p:outputLabel value="Cuando finalice la captura por favor dar clic en + agregar dirección" styleClass="janal-color-black janal-font-bold"/>
                   <p:separator/>
 									<p:outputLabel for="entidad" value="Entidad:"/>
                   <p:selectOneMenu id="entidad" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">									
