@@ -369,8 +369,8 @@
 									  <p:outputLabel value="#{manticVentasCajaAccion.attrs.tipo}" styleClass="janal-color-black janal-total-compra"/>	
 									</p:panelGrid>
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">										
-										<p:outputLabel for="articulos" value="Artículos:"/>
-										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.articulos}"/>
+										<p:outputLabel for="articulos" value="Productos:"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.reales}"/>
 										<p:outputLabel value="Descuento:"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.descuentoDosDecimales$}"/>
 										<p:outputLabel value="Subtotal:"/>
@@ -452,8 +452,8 @@
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel value="Crédito:"/>
-                    <p:inputSwitch id="creditoCliente" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
-                      <p:ajax process="@this contenedorGrupos:observacionesFactura contenedorGrupos:transporta" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();" />
+                    <p:inputSwitch id="creditoCliente" widgetVar="widgetSwitchCredito" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
+                      <p:ajax listener="#{manticVentasCajaAccion.doValidateCredito}" process="@this contenedorGrupos:observacionesFactura contenedorGrupos:transporta" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();" />
                     </p:inputSwitch>
                   </p:panelGrid>  
                 </p:panelGrid>  
@@ -616,8 +616,8 @@
 									<p:panelGrid id="panelSumatoria" columns="2" layout="grid" styleClass="janal-wid-100 janal-line-button" columnClasses="janal-wid-40 janal-column-left, janal-wid-60 janal-column-right">																	
 										<p:outputLabel value="Pago minimo:" styleClass="janal-total-compra-minus janal-color-orange" rendered="#{manticVentasCajaAccion.attrs.apartado}"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra-minus janal-color-orange" value="$ #{manticVentasCajaAccion.attrs.pagoMinimo}" rendered="#{manticVentasCajaAccion.attrs.apartado}"/>
-										<p:outputLabel for="articulos" value="Artículos:"/>
-										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.articulos}"/>
+										<p:outputLabel for="articulos" value="Productos:"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.reales}"/>
 										<p:outputLabel value="Descuento:"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.totales.descuentoDosDecimales$}"/>
 										<p:outputLabel value="Subtotal:"/> 

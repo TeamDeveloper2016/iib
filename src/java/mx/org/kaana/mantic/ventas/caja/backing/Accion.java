@@ -1458,7 +1458,7 @@ public class Accion extends IBaseVenta implements Serializable {
             this.attrs.put("mensajeErrorCredito", "El saldo de tu crédito es insuficiente para cubrir la venta");
           else
             if(this.saldoCliente.isDeudor()) {
-              this.attrs.put("mensajeErrorCredito", "Crédito superado y/o plazó vencido. Consultar con crédito y cobranza !");
+              this.attrs.put("mensajeErrorCredito", "Crédito superado y/o plazó vencido, consultar con crédito y cobranza !");
               regresar= false;
             } // if 
           //CALCULA AQUI LA VIGENCIA DE LA VENTA A CREDITO BASADO EN EL PLAZO EN DIAS POR EL CLIENTE
@@ -2033,8 +2033,11 @@ public class Accion extends IBaseVenta implements Serializable {
       } // else
       else
         this.setIkRegimenFiscal(new UISelectEntity(-1L));
-      if(cliente!= null && !Objects.equals(cliente.getIdCliente(), -1L) && !Objects.equals(((TicketVenta)this.getAdminOrden().getOrden()).getIkCliente().getKey(), cliente.getKey())) 
-        ((TicketVenta)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(cliente.getIdCliente()));
+      if(cliente!= null && !Objects.equals(cliente.getIdCliente(), -1L)) {
+        if(!Objects.equals(((TicketVenta)this.getAdminOrden().getOrden()).getIkCliente().getKey(), cliente.getKey())) 
+          ((TicketVenta)this.getAdminOrden().getOrden()).setIkCliente(new UISelectEntity(cliente.getIdCliente()));
+      } // if  
+      this.doValidateCredito();
     } // try
     catch (Exception e) {
 			throw e;
@@ -2164,5 +2167,24 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 		return regresar;
 	}
+
+  public void doValidateCredito() {
+    try {
+      Long idCliente= ((TicketVenta)this.getAdminOrden().getOrden()).getIkCliente().getKey();
+      if((Boolean)this.attrs.get("creditoVenta")) {
+        if(Objects.equals(idCliente, Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY)) {
+          this.attrs.put("facturarVenta", Boolean.FALSE);
+          this.attrs.put("creditoVenta", Boolean.FALSE);
+        } // if  
+        else  
+          if(!doValidaCreditoVenta())
+            JsfBase.addMessage((String)this.attrs.get("mensajeErrorCredito"), ETipoMensaje.ERROR);          
+      } // if  
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+  }
   
 }
