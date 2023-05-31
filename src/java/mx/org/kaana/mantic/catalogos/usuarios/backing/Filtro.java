@@ -2,7 +2,9 @@ package mx.org.kaana.mantic.catalogos.usuarios.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -29,7 +31,6 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
   protected void init() {
     try {
 			super.init();
-      this.attrs.put("sortOrder", "order by tc_mantic_personas.nombres");
       this.attrs.put("idTipoPersona", ETipoPersona.USUARIO.getIdTipoPersona());
     } // try
     catch (Exception e) {
@@ -40,17 +41,28 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
   
   @Override
   public void doLoad() {
-    List<Columna> campos = null;
+    List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-      campos = new ArrayList<>();
-      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));     
-      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "row", this.attrs, campos);
+      params.put("nombres", this.attrs.get("nombres"));
+      params.put("paterno", this.attrs.get("paterno"));
+      params.put("materno", this.attrs.get("materno"));
+      params.put("rfc", this.attrs.get("rfc"));
+      params.put("curp", this.attrs.get("curp"));
+      params.put("idTipoSexo", this.attrs.get("idTipoSexo"));
+      params.put("idTipoPersona", this.attrs.get("idTipoPersona"));
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+      params.put("sortOrder", "order by tc_mantic_personas.nombres");
+      
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));     
+      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -58,10 +70,12 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
-    } // finally		
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
   } // doLoad
 
+  @Override
   public String doAccion(String accion) {
     EAccion eaccion= null;
 		try {
@@ -77,4 +91,5 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 		} // catch
 		return "/Paginas/Mantic/Catalogos/Personas/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
+  
 }

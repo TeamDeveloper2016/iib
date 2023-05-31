@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -96,8 +97,11 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
 		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
-  		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("cliente")) && !Objects.equals(((Entity)this.attrs.get("cliente")).getKey(), -1L))
+			sb.append("tc_mantic_clientes.id_cliente= ").append(((Entity)this.attrs.get("cliente")).getKey()).append(" and ");					
+		else 
+      if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
+				sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
 		if(estatus!= null) { 
 			if(!estatus.getKey().equals(-1L))
 				sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
@@ -135,8 +139,8 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaVentasDto", "clientes", params, columns));
-			this.attrs.put("idCliente", new UISelectEntity("-1"));
+//      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaVentasDto", "clientes", params, columns));
+//			this.attrs.put("idCliente", new UISelectEntity("-1"));
 			columns.remove(0);
 			columns.remove(1);
 			params.clear();
@@ -271,12 +275,14 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 	}
 
 	public void doUpdateArticulosFiltro() {
-		List<Columna> columns         = new ArrayList<>();
-    Map<String, Object> params    = new HashMap<>();
+		List<Columna> columns         = null;
+    Map<String, Object> params    = null;
 		List<UISelectEntity> articulos= null;
     try {
+			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params= new HashMap<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 
@@ -285,7 +291,6 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        
-      params.put("idArticuloTipo", "1,2,3");	      
       articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
       this.attrs.put("articulosFiltro", articulos);
 		} // try
@@ -299,6 +304,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
     }// finally
 	}	// doUpdateArticulos
 
+  @Override
 	public List<UISelectEntity> doCompleteArticulo(String query) {
 		this.attrs.put("existe", null);
 		this.attrs.put("codigo", query);
@@ -313,6 +319,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 		return (List<UISelectEntity>)this.attrs.get("articulosFiltro");
 	}	// doCompleteArticulo
 
+  @Override
 	public void doMontoUpdate() {
 	  if(this.attrs.get("montoInicio")!= null && this.attrs.get("montoTermino")== null)
 			this.attrs.put("montoTermino", this.attrs.get("montoInicio"));
@@ -331,5 +338,5 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
     } // catch	
     return regresar;
   }
-  
+	  
 }

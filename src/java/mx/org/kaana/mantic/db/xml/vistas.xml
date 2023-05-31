@@ -6215,6 +6215,8 @@ where
   tr_mantic_empresa_personal.id_empresa in (1,2)	
   and tc_mantic_personas.id_tipo_persona!= 1
   and {condicion}
+group by
+  tc_janal_usuarios.id_usuario
 {sortOrder}  
 			</select>  
 			<select id="contratistas">
@@ -6284,6 +6286,8 @@ where
   and tc_mantic_personas.id_tipo_sexo in ({idTipoSexo})
   and tc_mantic_personas.id_tipo_persona  in ({idTipoPersona})
   and tr_mantic_empresa_personal.id_empresa in ({sucursales})								
+group by
+  tc_mantic_personas.id_persona  
 {sortOrder}  
 			</select>              
 			<select id="chalanes">

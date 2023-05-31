@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -162,8 +163,6 @@ public abstract class Factura extends IBaseTicket {
 			params.put("razonSocial", seleccionado.toString("cliente"));
 			params.put("correo", ECorreos.FACTURACION.getEmail());			
 			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));			
-			params.put("titulo", Configuracion.getInstance().getEmpresa("titulo"));
-			params.put("celular", Configuracion.getInstance().getEmpresa("celular"));
 			factura= this.toXml(seleccionado.toLong("idFactura"));
 			this.doReporte("FACTURAS_FICTICIAS_DETALLE", true);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
@@ -238,7 +237,7 @@ public abstract class Factura extends IBaseTicket {
       params= this.toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
 			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
-			if(seleccionado!= null && seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
+			if(seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
 				Transferir transferir= null;
 				try {
           transferir= new Transferir(seleccionado.toString("idFacturama"));
@@ -286,13 +285,16 @@ public abstract class Factura extends IBaseTicket {
   } // doReporte
 	
 	public boolean doVerificarReporte() {
-    boolean regresar = this.reporte.getTotal()> 0L;
+    boolean regresar = false;
 		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(regresar) 
+		if(this.reporte.getTotal()> 0L) {
 			rc.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
 		else {
 			rc.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
 		} // else
     return regresar;
 	} // doVerificarReporte	
@@ -304,8 +306,8 @@ public abstract class Factura extends IBaseTicket {
 	 	  sb.append("tc_mantic_ventas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
 		if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
   		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
-		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !this.attrs.get("razonSocial").toString().equals("-1"))
-			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
+    if(!Cadena.isVacio(this.attrs.get("cliente")) && !Objects.equals(((Entity)this.attrs.get("cliente")).getKey(), -1L))			
+      sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
 		else 
       if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
 			  sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
@@ -375,7 +377,7 @@ public abstract class Factura extends IBaseTicket {
             String[] phones= sb.substring(0, sb.length()- 2).split("[,]");
             for (String phone: phones) {
               notificar.setCelular(phone, Boolean.TRUE);
-              LOG.info("Enviando mensaje por whatsapp al celular: "+ celular);
+              LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
               notificar.doSendFactura();
             } // if  
           } // if  

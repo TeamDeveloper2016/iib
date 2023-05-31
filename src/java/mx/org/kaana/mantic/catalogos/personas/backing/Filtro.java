@@ -64,18 +64,17 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   @Override
   public void doLoad() {
-    List<Columna> campos = null;
+    List<Columna> columns= new ArrayList<>();
     try {
-      campos = new ArrayList<>();
-      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));      
-      campos.add(new Columna("tipoPersona", EFormatoDinamicos.MAYUSCULAS));     
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("tipoPersona", EFormatoDinamicos.MAYUSCULAS));     
       this.attrs.put("idTipoPersona",((UISelectEntity)this.attrs.get("tipoPersona")).getKey().equals(-1L)?toAllTiposPersonas():((UISelectEntity)this.attrs.get("tipoPersona")).getKey());
-      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "row", this.attrs, campos);
+      this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "row", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -83,7 +82,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally		
   } // doLoad	
 	

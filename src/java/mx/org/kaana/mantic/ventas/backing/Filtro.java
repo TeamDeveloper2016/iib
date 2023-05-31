@@ -167,9 +167,9 @@ public class Filtro extends IBaseTicket implements Serializable {
   } // doLoad
 
 	public void initBase() {
-		this.correos        = new ArrayList<>();
+		this.correos= new ArrayList<>();
 		this.selectedCorreos= new ArrayList<>();
-		this.celulares      = new ArrayList<>();
+		this.celulares= new ArrayList<>();
 		this.selectedCelulares= new ArrayList<>();
 	}
   
@@ -219,8 +219,11 @@ public class Filtro extends IBaseTicket implements Serializable {
 //		else 
 //		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
 //			  sb.append("(upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					
-		if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
-  		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
+		if(!Cadena.isVacio(this.attrs.get("articulo")) && !Objects.equals(((Entity)this.attrs.get("articulo")).getKey(), -1L))
+			sb.append("(tc_mantic_ventas_detalles.id_articulo= ").append(((Entity)this.attrs.get("articulo")).getKey()).append(") and ");					
+		else 
+  		if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
+    		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
 		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
@@ -233,10 +236,11 @@ public class Filtro extends IBaseTicket implements Serializable {
 		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
 		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !this.attrs.get("razonSocial").toString().equals("-1"))
+		if(!Cadena.isVacio(this.attrs.get("cliente")) && !Objects.equals(((Entity)this.attrs.get("cliente")).getKey(), -1L))
 			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
-		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-			 	 sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
+		else 
+      if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
+				sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
 		if(estatus!= null && !estatus.getKey().equals(-1L))
   		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
@@ -254,10 +258,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 	}
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -294,11 +297,10 @@ public class Filtro extends IBaseTicket implements Serializable {
 	
 	public void doLoadEstatus(){
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticVentasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -372,11 +374,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 	}
 		
 	public void doUpdateCodigos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoCodigo"); 
@@ -421,11 +421,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 	} // doAsignaCodigo
 	
 	public void doUpdateArticulos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoArticulo"); 
@@ -476,11 +474,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 	}	// doCompleteCliente
 	
 	public void doUpdateClientes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());			
@@ -636,14 +632,11 @@ public class Filtro extends IBaseTicket implements Serializable {
 	public void doReporte(boolean email) throws Exception {
 		Map<String, Object>params    = new HashMap<>();
 		Map<String, Object>parametros= null;
-		EReportes reporteSeleccion   = EReportes.TICKET_VENTA;
-    Entity seleccionado          = null;
+		EReportes reporteSeleccion   = null;
 		try{				
+			reporteSeleccion= EReportes.TICKET_VENTA;
 			this.reporte= JsfBase.toReporte();
-      seleccionado= (Entity)this.attrs.get("seleccionado");
-			params.put("idVenta", seleccionado.getKey());			
-      if(Objects.equals(seleccionado.toLong("idCredito"), 1L))
-			  reporteSeleccion= EReportes.TICKET_VENTA_CREDITO;
+			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());			
       Parametros comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			parametros= comunes.getComunes();
 			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
@@ -651,15 +644,14 @@ public class Filtro extends IBaseTicket implements Serializable {
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
 			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));		
 			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
-			parametros.put("REPORTE_PORTAL", Configuracion.getInstance().getEmpresa("portal"));		
-			parametros.put("REPORTE_ECOMPRAS", Configuracion.getInstance().getEmpresa("compras"));		
-      switch(Configuracion.getInstance().getEmpresa()) {
-        case "iib"  :
-        case "kalan":
-        case "tsaak":
-   			  parametros.put("REPORTE_SUB_TITULO", Configuracion.getInstance().getEmpresa("slogan"));		
+      switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+        case "mantic":
+   			  parametros.put("REPORTE_SUB_TITULO", "CENTRO DE SERVICIO DEWALT Y B&D");		
           break;
-        default:
+        case "kalan":
+   			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
+          break;
+        case "tsaak":
    			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		
           break;
       } // swtich
@@ -708,8 +700,6 @@ public class Filtro extends IBaseTicket implements Serializable {
 			params.put("razonSocial", seleccionado.toString("cliente"));
 			params.put("correo", ECorreos.TICKET.getEmail());			
 			params.put("url", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));			
-			params.put("titulo", Configuracion.getInstance().getEmpresa("titulo"));
-			params.put("celular", Configuracion.getInstance().getEmpresa("celular"));
 			this.doReporte(Boolean.TRUE);
 			Attachment attachments= new Attachment(this.reporte.getNombre(), Boolean.FALSE);
 			files.add(attachments);
@@ -765,7 +755,7 @@ public class Filtro extends IBaseTicket implements Serializable {
           String[] phones= sb.substring(0, sb.length()- 2).split("[,]");
           for (String phone: phones) {
             notificar.setCelular(phone, Boolean.TRUE);
-            LOG.info("Enviando mensaje por whatsapp al celular: "+ celular);
+            LOG.info("Enviando mensaje por whatsup al celular: "+ celular);
             notificar.doSendTicket();
           } // if  
         } // try
