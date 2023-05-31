@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
 import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
@@ -37,8 +38,9 @@ public class Contrasenia extends IBaseAttribute implements Serializable {
       this.attrs.put("anterior", BouncyEncryption.decrypt(JsfBase.getAutentifica().getPersona().getContrasenia()));
       this.attrs.put("nueva", "");
       this.attrs.put("ratifica", "");
-    } catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+    } 
+    catch (Exception e) {
+      Error.mensaje(e);
       JsfBase.addMessage("Error", "Se presentó un error al preparar los datos", ETipoMensaje.ERROR);
     }
   }
@@ -59,7 +61,7 @@ public class Contrasenia extends IBaseAttribute implements Serializable {
     } // try // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
-      JsfBase.addMessage("Error", "Ocurrió un error al cambiar la contraseña del usuario".concat(e.getMessage()), ETipoMensaje.FATAL);
+      JsfBase.addMessage("Error", "Ocurrió un error al cambiar la contraseña del usuario ".concat(e.getMessage()), ETipoMensaje.FATAL);
     } // catch    
   }
 

@@ -58,4 +58,5 @@ public enum EExportacionXls implements IExportacionXls{
   public String getPatron() {
     return patron;
   }	
+  
 }

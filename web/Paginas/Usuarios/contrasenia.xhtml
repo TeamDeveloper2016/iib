@@ -26,16 +26,16 @@
           <label>Perfil:</label>
           <p:inputText value="#{kajoolUsuariosContrasenia.attrs.perfil}" readonly="true" styleClass="janal-wid-100-txt Fnone MarAuto"/>
           <label for="actual">Contraseña:</label>
-          <p:password id="actual" value="#{kajoolUsuariosContrasenia.attrs.actual}" size="35" styleClass="janal-wid-100-txt"/>
+          <p:password id="actual" placeholder="DIGITE SU CONTRASEÑA ACTUAL" value="#{kajoolUsuariosContrasenia.attrs.actual}" size="35" styleClass="janal-wid-100-txt"/>
         </p:panelGrid>  
       </p:fieldset>
       <p:spacer height="5"/>
       <p:fieldset legend="Contraseña  nueva" styleClass="Responsive100">
         <p:panelGrid layout="grid" columns="2" columnClasses="ui-grid-col-2 janal-wid-col-100, janal-wid-100">
           <label for="nueva">Contraseña:</label>
-          <p:password id="nueva" value="#{kajoolUsuariosContrasenia.attrs.nueva}" size="35" styleClass="janal-wid-100-txt"/>
+          <p:password id="nueva" placeholder="DIGITE SU NUEVA CONTRASEÑA" value="#{kajoolUsuariosContrasenia.attrs.nueva}" size="35" styleClass="janal-wid-100-txt"/>
           <label for="ratifica">Ratificar:</label>
-          <p:password id="ratifica" value="#{kajoolUsuariosContrasenia.attrs.ratifica}" size="35" styleClass="janal-wid-100-txt"/>
+          <p:password id="ratifica" placeholder="RATIFIQUE SU CONTRASEÑA" value="#{kajoolUsuariosContrasenia.attrs.ratifica}" size="35" styleClass="janal-wid-100-txt"/>
         </p:panelGrid>
       </p:fieldset> 
     </h:panelGrid>  
