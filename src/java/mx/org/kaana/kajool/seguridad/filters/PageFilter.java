@@ -52,7 +52,7 @@ public class PageFilter extends HttpServlet implements Filter {
 
   public void setPaginaIndice(String paginaIndice) {
     if (paginaIndice == null) {
-      this.paginaIndice = "/acceso";
+      this.paginaIndice = "/acceso.jsf";
     } else {
       this.paginaIndice = paginaIndice;
     }
@@ -65,7 +65,7 @@ public class PageFilter extends HttpServlet implements Filter {
   public void setPaginaExclusion(String paginaExclusion) {
     if (paginaExclusion == null) {
       //this.paginaExclusion = "/Librerias/Funciones/errorPage.jsp?error=Favor de autenticarse";
-      this.paginaExclusion = "/Exclusiones/error";
+      this.paginaExclusion = "/Exclusiones/error.jsf";
     } else {
       this.paginaExclusion = paginaExclusion;
     }
@@ -78,7 +78,7 @@ public class PageFilter extends HttpServlet implements Filter {
   public void setPaginaSesion(String paginaSesion) {
     if (paginaSesion == null) {
       //this.paginaSesion = "/Librerias/Funciones/errorPage.jsf?error=Error&loginError=kajool.admin";
-      this.paginaSesion = "/Exclusiones/error";
+      this.paginaSesion = "/Exclusiones/error.jsf";
     } else {
       this.paginaSesion = paginaSesion;
     }
@@ -90,7 +90,7 @@ public class PageFilter extends HttpServlet implements Filter {
 
   public void setPaginaBloqueo(String paginaBloqueo) {
     if (paginaBloqueo == null) {
-      this.paginaBloqueo = "/Exclusiones/bloqueo";
+      this.paginaBloqueo = "/Exclusiones/bloqueo.jsf";
     } else {
       this.paginaBloqueo = paginaBloqueo;
     }
@@ -221,8 +221,8 @@ public class PageFilter extends HttpServlet implements Filter {
       if(response.getContentType()== null || response.getContentType().indexOf("text/html")>= 0) {
         writer= response.getWriter();
         writer.print("<div class=\"DispNone\">");
-        writer.print("<span>Copyright(c) MANTIC 2018 application</span><br/>");
-        writer.print("<span>Usuario:Team Developer 2018 <team.developer@kaana.org.mx>@kaana.org.mx></span>");
+        writer.print("<span>Copyright(c) IMOX 2023 application</span><br/>");
+        writer.print("<span>Usuario:Team Developer 2023 <team.developer@kaana.org.mx>@kaana.org.mx></span>");
         writer.print("</div>");
         UsuariosEnLinea users= (UsuariosEnLinea)application.getAttribute(Constantes.ATRIBUTO_USUARIOS_SITIO);
         Usuario user         = (Usuario)users.getCuenta(session.getId(), autentifica.getPersona().getCuenta());

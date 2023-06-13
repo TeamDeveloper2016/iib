@@ -237,7 +237,7 @@ public abstract class Factura extends IBaseTicket {
       params= this.toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
 			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
-			if(seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
+			if(seleccionado!= null && seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
 				Transferir transferir= null;
 				try {
           transferir= new Transferir(seleccionado.toString("idFacturama"));
@@ -307,7 +307,7 @@ public abstract class Factura extends IBaseTicket {
 		if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
   		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
     if(!Cadena.isVacio(this.attrs.get("cliente")) && !Objects.equals(((Entity)this.attrs.get("cliente")).getKey(), -1L))			
-      sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
+      sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("cliente")).getKey()).append(" and ");					
 		else 
       if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
 			  sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");

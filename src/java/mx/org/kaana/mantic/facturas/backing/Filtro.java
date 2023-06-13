@@ -62,7 +62,7 @@ public class Filtro extends Factura implements Serializable {
       if(this.attrs.get("idFicticia")!= null) 
 			  this.doLoad();			
       this.attrs.remove("idFicticia"); 
-      this.attrs.put("facturama", 1L);
+      this.attrs.put("facturama", -1L);
 			super.initBase();
     } // try
     catch (Exception e) {
