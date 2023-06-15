@@ -125,7 +125,7 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
     } // catch   
 	} 
 
-  @Override
+  @Override 
 	protected void generateNewVenta() throws Exception {
 		List<Producto> articulosPivote= new ArrayList<>();
 		try {
@@ -623,6 +623,7 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("precioTotal", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
 			params.put(Constantes.SQL_CONDICION, this.toCondicion(true).concat(" and (tc_mantic_ventas.id_especial= 1)"));
 			ticketsAbiertos= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			

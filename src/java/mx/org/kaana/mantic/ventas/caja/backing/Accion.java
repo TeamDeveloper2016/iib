@@ -790,6 +790,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("precioTotal", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
 			params.put(Constantes.SQL_CONDICION, this.toCondicion(true).concat(" and (tc_mantic_ventas.id_especial= ")+ this.idEspecial+ ")");
 			this.attrs.put("ticketsAbiertos", UIEntity.build("VistaVentasDto", "lazy", params, columns, Constantes.SQL_TODOS_REGISTROS));
 		} // try
@@ -814,6 +815,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("precioTotal", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
 			params.put(Constantes.SQL_CONDICION, this.toCondicion(true).concat(" and (tc_mantic_ventas.id_especial= 2)"));
 			ticketsAbiertos= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
@@ -1891,7 +1893,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // doMostrarDetalleTicket
 	
-	private void loadDomiciliosFactura(Long idCliente) throws Exception{
+	protected void loadDomiciliosFactura(Long idCliente) throws Exception {
 		List<UISelectEntity>domicilios= null;
 		Map<String, Object>params     = new HashMap<>();
 		List<Columna>columns          = new ArrayList<>();

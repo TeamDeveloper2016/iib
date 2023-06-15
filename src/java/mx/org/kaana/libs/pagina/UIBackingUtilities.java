@@ -130,7 +130,11 @@ public class UIBackingUtilities {
 	}
 
   public static void toMovilColumnLength(String field, Integer length, List<UISelectEntity> items) {
-    if(items!= null && !items.isEmpty() && JsfUtilities.getBrowser().isMobile())
+    toMovilColumnLength(field, length, items, JsfUtilities.getBrowser().isMobile());
+  }
+  
+  public static void toMovilColumnLength(String field, Integer length, List<UISelectEntity> items, Boolean mobile) {
+    if(items!= null && !items.isEmpty() && mobile)
       for (UISelectEntity item: items) {
         if(!Objects.equals(item.toString(field), null) && item.toString(field).length()> length)
           item.getValue(field).setData(item.getValue(field).getToString().substring(0, length).concat(" ..."));
