@@ -194,11 +194,17 @@
               </f:facet>
               <h:outputText value="#{filtro['cliente']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{filtro['total']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.kilos}">
+              <f:facet name="header">
+                <h:outputText value="Kilos"/>
+              </f:facet>
+              <h:outputText value="#{filtro['kilos']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
               <f:facet name="header">

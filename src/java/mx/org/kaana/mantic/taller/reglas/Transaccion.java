@@ -14,7 +14,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
-import mx.org.kaana.kajool.enums.EEtapaServidor;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
@@ -30,7 +29,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
-import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
@@ -771,7 +769,8 @@ public class Transaccion extends TransaccionFactura {
           item.getCosto(), // Double precio, 
           Numero.toRedondearSat(item.getSubTotal()- (item.getCosto()* item.getCantidad())), // Double utilidad, 
           Numero.toRedondearSat(item.getPrecio()* (1- (item.getIva()/100))), // Double unitarioSinIva, 
-          1D // Double factor
+          1D, // Double factor
+          1D // Double pesoEstimado
         );
         DaoFactory.getInstance().insert(sesion, detalle);
       } // for

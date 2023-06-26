@@ -836,6 +836,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
 				temporal.setPrecio(articulo.toDouble("precio"));	
+        temporal.setPesoEstimado(articulo.toDouble("pesoEstimado"));
+        
 				// RECUPERA EL STOCK DEL ALMACEN MAS SABER SI YA FUE HUBO UN CONTEO O NO
 				Entity inventario= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "stock", params);
 				if(inventario!= null && inventario.size()> 0) {

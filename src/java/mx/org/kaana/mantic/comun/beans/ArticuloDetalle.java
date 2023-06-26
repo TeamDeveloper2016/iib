@@ -61,6 +61,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	private String origen;	
 	private UISelectEntity ikAplicar;
 	private Double factor;
+	private Double pesoEstimado;
 
   public ArticuloDetalle() {
     this(new Long(-1L));
@@ -117,6 +118,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.ikAplicar= new UISelectEntity(new Entity(0L));
     this.factor= 1D;
     this.fabricante= null;
+    this.pesoEstimado= 1D;
 	}
 	
   public void setCodigo(String codigo) {
@@ -354,6 +356,14 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	public void setOrigen(String origen) {
 		this.origen=origen;
 	}
+
+  public Double getPesoEstimado() {
+    return pesoEstimado;
+  }
+
+  public void setPesoEstimado(Double pesoEstimado) {
+    this.pesoEstimado = pesoEstimado;
+  }
 	
 	@Override
   public Long getKey() {
@@ -412,6 +422,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.append(getUtilidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuentoDescripcion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPesoEstimado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -441,6 +453,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.put("precio", getPrecio());
 		regresar.put("utilidad", getUtilidad());
 		regresar.put("descuentoDescripcion", getDescuentoDescripcion());
+		regresar.put("pesoEstimado", getPesoEstimado());
   	return regresar;
   }
 
