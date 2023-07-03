@@ -44,8 +44,8 @@ import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = -1279553224860143822L;
-  private final Long ESTATUS_ACTIVO = 1L;
+  private static final long serialVersionUID= -1279553224860143822L;
+  private final Long ESTATUS_ACTIVO         = 1L;
   private CriteriosBusqueda criteriosBusqueda;
 
   public CriteriosBusqueda getCriteriosBusqueda() {
@@ -70,10 +70,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -95,18 +94,16 @@ public class Filtro extends IBaseFilter implements Serializable {
    * Recarga los datos segun la acicón que se ejecutó.
    */
   private void recargarTablaDatos(ETipoBusqueda tipoBusqueda) {
-    Map<String, Object> params = null;
-    List<Columna> campos = null;
-    CargaInformacionUsuarios carga = null;
+    Map<String, Object> params    = new HashMap<>();
+    List<Columna> columns         = new ArrayList<>();
+    CargaInformacionUsuarios carga= null;
     try {
       carga = new CargaInformacionUsuarios(getCriteriosBusqueda());
-      params = new HashMap<>();
-      campos = new ArrayList<>();
-      campos.add(new Columna("primerApellido", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("segundoApellido", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));      
+      columns.add(new Columna("primerApellido", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("segundoApellido", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));      
 			StringBuilder sb= new StringBuilder();
       switch (tipoBusqueda) {
         case NOMBRE:
@@ -129,7 +126,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  sb.delete(sb.length()- 4, sb.length());
 			params.put(Constantes.SQL_CONDICION, sb.toString());
       params.put("sortOrder", "order by tc_janal_perfiles.id_perfil, tc_mantic_personas.paterno, tc_mantic_personas.materno, tc_mantic_personas.nombres");
-      this.lazyModel = new FormatCustomLazy("VistaUsuariosDto", "row", params, campos);
+      this.lazyModel = new FormatCustomLazy("VistaUsuariosDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -137,23 +134,22 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally
   }
 
   public void doActivarUsuario() {
-    Entity seleccionado            = null;
-    Transaccion  transaccion       = null;
-    TcJanalUsuariosDto usuario     = null;
+    Entity seleccionado       = null;
+    Transaccion  transaccion  = null;
+    TcJanalUsuariosDto usuario= null;
     try {
-      seleccionado = (Entity) this.attrs.get("seleccionado");
-      usuario = new TcJanalUsuariosDto(seleccionado.getKey());
-      usuario.setActivo(seleccionado.toLong("activo").equals(ESTATUS_ACTIVO)?0L:ESTATUS_ACTIVO);
+      seleccionado= (Entity) this.attrs.get("seleccionado");
+      usuario     = new TcJanalUsuariosDto(seleccionado.getKey());
+      usuario.setActivo(seleccionado.toLong("activo").equals(ESTATUS_ACTIVO)? 0L: ESTATUS_ACTIVO);
       transaccion = new Transaccion(usuario);
-      if (transaccion.ejecutar(EAccion.ACTIVAR)) {
-        JsfBase.addMessage(usuario.getActivo().equals(ESTATUS_ACTIVO) ? "Se activó el usuario con éxito." : "Se desactivó el usuario con éxito.");
-      }
-      doBuscar();
+      if (transaccion.ejecutar(EAccion.ACTIVAR)) 
+        JsfBase.addMessage(usuario.getActivo().equals(ESTATUS_ACTIVO)? "Se activó el usuario con éxito": "Se desactivó el usuario con éxito");
+      this.doBuscar();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -175,7 +171,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     Entity seleccionado = (Entity) this.attrs.get("seleccionado");
     try {
       JsfBase.setFlashAttribute("accion", accion);
-      JsfBase.setFlashAttribute("idUsuario", accion.equals(EAccion.MODIFICAR) || accion.equals(EAccion.CONSULTAR) ? seleccionado.toLong("idKeyUsuario") : null);
+      JsfBase.setFlashAttribute("idUsuario", accion.equals(EAccion.MODIFICAR) || accion.equals(EAccion.CONSULTAR)? seleccionado.toLong("idKeyUsuario"): null);
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -185,7 +181,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
 
   public String doAceptar() {
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
     params.put("idGrupo", Numero.getLong(JsfBase.seekParameter("idGrupo").toString()));
     params.put(Constantes.SQL_CONDICION, this.attrs.get("condicion"));
     JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new Usuario(EReporte.USUARIO, params)); // CARGAR EL REPORTE
@@ -200,23 +196,21 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
 
   public void doEliminar() {
-    Transaccion tx = null;
-    TcJanalUsuariosDto usuario = null;
-    Entity seleccionado = null;
-    Map<String, Object> params = null;
+    Transaccion tx            = null;
+    TcJanalUsuariosDto usuario= null;
+    Entity seleccionado       = null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      seleccionado = (Entity) this.attrs.get("seleccionado");
-      params = new HashMap<>();
-      usuario = new TcJanalUsuariosDto(seleccionado.getKey());
-      tx = new Transaccion(usuario);
+      seleccionado= (Entity) this.attrs.get("seleccionado");
+      usuario     = new TcJanalUsuariosDto(seleccionado.getKey());
+      tx          = new Transaccion(usuario);
       if (tx.ejecutar(EAccion.ELIMINAR)) {
         params.put("elemento", "el usuario [".concat(seleccionado.toString("cuenta")).concat("]"));
         //JsfBase.addMessage(UIMessage.toMessage("correcto_eliminar_elemento", params));
         JsfBase.addMessage("Se elimino el usuario [".concat(seleccionado.toString("cuenta")).concat("]"));
       } // if
-      else {
+      else 
         JsfBase.addMessage("Error", "El usuario no puede ser eliminado debido a que tiene información asociada", ETipoMensaje.ERROR);
-      } // else
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -229,7 +223,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    Entity seleccionado = (Entity)this.attrs.get("seleccionado");
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");
     try {
       //this.attrs.put("validaDelega", JsfBase.isAdmin() || JsfBase.getAutentifica().getPersona().getIdUsuario().equals(seleccionado.getKey()));      
       this.doBuscar();
@@ -270,7 +264,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     Entity seleccionado        = null;
     try {
       seleccionado= (Entity) this.attrs.get("seleccionado");
-      persona= new TcManticPersonasDto(seleccionado.toLong("idPersona"));
+      persona     = new TcManticPersonasDto(seleccionado.toLong("idPersona"));
       persona.setCurp(seleccionado.toString("curp"));
       persona.setPaterno(seleccionado.toString("primerApellido"));
       transaccion= new Transaccion(persona);
@@ -300,4 +294,5 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessage("Ocurrió un error en la busqueda de los usuarios", ETipoMensaje.ERROR);
     } // catch
   }
+  
 }

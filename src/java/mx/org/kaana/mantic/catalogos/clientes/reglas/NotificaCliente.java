@@ -175,6 +175,7 @@ public class NotificaCliente implements Serializable {
         venta= (TcManticVentasDto)DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.idVenta);
       else
         venta= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, this.idVenta);
+      // if(Objects.equals(venta.getIdCredito(), 1L) && Objects.equals(Configuracion.getInstance().getEmpresa(), "iib"))
       if(Objects.equals(venta.getIdCredito(), 1L))
 			  individual= EReportes.TICKET_VENTA_CREDITO;
       params.put("idVenta", this.idVenta);

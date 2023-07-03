@@ -13461,6 +13461,10 @@ order by
 					tc_mantic_personas persona_usuario on tc_janal_usuarios.id_persona = persona_usuario.id_persona
 				where 
 					tc_keet_contratos_personal.id_contrato_persona = {idContratoPersona}
+					tc_keet_contratos_personal.id_contrato_persona = {idContratoPersona}
+          and tc_mantic_incidentes_estatus.id_incidente_estatus in (1, 2, 5, 6)
+          and tc_mantic_tipos_incidentes.id_afecta_nomina= 1
+          and tc_mantic_tipos_incidentes.id_tipo_incidente in (1, 15, 11)        
 			</select>
 			<select id="incidenciasPersonal">
 				select 

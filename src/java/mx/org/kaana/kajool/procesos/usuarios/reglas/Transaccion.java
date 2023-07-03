@@ -8,6 +8,7 @@ import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.dto.TcJanalSesionesDto;
 import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
 import static mx.org.kaana.kajool.enums.EAccion.ACTIVAR;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
@@ -81,6 +82,8 @@ public class Transaccion extends IBaseTnx {
 				} // else
 				break;
 			case ELIMINAR:
+				params.put("idUsuario", this.usuario.getKey());
+        DaoFactory.getInstance().deleteAll(sesion, TcJanalSesionesDto.class, params);
 				regresar = DaoFactory.getInstance().delete(sesion, this.usuario.toHbmClass(), this.usuario.getKey()) >= 1L;
 				break;
 			case ACTIVAR:

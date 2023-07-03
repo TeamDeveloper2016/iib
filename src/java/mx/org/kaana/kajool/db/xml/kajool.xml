@@ -212,6 +212,12 @@
         order by 
           registro_inicio desc
       </select>
+      <delete id="rows">
+        delete from
+          tc_janal_sesiones
+        where
+          id_usuario= {idUsuario}
+      </delete>
     </unit>
     <unit id="TcJanalMensajesDto">
       <select id="row">
