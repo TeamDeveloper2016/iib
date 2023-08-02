@@ -380,12 +380,11 @@
               </div>
               <div class="EmptyBox10"></div>
               <div class="Container100">
-                <h:form>
                   <p:dataTable lazy="true" id="tabla" var="row" rowIndexVar="index" value="#{kajoolTablero.articulos}" paginator="true" rowsPerPageTemplate="5" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="5" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolTablero.attrs.selected}" reflow="true" paginatorPosition="top" rowKey="#{row.idKey}">
                     <f:facet name="header">
                       <p:menuButton value="Opciones">
-                        <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfCapturista', 'tabla')" oncomplete="janal.desbloquear()"/>
-                        <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsCapturista', 'tabla')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfArticulos', 'tabla')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsArticulos', 'tabla')" oncomplete="janal.desbloquear()"/>
                       </p:menuButton>
                     </f:facet>
                     <p:column styleClass="janal-column-left ColWid10 Responsive">
@@ -410,7 +409,6 @@
                   <h:commandLink id="dataXlsArticulos">
                     <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
                   </h:commandLink>	                  
-                </h:form>
               </div>
             </p:panel>
           </div>
@@ -520,7 +518,6 @@
 								</div>
                 <div class="EmptyBox10"></div>
                 <div class="Container100">
-                  <h:form>                  			                  
                     <p:dataTable lazy="true" id="cobrar" var="row" rowIndexVar="index" value="#{kajoolTablero.lazyModel}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
                       <f:facet name="header">
                         <p:menuButton value="Opciones">
@@ -563,7 +560,6 @@
                     <h:commandLink id="dataXlsCobrar">
                       <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="cobrar" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
                     </h:commandLink>	                  
-                  </h:form>
                 </div>
 							</p:panel>
 						</div>
@@ -667,7 +663,6 @@
             </p:panel>
           </div>
           <div class="ContainerIndent">
-            <h:form prependId="false">                  			                  
               <p:panel style="height:505px;" class="graphic-update-ventas">
                 <div class="Container100 Responsive Fs20 janal-color-orange">
                   <i class="icon-calendar"></i> Ventas diarias
@@ -720,7 +715,6 @@
                   </h:commandLink>	                  
                 </div>
               </p:panel>
-            </h:form>
           </div>
 
           <div class="Container100 Responsive">
@@ -939,7 +933,6 @@
               </div>
               <div class="EmptyBox10"></div>
               <div class="Container100">
-                <h:form>                  			                  
                   <p:dataTable lazy="true" id="pagar" var="row" rowIndexVar="index" value="#{kajoolTablero.lazyModelPagar}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
                     <f:facet name="header">
                       <p:menuButton value="Opciones">
@@ -982,7 +975,6 @@
                   <h:commandLink id="dataXlsPagar">
                     <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="pagar" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
                   </h:commandLink>	                  
-                </h:form>
               </div>
             </p:panel>
           </div>
@@ -996,7 +988,6 @@
               </div>
               <div class="EmptyBox10"></div>
               <div class="Container100">
-                <h:form>                  			                  
                   <p:dataTable lazy="true" id="agendar" var="row" rowIndexVar="index" value="#{kajoolTablero.lazyModelAgendar}" paginator="true" rowsPerPageTemplate="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" reflow="true" paginatorPosition="top">
                     <f:facet name="header">
                       <p:menuButton value="Opciones">
@@ -1039,7 +1030,6 @@
                   <h:commandLink id="dataXlsAgendar">
                     <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="agendar" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
                   </h:commandLink>	                  
-                </h:form>
               </div>
             </p:panel>
           </div>

@@ -29,6 +29,8 @@
 			};
 			
     	$(document).ready(function() {
+        if(#{kajoolUtilAplicacion.isMobile})
+          window.location= 'movil.jsf';
         jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasEspecialesAccion.adminOrden.articulos.size()}, 'tabla\\:', true);
 				janal.readingMode('#{manticVentasEspecialesAccion.attrs.nombreAccion}');
       });			

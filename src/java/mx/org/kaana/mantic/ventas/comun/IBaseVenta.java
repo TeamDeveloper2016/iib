@@ -1172,11 +1172,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	}	// doCompleteCliente
 	
 	public void doUpdateClientes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
   		// params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());

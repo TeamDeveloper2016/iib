@@ -531,12 +531,12 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
           } // if
           else {
             if(tipoTicket.equals("FACTURA") || tipoTicket.equals("CREDITO"))						
-              ticket= new CreateTicket((AdminEspecial)this.getAdminOrden(), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
+              ticket= new CreateTicket((AdminEspecial)this.getAdminOrden(), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"), this.toCajero(((AdminEspecial)this.getAdminOrden()).getOrden().getKey()));
             else
               if(Objects.equals(seleccionado.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY))
                 ticket= new CreateTicket(((AdminEspecial)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket);
               else
-                ticket= new CreateTicket(((AdminEspecial)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
+                ticket= new CreateTicket(((AdminEspecial)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"), this.toCajero(((AdminEspecial)this.getAdminOrden()).getOrden().getKey()));
             UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminEspecial)this.getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
             UIBackingUtilities.execute("jsTicket.clicTicket();");
           } // if  
@@ -764,5 +764,24 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
   	JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Ventas/Caja/Especial/accion");								
     return regresar;
   }
-  
+
+  private Long toCajero(Long idVenta) {
+    Long regresar= JsfBase.getIdUsuario();
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("idVenta", idVenta);      
+      Entity entity= (Entity)DaoFactory.getInstance().toEntity("TrManticVentaMedioPagoDto", "ticket", params);
+      if(entity!= null && !entity.isEmpty())
+        regresar= entity.toLong("idUsuario");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
 }

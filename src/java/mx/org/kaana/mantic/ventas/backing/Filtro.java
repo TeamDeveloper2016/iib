@@ -647,7 +647,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
         case "mantic":
-   			  parametros.put("REPORTE_SUB_TITULO", "CENTRO DE SERVICIO DEWALT Y B&D");		
+   			  parametros.put("REPORTE_SUB_TITULO", "GRANOS Y SEMILLAS");		
           break;
         case "kalan":
    			  parametros.put("REPORTE_SUB_TITULO", "LA CALIDAD Y EL SERVICIO NOS DISTINGUE");		

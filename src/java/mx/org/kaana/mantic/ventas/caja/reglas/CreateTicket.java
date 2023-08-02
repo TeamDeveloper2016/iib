@@ -31,16 +31,17 @@ public class CreateTicket implements Serializable {
 	protected Sucursal principal;
 	protected String tipo;
 	protected String cliente;
+  private Long idCajero;
 	
 	public CreateTicket(Pago pago, String tipo) {
 		this(null, pago, tipo);
 	}
 	
 	public CreateTicket(IAdminArticulos ticket, Pago pago, String tipo) {
-		this(ticket, pago, tipo, "");
+		this(ticket, pago, tipo, "", JsfBase.getIdUsuario());
 	} 
 	
-	public CreateTicket(IAdminArticulos ticket, Pago pago, String tipo, String cliente) {
+	public CreateTicket(IAdminArticulos ticket, Pago pago, String tipo, String cliente, Long idCajero) {
 		this.ticket = ticket;
 		this.pago   = pago;
 		this.tipo   = tipo;
@@ -50,6 +51,7 @@ public class CreateTicket implements Serializable {
       this.pago.getTotales().setSubTotal(((TicketVenta)this.ticket.getOrden()).getSubTotal());
       this.pago.getTotales().setTotal(((TicketVenta)this.ticket.getOrden()).getTotal());
     } // if
+    this.idCajero= idCajero;
 		this.init();
 	} // CreateTicket
 	
@@ -405,13 +407,22 @@ public class CreateTicket implements Serializable {
 		return regresar;
 	} // toUsuario
 	
-	protected String toCajero() {
-		StringBuilder regresar=  new StringBuilder();
-		regresar.append("<strong>CAJERO:</strong>");
-		regresar.append(JsfBase.getAutentifica().getPersona().getNombreCompleto());
-		regresar.append("</p>");		
+	protected String toCajero() throws Exception {
+		StringBuilder regresar   = new StringBuilder();
+		Entity usuario           = null;
+		Map<String, Object>params= new HashMap<>();
+		try {
+			params.put("idUsuario", this.idCajero);
+			usuario= (Entity) DaoFactory.getInstance().toEntity("VistaUsuariosDto", "perfilUsuario", params);
+  		regresar.append("<strong>CAJERO:</strong>");
+	  	regresar.append(usuario.toString("nombreCompleto"));
+  		regresar.append("</p>");		
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 		return regresar.toString();
-	} // toArticulos
+	} // toCajero
 	
 	protected String toFooter() {
 		StringBuilder regresar= new StringBuilder();

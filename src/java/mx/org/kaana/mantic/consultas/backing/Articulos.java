@@ -22,7 +22,6 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.consultas.reglas.UtilidadArticulosLazy;
-import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticConsultasArticulos")
 @ViewScoped
@@ -49,17 +48,16 @@ public class Articulos extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("precios", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
-      params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
+      params.put("sortOrder", "order by tc_mantic_articulos.ticket desc");
       this.lazyModel = new UtilidadArticulosLazy("VistaConsultasDto", "articulo", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try // try
@@ -73,10 +71,9 @@ public class Articulos extends Comun implements Serializable {
   } // doLoad
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -99,7 +96,7 @@ public class Articulos extends Comun implements Serializable {
     }// finally
 	}
 
-	private Map<String, Object> toPrepare() {
+	protected Map<String, Object> toPrepare() {
 		Map<String, Object> regresar= new HashMap<>();
 		StringBuilder sb            = null;
 		try {

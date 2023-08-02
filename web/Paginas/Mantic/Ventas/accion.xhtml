@@ -29,9 +29,12 @@
 			};
 			
     	$(document).ready(function() {
+        if(#{kajoolUtilAplicacion.isMobile})
+          window.location= 'movil.jsf';
         jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasAccion.adminOrden.articulos.size()}, 'tabla\\:');
 				janal.readingMode('#{manticVentasAccion.attrs.nombreAccion}');
       });			
+      
 		</script>   
 		<style type="text/css">
 			.janal-total-compra { font-size: 25px !important; font-weight: bold !important; font-style: italic;	}			

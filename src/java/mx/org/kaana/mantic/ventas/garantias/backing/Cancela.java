@@ -114,7 +114,7 @@ public class Cancela extends IBaseAttribute implements Serializable {
       if (transaccion.ejecutar(EAccion.COPIAR)) {
         params.put("idVenta", this.ticket.getIdVenta());     
         AdminTickets comprobante= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));
-        voucher= new CreateTicket(comprobante, this.toPago(comprobante, this.ticket.getIdVenta()), "FACTURA", this.cliente.getRazonSocial());
+        voucher= new CreateTicket(comprobante, this.toPago(comprobante, this.ticket.getIdVenta()), "FACTURA", this.cliente.getRazonSocial(), this.toCajero(comprobante.getOrden().getKey()));
         UIBackingUtilities.execute("janal.back('cancelo ticket y factura', '"+ this.venta.getTicket()+ "');");
         UIBackingUtilities.execute("jsTicket.imprimirTicket('" + voucher.getPrincipal().getClave()  + "-" + this.ticket.getTicket() + "','" + voucher.toHtml() + "');");
         UIBackingUtilities.execute("jsTicket.process('"+ JsfBase.getContext()+ "/Paginas/Mantic/Ventas/Caja/accion.jsf');");
@@ -224,5 +224,24 @@ public class Cancela extends IBaseAttribute implements Serializable {
 		} // catch		
 		return regresar;
 	} // toPago
+
+  private Long toCajero(Long idVenta) {
+    Long regresar= JsfBase.getIdUsuario();
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("idVenta", idVenta);      
+      Entity entity= (Entity)DaoFactory.getInstance().toEntity("TrManticVentaMedioPagoDto", "ticket", params);
+      if(entity!= null && !entity.isEmpty())
+        regresar= entity.toLong("idUsuario");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
 
 }

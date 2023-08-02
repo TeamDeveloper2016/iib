@@ -1818,11 +1818,42 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join
-					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+					tc_mantic_ventas_detalles on tc_mantic_articulos.id_articulo = tc_mantic_ventas_detalles.id_articulo
+				inner join
+					tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta = tc_mantic_ventas.id_venta
 				inner join 
-					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+					tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+				where 
+					tc_mantic_ventas.id_empresa in ({idEmpresa})
+					and tc_mantic_ventas.ticket is not null
+					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15)
+				  and {condicion}					
+				{sortOrder}
+			</select>
+			<select id="acumulados">
+				select 
+				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_articulos.id_vigente,
+				  tc_mantic_articulos.nombre,
+				  avg(tc_mantic_articulos.precio) as precios,
+				  avg(tc_mantic_ventas_detalles.precio) as precio,
+				  avg(tc_mantic_ventas_detalles.costo) as costo,
+				  sum(tc_mantic_ventas_detalles.iva) as iva,
+				  sum(tc_mantic_ventas_detalles.cantidad) as cantidad,
+				  sum(tc_mantic_ventas_detalles.importe) as importe,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+          count(tc_mantic_articulos.id_articulo) as ventas
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 				inner join 
-					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join
 					tc_mantic_ventas_detalles on tc_mantic_articulos.id_articulo = tc_mantic_ventas_detalles.id_articulo
 				inner join
@@ -1837,13 +1868,7 @@
 					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15)
 				  and {condicion}					
 				group by 
-					tc_mantic_articulos.id_vigente,
-				  tc_mantic_articulos.nombre,          
-				  tc_mantic_articulos.menudeo,          
-				  tc_mantic_articulos.medio_mayoreo,          
-				  tc_mantic_articulos.mayoreo,          
-				  tc_mantic_articulos.iva,          
-				  tc_mantic_articulos.desperdicio          
+          tc_mantic_articulos.id_articulo
 				{sortOrder}
 			</select>
 			<select id="disponible">
@@ -3720,7 +3745,8 @@ from (
 					if(tc_mantic_facturas.id_facturama is null, 0, 1) facturado,
 					if(tc_mantic_facturas.id_factura_estatus is null, 1, tc_mantic_facturas.id_factura_estatus) id_factura_estatus,
 					tc_mantic_ventas.id_tipo_documento,
-          round(sum(tc_mantic_ventas_detalles.peso_estimado* tc_mantic_ventas_detalles.cantidad), 2) as kilos
+          round(sum(tc_mantic_ventas_detalles.peso_estimado* tc_mantic_ventas_detalles.cantidad), 2) as kilos,
+          ifnull(tr_mantic_venta_medio_pago.id_usuario, tc_mantic_ventas.id_usuario) as id_cajero            
 				from 
 					tc_mantic_ventas						
 				left join 
@@ -3738,7 +3764,9 @@ from (
 				inner join 
 					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
 				left join 
-					tc_mantic_facturas on tc_mantic_ventas.id_factura = tc_mantic_facturas.id_factura				
+					tc_mantic_facturas on tc_mantic_ventas.id_factura = tc_mantic_facturas.id_factura		
+        left join
+           tr_mantic_venta_medio_pago on tr_mantic_venta_medio_pago.id_venta= tc_mantic_ventas.id_venta
 				where
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
 					and {condicion}

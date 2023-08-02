@@ -88,12 +88,14 @@
 				'descuentoGlobal'    : {validaciones: 'requerido|menor-igual({"cuanto": 10})', mascara: 'libre', grupo: 'descuento', mensaje: 'El descuento maximo es del 10%'}
 			};
 			
-      Janal.Control.credenciales ={
+      Janal.Control.credenciales = {
 				usuario    : {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'},			
 				contrasenia: {validaciones: 'requerido', mascara: 'libre', grupo: 'credenciales'}			
 			};
       
     	$(document).ready(function() {
+        if(#{kajoolUtilAplicacion.isMobile})
+          window.location= 'movil.jsf';
 				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCajaEspecialAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:', true);
 				janal.readingMode('#{manticVentasCajaEspecialAccion.attrs.nombreAccion}');
       });		

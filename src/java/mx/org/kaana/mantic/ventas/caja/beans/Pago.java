@@ -47,7 +47,7 @@ public class Pago implements Serializable {
 	private Double difCheque;
 	private Double abono;
   private List<Abono> abonos;
-	
+  
 	public Pago() {
 		this(new Totales());
 	}
@@ -356,7 +356,7 @@ public class Pago implements Serializable {
 	public void setDifCheque(Double difCheque) {
 		this.difCheque = difCheque;
 	}	
-	
+
 	public Long getIdTipoMedioPago() {
 		Long regresar= -1L;
 		if((this.efectivo > 0D && this.debito<= 0 && this.credito<= 0 && this.transferencia<= 0 && this.cheque<= 0) || (this.efectivo > 0D && (this.debito>= 0 || this.credito>= 0 || this.transferencia>= 0 || this.cheque>= 0))) {

@@ -34,7 +34,7 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
       if(seleccionado.containsKey("cliente") && !Objects.equals(Constantes.VENTA_AL_PUBLICO_GENERAL, seleccionado.toString("cliente"))) 
         cliente= seleccionado.toString("cliente");
 			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));			
-			ticket= new CreateTicket(adminTicket, this.toPago(adminTicket, seleccionado.toLong("idVenta")), this.toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente);
+			ticket= new CreateTicket(adminTicket, this.toPago(adminTicket, seleccionado.toLong("idVenta")), this.toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente, seleccionado.toLong("idCajero"));
 			UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
 		} // try
 		catch (Exception e) {
@@ -91,12 +91,11 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 	private Pago toPago(AdminTickets adminTicket, Long idVenta) throws Exception {
 		Pago regresar            = null;
 		List<Entity> detallePago = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		ETipoMediosPago medioPago= null;
     EEstatusVentas venta     = EEstatusVentas.ABIERTA;
 		try {
 			regresar= new Pago(adminTicket.getTotales());
-			params  = new HashMap<>();
 			params.put("idVenta", idVenta);
       // SON LOS ABONOS QUE SE HAN REALIZADO POR EL CLIENTE SI ES UN APARTADO
       detallePago= DaoFactory.getInstance().toEntitySet("VistaApartadosDto", "abonos", params, Constantes.SQL_TODOS_REGISTROS);
@@ -116,7 +115,7 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
         default:  
     			detallePago= DaoFactory.getInstance().toEntitySet("TrManticVentaMedioPagoDto", "ticket", params, Constantes.SQL_TODOS_REGISTROS);
       } // switch
-			if(!detallePago.isEmpty()) {
+			if(detallePago!= null && !detallePago.isEmpty()) {
 				for(Entity pago: detallePago) {
 					medioPago= ETipoMediosPago.fromIdTipoPago(pago.toLong("idTipoMedioPago"));
 					switch(medioPago) {

@@ -21,9 +21,9 @@ public class CreateCorteCaja {
 		init();
 	}
 	
-	private void init(){		
+	private void init() {		
 		Sucursal matriz= null;		
-		for(Sucursal sucursal: JsfBase.getAutentifica().getSucursales()){
+		for(Sucursal sucursal: JsfBase.getAutentifica().getSucursales()) {
 			if(sucursal.isMatriz())
 				matriz= sucursal;					
 		} // for		
@@ -38,7 +38,7 @@ public class CreateCorteCaja {
     return corte;
   }
   
-	public String toHtml() throws Exception{
+	public String toHtml() throws Exception {
 		StringBuilder sb= new StringBuilder();
 		sb.append(toHeader());
 		sb.append(toBlackBar());
@@ -54,7 +54,7 @@ public class CreateCorteCaja {
 		return sb.toString();
 	} // toHtml
 	
-	private String toHeader() throws Exception{
+	private String toHeader() throws Exception {
 		//String ticket= this.principal.getTicket()!= null ? this.principal.getTicket() : "";
 		StringBuilder regresar= new StringBuilder("<div id=\"corteCaja\" style=\"width: 90px; max-width: 80px;\">");
 		regresar.append("<table style=\"width: 290px;\"><tr>");
@@ -84,19 +84,31 @@ public class CreateCorteCaja {
 		return regresar.toString();
 	} // toEncabezado;
 	
-	private String toBlackBar(){
+	private String toBlackBar() {
 		StringBuilder regresar= new StringBuilder();
-		regresar.append("<p style=\"width: 290px;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: bold;background: black;color: white\">CENTRO DE SERVICIO DEWALT Y B&amp;D</p>");
+    String slogan= "GRANOS Y SEMILLAS";
+    switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
+      case "mantic":
+        slogan= "GRANOS Y SEMILLAS";
+        break;
+      case "kalan":
+        slogan= "LA CALIDAD Y EL SERVICIO NOS DISTINGUE";
+        break;
+      case "tsaak":
+        slogan= "LA CALIDAD Y EL SERVICIO NOS DISTINGUE";		
+        break;
+    } // swtich
+		regresar.append("<p style=\"width: 290px;text-align: center;font-family: sans-serif;font-size: 13px;font-weight: bold;background: black;color: white\">").append(slogan).append("</p>");
 		return regresar.toString();
 	} // toBlackBar
 	
-	private String toDomicilio() throws Exception{
+	private String toDomicilio() throws Exception {
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("<p style=\"text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;\">").append(toFindDomicilio()).append("</p>");		
 		return regresar.toString();
 	} // toDomicilio
 	
-	private String toFindDomicilio() throws Exception{
+	private String toFindDomicilio() throws Exception {
 		Entity domicilio         = null;
 		String regresar          = null;
 		Map<String, Object>params= null;
@@ -112,7 +124,7 @@ public class CreateCorteCaja {
 		return regresar;
 	} // toFindDomicilio
 	
-	private String toCorteCaja(){		
+	private String toCorteCaja() {		
 		StringBuilder	regresar= new StringBuilder();
 		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold\">");
 		regresar.append("CORTE EN CAJA");	
@@ -138,16 +150,16 @@ public class CreateCorteCaja {
     return regresar.toString();
 	} // toCorteCaja
   
-  private String toCajerosCierre(){				
+  private String toCajerosCierre() {				
 		StringBuilder regresar= new StringBuilder();			
-		for(Entity cajero : this.corte.getCajerosCierre()){
+		for(Entity cajero : this.corte.getCajerosCierre()) {
 			regresar.append(cajero.toString("nombreCompletoCajero"));
       regresar.append("<br>");
 		} // for		
 		return regresar.toString();
 	} // toCajerosCierre
   
-  private String toFoliosTicketDevoluciones() throws Exception{
+  private String toFoliosTicketDevoluciones() throws Exception {
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;\">");
     regresar.append("<b>Tickets del </b>").append(this.corte.getResumenCorte().toString("ticketInicial")).append("<b> al </b>").append(this.corte.getResumenCorte().toString("ticketFinal")).append("<br>");		
@@ -159,13 +171,13 @@ public class CreateCorteCaja {
     return regresar.toString();
 	} // toFoliosTicketDevoluciones
   
-	private String toTable(){
+	private String toTable() {
 		StringBuilder regresar= new StringBuilder();
 		regresar.append("<table style=\"width: 290px;\">");		
 		return regresar.toString();
 	} // toTable
 	
-	private String toResumen(){				
+	private String toResumen() {				
 		StringBuilder regresar= new StringBuilder();			
     regresar.append(toTable());
     regresar.append("<tbody>");
@@ -198,11 +210,11 @@ public class CreateCorteCaja {
 		return regresar.toString();
 	} // toResumen
 	
-	private String toFinishTable(){		
+	private String toFinishTable() {		
 		return "</table>";
 	} // toFinishTable
   
-  private String toDevolucionesGarantias() throws Exception{
+  private String toDevolucionesGarantias() throws Exception {
 		StringBuilder regresar= new StringBuilder();
     regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
 		regresar.append("Devoluciones:");
@@ -210,16 +222,16 @@ public class CreateCorteCaja {
     regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 10px;line-height:0px;\">");
     regresar.append("Folio ").append(this.corte.getResumenCorte().toString("garantiaInicial")).append(" al ").append(this.corte.getResumenCorte().toString("garantiaFinal"));		
 		regresar.append("<br>").append("</p>");
-    if(this.corte.getGarantias().size()>0){
+    if(this.corte.getGarantias().size()>0) {
       regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
       regresar.append("Folios devoluciones x garantía: ");		
       regresar.append("<br>");
     }
     regresar.append("<br>");
-    if(this.corte.getGarantias().size()>0){
+    if(this.corte.getGarantias().size()>0) {
       regresar.append("<table style=\"width: 290px;\">");		
       regresar.append("<tbody>");
-      for(Entity garantia : this.corte.getGarantias()){
+      for(Entity garantia : this.corte.getGarantias()) {
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 98px; max-width: 98px;\">").append(garantia.toString("consecutivo")).append("</td>");
         regresar.append("<td align=\"center\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(" por ").append("</td>");
@@ -233,7 +245,7 @@ public class CreateCorteCaja {
     return regresar.toString();
 	} // toDevolucionesGarantias
   
-  private String toRetirosIngresos() throws Exception{
+  private String toRetirosIngresos() throws Exception {
 		StringBuilder regresar= new StringBuilder();
     regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
 		regresar.append("Retiros/ingresos caja:");
@@ -245,16 +257,16 @@ public class CreateCorteCaja {
     regresar.append("Folio ingreso ").append(this.corte.getResumenCorte().toString("abonoInicial")).append(" al ").append(this.corte.getResumenCorte().toString("abonoFinal"));		
 		regresar.append("<br>").append("</p>");
     regresar.append("<br>");
-    if(this.corte.getAbonos().size()>0){
+    if(this.corte.getAbonos().size()>0) {
       regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
       regresar.append("Ingresos:");		
       regresar.append("</p>");
     }
-    if(this.corte.getAbonos().size()>0){
+    if(this.corte.getAbonos().size()>0) {
       regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
       regresar.append("<table style=\"width: 290px;\">");		
       regresar.append("<tbody>");
-      for(Entity abono : this.corte.getAbonos()){
+      for(Entity abono : this.corte.getAbonos()) {
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 98px; max-width: 98px;\">").append(abono.toString("consecutivo")).append("</td>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(abono.toString("cuenta")).append("</td>");
@@ -265,15 +277,15 @@ public class CreateCorteCaja {
       regresar.append("</table>");
       regresar.append("</p>");
     }
-    if(this.corte.getRetiros().size()>0){
+    if(this.corte.getRetiros().size()>0) {
       regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
       regresar.append("Retiros:");		
       regresar.append("</p>");
     }
-    if(this.corte.getRetiros().size()>0){
+    if(this.corte.getRetiros().size()>0) {
       regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
       regresar.append("<table style=\"width: 290px;\">");		
-      for(Entity retiro : this.corte.getRetiros()){
+      for(Entity retiro : this.corte.getRetiros()) {
         regresar.append("<tr>");
         regresar.append("<table style=\"width: 290px;\">");		
         regresar.append("<tbody>");
@@ -302,7 +314,7 @@ public class CreateCorteCaja {
     return regresar.toString();
 	} // toRetirosIngresos
   
-  private String toDiferenciasVsCapturado() throws Exception{
+  private String toDiferenciasVsCapturado() throws Exception {
 		StringBuilder regresar= new StringBuilder();
     regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
 		regresar.append("Diferencias vs Capturado:");
@@ -311,28 +323,28 @@ public class CreateCorteCaja {
 		regresar.append("<br>").append("<br>");
     regresar.append("<table style=\"width: 290px;\">");	
     regresar.append("<tbody>");
-    if(this.corte.getDiferenciasMediosPagos().size()>0){
-      for(Entity diferencia : this.corte.getDiferenciasMediosPagos()){
+    if(this.corte.getDiferenciasMediosPagos().size()>0) {
+      for(Entity diferencia : this.corte.getDiferenciasMediosPagos()) {
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 195px; max-width: 195px;\">").append(diferencia.toString("clave")).append("  ").append(diferencia.toString("nombre")).append("</td>");
          regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 95px; max-width: 95px;\">").append(formato(diferencia.toString("diferenciaCapturado"))).append("</td>");
         regresar.append("</tr>");
       } // for	
-    }
-    else{
+    } // if
+    else {
       regresar.append("<tr>");
       regresar.append("<td align=\"right\" style=\"font-family: sans-serif;font-size: 10px;width: 290px; max-width: 290px;\">").append("No existen devoluciones por garantía").append("</td>");
       regresar.append("</tr>");
-    }
+    } // else
     regresar.append("</tbody>");
     regresar.append("</table>");
     regresar.append("</p>");
     return regresar.toString();
 	} // toDiferenciasVsCapturado
   
-  private String toFondoInicial() throws Exception{
+  private String toFondoInicial() throws Exception {
 		StringBuilder regresar= new StringBuilder();
-    if(this.corte.getFondoInicial().size()>0){
+    if(this.corte.getFondoInicial().size()>0) {
       regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
       regresar.append("Fondo inicial:");
       regresar.append("</p>");
@@ -340,7 +352,7 @@ public class CreateCorteCaja {
       regresar.append("<br>").append("<br>");
       regresar.append("<table style=\"width: 290px;\">");		
       regresar.append("<tbody>");
-      for(Entity fondo : this.corte.getFondoInicial()){
+      for(Entity fondo : this.corte.getFondoInicial()) {
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 98px;\">").append(formato(fondo.toString("denominacion"))).append("</td>");
         regresar.append("<td align=\"center\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(fondo.toString("cantidad")).append("</td>");
@@ -356,7 +368,7 @@ public class CreateCorteCaja {
   
   private String toFondoApertura() throws Exception {
 		StringBuilder regresar= new StringBuilder();
-    if(this.corte.getAperturaCaja().size()>0){
+    if(this.corte.getAperturaCaja().size()>0) {
       regresar.append("<p style=\"width: 290px;text-align: center;align-content: center;font-family: sans-serif;font-size: 12px;font-weight: bold;line-height:0px\">");
       regresar.append("Apertura de caja:");
       regresar.append("</p>");
@@ -364,7 +376,7 @@ public class CreateCorteCaja {
       regresar.append("<br>").append("<br>");
       regresar.append("<table style=\"width: 290px;\">");		
       regresar.append("<tbody>");
-      for(Entity apertura : this.corte.getAperturaCaja()){
+      for(Entity apertura : this.corte.getAperturaCaja()) {
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 98px;\">").append(formato(apertura.toString("denominacion"))).append("</td>");
         regresar.append("<td align=\"center\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(apertura.toString("cantidad")).append("</td>");

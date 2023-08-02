@@ -6560,7 +6560,7 @@ group by
         from      
           tr_mantic_venta_medio_pago
         where      
-          id_venta = {idVenta}
+          id_venta= {idVenta}
 			</select>
       <select id="detalle">
         select      

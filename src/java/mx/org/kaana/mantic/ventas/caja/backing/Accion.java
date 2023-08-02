@@ -441,12 +441,12 @@ public class Accion extends IBaseVenta implements Serializable {
           } // if
           else {
             if(tipoTicket.equals("FACTURA") || tipoTicket.equals("CREDITO"))						
-              ticket= new CreateTicket((AdminTickets)this.getAdminOrden(), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
+              ticket= new CreateTicket((AdminTickets)this.getAdminOrden(), (Pago)this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"), this.toCajero(((AdminTickets)this.getAdminOrden()).getOrden().getKey()));
             else
               if(Objects.equals(seleccionado.getKey(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY))
-                ticket= new CreateTicket(((AdminTickets)this.getAdminOrden()), (Pago) this.attrs.get("pago"), tipoTicket);
+                ticket= new CreateTicket(((AdminTickets)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket);
               else
-                ticket= new CreateTicket(((AdminTickets)this.getAdminOrden()), (Pago) this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"));
+                ticket= new CreateTicket(((AdminTickets)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"), this.toCajero(((AdminTickets)this.getAdminOrden()).getOrden().getKey()));
             UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
             UIBackingUtilities.execute("jsTicket.clicTicket();");
           } // if  
@@ -1652,7 +1652,7 @@ public class Accion extends IBaseVenta implements Serializable {
         if(EEstatusVentas.fromIdTipoPago(seleccionado.toLong("idVentaEstatus")).equals(EEstatusVentas.TIMBRADA)) {
           motor= new MotorBusqueda(-1L, adminTicket.getIdCliente());
           cliente= motor.toCliente();
-          ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente.toString("razonSocial"));
+          ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente.toString("razonSocial"), this.toCajero(adminTicket.getOrden().getKey()));
         } // if
         else
           if(Objects.equals(adminTicket.getIdCliente(), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY))
@@ -1660,7 +1660,7 @@ public class Accion extends IBaseVenta implements Serializable {
           else {
             motor= new MotorBusqueda(-1L, adminTicket.getIdCliente());
             cliente= motor.toCliente();
-            ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente.toString("razonSocial"));
+            ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")), cliente.toString("razonSocial"), this.toCajero(adminTicket.getOrden().getKey()));
           } // else  
         UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
         UIBackingUtilities.execute("jsTicket.clicTicket();");
@@ -2188,6 +2188,25 @@ public class Accion extends IBaseVenta implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch		
+  }
+
+  private Long toCajero(Long idVenta) {
+    Long regresar= JsfBase.getIdUsuario();
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("idVenta", idVenta);      
+      Entity entity= (Entity)DaoFactory.getInstance().toEntity("TrManticVentaMedioPagoDto", "ticket", params);
+      if(entity!= null && !entity.isEmpty())
+        regresar= entity.toLong("idUsuario");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
   }
   
 }
