@@ -167,10 +167,10 @@ public class Filtro extends IBaseAttribute implements Serializable {
   } // doUpdate	
 
   private void crearArbolGrupos(TreeNode padre) {
-    Privilegios privilegios = null;
-    Persona empleado = null;
+    Privilegios privilegios= null;
+    Persona empleado       = null;
     try {
-      empleado = JsfBase.getAutentifica().getPersona();
+      empleado    = JsfBase.getAutentifica().getPersona();
       privilegios = new Privilegios(empleado);
       this.grupos = privilegios.toGrupos();
       for (GrupoPerfiles grupo : this.grupos) {
@@ -184,17 +184,17 @@ public class Filtro extends IBaseAttribute implements Serializable {
   } // crearArbolGrupos
 
   private void crearArbolDelega(TreeNode padre) {
-    List<GrupoPerfiles> usuarios = null;
-    Privilegios privilegio = null;
-    Persona empleado = null;
+    List<GrupoPerfiles> usuarios= null;
+    Privilegios privilegio      = null;
+    Persona empleado            = null;
     try {
-      empleado = JsfBase.getAutentifica().getPersona();
-      privilegio = new Privilegios(empleado);
-      usuarios = privilegio.toUsuariosDelega();
+      empleado  = JsfBase.getAutentifica().getPersona();
+      privilegio= new Privilegios(empleado);
+      usuarios  = privilegio.toUsuariosDelega();
       if (usuarios != null) {
-        for (GrupoPerfiles item : usuarios) {
-          TreeNode treeUsuario = new DefaultTreeNode(item, padre);
-          this.gruposDelega = privilegio.toGruposDelega(item.getCuenta());
+        for (GrupoPerfiles item: usuarios) {
+          TreeNode treeUsuario= new DefaultTreeNode(item, padre);
+          this.gruposDelega= privilegio.toGruposDelega(item.getCuenta());
           if (!this.gruposDelega.isEmpty()) {
             for (GrupoPerfiles proyecto : this.gruposDelega) {
               TreeNode treeProyecto = new DefaultTreeNode(proyecto, treeUsuario);
@@ -213,15 +213,16 @@ public class Filtro extends IBaseAttribute implements Serializable {
   } // crearArbolDelega
 
   private void crearArbolPerfiles(TreeNode padre, Long idGrupo, Long idEmpleado) {
-    Privilegios privilegios = null;
-    List<GrupoPerfiles> perfiles = null;
+    Privilegios privilegios     = null;
+    List<GrupoPerfiles> perfiles= null;
+    DefaultTreeNode left        = null; 
     try {
-      privilegios = new Privilegios();
-      perfiles = privilegios.toPerfiles(idGrupo, idEmpleado);
+      privilegios= new Privilegios();
+      perfiles   = privilegios.toPerfiles(idGrupo, idEmpleado);
       if (!perfiles.isEmpty()) {
-        for (GrupoPerfiles perfil : perfiles) {
-          new DefaultTreeNode(perfil, padre);
-        }
+        for (GrupoPerfiles perfil: perfiles) {
+          left= new DefaultTreeNode(perfil, padre);
+        } // for
       }// if
     } // try
     catch (Exception e) {
@@ -265,7 +266,7 @@ public class Filtro extends IBaseAttribute implements Serializable {
       updateUsuarioEnLinea();
       regresar = autentifica.redirectMenu(this.grupoPerfil.getIdMenu());
       new Transaccion().ejecutar(EAccion.AGREGAR);
-    }// try
+    } // try
     catch (Exception e) {
       Error.mensaje(e);
       regresar = "/acceso".concat(Constantes.REDIRECIONAR);

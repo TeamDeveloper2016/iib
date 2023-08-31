@@ -56,20 +56,21 @@
 		VK_OPEN      : 122,
 		VK_CLOSE     : 123,
 		VK_PLUS      : 107,
-		VK_DIV       : 111,
 		VK_POINT     : 110,
+		VK_DIV       : 111,
+		VK_CTRL      : 17,
 		VK_UP        : 38,
 		VK_DOWN      : 40,
 		VK_REST      : 189,
 		VK_PIPE      : 220,
-		VK_CTRL      : 17,
 		VK_MAYOR     : 226,
 		VK_F7        : 118,
 		VK_F10       : 121,
 		VK_BRACKET   : 222,
 		VK_FIN       : 35,
 		VK_PAGINATOR : 19,
-	  change       : [13, 19, 27, 106, 107, 110, 111, 186, 187, 188, 121, 189, 191, 220, 221, 222, 226],
+    VK_COMILLA   : 219,
+	  change       : [13, 19, 27, 106, 107, 110, 111, 186, 187, 188, 121, 189, 191, 219, 220, 221, 222, 226],
 	  teclas       : [9, 13, 17, 27, 33, 34, 35, 36, 38, 40, 220, 118, 121, 122],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
@@ -362,13 +363,16 @@
 						else
               return $articulos.div();
 						break;
+          case $articulos.VK_COMA:
+					case $articulos.VK_APOSTROFE:
 					case $articulos.VK_PLUS:
 						if(calculate)
 						  return true;
 						else
 	    				return $articulos.plus();
 						break;
-					case $articulos.VK_COMA:
+          case $articulos.VK_COMILLA:
+            // VERIFICAR DESPUES COMO UTILIZAR ESTA TECLA
 						if(calculate)
 						  return true;
 						else

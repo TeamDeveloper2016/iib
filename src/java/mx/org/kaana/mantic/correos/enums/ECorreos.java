@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.correos.enums;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.recurso.TcConfiguraciones;
 
@@ -37,9 +37,9 @@ public enum ECorreos {
     empresas.put("iib.facturacion.backup", "");  
     empresas.put("iib.ticket.email", "ventas@elfrijolito.com");  
     empresas.put("iib.cotizaciones.email", "ventas@elfrijolito.com");  
-    empresas.put("iib.cotizaciones.backup", "");  
+    empresas.put("iib.cotizaciones.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("iib.ordenes_compra.email", "compras@elfrijolito.com");  
-    empresas.put("iib.ordenes_compra.backup", "");  
+    empresas.put("iib.ordenes_compra.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("iib.cuentas.email", "ventas@elfrijolito.com");  
     empresas.put("iib.cuentas.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("iib.credito.email", "ventas@elfrijolito.com");  
@@ -55,14 +55,14 @@ public enum ECorreos {
     empresas.put("iib.control.email", "administrador@elfrijolito.com");  
     
     empresas.put("kalan.facturacion.email", "facturas@imoxmx.com");  
-    empresas.put("kalan.facturacion.backup", "");  
+    empresas.put("kalan.facturacion.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("kalan.ticket.email", "facturas@imoxmx.com");  
     empresas.put("kalan.cotizaciones.email", "ventas@imoxmx.com");  
-    empresas.put("kalan.cotizaciones.backup", "");  
+    empresas.put("kalan.cotizaciones.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("kalan.ordenes_compra.email", "compras@imoxmx.com");  
-    empresas.put("kalan.ordenes_compra.backup", "");  
+    empresas.put("kalan.ordenes_compra.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("kalan.cuentas.email", "ventas@imoxmx.com");  
-    empresas.put("kalan.cuentas.backup", "");  
+    empresas.put("kalan.cuentas.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("kalan.credito.email", "ventas@imoxmx.com");  
     empresas.put("kalan.credito.backup", "imox.soluciones.web@gmail.com");  
     empresas.put("kalan.pagos.email", "administrador@imoxmx.com");  
@@ -137,17 +137,21 @@ public enum ECorreos {
 
   public String getBackup() {
     String token   = Configuracion.getInstance().getEmpresa().toLowerCase().concat(".").concat(this.name().toLowerCase()).concat(".").concat("backup");
-    String regresar= "";
+    String regresar= "imox.soluciones.web@gmail.com";
     if(empresas.containsKey(token))
       regresar= empresas.get(token);
+    else
+      System.out.println("VERIFICAR PORQUE NO EXISTE ESTA CUENTA DE CORREO [".concat(token).concat("]"));
 		return regresar;
   }
 	
   public String getControl() {
     String token   = Configuracion.getInstance().getEmpresa().toLowerCase().concat(".control.").concat("email");
-    String regresar= "";
+    String regresar= "imox.soluciones.web@gmail.com";
     if(empresas.containsKey(token))
       regresar= empresas.get(token);
+    else
+      System.out.println("VERIFICAR PORQUE NO EXISTE ESTA CUENTA DE CORREO [".concat(token).concat("]"));
 		return regresar;
   }
 	

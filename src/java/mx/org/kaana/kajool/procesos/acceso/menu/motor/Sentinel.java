@@ -103,14 +103,12 @@ public class Sentinel extends IBaseMenu implements Serializable {
       regresar = new StringBuilder();
       context = JsfBase.getFacesContext().getExternalContext().getRequestContextPath();
       regresar.append("<li class=\"Fleft BordRadHalf TexAlCenter\"><i class=\"");
-      //regresar.append(JsfBase.getAutentifica().getPersona().getIdTipoSexo().equals(1L) ? "icon-user-male" : "icon-user-female");
-      regresar.append(true ? "icon-user-male" : "icon-user-female");
+      regresar.append(Objects.equals(JsfBase.getAutentifica().getPersona().getIdTipoSexo(), 1L)? "icon-user-male": "icon-user-female");
       regresar.append("\"></i>");
       regresar.append("<span id=\"contadorMensajes\" class=\"alertBubble BordRad10 Fs9\"");
       cantidadMensajes = new UtilAplicacion().getContadorMensajes();
-      if (cantidadMensajes <= 0) {
+      if (cantidadMensajes <= 0)
         regresar.append(" style=\"display: none\"");
-      } // if
       regresar.append(">");
       regresar.append(cantidadMensajes);
       regresar.append("</span>");

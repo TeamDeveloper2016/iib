@@ -286,7 +286,7 @@
                 <p:menuitem icon="fa fa-file-pdf-o" value="Cuenta por cobrar" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('DEUDAS_CLIENTES_DETALLE', cliente)}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:menuitem icon="fa fa-file-pdf-o" value="Estado de cuenta" onstart="return janal.bloquear()" process="@this detalle" oncomplete="PF('dlgPlazo').show();" update="dialogoPlazo"/>										
                 <p:separator/>					
-                <p:menuitem icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('seleccionadoDetalle', 'DEUDAS_CLIENTES_PENDIENTES', 'CREDITO')}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+                <p:menuitem icon="fa fa-mail-forward" value="Enviar correo" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doLoadEstatus('DEUDAS_CLIENTES_PENDIENTES', 'CREDITO', cliente)}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
                 <p:separator/>
                 <p:menuitem icon="fa fa-calendar" value="Ajustar vencimiento" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosClientesCuentasSaldos.doUpdateFechaPago()}" update="dialogoAutorizacion"/>
               </p:contextMenu>

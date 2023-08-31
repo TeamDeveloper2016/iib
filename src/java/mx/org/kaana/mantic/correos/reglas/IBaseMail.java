@@ -166,6 +166,7 @@ public class IBaseMail implements Serializable {
 			if(this.copies!= null)
         message.addRecipients(javax.mail.Message.RecipientType.BCC, this.toPrepare(this.copies));
       message.setSubject(this.subject);
+			LOG.info("Correo from:".concat(this.from).concat(" to ").concat(this.to).concat(" subject ").concat(this.subject));
       // ESTO ES PARA SOLICITAR LA CONFIRMACIÓN DE LECTURA DEL CORREO
       // message.addHeader("Disposition-Notification-To", "info@imox.com");
 			if(this.files!= null && !this.files.isEmpty()) {

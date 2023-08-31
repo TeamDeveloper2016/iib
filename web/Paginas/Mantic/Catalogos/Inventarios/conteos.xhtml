@@ -17,6 +17,10 @@
 				'maximo' : {validaciones: 'flotante|mayor-a({"cual": "minimo"})', mascara: 'libre'},
 				'idAlmacenUbicacion' : {validaciones: 'requerido', mascara: 'libre'}
 			};
+    	$(document).ready(function() {
+        if(#{kajoolUtilAplicacion.isMobile})
+          window.location= 'movil.jsf';
+      });	      
     </script>		
   </ui:define>
   <ui:define name="contenido">    			

@@ -51,7 +51,7 @@ public class CorteCaja implements Serializable {
     this.aperturaCaja = aperturaCaja;
     this.cajerosCierre = cajerosCierre;
     this.diferenciasMediosPagos = diferenciasMediosPagos;
-    init();		
+    this.init();		
   }
 
   public Long getIdCierre() {
@@ -143,18 +143,18 @@ public class CorteCaja implements Serializable {
   }
     
   private void init(){
-		CargarCorte corte                = null;
+		CargarCorte corte= null;
 		try {
 			corte= new CargarCorte(this.idCierre, this.idCierreNuevo);
 			this.resumenCorte= corte.toCargaResumen();
-			this.garantias = corte.toGarantias();
-      this.abonos = corte.toAbonos();
-      this.retiros = corte.toRetiros();
-      this.fondoInicial = corte.tofondoInicial();
+			this.garantias   = corte.toGarantias();
+      this.abonos      = corte.toAbonos();
+      this.retiros     = corte.toRetiros();
+      this.fondoInicial= corte.tofondoInicial();
       this.fondoEfectivoFinal = corte.toFondoEfectivoFinal();
-      this.aperturaCaja = corte.toAperturaCaja();
-      this.cajerosCierre = corte.toCajerosCierre();
-      this.diferenciasMediosPagos = corte.toDiferenciasVsCapturado();
+      this.aperturaCaja= corte.toAperturaCaja();
+      this.cajerosCierre= corte.toCajerosCierre();
+      this.diferenciasMediosPagos= corte.toDiferenciasVsCapturado();
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);

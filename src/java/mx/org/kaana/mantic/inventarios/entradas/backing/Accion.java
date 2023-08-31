@@ -39,6 +39,7 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Random;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -71,6 +72,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	private EAccion accion;	
 	private EOrdenes tipoOrden;
+	private Long idOrdenCompra;
 	private boolean aplicar;
 	private TcManticProveedoresDto proveedor;
 	private Calendar fechaEstimada;
@@ -127,7 +129,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
-      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
+      this.idOrdenCompra= JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: (Long)JsfBase.getFlashAttribute("idOrdenCompra");
+      this.attrs.put("idOrdenCompra", this.idOrdenCompra);
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
@@ -150,7 +153,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
-          TcManticOrdenesComprasDto ordenCompra= this.attrs.get("idOrdenCompra").equals(-1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)this.attrs.get("idOrdenCompra"));
+          TcManticOrdenesComprasDto ordenCompra= Objects.equals(this.idOrdenCompra, -1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, this.idOrdenCompra);
 					if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
@@ -252,10 +255,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   } // doCancelar
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -346,10 +348,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
   private void toLoadCondiciones(UISelectEntity proveedor) {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("idProveedor", proveedor.getKey());
@@ -512,9 +513,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		Articulo faltante        = null;
 		int relacionados         = this.attrs.get("relacionados")== null? 0: (int)this.attrs.get("relacionados");
 		Integer idTipoComparacion= (Integer)this.attrs.get("idTipoComparacion");
-	  Map<String, Object> params=null;
+	  Map<String, Object> params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
 			int x= 0;
@@ -601,9 +601,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
 	public void doCheckFolio() {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("factura", ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura());
 			params.put("idProveedor", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedor());
 			params.put("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
@@ -726,9 +725,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
 	private boolean doCheckCodigoBarras(Long idNotaEntrada) throws Exception {
 		boolean regresar          = false;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idNotaEntrada", idNotaEntrada);
 			Value value= DaoFactory.getInstance().toField("VistaNotasEntradasDto", "codigos", params);
 			if(value.getData()!= null)
@@ -899,9 +897,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
   private void toMoveSelectedProveedor() {
 		UISelectEntity temporal   = (UISelectEntity)this.attrs.get("proveedor");
-	  Map<String, Object> params= null;
+	  Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
 			  this.getAdminOrden().toCalculate();
 				if(temporal== null || !this.getEmisor().getRfc().equals(temporal.toString("rfc"))) {
