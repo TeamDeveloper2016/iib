@@ -9,16 +9,17 @@ package mx.org.kaana.mantic.enums;
  */
 public enum ETipoMovimiento {
   
-	ORDENES_COMPRAS("orden(es) de compra(s)", "ordenes", "idOrdenCompra", "VistaOrdenesComprasDto"), 
-	NOTAS_ENTRADAS("nota(s) de entrada(s)", "notas", "idNotaEntrada", "VistaNotasEntradasDto"), 
-	VENTAS("venta(s)", "ventas", "idVenta", "VistaVentasDto"), 
-	SERVICIOS("servicio(s)", "servicios", "idServicio", "VistaTallerServiciosDto"), 
-	DEVOLUCIONES("devolucion(es)", "devoluciones", "idDevolucion", "VistaDevolucionesDto"),
-	NOTAS_CREDITOS("nota(s) de credito(s)", "creditos_notas", "idCreditoNota", "VistaNotasCreditosDto"),
-	CIERRES_CAJA("cierre(s) de caja", "cierres", "idCierre", "VistaCierresCajasDto"),
-	FACTURAS_FICTICIAS("factura(s)", "ficticias", "idFicticia", "VistaFicticiasDto"),
-	TRANSFERENCIAS("transferencia(s)", "transferencias", "idTransferencia", "VistaAlmacenesTransferenciasDto"),
-	MULTIPLES("transferencia(s) multiples", "transferencias_multiples", "idTransferenciaMultiple", "VistaTransferenciasMultiplesDto");
+	ORDENES_COMPRAS("orden(es) de compra(s)", "tc_mantic_ordenes_bitacora", "idOrdenCompra", "VistaOrdenesComprasDto"), 
+	NOTAS_ENTRADAS("nota(s) de entrada(s)", "tc_mantic_notas_bitacora", "idNotaEntrada", "VistaNotasEntradasDto"), 
+	VENTAS("venta(s)", "tc_mantic_ventas_bitacoras", "idVenta", "VistaVentasDto"), 
+	SERVICIOS("servicio(s)", "tc_mantic_servicios_bitacoras", "idServicio", "VistaTallerServiciosDto"), 
+	DEVOLUCIONES("devolucion(es)", "tc_mantic_devoluciones_bitacoras", "idDevolucion", "VistaDevolucionesDto"),
+	NOTAS_CREDITOS("nota(s) de credito(s)", "tc_mantic_creditos_notas_bitacoras", "idCreditoNota", "VistaNotasCreditosDto"),
+	CIERRES_CAJA("cierre(s) de caja", "tc_mantic_cierres_bitacoras", "idCierre", "VistaCierresCajasDto"),
+	FACTURAS_FICTICIAS("factura(s)", "tc_mantic_ficticias_bitacoras", "idFicticia", "VistaFicticiasDto"),
+	TRANSFERENCIAS("transferencia(s)", "tc_mantic_transferencias_bitacoras", "idTransferencia", "VistaAlmacenesTransferenciasDto"),
+	MULTIPLES("transferencia(s) multiples", "tc_mantic_transferencias_multiples_bitacoras", "idTransferenciaMultiple", "VistaTransferenciasMultiplesDto"),
+  GASTOS("gasto(s)", "tc_kalan_gastos_bitacoras", "idEmpresaGasto", "VistaEmpresasGastosDto");
 	 
 	private final String title;
 	private final String table;

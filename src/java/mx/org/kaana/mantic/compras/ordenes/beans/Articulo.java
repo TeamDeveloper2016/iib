@@ -565,7 +565,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return new TcManticOrdenesDetallesDto(
 			this.getImporte(),
 			this.getDescuentos(), 
-			this.getPropio(), 
+			this.getCodigo(), 
 			this.getCosto(), 
 			this.getDescuento(),
 			-1L, /*idOrdenCompra, */

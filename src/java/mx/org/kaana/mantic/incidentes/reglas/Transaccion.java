@@ -241,7 +241,7 @@ public class Transaccion extends IBaseTnx {
 	} // registrarBitacora
 	
 	private boolean bitacoraAnticipo(Session sesion, Long idIncidente, Long idEstatus) throws Exception{
-		boolean regresar                 = false;
+		boolean regresar               = false;
 		TcKeetIncidentesBitacoraDto dto= null;
 		try {
 			dto= new TcKeetIncidentesBitacoraDto();
@@ -259,9 +259,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());			
 			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticIncidentesDto", "siguiente", params, "siguiente");
@@ -278,9 +277,8 @@ public class Transaccion extends IBaseTnx {
 	
 	protected Siguiente toContinuar(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());			
 			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcKeetIncidentesDto", "siguiente", params, "siguiente");

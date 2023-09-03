@@ -36,7 +36,7 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-20" rendered="#{not manticComprasOrdenesMovimientos.visible}">
+            <p:column class="MarAuto Responsive janal-wid-20" rendered="#{manticComprasOrdenesMovimientos.transporto}">
               <f:facet name="header">
                 <h:outputText value="Transportó"/>
               </f:facet>
@@ -54,7 +54,7 @@
               </f:facet>
               <h:outputText value="&lt;i class='fa fa-fw fa-user'&gt;&lt;/i&gt; #{row['nombre']}" escape="false"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}" rendered="#{manticComprasOrdenesMovimientos.visible}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}" rendered="#{manticComprasOrdenesMovimientos.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>

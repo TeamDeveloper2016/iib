@@ -22,9 +22,11 @@ public final class UISelect {
   public static String toValues(IBaseDto component, List<String> names, String token) {
     StringBuilder sb= new StringBuilder();
     for(String field: names) {
-      Object value= component.toValue(field);
-      sb.append(value!= null? value.toString(): "");
-      sb.append(token);
+      if(!field.startsWith(Constantes.DML_ID_KEY)) {
+        Object value= component.toValue(field);
+        sb.append(value!= null? value.toString(): "");
+        sb.append(token);
+      } // if  
     } // for
     return sb.substring(0, sb.length()- token.length());
   }	
@@ -36,7 +38,7 @@ public final class UISelect {
 				String text= toValues(item, fields, token);
 				//if(formato.equals(EFormatoDinamicos.LETRA_CAPITAL))
 				//	text= Methods.ajustar(text);
-        regresar.add(new UISelectItem(value!= null? item.toValue(value): item.getKey(), Global.format(formato, text)));
+        regresar.add(new UISelectItem(value!= null && !value.startsWith(Constantes.DML_ID_KEY)? item.toValue(value): item.getKey(), Global.format(formato, text)));
       } // for 
     } // if
     return regresar;    

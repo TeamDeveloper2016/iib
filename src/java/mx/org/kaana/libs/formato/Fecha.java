@@ -508,10 +508,10 @@ public class Fecha {
     // 012345678901234567012
     Calendar calendar = Calendar.getInstance();
     if(!Objects.equals(fecha, null)) {
-      if (fecha.length() == 6) // yyyyMMdd
-        fecha = reversa(fecha);
+      if (fecha.length() == 8 && !fecha.contains("/")) // yyyyMMdd
+        fecha = reversa(fecha).concat(" 00:00:00");
       else
-        if (fecha.length() == 8) // dd/mm/yy
+        if (fecha.length() == 8 && fecha.contains("/")) // dd/mm/yy
           fecha = fecha.substring(0, 6).concat("19").concat(fecha.substring(6)).concat(" 00:00:00");
       else
         if (fecha.length() == 10) // dd/mm/yyyy

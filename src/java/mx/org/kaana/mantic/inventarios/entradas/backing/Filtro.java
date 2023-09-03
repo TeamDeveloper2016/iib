@@ -154,7 +154,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("id'")) && !this.attrs.get("idNotaEntrada").toString().equals("-1"))
+		if(!Cadena.isVacio(this.attrs.get("idNotaEntrada")) && !this.attrs.get("idNotaEntrada").toString().equals("-1"))
   		sb.append("(tc_mantic_notas_entradas.id_nota_entrada=").append(this.attrs.get("idNotaEntrada")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("ordenCompra")))
   		sb.append("(tc_mantic_ordenes_compras.id_orden_compra= ").append(this.attrs.get("ordenCompra")).append(") and ");
@@ -182,10 +182,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -199,8 +198,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("proveedores", (List<UISelectEntity>) UIEntity.build("VistaNotasEntradasDto", "proveedores", params, columns));
 			this.attrs.put("idProveedor", new UISelectEntity("-1"));
 			columns.remove(0);
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticNotasEstatusDto", "row", params, columns));
-			this.attrs.put("idNotaEstatus", new UISelectEntity("-1"));
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcKalanGastosEstatusDto", "row", params, columns));
+			this.attrs.put("idGastoEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       throw e;
@@ -212,13 +211,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
   
   public void doReporte(String nombre) throws Exception{
-    Parametros comunes = null;
-		Map<String, Object>params    = null;
+    Parametros comunes           = null;
+		Map<String, Object>params    = this.toPrepare();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= this.toPrepare();
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       params.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_entradas.ejercicio, tc_mantic_notas_entradas.orden");
@@ -255,12 +253,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doVerificarReporte		
 
 	public void doLoadEstatus() {
-		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Entity seleccionado          = (Entity)this.attrs.get("seleccionado");
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_nota_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticNotasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("allEstatus", allEstatus);

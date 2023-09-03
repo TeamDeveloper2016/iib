@@ -7,6 +7,256 @@
   </model>
 
   <dml>
+    <unit id="TcKalanGastosClasificacionesDto">
+      <select id="row">
+select      
+  tc_kalan_gastos_clasificaciones.id_gasto_clasificacion as id_key,        
+  tc_kalan_gastos_clasificaciones.*
+from      
+  tc_kalan_gastos_clasificaciones
+where 
+  {condicion} 
+order by
+  descripcion desc            
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_gastos_clasificaciones
+where      
+  clave = '{clave}'
+      </select>
+    </unit>   
+    <unit id="TcKalanGastosSubclasificacionesDto">
+      <select id="row">
+select      
+  tc_kalan_gastos_subclasificaciones.id_gasto_subclasificacion as id_key,
+  tc_kalan_gastos_subclasificaciones.*
+from      
+  tc_kalan_gastos_subclasificaciones
+where 
+  id_gasto_clasificacion= {idGastoClasificacion}
+  and {condicion} 
+order by
+  descripcion              
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_gastos_subclasificaciones
+where      
+  clave = '{clave}' and id_gasto_clasificacion = {idGastoClasificacion}
+      </select>
+    </unit>    
+    <unit id="TcKalanEmpresasCuentasDto">
+      <select id="row">
+select     
+  tc_kalan_empresas_cuentas.id_empresa_cuenta as id_key,      
+  tc_mantic_bancos.nombre as banco,
+  tc_kalan_empresas_cuentas.*
+from      
+  tc_kalan_empresas_cuentas
+inner join
+  tc_mantic_bancos on tc_kalan_empresas_cuentas.id_banco= tc_mantic_bancos.id_banco
+where 
+  id_empresa= {idEmpresa}      
+  and {condicion} 
+order by
+  nombre        
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_empresas_cuentas
+where      
+  cuenta = '{cuenta}' and id_empresa = {idEmpresa} and id_banco = {idBanco}
+      </select>
+    </unit>     
+    <unit id="TcKalanGastosComprobantesDto">
+      <select id="row">
+select      
+  tc_kalan_gastos_comprobantes.id_gasto_comprobante as id_key,
+  tc_kalan_gastos_comprobantes.*
+from      
+  tc_kalan_gastos_comprobantes
+where 
+  {condicion} 
+order by
+  descripcion        
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_gastos_comprobantes
+where      
+  clave = '{clave}'
+      </select>
+    </unit>    
+    <unit id="TcKalanGastosComprobantesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_gastos_comprobantes
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_gastos_comprobantes
+where      
+  clave = '{clave}' and id_gasto_comprobante = {idGastoComprobante}
+      </select>
+    </unit>    
+    <unit id="TcKalanEmpresasChequesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_empresas_cheques
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_empresas_cheques
+where      
+  folio = '{folio}'
+      </select>
+      <select id="cheques">
+select      
+  *
+from      
+  tc_kalan_empresas_cheques
+where 
+  id_empresa_gasto= {idEmpresaGasto}
+      </select>
+    </unit>    
+    <unit id="TcKalanEmpresasControlesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_empresas_controles
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_empresas_controles
+where      
+  secuencia = {secuencia} and id_empresa_gasto = {idEmpresaGasto}
+      </select>
+      <select id="control">
+select      
+  tc_kalan_empresas_controles.id_gasto_control as id_key
+from      
+  tc_kalan_empresas_controles
+where      
+  id_empresa_gasto = {idEmpresaGasto}
+      </select>
+      <delete id="control">
+delete from tc_kalan_empresas_controles where id_empresa_gasto= {idEmpresaGasto} and id_gasto_control= {idGastoControl}
+      </delete>
+      <delete id="rows">
+delete from tc_kalan_empresas_controles where id_empresa_gasto= {idEmpresaGasto}
+      </delete>
+    </unit>    
+    <unit id="TcKalanEmpresasGastosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_empresas_gastos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_empresas_gastos
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+      <select id="igual">
+select      
+  *
+from      
+  tc_kalan_empresas_gastos
+where      
+  id_empresa_gasto = {idEmpresaGasto}
+      </select>
+      <select id="iguales">
+select      
+  tc_kalan_empresas_gastos.*
+from      
+  tc_kalan_empresas_gastos
+inner join
+  tc_kalan_empresas_controles on tc_kalan_empresas_gastos.id_empresa_gasto= tc_kalan_empresas_controles.id_empresa_gasto
+where      
+  tc_kalan_empresas_controles.id_empresa_gasto = {idEmpresaGasto}
+      </select>
+			<select id="siguiente">
+select
+  max(orden)+ 1 as siguiente
+from 
+  tc_kalan_empresas_gastos
+where
+  ejercicio= {ejercicio} 
+  and orden{operador} 900000			
+			</select>
+    </unit>   
+    <unit id="TcKalanGastosEstatusDto">
+      <select id="row">
+select      
+  tc_kalan_gastos_estatus.id_gasto_estatus as id_key,
+  tc_kalan_gastos_estatus.*
+from      
+  tc_kalan_gastos_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_gastos_estatus
+where      
+  id_gasto_estatus = {idGastoEstatus}
+      </select>
+    </unit>     
+    <unit id="TcKalanGastosBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_gastos_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_gastos_bitacora
+where      
+  id_gasto_bitacora = {idGastoBitacora}
+      </select>
+      <delete id="rows">
+delete from tc_kalan_gastos_bitacora where id_empresa_gasto= {idEmpresaGasto}
+      </delete>
+    </unit>    
     <unit id="TcKalanHistorialesDto">
       <select id="row">
 select      

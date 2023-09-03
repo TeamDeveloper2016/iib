@@ -40,8 +40,12 @@ public class Movimientos extends IBaseFilter implements Serializable {
 		return this.tipo.getTitle();
 	}
 		
-	public boolean getVisible() {
-	  return !ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo) && !ETipoMovimiento.MULTIPLES.equals(this.tipo);
+	public boolean getTransporto() {
+	  return ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo) || ETipoMovimiento.MULTIPLES.equals(this.tipo);
+	}
+	
+	public boolean getImporte() {
+	  return !ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo) && !ETipoMovimiento.MULTIPLES.equals(this.tipo) && !ETipoMovimiento.GASTOS.equals(this.tipo);
 	}
 	
 	public String doTransporto(Entity row) {
@@ -73,9 +77,8 @@ public class Movimientos extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns= null;
+    List<Columna> columns= new ArrayList<>();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("justificacion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));

@@ -4,6 +4,89 @@
 -->
 <process>
 	<dml> 
+    <unit id="VistaEmpresasGastosDto">
+      <select id="lazy">
+select
+	tc_kalan_empresas_gastos.id_empresa_gasto as id_key,
+	tc_kalan_empresas_gastos.id_empresa_gasto,
+	tc_mantic_empresas.titulo as empresa,
+  tc_kalan_empresas_gastos.consecutivo,
+	tc_kalan_gastos_clasificaciones.descripcion as clasificacion,
+	tc_kalan_gastos_subclasificaciones.descripcion as subclasificacion,
+	tc_kalan_empresas_gastos.fecha_aplicacion,
+	tc_kalan_empresas_gastos.fecha_referencia,
+	tc_kalan_empresas_gastos.referencia,
+	tc_mantic_proveedores.razon_social as proveedor,
+	tc_kalan_empresas_gastos.observaciones,
+	tc_kalan_empresas_gastos.total,
+	tc_kalan_empresas_cuentas.nombre as cuenta,
+	tc_kalan_gastos_estatus.id_gasto_estatus,
+	tc_kalan_gastos_estatus.nombre as estatus,
+	tc_kalan_gastos_estatus.estatus_asociados,
+	tc_kalan_empresas_gastos.registro
+from
+	tc_kalan_empresas_gastos
+inner join
+  tc_mantic_empresas on tc_kalan_empresas_gastos.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_kalan_gastos_clasificaciones	on tc_kalan_empresas_gastos.id_gasto_clasificacion= tc_kalan_gastos_clasificaciones.id_gasto_clasificacion
+inner join
+  tc_kalan_gastos_subclasificaciones on tc_kalan_empresas_gastos.id_gasto_subclasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_subclasificacion
+inner join
+  tc_mantic_proveedores on tc_kalan_empresas_gastos.id_proveedor= tc_mantic_proveedores.id_proveedor
+inner join
+  tc_kalan_empresas_cuentas on tc_kalan_empresas_gastos.id_empresa_cuenta= tc_kalan_empresas_cuentas.id_empresa_cuenta
+inner join 
+  tc_kalan_gastos_estatus on tc_kalan_empresas_gastos.id_gasto_estatus= tc_kalan_gastos_estatus.id_gasto_estatus
+where
+  tc_kalan_empresas_gastos.id_empresa in ({idEmpresa})        
+	and tc_kalan_empresas_gastos.pagos&gt; 0
+  and {condicion}
+{sortOrder}
+      </select>
+      <select id="proveedores">
+select
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_proveedores.clave,  
+  tc_mantic_proveedores.razon_social as nombre,
+  tc_mantic_proveedores.dias_entrega
+from 
+  tc_kalan_empresas_gastos
+inner join
+  tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor       
+where 		
+  tc_kalan_empresas_gastos.id_empresa in ({sucursales})
+group by
+  tc_mantic_proveedores.id_proveedor			
+order by
+  tc_mantic_proveedores.clave
+			</select>      
+			<select id="movimientos">
+select
+  tc_kalan_gastos_bitacora.id_gasto_bitacora as id_key,
+  tc_kalan_empresas_gastos.consecutivo,
+  0 as importe,
+  ' ' as id_transporto,
+  tc_kalan_gastos_bitacora.justificacion,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+  tc_kalan_gastos_estatus.nombre as estatus,
+  tc_kalan_gastos_bitacora.registro
+from 
+  tc_kalan_gastos_bitacora
+inner join
+  tc_kalan_empresas_gastos on tc_kalan_gastos_bitacora.id_empresa_gasto= tc_kalan_empresas_gastos.id_empresa_gasto
+inner join
+  tc_kalan_gastos_estatus on tc_kalan_gastos_bitacora.id_gasto_estatus= tc_kalan_gastos_estatus.id_gasto_estatus
+inner join
+  tc_janal_usuarios on tc_kalan_gastos_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+where
+  tc_kalan_gastos_bitacora.id_empresa_gasto= {idEmpresaGasto}
+order by
+  tc_kalan_gastos_bitacora.registro desc
+			</select>		       
+    </unit>    
     <unit id="VistaArticuloPrecioDto">
       <select id="lazy">
 select 

@@ -46,7 +46,9 @@
 				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};
 			
-			$(document).ready(function(){janal.readingMode('#{manticCatalogosClientesAccion.attrs.nombreAccion}');});
+			$(document).ready(function(){
+        janal.readingMode('#{manticCatalogosClientesAccion.attrs.nombreAccion}');
+      });
     </script>   
   </ui:define>
   <ui:define name="contenido">		

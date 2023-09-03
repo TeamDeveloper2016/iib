@@ -7329,16 +7329,11 @@ order by
 				from 
 					tc_mantic_notas_entradas
 				inner join
-					tr_mantic_proveedor_pago on tc_mantic_notas_entradas.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
-				inner join
 					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor       
 				where 		
 				  tc_mantic_notas_entradas.id_empresa in ({sucursales})
 				group by
-          tc_mantic_proveedores.id_proveedor,
-					tc_mantic_proveedores.clave,  
-					tc_mantic_proveedores.razon_social,
-					tc_mantic_proveedores.dias_entrega			
+          tc_mantic_proveedores.id_proveedor			
 				order by
 				  tc_mantic_proveedores.clave
 			</select>			

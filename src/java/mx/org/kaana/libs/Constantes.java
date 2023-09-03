@@ -89,6 +89,7 @@ public final class Constantes {
   public static final String DML_ACTUALIZAR_TODOS= "rows";
   public static final String DML_ELIMINAR_TODOS  = "rows";
   public static final String DML_RESERVADO       = "view";
+  public static final String DML_ID_KEY          = "idKey";
   public static final String XML_PROYECTO_LOAD   = "load";
   public static final String XML_PROYECTO_MAPPING= "mapping";
   public static final String XML_PROYECTO_BEANS  = "backing";
@@ -171,6 +172,7 @@ public final class Constantes {
 	public static double PORCENTAJE_MEDIO_MAYOREO= 1.4;
 	public static double PORCENTAJE_MAYOREO= 1.3;
 	public static double PORCENTAJE_IVA= 0.16;
+	public static double PORCENTAJE_IEPS= 0.09;
 	public static final Long ANTICIPO= 10L;
 	public static final Long PERIL_CONSULTA_CLIENTE= 5L;
 	public static final Long PUESTO_CONSULTA_CLIENTE= 10L;
