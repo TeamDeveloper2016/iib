@@ -45,6 +45,7 @@ public class Fecha {
   public static final int DIA_FECHA = 27;
   public static final int DIA_CORTO_FECHA = 28;
   public static final int DIA_FECHA_CORTA = 29;
+  public static final int FECHA_ANIO_MES = 30;
   
 
 	protected Fecha (){
@@ -93,36 +94,36 @@ public class Fecha {
   } // getNombreDiaAcronimo
   
   public static String formatear(int patron, String fecha) {
-    if (fecha != null && fecha.length() > 0) {
+    if (fecha != null && fecha.length()> 0) {
       int anio = Integer.parseInt(fecha.substring(0, 4));
       int mes = Integer.parseInt(fecha.substring(4, 6)) - 1;
       int dia = Integer.parseInt(fecha.substring(6, 8));
       GregorianCalendar calendario = new GregorianCalendar(anio, mes, dia);
       switch (patron) {
       case FECHA_NOMBRE_MES_CORTO: // Fecha en dd/mes/yyyy   26/Nov/2003
-        fecha = calendario.get(calendario.DATE) + "/" + getNombreMesCorto(calendario.get(calendario.MONTH)) + "/" + fecha.substring(0,4);
+        fecha = calendario.get(Calendar.DATE) + "/" + getNombreMesCorto(calendario.get(Calendar.MONTH)) + "/" + fecha.substring(0,4);
         break;
       case FECHA_NOMBRE_MES: // Fecha en dd/mes/yyyy   26/Noviembre/2003
-        fecha = calendario.get(calendario.DATE) + "/" + getNombreMes(calendario.get(calendario.MONTH)) + "/" + fecha.substring(0,4);
+        fecha = calendario.get(Calendar.DATE) + "/" + getNombreMes(calendario.get(Calendar.MONTH)) + "/" + fecha.substring(0,4);
         break;
       case FECHA_CORTA: // Fecha en dd/mm/yyyy    26/11/2003
         fecha = fecha.substring(6, 8) + "/" + fecha.substring(4, 6) + "/" + fecha.substring(0, 4);
         break;
       case FECHA_NOMBRE_DIA: // Fecha en:  nombre del dia, dd/mm/yyyy    Miercoles, 26/11/2003
         fecha =
-            getNombreDia(calendario.get(calendario.DAY_OF_WEEK)) + ", " + fecha.substring(6, 8) + "/" + fecha.substring(4, 6) +
+            getNombreDia(calendario.get(Calendar.DAY_OF_WEEK)) + ", " + fecha.substring(6, 8) + "/" + fecha.substring(4, 6) +
             "/" + fecha.substring(0, 4);
         break;
       case FECHA_EXTENDIDA: // Fecha en:  nombre del dia, dia mes a�o   Miercoles, 26 de Noviembre del 2003
         fecha =
-            getNombreDia(calendario.get(calendario.DAY_OF_WEEK)) + ", " + calendario.get(calendario.DATE) + " de " + getNombreMes(calendario.get(calendario.MONTH)) +
-            " de " + calendario.get(calendario.YEAR);
+            getNombreDia(calendario.get(Calendar.DAY_OF_WEEK)) + ", " + calendario.get(Calendar.DATE) + " de " + getNombreMes(calendario.get(Calendar.MONTH)) +
+            " de " + calendario.get(Calendar.YEAR);
         break;
       case FECHA_MINIMA: // Fecha en dd/mm/yy   26/11/03
         fecha = fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(fecha.substring(2, 4));
         break;
       case FECHA_LARGA: // Fecha en:  dia mes anio  26 de Noviembre del 2003
-        fecha = calendario.get(calendario.DATE) + " de " + getNombreMes(calendario.get(calendario.MONTH)) + " de " + calendario.get(calendario.YEAR);
+        fecha = calendario.get(Calendar.DATE) + " de " + getNombreMes(calendario.get(Calendar.MONTH)) + " de " + calendario.get(Calendar.YEAR);
         break;
       case FECHA_HORA: // Fecha en dd/mmm/yyyy hh:mm:ss  03/12/2007 12:26:00
         fecha =
@@ -174,26 +175,26 @@ public class Fecha {
             fecha.substring(10,12)).concat(":").concat(fecha.substring(12,14));
         break;
       case FECHA_HORA_EXTENDIDA:
-        fecha = getNombreDia(calendario.get(calendario.DAY_OF_WEEK))  + ", " + calendario.get(calendario.DATE) + " de " + getNombreMes(calendario.get(calendario.MONTH)) +
-                " de " + calendario.get(calendario.YEAR)+" "+fecha.substring(8, 10).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
+        fecha = getNombreDia(calendario.get(Calendar.DAY_OF_WEEK))  + ", " + calendario.get(Calendar.DATE) + " de " + getNombreMes(calendario.get(Calendar.MONTH)) +
+                " de " + calendario.get(Calendar.YEAR)+" "+fecha.substring(8, 10).concat(":").concat(fecha.substring(10, 12)).concat(":").concat(fecha.substring(12, 14));
 
         break;
       case DIA_FECHA: // Fecha en Dia, dd/mmm/yyyy Miercoles, 03/12/2007 
         fecha =
-					  getNombreDia(calendario.get(calendario.DAY_OF_WEEK))  + ", " +
+					  getNombreDia(calendario.get(Calendar.DAY_OF_WEEK))  + ", " +
             fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(
             fecha.substring(0, 4));
         break;
       case DIA_FECHA_HORA: // Fecha en Dia, dd/mmm/yyyy hh:mm:ss  03/12/2007 12:26:00
         fecha =
-					  getNombreDia(calendario.get(calendario.DAY_OF_WEEK))  + ", " +
+					  getNombreDia(calendario.get(Calendar.DAY_OF_WEEK))  + ", " +
             fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(
             fecha.substring(0, 4)).concat(" ").concat(fecha.substring(8,10)).concat(":").concat(
             fecha.substring(10,12)).concat(":").concat(fecha.substring(12,14));
         break;
       case DIA_FECHA_HORA_CORTA: // Fecha en Dia, dd/mmm/yyyy hh:mm:ss  03/12/2007 12:26
         fecha =
-					  getNombreDia(calendario.get(calendario.DAY_OF_WEEK))  + ", " +
+					  getNombreDia(calendario.get(Calendar.DAY_OF_WEEK))  + ", " +
             fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(
             fecha.substring(0, 4)).concat(" ").concat(fecha.substring(8,10)).concat(":").concat(
             fecha.substring(10,12));
@@ -206,14 +207,17 @@ public class Fecha {
         break;
       case DIA_CORTO_FECHA: // Fecha en Dia, dd/mmm/yyyy MIE, 03/12/2007
         fecha =
-					  getNombreDiaAcronimo(calendario.get(calendario.DAY_OF_WEEK))  + ", " +
+					  getNombreDiaAcronimo(calendario.get(Calendar.DAY_OF_WEEK))  + ", " +
             fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(
             fecha.substring(0, 4));
         break;
       case DIA_FECHA_CORTA: // Fecha en Dia, dd/mmm/yyyy Miercoles, 03/12/2007
         fecha =
-					  getNombreDia(calendario.get(calendario.DAY_OF_WEEK))+ ", "+
+					  getNombreDia(calendario.get(Calendar.DAY_OF_WEEK))+ ", "+
             fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(fecha.substring(0, 4));
+        break;
+      case FECHA_ANIO_MES: // Fecha SEP/2027
+        fecha = fecha.substring(0, 4).concat("/").concat(getNombreMesCorto(mes));
         break;
       } // switch
     }

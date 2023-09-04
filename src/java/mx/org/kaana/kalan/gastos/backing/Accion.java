@@ -39,6 +39,8 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
+  private static final String TEXT_GLOBAL= "TOTAL {total}, {pagos} MESES, DEL {inicia} AL {termina}";
+  private static final String TEXT_PARCIALIDAD= "TOTAL {total}, {pagos} MESES, DEL {inicia} AL {termina}, {importe} (PARCIALIDAD {pago}, {mes})";
 
   private Gasto gasto;
   private EAccion accion;
@@ -67,7 +69,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));      
       if(JsfBase.getFlashAttribute("retorno")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.attrs.put("idEmpresaGasto", JsfBase.getFlashAttribute("idEmpresaGasto"));
+      this.attrs.put("idEmpresaGasto", JsfBase.getFlashAttribute("idEmpresaGasto")== null? -1L: JsfBase.getFlashAttribute("idEmpresaGasto"));
       this.attrs.put("total", 0D);
 			this.doLoad();
       this.toLoadEmpresas();
@@ -282,7 +284,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 			  regresar= this.doCancelar();
   		  if(!this.accion.equals(EAccion.CONSULTAR)) 
-  			  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el gasto a la empresa !"), ETipoMensaje.INFORMACION);
+  			  JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el gasto de la empresa !"), ETipoMensaje.INFORMACION);
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar el gasto !", ETipoMensaje.ALERTA);      			
@@ -328,6 +330,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     
   }
  
+  public void doEstatus() {
+    
+  }
+ 
   public void doProrratear() {
     if(this.gasto.getProrratear())
       this.doParcialidades(); 
@@ -350,10 +356,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
   
   public void doParcialidades() {
-    double sum= 0D;
-    int count = this.gasto.getParcialidades().size();
+    double sum      = 0D;
+    int count       = this.gasto.getParcialidades().size();
     Parcialidad clon= this.gasto.clon();
-    Calendar start = Calendar.getInstance();
+    Calendar start  = Calendar.getInstance();
     start.setTimeInMillis(clon.getFechaAplicacion().getTime());
     for (int x= 0; x< this.gasto.getPagos(); x++) {
       if(x>= count)
@@ -369,13 +375,47 @@ public class Accion extends IBaseAttribute implements Serializable {
         start.add(Calendar.MONTH, 1);
         this.gasto.getParcialidades().get(x).setFechaAplicacion(new Date(start.getTimeInMillis()));
       } // if  
+      this.gasto.getParcialidades().get(x).setPago(new Long(x+ 1));
     } // for
     // VERIFICAR SI HAY MENOS PAGOS DE LOS YA REGISTRADOS ENTONCES MARCAR COMO ELIMINADOS O DEPURARLOS
     if(count> this.gasto.getPagos()) 
       this.clean(this.gasto.getPagos().intValue());
     this.attrs.put("total", Numero.toRedondear(sum));
+    this.toFormatPago();
   }
+
+  private void toFormatPago() {
+    Map<String, Object> params= new HashMap<>();
+    Calendar calendar         = Calendar.getInstance();
+    try {      
+      if(this.gasto.getParcialidades()!= null && !this.gasto.getParcialidades().isEmpty()) {
+        params.put("total", Numero.formatear(Numero.MONEDA_CON_DECIMALES, this.gasto.getTotal()));
+        Date fecha= this.gasto.getParcialidades().get(0).getFechaAplicacion();
+        params.put("inicia", Fecha.formatear(Fecha.FECHA_ANIO_MES, fecha));
+        fecha= this.gasto.getParcialidades().get(this.gasto.getParcialidades().size()- 1).getFechaAplicacion();
+        params.put("termina", Fecha.formatear(Fecha.FECHA_ANIO_MES, fecha));
+        params.put("pagos", this.gasto.getPagos());
+        for (Parcialidad item: this.gasto.getParcialidades()) {
+          params.put("importe", Numero.formatear(Numero.MONEDA_CON_DECIMALES, item.getTotal()));
+          params.put("pago", item.getPago());
+          calendar.setTimeInMillis(item.getFechaAplicacion().getTime());
+          int month= calendar.get(Calendar.MONTH);
+          params.put("mes", Fecha.getNombreMesCorto(month));
+          item.setObservaciones(Cadena.replaceParams(TEXT_PARCIALIDAD, params));
+        } // for
+        this.gasto.setObservaciones(Cadena.replaceParams(TEXT_GLOBAL, params));
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
  
+  }
+
   public String doColor(Parcialidad row) {
     return Objects.equals(row.getSql(), ESql.DELETE)? "janal-display-none": "";
   }

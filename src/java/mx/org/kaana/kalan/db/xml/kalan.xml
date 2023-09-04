@@ -15,9 +15,10 @@ select
 from      
   tc_kalan_gastos_clasificaciones
 where 
-  {condicion} 
+  id_activo= 1
+  and {condicion} 
 order by
-  descripcion desc            
+  descripcion            
       </select>
       <select id="identically">
 select      
@@ -37,6 +38,7 @@ from
   tc_kalan_gastos_subclasificaciones
 where 
   id_gasto_clasificacion= {idGastoClasificacion}
+  and id_activo= 1
   and {condicion} 
 order by
   descripcion              
@@ -215,6 +217,32 @@ from
 where
   ejercicio= {ejercicio} 
   and orden{operador} 900000			
+			</select>
+			<select id="ejercicios">
+select
+  ejercicio as id_key,
+  ejercicio 
+from 
+  tc_kalan_empresas_gastos
+group by
+  tc_kalan_empresas_gastos.ejercicio
+order by
+  tc_kalan_empresas_gastos.ejercicio desc		        
+			</select>
+			<select id="meses">
+select
+  tc_janal_meses.id_mes as id_key,
+  tc_janal_meses.nombre
+from 
+  tc_kalan_empresas_gastos
+inner join
+  tc_janal_meses on month(fecha_aplicacion)= tc_janal_meses.id_mes
+where
+  tc_kalan_empresas_gastos.ejercicio= {ejercicio}
+group by
+  tc_janal_meses.id_mes
+order by
+  tc_janal_meses.id_mes desc        
 			</select>
     </unit>   
     <unit id="TcKalanGastosEstatusDto">

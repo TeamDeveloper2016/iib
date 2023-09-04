@@ -235,5 +235,10 @@ public class Value implements Serializable, Comparable<Value> {
 		} // catch
 		return regresar;
 	}
-	
+
+  @Override
+  public Value clone() {
+    return new Value(this.name, this.data, this.field);
+  }
+    
 }

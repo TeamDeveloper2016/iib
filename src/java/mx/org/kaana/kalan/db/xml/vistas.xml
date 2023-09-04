@@ -40,9 +40,64 @@ inner join
   tc_kalan_gastos_estatus on tc_kalan_empresas_gastos.id_gasto_estatus= tc_kalan_gastos_estatus.id_gasto_estatus
 where
   tc_kalan_empresas_gastos.id_empresa in ({idEmpresa})        
-	and tc_kalan_empresas_gastos.pagos&gt; 0
+	and tc_kalan_empresas_gastos.id_fuente= 1
   and {condicion}
 {sortOrder}
+      </select>
+      <select id="detalle">
+select
+	tc_kalan_empresas_gastos.id_empresa_gasto as id_key,
+  tc_kalan_empresas_gastos.consecutivo,
+	tc_kalan_gastos_clasificaciones.descripcion as clasificacion,
+	tc_kalan_gastos_subclasificaciones.descripcion as subclasificacion,
+	tc_kalan_empresas_gastos.fecha_aplicacion,
+	tc_kalan_empresas_gastos.observaciones,
+	tc_kalan_empresas_gastos.total,
+	tc_kalan_gastos_estatus.id_gasto_estatus,
+	tc_kalan_empresas_gastos.registro
+from
+	tc_kalan_empresas_gastos
+inner join
+  tc_kalan_gastos_clasificaciones	on tc_kalan_empresas_gastos.id_gasto_clasificacion= tc_kalan_gastos_clasificaciones.id_gasto_clasificacion
+inner join
+  tc_kalan_gastos_subclasificaciones on tc_kalan_empresas_gastos.id_gasto_subclasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_subclasificacion
+inner join 
+  tc_kalan_gastos_estatus on tc_kalan_empresas_gastos.id_gasto_estatus= tc_kalan_gastos_estatus.id_gasto_estatus
+where
+  tc_kalan_empresas_gastos.id_empresa in ({idEmpresa})        
+	and (tc_kalan_empresas_gastos.id_fuente= 2 or (tc_kalan_empresas_gastos.id_activo_prorratear= 2 and tc_kalan_empresas_gastos.id_fuente= 1))
+	and tc_kalan_gastos_estatus.id_gasto_estatus= 2
+	and date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y|%m')= '{fecha}'        
+{sortOrder}        
+      </select>  
+      <select id="acumulados">
+select
+	tc_kalan_gastos_clasificaciones.id_gasto_clasificacion as id_key,
+  tc_kalan_gastos_clasificaciones.id_gasto_clasificacion,
+	tc_mantic_empresas.titulo as empresa,
+	tc_kalan_gastos_clasificaciones.descripcion as clasificacion,
+	'{anterior}' as fecha_anterior,
+	sum(if(date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y|%m')= '2022|12', tc_kalan_empresas_gastos.total, 0)) as anterior,
+	'{actual}' as fecha_actual,
+	sum(if(date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y|%m')= '{actual}', tc_kalan_empresas_gastos.total, 0)) as actual
+from
+	tc_kalan_empresas_gastos
+inner join
+  tc_mantic_empresas on tc_kalan_empresas_gastos.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_kalan_gastos_clasificaciones	on tc_kalan_empresas_gastos.id_gasto_clasificacion= tc_kalan_gastos_clasificaciones.id_gasto_clasificacion
+inner join 
+  tc_kalan_gastos_estatus on tc_kalan_empresas_gastos.id_gasto_estatus= tc_kalan_gastos_estatus.id_gasto_estatus
+where
+  tc_kalan_empresas_gastos.id_empresa= {idEmpresa}              
+	and tc_kalan_empresas_gastos.id_fuente= 1
+	and tc_kalan_gastos_estatus.id_gasto_estatus= 2
+	and (date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y|%m')= '{anterior}' or date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y|%m')= '{actual}')
+group by
+  tc_mantic_empresas.id_empresa,
+  tc_kalan_gastos_clasificaciones.id_gasto_clasificacion
+order by  
+  tc_kalan_gastos_clasificaciones.descripcion
       </select>
       <select id="proveedores">
 select

@@ -55,7 +55,7 @@ public class Transaccion extends IBaseTnx {
           Siguiente consecutivo= this.toSiguiente(sesion);	
           this.gasto.setConsecutivo(consecutivo.getConsecutivo());			
           this.gasto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
-          this.gasto.setOrden(consecutivo.getOrden());			
+          this.gasto.setOrden(consecutivo.getOrden());
           regresar= DaoFactory.getInstance().insert(sesion, this.gasto)> 0L;
           if(Objects.equals(this.gasto.getIdActivoCheque(), 1L)) {
             this.gasto.getDocumento().setIdEmpresaGasto(this.gasto.getIdEmpresaGasto());
@@ -150,7 +150,7 @@ public class Transaccion extends IBaseTnx {
               item.setObservaciones(this.gasto.getObservaciones());
               item.setIdActivoCheque(2L);
               item.setIdActivoProrratear(2L);
-              item.setPagos(0L);
+              item.setIdFuente(2L);
               regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
               break;
             case DELETE:
@@ -177,7 +177,7 @@ public class Transaccion extends IBaseTnx {
               item.setObservaciones(this.gasto.getObservaciones());
               item.setIdActivoCheque(2L);
               item.setIdActivoProrratear(2L);
-              item.setPagos(0L);
+              item.setIdFuente(2L);
               regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
               control= new TcKalanEmpresasControlesDto(
                 new Long(count), // Long secuencia, 

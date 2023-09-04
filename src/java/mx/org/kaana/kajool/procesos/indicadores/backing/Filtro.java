@@ -86,13 +86,11 @@ public class Filtro extends Comun implements Serializable {
   } // doPintado
   
   public String toTotal(String entity) {
-		long total         = 0L;
-		String regresar    = "";
-		List<Entity>records= null;
+		long total     = 0L;
+		String regresar= "";
 		try {
-			records= (List<Entity>) this.lazyModel.getWrappedData();
-			for(Entity record: records)
-				total= total+ Long.valueOf(record.toString(entity));
+			for(Entity item: (List<Entity>) this.lazyModel.getWrappedData())
+				total= total+ Long.valueOf(item.toString(entity));
 		  regresar= Numero.formatear(Numero.MILES_SIN_DECIMALES, total);
 		} // try
 		catch (Exception e) {			

@@ -35,8 +35,8 @@ public class Gasto extends TcKalanEmpresasGastosDto implements Serializable {
     this.init();
   }
 
-  public Gasto(Long idGastoClasificacion, Long idGastoComprobante, Double ivaCalculado, Long idActivoIeps, Date fechaAplicacion, Double total, Long idEmpresaCuenta, Double iva, Date fechaReferencia, Long idProveedor, Double ivaRetenido, Long idActivoCheque, Double importe, Long pagos, Long idGastoSubclasificacion, Double ieps, Long idUsuario, Double subtotal, String concepto, Double iepsCalculado, String observaciones, Long idEmpresa, Long idEmpresaGasto, String referencia, Long idActivoProrratear, Long idGastoEstatus, String consecutivo, Long ejercicio, Long orden) {
-    super(idGastoClasificacion, idGastoComprobante, ivaCalculado, idActivoIeps, fechaAplicacion, total, idEmpresaCuenta, iva, fechaReferencia, idProveedor, ivaRetenido, idActivoCheque, importe, pagos, idGastoSubclasificacion, ieps, idUsuario, subtotal, concepto, iepsCalculado, observaciones, idEmpresa, idEmpresaGasto, referencia, idActivoProrratear, idGastoEstatus, consecutivo, ejercicio, orden);
+  public Gasto(Long idGastoClasificacion, Long idGastoComprobante, Double ivaCalculado, Long idActivoIeps, Date fechaAplicacion, Double total, Long idEmpresaCuenta, Double iva, Date fechaReferencia, Long idProveedor, Double ivaRetenido, Long idActivoCheque, Double importe, Long pago, Long pagos, Long idGastoSubclasificacion, Double ieps, Long idUsuario, Double subtotal, String concepto, Double iepsCalculado, String observaciones, Long idEmpresa, Long idEmpresaGasto, String referencia, Long idActivoProrratear, Long idGastoEstatus, String consecutivo, Long ejercicio, Long orden, Long idFuente) {
+    super(idGastoClasificacion, idGastoComprobante, ivaCalculado, idActivoIeps, fechaAplicacion, total, idEmpresaCuenta, iva, fechaReferencia, idProveedor, ivaRetenido, idActivoCheque, importe, pago, pagos, idGastoSubclasificacion, ieps, idUsuario, subtotal, concepto, iepsCalculado, observaciones, idEmpresa, idEmpresaGasto, referencia, idActivoProrratear, idGastoEstatus, consecutivo, ejercicio, orden, idFuente);
     this.init();
   }
   
@@ -93,6 +93,14 @@ public class Gasto extends TcKalanEmpresasGastosDto implements Serializable {
   public Parcialidad clon() {
     return this.clon(1L);
   }
+
+  public Boolean getEstatus() {
+    return !Objects.equals(this.getIdGastoEstatus(), null) && Objects.equals(this.getIdGastoEstatus(), 2L);
+  }
+
+  public void setEstatus(Boolean value) {
+    this.setIdGastoEstatus(value? 2L: 1L);
+  }
   
   private void init() {
     this.documento= new Cheque();
@@ -117,6 +125,7 @@ public class Gasto extends TcKalanEmpresasGastosDto implements Serializable {
       Numero.toRedondear(this.getIvaRetenido()/ pagos), // Double ivaRetenido, 
       this.getIdActivoCheque(), // Long idActivoCheque, 
       Numero.toRedondear(this.getImporte()/ pagos), // Double importe, 
+      1L, // Long pago, 
       1L, // Long pagos, 
       this.getIdGastoSubclasificacion(), // Long idGastoSubclasificacion, 
       this.getIeps(), // Double ieps, 
@@ -132,7 +141,8 @@ public class Gasto extends TcKalanEmpresasGastosDto implements Serializable {
       this.getIdGastoEstatus(), // Long idGastoEstatus, 
       this.getConsecutivo(), // String consecutivo, 
       this.getEjercicio(), // Long ejercicio, 
-      this.getOrden() // Long orden      
+      this.getOrden(), // Long orden      
+      1L // Long idFuente
     );
     regresar.setRegistro(this.getRegistro());
     return regresar;

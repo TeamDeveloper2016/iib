@@ -49,6 +49,7 @@ public enum EFormatoDinamicos implements IFormatosKajool {
   DIA_FECHA_HORA_CORTA("Dia, dd/MM/yyyy HH:mm"),
   FECHA_HORA_ANTERIOR("dd/MM/yyyy HH:mm:ss"),
   FECHA_HORA_LARGA("yyyyMMddhhmmss"),
+  FECHA_ANIO_MES("yyyy/Mes corto"),
   MEGAS("Megas"),
   ASTERISCO("*");
 
@@ -170,6 +171,9 @@ public enum EFormatoDinamicos implements IFormatosKajool {
           Calendar anterior = Fecha.getFechaHora(regresar);
           anterior.add(GregorianCalendar.DATE, -1);
           regresar = Fecha.formatear(Fecha.FECHA_HORA, anterior);
+          break;
+        case FECHA_ANIO_MES:
+          regresar = Fecha.formatear(Fecha.FECHA_ANIO_MES, Fecha.getFechaHora(regresar));
           break;
         case MEGAS:
           regresar = Numero.formatear(Numero.NUMERO_CON_DECIMALES, Numero.getDouble(regresar) / 1024 / 1024);

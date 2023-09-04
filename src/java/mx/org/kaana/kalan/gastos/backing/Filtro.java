@@ -74,7 +74,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("fechaReferencia", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
@@ -97,6 +97,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     EAccion eaccion    = null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Gastos/filtro");		
 			JsfBase.setFlashAttribute("idEmpresaGasto", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? seleccionado.getKey(): -1L);
 		} // try
@@ -104,7 +105,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
+		return regresar.concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public void doEliminar() {
@@ -149,7 +150,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idGastoClasificacion")) && !this.attrs.get("idGastoClasificacion").toString().equals("-1"))
   		sb.append("(tc_kalan_empresas_gastos.id_gasto_clasificacion= ").append(this.attrs.get("idGastoClasificacion")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idGastoSubclasificacion")) && !this.attrs.get("idGastoSubclasificacion").toString().equals("-1"))
-  		sb.append("(tc_mantic_proveedores.id_gasto_subclasificacion= ").append(this.attrs.get("idGastoSubclasificacion")).append(") and ");
+  		sb.append("(tc_kalan_empresas_gastos.id_gasto_subclasificacion= ").append(this.attrs.get("idGastoSubclasificacion")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idGastoEstatus")) && !this.attrs.get("idGastoEstatus").toString().equals("-1"))
   		sb.append("(tc_kalan_empresas_gastos.id_gasto_estatus= ").append(this.attrs.get("idGastoEstatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))

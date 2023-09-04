@@ -55,6 +55,8 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
   private Long idActivoCheque;
   @Column (name="importe")
   private Double importe;
+  @Column (name="pago")
+  private Long pago;
   @Column (name="pagos")
   private Long pagos;
   @Column (name="id_gasto_subclasificacion")
@@ -91,17 +93,19 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
   private Long ejercicio;
   @Column (name="orden")
   private Long orden;
+  @Column (name="id_fuente")
+  private Long idFuente;
 
   public TcKalanEmpresasGastosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanEmpresasGastosDto(Long key) {
-    this(-1L, -1L, 0D, 2L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, -1L, Constantes.PORCENTAJE_IVA* 100, new Date(Calendar.getInstance().getTimeInMillis()), -1L, 0D, 2L, 0D, 2L, -1L, Constantes.PORCENTAJE_IEPS* 100, null, 0D, null, 0D, null, -1L, new Long(-1L), null, 2L, -1L, null, null, null);
+    this(-1L, -1L, 0D, 2L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, -1L, Constantes.PORCENTAJE_IVA* 100, new Date(Calendar.getInstance().getTimeInMillis()), -1L, 0D, 2L, 0D, 1L, 1L, -1L, Constantes.PORCENTAJE_IEPS* 100, null, 0D, null, 0D, null, -1L, new Long(-1L), null, 2L, -1L, null, null, null, 1L);
     setKey(key);
   }
 
-  public TcKalanEmpresasGastosDto(Long idGastoClasificacion, Long idGastoComprobante, Double ivaCalculado, Long idActivoIeps, Date fechaAplicacion, Double total, Long idEmpresaCuenta, Double iva, Date fechaReferencia, Long idProveedor, Double ivaRetenido, Long idActivoCheque, Double importe, Long pagos, Long idGastoSubclasificacion, Double ieps, Long idUsuario, Double subtotal, String concepto, Double iepsCalculado, String observaciones, Long idEmpresa, Long idEmpresaGasto, String referencia, Long idActivoProrratear, Long idGastoEstatus, String consecutivo, Long ejercicio, Long orden) {
+  public TcKalanEmpresasGastosDto(Long idGastoClasificacion, Long idGastoComprobante, Double ivaCalculado, Long idActivoIeps, Date fechaAplicacion, Double total, Long idEmpresaCuenta, Double iva, Date fechaReferencia, Long idProveedor, Double ivaRetenido, Long idActivoCheque, Double importe, Long pago, Long pagos, Long idGastoSubclasificacion, Double ieps, Long idUsuario, Double subtotal, String concepto, Double iepsCalculado, String observaciones, Long idEmpresa, Long idEmpresaGasto, String referencia, Long idActivoProrratear, Long idGastoEstatus, String consecutivo, Long ejercicio, Long orden, Long idFuente) {
     setIdGastoClasificacion(idGastoClasificacion);
     setIdGastoComprobante(idGastoComprobante);
     setIvaCalculado(ivaCalculado);
@@ -115,6 +119,7 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
     setIvaRetenido(ivaRetenido);
     setIdActivoCheque(idActivoCheque);
     setImporte(importe);
+    setPago(pago);
     setPagos(pagos);
     setIdGastoSubclasificacion(idGastoSubclasificacion);
     setIeps(ieps);
@@ -132,6 +137,7 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
     setConsecutivo(consecutivo);
     setEjercicio(ejercicio);
     setOrden(orden);
+    setIdFuente(idFuente);
   }
 	
   public void setIdGastoClasificacion(Long idGastoClasificacion) {
@@ -236,6 +242,14 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
 
   public Double getImporte() {
     return importe;
+  }
+
+  public void setPago(Long pago) {
+    this.pago = pago;
+  }
+
+  public Long getPago() {
+    return pago;
   }
 
   public void setPagos(Long pagos) {
@@ -374,6 +388,14 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
     this.orden = orden;
   }
 
+  public Long getIdFuente() {
+    return idFuente;
+  }
+
+  public void setIdFuente(Long idFuente) {
+    this.idFuente = idFuente;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -415,6 +437,8 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPago());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPagos());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdGastoSubclasificacion());
@@ -448,6 +472,8 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdFuente());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -468,6 +494,7 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
 		regresar.put("ivaRetenido", getIvaRetenido());
 		regresar.put("idActivoCheque", getIdActivoCheque());
 		regresar.put("importe", getImporte());
+		regresar.put("pago", getPago());
 		regresar.put("pagos", getPagos());
 		regresar.put("idGastoSubclasificacion", getIdGastoSubclasificacion());
 		regresar.put("ieps", getIeps());
@@ -485,13 +512,14 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("orden", getOrden());
+		regresar.put("idFuente", getIdFuente());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdGastoClasificacion(), getIdGastoComprobante(), getIvaCalculado(), getIdActivoIeps(), getFechaAplicacion(), getTotal(), getIdEmpresaCuenta(), getIva(), getFechaReferencia(), getIdProveedor(), getIvaRetenido(), getIdActivoCheque(), getImporte(), getPagos(), getIdGastoSubclasificacion(), getIeps(), getRegistro(), getIdUsuario(), getSubtotal(), getConcepto(), getIepsCalculado(), getObservaciones(), getIdEmpresa(), getIdEmpresaGasto(), getReferencia(), getIdActivoProrratear(), getIdGastoEstatus(), getConsecutivo(), getEjercicio(), getOrden()
+      getIdGastoClasificacion(), getIdGastoComprobante(), getIvaCalculado(), getIdActivoIeps(), getFechaAplicacion(), getTotal(), getIdEmpresaCuenta(), getIva(), getFechaReferencia(), getIdProveedor(), getIvaRetenido(), getIdActivoCheque(), getImporte(), getPago(), getPagos(), getIdGastoSubclasificacion(), getIeps(), getRegistro(), getIdUsuario(), getSubtotal(), getConcepto(), getIepsCalculado(), getObservaciones(), getIdEmpresa(), getIdEmpresaGasto(), getReferencia(), getIdActivoProrratear(), getIdGastoEstatus(), getConsecutivo(), getEjercicio(), getOrden(), getIdFuente()
     };
     return regresar;
   }
