@@ -101,8 +101,11 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
+            params.put("idGastoEmpresa", this.gasto.getIdEmpresaGasto());
+            params.put("idGastoEstatus", this.gasto.getIdGastoEstatus());
 						this.gasto.setIdGastoEstatus(this.bitacora.getIdGastoEstatus());
-						regresar= DaoFactory.getInstance().update(sesion, this.gasto)>= 1L;
+            DaoFactory.getInstance().updateAll(sesion, TcKalanEmpresasGastosDto.class, params);						
+            regresar= DaoFactory.getInstance().update(sesion, this.gasto)>= 1L;
 					} // if
 					break;
 			} // switch
@@ -211,7 +214,7 @@ public class Transaccion extends IBaseTnx {
       if(items!= null && !items.isEmpty()) {
         DaoFactory.getInstance().deleteAll(sesion, TcKalanEmpresasControlesDto.class, params);
         for (Entity item: items) 
-          DaoFactory.getInstance().delete(sesion, TcKalanEmpresasGastosDto.class, item.getKey());
+          DaoFactory.getInstance().delete(sesion, TcKalanEmpresasGastosDto.class, item.toLong("idGastoControl"));
       } // if
     } // try
     catch (Exception e) {

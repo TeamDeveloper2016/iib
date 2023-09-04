@@ -60,10 +60,11 @@ public class Consulta extends IBaseFilter implements Serializable {
     double sum  = 0D;
     String value= null;
 		try {
-			for(Entity item: (List<Entity>)this.lazyModel.getWrappedData()) {
-        value= item.toString("total");
-				sum= sum+ Double.valueOf(Cadena.eliminar(value, ','));
-      } // for  
+      if(!Objects.equals(this.lazyModel, null))
+        for(Entity item: (List<Entity>)this.lazyModel.getWrappedData()) {
+          value= item.toString("total");
+          sum= sum+ Double.valueOf(Cadena.eliminar(value, ','));
+        } // for  
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
@@ -291,6 +292,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 		Map<String, Object> params= this.toPrepare();
     try {
       params.put("fecha", fecha);
+      params.put("idGastoClasificacion", row.toLong("idGastoClasificacion"));
       params.put("sortOrder", "order by tc_kalan_empresas_gastos.consecutivo desc");
       columns.add(new Columna("clasificacion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("subclasificacion", EFormatoDinamicos.MAYUSCULAS));

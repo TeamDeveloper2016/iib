@@ -34,12 +34,12 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{kalanGastosConsulta.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{kalanGastosConsulta.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{kalanGastosConsulta.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} | #{element.nombre}"/>
+                <f:selectItems value="#{kalanGastosConsulta.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} | #{element.titulo}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
                 <p:column headerText="Nombre">
-                  <h:outputText value="#{item.nombre}"/>
+                  <h:outputText value="#{item.titulo}"/>
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="ejercicio" value="Ejercicio:"/>
@@ -96,7 +96,7 @@
               </f:facet>
               <h:outputText value="#{row['actual']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-3">
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-5">
               <f:facet name="header">
                 <h:outputText value="Ver"/>
               </f:facet>
@@ -108,7 +108,7 @@
               </f:facet>
               <h:outputText value="#{row['anterior']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-3">
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-5">
               <f:facet name="header">
                 <h:outputText value="Ver"/>
               </f:facet>

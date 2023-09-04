@@ -244,6 +244,16 @@ group by
 order by
   tc_janal_meses.id_mes desc        
 			</select>
+      <update id="rows">
+update
+  tc_kalan_empresas_gastos
+inner join
+  tc_kalan_empresas_controles on tc_kalan_empresas_gastos.id_empresa_gasto= tc_kalan_empresas_controles.id_gasto_control
+set                
+  tc_kalan_empresas_gastos.id_gasto_estatus= {idGastoEstatus}
+where  
+  tc_kalan_empresas_controles.id_empresa_gasto= {idEmpresaGasto}
+      </update>
     </unit>   
     <unit id="TcKalanGastosEstatusDto">
       <select id="row">
