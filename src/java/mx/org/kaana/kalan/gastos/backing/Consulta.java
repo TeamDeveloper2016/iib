@@ -24,7 +24,6 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -70,7 +69,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-    return Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(sum));
+    return Numero.formatear(Numero.MONEDA_CON_DECIMALES, Numero.toRedondearSat(sum));
   }
   
   @PostConstruct
@@ -130,6 +129,7 @@ public class Consulta extends IBaseFilter implements Serializable {
         UIBackingUtilities.toFormatEntitySet(this.gastos, columns);
       } // if  
       UIBackingUtilities.resetDataTable();
+      this.lazyModel= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -322,7 +322,7 @@ public class Consulta extends IBaseFilter implements Serializable {
   }
 
   public String doColor(Entity row) {
-    return Objects.equals(row.toLong("idKey"), 997L)? "janal-tr-diferencias": "";
+    return Objects.equals(row.toLong("idKey"), 997L)? "janal-tr-diferencias": Objects.equals(row.toLong("idKey"), 999L)? "janal-tr-yellow": "";
   }
   
 }

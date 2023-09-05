@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -15,6 +16,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.kalan.db.dto.TcKalanGastosBitacoraDto;
 import mx.org.kaana.kalan.gastos.beans.Gasto;
@@ -33,6 +35,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.kalan.gastos.reglas.Transaccion;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
@@ -43,12 +46,35 @@ import org.primefaces.context.RequestContext;
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID=1361701967796774746L;
+  
+  private FormatLazyModel lazyDetalle;
   private Reporte reporte;
 	
 	public Reporte getReporte() {
 		return reporte;
-	}	// getReporte
+	}	
+
+  public FormatLazyModel getLazyDetalle() {
+    return lazyDetalle;
+  }
 	
+  public String getTotal() {
+    double sum  = 0D;
+    String value= null;
+		try {
+      if(!Objects.equals(this.lazyDetalle, null))
+        for(Entity item: (List<Entity>)this.lazyDetalle.getWrappedData()) {
+          value= item.toString("total");
+          sum= sum+ Double.valueOf(Cadena.eliminar(value, ','));
+        } // for  
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return Numero.formatear(Numero.MONEDA_CON_DECIMALES, Numero.toRedondearSat(sum));
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -80,6 +106,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaEmpresasGastosDto", params, columns);
       UIBackingUtilities.resetDataTable();
+      this.lazyDetalle= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -253,8 +280,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // doLoadEstatus
+	} 
 	
+  public void doLoadDetalle(Entity row) {
+    this.attrs.put("seleccionado", row);
+    this.doLoadEstatus();
+  }
+          
 	public void doActualizarEstatus() {
 		Transaccion transaccion          = null;
 		TcKalanGastosBitacoraDto bitacora= null;
@@ -375,5 +407,36 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(params);
     } // finally
   }  
+
+  public void doView(Entity row) {
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= this.toPrepare();
+    try {
+      params.put("idEmpresaGasto", row.toLong("idEmpresaGasto"));
+      params.put("sortOrder", "order by tc_kalan_empresas_gastos.consecutivo");
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("subtotal", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("ivaCalculado", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("ivaRetenido", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("iepsCalculado", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
+      this.lazyDetalle= new FormatCustomLazy("VistaEmpresasGastosDto", "control", params, columns);
+      UIBackingUtilities.resetDataTable("detalle");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch      
+    finally {
+			Methods.clean(params);
+      Methods.clean(columns);
+    } // finally	  
+  }
   
+  public String doColor(Entity row) {
+    return Objects.equals(row.toLong("idGastoEstatus"), 3L)? "janal-tr-yellow": "";
+  }
+
 }

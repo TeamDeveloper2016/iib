@@ -54,8 +54,8 @@
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{kalanGastosConsulta.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{kalanGastosConsulta.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{kalanGastosConsulta.doLoad}" oncomplete="janal.desbloquear();" update="tabla detalle"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{kalanGastosConsulta.doLoad}" oncomplete="janal.desbloquear();" update="tabla detalle" />
 						</div>
           </p:panel>
         </div>
@@ -96,11 +96,11 @@
               </f:facet>
               <h:outputText value="#{row['actual']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-5">
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-5" exportable="false">
               <f:facet name="header">
-                <h:outputText value="Ver"/>
+                <h:outputText value="..."/>
               </f:facet>
-              <p:commandButton icon="fa fa-search" process="@this" update="detalle" actionListener="#{kalanGastosConsulta.doView(row, row.fechaActual)}" title="Ver" rendered="#{row.idKey.toLong() ne 997 and row.idKey.toLong() ne 999}"/>
+              <p:commandButton icon="fa fa-search" process="@this" update="detalle" actionListener="#{kalanGastosConsulta.doView(row, row.fechaActual)}" title="Ver detalle" rendered="#{row.idKey.toLong() ne 997 and row.idKey.toLong() ne 999}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-8 janal-column-right">
               <f:facet name="header">
@@ -108,11 +108,11 @@
               </f:facet>
               <h:outputText value="#{row['anterior']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-5">
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-5" exportable="false">
               <f:facet name="header">
-                <h:outputText value="Ver"/>
+                <h:outputText value="..."/>
               </f:facet>
-              <p:commandButton icon="fa fa-search" process="@this" update="detalle" actionListener="#{kalanGastosConsulta.doView(row, row.fechaAnterior)}" title="Ver" rendered="#{row.idKey.toLong() ne 997 and row.idKey.toLong() ne 999}"/>
+              <p:commandButton icon="fa fa-search" process="@this" update="detalle" actionListener="#{kalanGastosConsulta.doView(row, row.fechaAnterior)}" title="Ver detalle" rendered="#{row.idKey.toLong() ne 997 and row.idKey.toLong() ne 999}"/>
             </p:column>		
             <f:facet name="footer">
   						<p:outputLabel value="Total [#{kalanGastosConsulta.gastos.size()}] registros"/>
@@ -164,8 +164,8 @@
               <h:outputText value="#{row['total']}"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel value="&lt;span class='calculos janal-color-blue'&gt;SALDO: &lt;strong&gt;#{kalanGastosConsulta.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="detalle" style="float:left;" escape="false"/>              
-              <p:outputLabel value="Total [#{kalanGastosConsulta.lazyModel== null? 0: kalanGastosConsulta.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{kalanGastosConsulta.lazyModel== null? 0: kalanGastosConsulta.lazyModel.rowCount}] registros" styleClass="janal-icons-header"/>
+              <p:outputLabel value="&lt;span class='calculos janal-color-blue'&gt;SALDO: &lt;strong&gt;#{kalanGastosConsulta.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="detalle" escape="false"/>              
             </f:facet>
           </p:dataTable>    
           <h:commandLink id="detallePdf">
