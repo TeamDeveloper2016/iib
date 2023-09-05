@@ -56,6 +56,8 @@ public class Transaccion extends IBaseTnx {
           this.gasto.setConsecutivo(consecutivo.getConsecutivo());			
           this.gasto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));			
           this.gasto.setOrden(consecutivo.getOrden());
+          if(Objects.equals(this.gasto.getIdActivoProrratear(), 1L)) 
+            this.gasto.setPago(0L);
           regresar= DaoFactory.getInstance().insert(sesion, this.gasto)> 0L;
           if(Objects.equals(this.gasto.getIdActivoCheque(), 1L)) {
             this.gasto.getDocumento().setIdEmpresaGasto(this.gasto.getIdEmpresaGasto());
@@ -74,6 +76,8 @@ public class Transaccion extends IBaseTnx {
           regresar= DaoFactory.getInstance().insert(sesion, this.bitacora)> 0L;
 					break;
 				case MODIFICAR:
+          if(Objects.equals(this.gasto.getIdActivoProrratear(), 1L)) 
+            this.gasto.setPago(0L);
           regresar= DaoFactory.getInstance().update(sesion, this.gasto)> 0L;
           if(Objects.equals(this.gasto.getIdActivoCheque(), 1L)) {
             if(Objects.equals(this.gasto.getDocumento().getIdActivoProveedor(), 2L)) 

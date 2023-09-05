@@ -19,7 +19,9 @@ public enum ETipoMovimiento {
 	FACTURAS_FICTICIAS("factura(s)", "tc_mantic_ficticias_bitacoras", "idFicticia", "VistaFicticiasDto"),
 	TRANSFERENCIAS("transferencia(s)", "tc_mantic_transferencias_bitacoras", "idTransferencia", "VistaAlmacenesTransferenciasDto"),
 	MULTIPLES("transferencia(s) multiples", "tc_mantic_transferencias_multiples_bitacoras", "idTransferenciaMultiple", "VistaTransferenciasMultiplesDto"),
-  GASTOS("gasto(s)", "tc_kalan_gastos_bitacoras", "idEmpresaGasto", "VistaEmpresasGastosDto");
+  GASTOS("gasto(s)", "tc_kalan_gastos_bitacoras", "idEmpresaGasto", "VistaEmpresasGastosDto"),
+  INGRESOS("ingreso(s)", "tc_kalan_movimientos_bitacoras", "idEmpresaMovimiento", "VistaEmpresasMovimientosDto"),
+  EGRESOS("egreso(s)", "tc_kalan_movimientos_bitacoras", "idEmpresaMovimiento", "VistaEmpresasMovimientosDto");
 	 
 	private final String title;
 	private final String table;

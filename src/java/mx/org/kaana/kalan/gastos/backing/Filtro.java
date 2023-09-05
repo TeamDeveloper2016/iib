@@ -207,7 +207,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
 			this.attrs.put("idProveedor", new UISelectEntity("-1"));
 			columns.remove(0);
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticNotasEstatusDto", "row", params, columns));
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcKalanGastosEstatusDto", "row", params, columns));
 			this.attrs.put("idGastoEstatus", new UISelectEntity("-1"));
       this.toLoadClasificaciones();
     } // try

@@ -76,6 +76,22 @@ from
 where      
   cuenta = '{cuenta}' and id_empresa = {idEmpresa} and id_banco = {idBanco}
       </select>
+      <select id="cuentas">
+select     
+  tc_kalan_empresas_cuentas.id_empresa_cuenta as id_key,      
+  tc_mantic_bancos.nombre as banco,
+  tc_kalan_empresas_cuentas.*
+from      
+  tc_kalan_empresas_cuentas
+inner join
+  tc_mantic_bancos on tc_kalan_empresas_cuentas.id_banco= tc_mantic_bancos.id_banco
+where 
+  id_empresa= {idEmpresa}      
+  and id_banco= {idBanco}      
+  and {condicion} 
+order by
+  nombre        
+      </select>
     </unit>     
     <unit id="TcKalanGastosComprobantesDto">
       <select id="row">
@@ -669,5 +685,99 @@ where
   nombre = '{nombre}'
       </select>
     </unit>    
+    <unit id="TcKalanTiposMovimientosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_tipos_movimientos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_tipos_movimientos
+where      
+  clave = '{clave}'
+      </select>
+    </unit>    
+    <unit id="TcKalanTiposConceptosDto">
+      <select id="row">
+select      
+  tc_kalan_tipos_conceptos.id_tipo_concepto as id_key,
+  tc_kalan_tipos_conceptos.*
+from      
+  tc_kalan_tipos_conceptos
+where 
+  id_tipo_movimiento= {idTipoMovimiento}
+  and id_activo= 1
+  and {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_tipos_conceptos
+where      
+  descripcion = '{descripcion}' and id_tipo_movimiento = {idTipoMovimiento}
+      </select>
+    </unit>    
+    <unit id="TcKalanMovimientosEstatusDto">
+      <select id="row">
+select      
+  tc_kalan_movimientos_estatus.id_movimiento_estatus as id_key,        
+  tc_kalan_movimientos_estatus.*
+from      
+  tc_kalan_movimientos_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_movimientos_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcKalanEmpresasMovimientosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_empresas_movimientos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_empresas_movimientos
+where      
+  consecutivo = '{consecutivo}' and id_tipo_movimiento = {idTipoMovimiento}
+      </select>
+    </unit> 
+    <unit id="TcKalanMovimientosBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_movimientos_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_movimientos_bitacora
+where      
+  id_movimiento_bitacora = {idMovimientoBitacora}
+      </select>
+    </unit>           
   </dml>    
 </process>
