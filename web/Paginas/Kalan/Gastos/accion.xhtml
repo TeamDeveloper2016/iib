@@ -289,8 +289,8 @@
                       <h:outputText value="#{row['observaciones']}"/>
                     </p:column>					
                     <f:facet name="footer">
-                      <p:outputLabel value="&lt;span class='janal-color-blue'&gt;Total: &lt;strong&gt;#{kalanGastosAccion.attrs.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="parcialidades" style="float:left;" escape="false"/>
-                      <p:outputLabel value="Total [#{kalanGastosAccion.gasto.parcialidades.size()}] pagos"/>
+                      <p:outputLabel value="Total [#{kalanGastosAccion.gasto.parcialidades.size()}] pagos" styleClass="janal-icons-header"/>
+                      <p:outputLabel value="&lt;span class='janal-color-blue'&gt;Total: &lt;strong&gt;#{kalanGastosAccion.attrs.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="parcialidades" escape="false"/>
                     </f:facet>
                   </p:dataTable>                
                 </p:panel>

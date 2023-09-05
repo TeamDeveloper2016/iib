@@ -63,7 +63,7 @@ from
 inner join
   tc_mantic_bancos on tc_kalan_empresas_cuentas.id_banco= tc_mantic_bancos.id_banco
 where 
-  id_empresa= {idEmpresa}      
+  tc_kalan_empresas_cuentas.id_empresa= {idEmpresa}      
   and {condicion} 
 order by
   nombre        
@@ -86,11 +86,27 @@ from
 inner join
   tc_mantic_bancos on tc_kalan_empresas_cuentas.id_banco= tc_mantic_bancos.id_banco
 where 
-  id_empresa= {idEmpresa}      
-  and id_banco= {idBanco}      
+  tc_kalan_empresas_cuentas.id_empresa= {idEmpresa}      
+  and tc_kalan_empresas_cuentas.id_banco= {idBanco}      
   and {condicion} 
 order by
-  nombre        
+  tc_kalan_empresas_cuentas.nombre        
+      </select>
+      <select id="bancos">
+select     
+  tc_mantic_bancos.id_banco as id_key,      
+  tc_mantic_bancos.nombre
+from      
+  tc_kalan_empresas_cuentas
+inner join
+  tc_mantic_bancos on tc_kalan_empresas_cuentas.id_banco= tc_mantic_bancos.id_banco
+where 
+  tc_kalan_empresas_cuentas.id_empresa= {idEmpresa}      
+  and {condicion} 
+group by
+  tc_kalan_empresas_cuentas.id_banco              
+order by
+  tc_kalan_empresas_cuentas.nombre        
       </select>
     </unit>     
     <unit id="TcKalanGastosComprobantesDto">
@@ -758,8 +774,26 @@ select
 from      
   tc_kalan_empresas_movimientos
 where      
-  consecutivo = '{consecutivo}' and id_tipo_movimiento = {idTipoMovimiento}
+  consecutivo= '{consecutivo}' and id_tipo_movimiento= {idTipoMovimiento}
       </select>
+      <select id="igual">
+select      
+  *
+from      
+  tc_kalan_empresas_movimientos
+where      
+  id_empresa_movimiento= {idEmpresaMovimiento}
+      </select>
+			<select id="siguiente">
+select
+  max(orden)+ 1 as siguiente
+from 
+  tc_kalan_empresas_movimientos
+where
+  id_tipo_movimiento= {idTipoMovimiento}
+  and ejercicio= {ejercicio} 
+  and orden{operador} 900000			
+			</select>
     </unit> 
     <unit id="TcKalanMovimientosBitacoraDto">
       <select id="row">
@@ -776,8 +810,11 @@ select
 from      
   tc_kalan_movimientos_bitacora
 where      
-  id_movimiento_bitacora = {idMovimientoBitacora}
+  id_movimiento_bitacora= {idMovimientoBitacora}
       </select>
+      <delete id="rows">
+delete from tc_kalan_movimientos_bitacora where id_empresa_movimiento= {idEmpresaMovimiento}
+      </delete>
     </unit>           
   </dml>    
 </process>

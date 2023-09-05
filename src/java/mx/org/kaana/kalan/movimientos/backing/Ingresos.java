@@ -18,6 +18,7 @@ public class Ingresos extends Filtro implements Serializable {
   protected void init() {
     try {
       this.idTipoMovimiento= 1L;
+      this.titulo= " ingreso sin factura";
       this.pagina= "ingresos";
       super.init();
     } // try

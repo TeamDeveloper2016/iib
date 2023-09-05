@@ -52,6 +52,14 @@ public class Movimiento extends TcKalanEmpresasMovimientosDto implements Seriali
   public Boolean getAnticipo() {
     return !Objects.equals(this.getIdAnticipo(), null) && Objects.equals(this.getIdAnticipo(), 1L);
   }
+
+  public Boolean getEstatus() {
+    return !Objects.equals(this.getIdMovimientoEstatus(), null) && Objects.equals(this.getIdMovimientoEstatus(), 2L);
+  }
+
+  public void setEstatus(Boolean value) {
+    this.setIdMovimientoEstatus(value? 2L: 1L);
+  }
   
   private void init() {
     this.setIdUsuario(JsfBase.getIdUsuario());

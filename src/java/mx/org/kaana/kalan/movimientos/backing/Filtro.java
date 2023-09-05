@@ -44,6 +44,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 601942711851969289L;
 
   protected Long idTipoMovimiento;
+  protected String titulo;
   protected String pagina;
   
   @PostConstruct
@@ -76,7 +77,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      this.lazyModel = new FormatCustomLazy("VistaEmpresasGastosDto", "transacciones", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaEmpresasMovimientosDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -96,6 +97,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("pagina", this.pagina);		
+			JsfBase.setFlashAttribute("titulo", this.titulo);		
+			JsfBase.setFlashAttribute("idTipoMovimiento", this.idTipoMovimiento);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Movimientos/".concat(this.pagina));		
 			JsfBase.setFlashAttribute("idEmpresaMovimiento", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? seleccionado.getKey(): -1L);
 		} // try // try
@@ -176,7 +180,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			columns.remove(0);
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcKalanMovimientosEstatusDto", "row", params, columns));
 			this.attrs.put("idMovimientoEstatus", new UISelectEntity("-1"));
-      this.toLoadBancos();
+      this.doLoadBancos();
+      this.toLoadConceptos();
     } // try
     catch (Exception e) {
       throw e;
@@ -284,7 +289,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     return item.toString("rfc").charAt(0);
   }  
 
-  private void toLoadBancos() {
+  public void doLoadBancos() {
     Map<String, Object> params= new HashMap<>();
     try {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
@@ -295,7 +300,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       else
         this.attrs.put("idBanco", -1L);
       this.doLoadCuentas();
-      this.toLoadConceptos();
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);

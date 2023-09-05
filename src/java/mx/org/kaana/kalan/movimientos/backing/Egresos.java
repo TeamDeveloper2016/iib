@@ -18,6 +18,7 @@ public class Egresos extends Filtro implements Serializable {
   protected void init() {
     try {
       this.idTipoMovimiento= 2L;
+      this.titulo= " egreso extraordinario";
       this.pagina= "egresos";
       super.init();
     } // try

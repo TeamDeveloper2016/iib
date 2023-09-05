@@ -73,7 +73,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("total", 0D);
 			this.doLoad();
       this.toLoadEmpresas();
-//      this.toLoadProveedores();
       this.toLoadClasificaciones();
       this.toLoadComprobantes();
     } // try
@@ -125,28 +124,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-      throw e;
-    } // catch
-    finally {
-      Methods.clean(params);
-    } // finally
-  }  
-  
-  private void toLoadProveedores() {
-    Map<String, Object> params= new HashMap<>();
-    try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      List<UISelectItem> proveedores= UISelect.seleccione("TcManticProveedoresDto", params, "idKey|razonSocial", EFormatoDinamicos.MAYUSCULAS);
-      this.attrs.put("proveedores", proveedores);
-      if(proveedores!= null && !proveedores.isEmpty()) {
-        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
-          this.gasto.setIdProveedor((Long)proveedores.get(0).getValue());
-      } // if  
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-      throw e;
     } // catch
     finally {
       Methods.clean(params);
@@ -204,7 +181,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-      throw e;
     } // catch
     finally {
       Methods.clean(params);
@@ -226,7 +202,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-      throw e;
     } // catch
     finally {
       Methods.clean(params);
@@ -247,7 +222,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-      throw e;
     } // catch
     finally {
       Methods.clean(params);
@@ -269,7 +243,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-      throw e;
     } // catch
     finally {
       Methods.clean(params);

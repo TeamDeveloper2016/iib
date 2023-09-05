@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{kalanMovimientosAccion.attrs.nombreAccion} #{kalanMovimientosAccion.attrs.titulo}" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+      //<![CDATA[
+			Janal.Control.fields = {
+				'contenedorGrupos\\:idEmpresa'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
+				'contenedorGrupos\\:idBanco'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
+				'contenedorGrupos\\:idCliente'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'cliente'},
+				'contenedorGrupos\\:fecha'     : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'ingresos'},
+				'contenedorGrupos\\:idEmpresaCuenta': {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
+				'contenedorGrupos\\:idTipoConcepto' : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
+				'contenedorGrupos\\:observaciones'  : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'ingresos'},
+				'contenedorGrupos\\:justificacion'  : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'egresos'},
+				'contenedorGrupos\\:total'          : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'ingresos'}
+			};
+
+      function execute() {
+        var group= 'ingresos';
+        if($('#contenedorGrupos\\:checkCliente_input').is(':checked')) 
+          group= group+ '|cliente';
+        return janal.partial(group);
+      }
+      
+			$(document).ready(function(){
+        janal.readingMode('#{kalanMovimientosAccion.attrs.nombreAccion}');
+      });
+      //]]>
+		</script>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos" widgetVar="pestanias">						
+            <p:tab title="#{kalanMovimientosAccion.attrs.pagina}">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
+                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100">
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+                    <p:selectOneMenu id="idEmpresa" value="#{kalanMovimientosAccion.movimiento.idEmpresa}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{kalanMovimientosAccion.doLoadBancos}" process="@this" update="idBanco idEmpresaCuenta"/>
+                      <f:selectItems value="#{kalanMovimientosAccion.attrs.empresas}"/>
+                    </p:selectOneMenu>
+                  </p:panelGrid>
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="idBanco" value="Banco:"/>
+                    <p:selectOneMenu id="idBanco" value="#{kalanMovimientosAccion.movimiento.idBanco}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{kalanMovimientosAccion.doLoadCuentas}" process="@this" update="idEmpresaCuenta"/>
+                      <f:selectItems value="#{kalanMovimientosAccion.attrs.bancos}"/>
+                    </p:selectOneMenu>
+                  </p:panelGrid>
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
+                    <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-70 janal-column-left, janal-wid-30 janal-column-right">
+                      <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanMovimientosAccion.movimiento.idEmpresaCuenta}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                        <f:selectItems value="#{kalanMovimientosAccion.attrs.cuentas}"/>
+                      </p:selectOneMenu>
+                      <p:selectBooleanCheckbox itemLabel="Aplicar:" value="#{kalanMovimientosAccion.movimiento.estatus}">
+                        <p:ajax event="change" listener="#{kalanMovimientosAccion.doEstatus}"/>
+                      </p:selectBooleanCheckbox>  
+                    </p:panelGrid>  
+                  </p:panelGrid>
+                  
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="idTipoConcepto" value="Tipo concepto:"/>
+                    <p:selectOneMenu id="idTipoConcepto" value="#{kalanMovimientosAccion.movimiento.idTipoConcepto}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <f:selectItems value="#{kalanMovimientosAccion.attrs.conceptos}"/>
+                    </p:selectOneMenu>
+                  </p:panelGrid>
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="total" value="Cantidad:"/>
+                    <p:inputNumber id="total" value="#{kalanMovimientosAccion.movimiento.total}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-center" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                  </p:panelGrid>  
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="fecha" value="Fecha aplicación:"/>
+                    <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-70 janal-column-left, janal-wid-30 janal-column-right">
+                      <p:calendar id="fecha" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanMovimientosAccion.movimiento.fecha}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+                      <p:selectBooleanCheckbox id="checkCliente" itemLabel="Anticipo:" value="#{kalanMovimientosAccion.movimiento.anticipo}" rendered="#{kalanMovimientosAccion.idTipoMovimiento eq 1}">
+                        <p:ajax event="change" process="@this" update="@(.cliente)" oncomplete="janal.refresh()"/>
+                      </p:selectBooleanCheckbox>  
+                    </p:panelGrid>  
+                  </p:panelGrid>  
+                </p:panelGrid>  
+                <p:panelGrid columns="1" styleClass="janal-wid-100 cliente" style="display: #{kalanMovimientosAccion.movimiento.anticipo? '': 'none'}" rendered="#{kalanMovimientosAccion.idTipoMovimiento eq 1}">
+                  <p:outputLabel for="idCliente" value="Cliente:"/>
+                  <p:autoComplete id="idCliente" var="custom" placeholder="ej. EL FRIJOLITO S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanMovimientosAccion.movimiento.ikCliente}" completeMethod="#{kalanMovimientosAccion.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" groupBy="#{kalanMovimientosAccion.getGroupCliente(custom)}">
+                    <f:facet name="itemtip">
+                      <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                        <h:outputText value="Clave:" />
+                        <h:outputText value="#{custom.clave}" />
+                        <h:outputText value="RFC:" />
+                        <h:outputText value="#{custom.rfc}" />
+                        <h:outputText value="Razón social:" />
+                        <h:outputText value="#{custom.razonSocial}" />
+                      </h:panelGrid>
+                    </f:facet>
+                  </p:autoComplete>			
+                </p:panelGrid>
+                <p:panelGrid columns="#{kalanMovimientosAccion.idTipoMovimiento}" layout="grid" styleClass="janal-wid-100">
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="observaciones" value="Observaciones:"/>
+                    <p:inputTextarea id="observaciones" value="#{kalanMovimientosAccion.movimiento.observaciones}" styleClass="janal-wid-100-txt" rows="3"/>
+                  </p:panelGrid>   
+                  <p:panelGrid columns="1" styleClass="janal-wid-100" rendered="#{kalanMovimientosAccion.idTipoMovimiento eq 2}">
+                    <p:outputLabel for="justificacion" value="Justificacion:"/>
+                    <p:inputTextarea id="justificacion" value="#{kalanMovimientosAccion.movimiento.justificacion}" styleClass="janal-wid-100-txt" rows="3"/>
+                  </p:panelGrid>   
+                </p:panelGrid>   
+              </p:panelGrid>  
+						</p:tab>		
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanMovimientosAccion.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanMovimientosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanMovimientosAccion.doAceptar}" onstart="return execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanMovimientosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
