@@ -14,13 +14,14 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.kalan.db.dto.TcKalanGastosBitacoraDto;
-import mx.org.kaana.kalan.gastos.beans.Gasto;
-import mx.org.kaana.kalan.gastos.reglas.AdminGasto;
-import mx.org.kaana.kalan.gastos.reglas.Transaccion;
+import mx.org.kaana.kalan.db.dto.TcKalanMovimientosBitacoraDto;
+import mx.org.kaana.kalan.movimientos.reglas.Transaccion;
+import mx.org.kaana.kalan.movimientos.beans.Movimiento;
+import mx.org.kaana.kalan.movimientos.reglas.AdminMovimiento;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -58,7 +59,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  this.doLoad();
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch	
   } // init
@@ -81,7 +82,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch      
     finally {
@@ -104,7 +105,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("idEmpresaMovimiento", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? seleccionado.getKey(): -1L);
 		} // try // try
 		catch (Exception e) {
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
 		return regresar.concat(Constantes.REDIRECIONAR);
@@ -114,16 +115,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Transaccion transaccion = null;
 		Entity seleccionado     = (Entity) this.attrs.get("seleccionado");
 		try {
-      AdminGasto admin= new AdminGasto(seleccionado.getKey());
-      Gasto gasto     = admin.getGasto();
-			transaccion     = new Transaccion(gasto);
+      AdminMovimiento admin= new AdminMovimiento(seleccionado.getKey());
+      Movimiento movimiento= admin.getMovimiento();
+			transaccion     = new Transaccion(movimiento);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "El gasto se ha eliminado correctamente", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "El ".concat(this.pagina).concat(" se ha eliminado correctamente"), ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el gasto", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el ".concat(this.pagina), ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
   } // doEliminar
@@ -203,7 +204,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("estatus", allEstatus.get(0));
 		} // try
 		catch (Exception e) {
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
 		finally {
@@ -213,27 +214,27 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion          = null;
-		TcKalanGastosBitacoraDto bitacora= null;
+	  TcKalanMovimientosBitacoraDto bitacora= null;
 		Entity seleccionado              = null;
 		try {
 			seleccionado    = (Entity)this.attrs.get("seleccionado");
-      AdminGasto admin= new AdminGasto(seleccionado.getKey());
-      Gasto gasto     = admin.toGasto();
-			bitacora= new TcKalanGastosBitacoraDto(
+      AdminMovimiento admin= new AdminMovimiento(seleccionado.getKey());
+      Movimiento movimiento= admin.toMovimiento();
+      bitacora= new TcKalanMovimientosBitacoraDto(
+        -1L, // Long idMovimientoBitacora, 
+        (String)this.attrs.get("justificacion"), // String justificacion, 
         JsfBase.getIdUsuario(), // Long idUsuario, 
-        -1L, // Long idGastoBitacora, 
-        (String)this.attrs.get("justificacion"), // String observaciones, 
-        Long.valueOf(this.attrs.get("estatus").toString()), // Long idGastoEstatus, 
-        seleccionado.getKey() // Long idEmpresaGasto
+        Long.valueOf(this.attrs.get("estatus").toString()), // Long idMovimientoEstatus, 
+        seleccionado.getKey() // Long idEmpresaMovimiento                  
       );
-			transaccion= new Transaccion(gasto, bitacora);
+			transaccion= new Transaccion(movimiento, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
 		finally {
@@ -275,7 +276,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porNombre", params, columns, 40L));
 		} // try
 	  catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
     finally {
@@ -292,8 +293,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doLoadBancos() {
     Map<String, Object> params= new HashMap<>();
     try {
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      List<UISelectItem> bancos= UISelect.seleccione("TcManticBancosDto", params, "idKey|descripcion", EFormatoDinamicos.MAYUSCULAS);
+      List<UISelectItem> bancos= UISelect.seleccione("TcKalanEmpresasCuentasDto", params, "idKey|nombre", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("bancos", bancos);
       if(bancos!= null && !bancos.isEmpty()) 
         this.attrs.put("idBanco", bancos.get(0).getValue());
@@ -302,7 +304,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.doLoadCuentas();
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
       throw e;
     } // catch
@@ -317,7 +319,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put("idBanco", this.attrs.get("idBanco"));
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      List<UISelectItem> cuentas= UISelect.seleccione("TcKalanEmpresasCuentasDto", "cuentas", params, "idKey|descripcion", EFormatoDinamicos.MAYUSCULAS);
+      List<UISelectItem> cuentas= UISelect.seleccione("TcKalanEmpresasCuentasDto", "cuentas", params, "idKey|nombre", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("cuentas", cuentas);
       if(cuentas!= null && !cuentas.isEmpty()) 
         this.attrs.put("idEmpresaCuenta", cuentas.get(0).getValue());
@@ -325,7 +327,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         this.attrs.put("idEmpresaCuenta", -1L);
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
       throw e;
     } // catch
@@ -347,7 +349,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         this.attrs.put("idTipoConcepto", -1L);
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
       throw e;
     } // catch
@@ -357,7 +359,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   }  
   
   public String doColor(Entity row) {
-    return Objects.equals(row.toLong("idGastoEstatus"), 3L)? "janal-tr-yellow": "";
+    return Objects.equals(row.toLong("idMovimientoEstatus"), 3L)? "janal-tr-yellow": "";
   }
   
 }

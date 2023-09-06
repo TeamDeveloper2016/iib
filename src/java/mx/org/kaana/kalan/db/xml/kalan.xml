@@ -778,7 +778,8 @@ where
       </select>
       <select id="igual">
 select      
-  *
+  tc_kalan_empresas_movimientos.id_empresa_movimiento as id_key,
+  tc_kalan_empresas_movimientos.*
 from      
   tc_kalan_empresas_movimientos
 where      

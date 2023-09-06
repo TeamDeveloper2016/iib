@@ -44,7 +44,7 @@ public class AdminMovimiento implements Serializable {
         regresar= new Movimiento();
       else {
         params.put("idEmpresaMovimiento", this.idEmpresaMovimiento);      
-        regresar = (Movimiento)DaoFactory.getInstance().toEntity(Gasto.class, "TcKalanEmpresasMovimientosDto", "igual", params);
+        regresar = (Movimiento)DaoFactory.getInstance().toEntity(Movimiento.class, "TcKalanEmpresasMovimientosDto", "igual", params);
         if(regresar!= null) {
           if(Objects.equals(regresar.getIdAnticipo(), 1L)) {
             params.put("idCliente", regresar.getIdCliente());
@@ -76,10 +76,10 @@ public class AdminMovimiento implements Serializable {
         regresar= new Movimiento();
       else {
         params.put("idEmpresaMovimiento", this.idEmpresaMovimiento);      
-        regresar = (Movimiento)DaoFactory.getInstance().toEntity(Gasto.class, "TcKalanEmpresasMovimientosDto", "igual", params);
+        regresar = (Movimiento)DaoFactory.getInstance().toEntity(Movimiento.class, "TcKalanEmpresasMovimientosDto", "igual", params);
         if(regresar== null) {
           regresar= new Movimiento();
-          throw new RuntimeException("El gasto no esta registrado en la base de datos !");
+          throw new RuntimeException("El concepto no esta registrado en la base de datos !");
         } // if
       } // else  
     } // try

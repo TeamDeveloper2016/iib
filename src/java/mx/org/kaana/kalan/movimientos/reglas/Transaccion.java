@@ -85,7 +85,8 @@ public class Transaccion extends IBaseTnx {
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.movimiento.setIdMovimientoEstatus(this.bitacora.getIdMovimientoEstatus());
-            DaoFactory.getInstance().updateAll(sesion, TcKalanEmpresasGastosDto.class, params);						
+            if(Objects.equals(this.movimiento.getIdAnticipo(), 2L)) 
+              this.movimiento.setIdCliente(null);
             regresar= DaoFactory.getInstance().update(sesion, this.movimiento)>= 1L;
 					} // if
 					break;

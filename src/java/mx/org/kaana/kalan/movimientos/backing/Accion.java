@@ -21,6 +21,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -53,11 +54,12 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {		
     try {
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Gastos/filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Movimientos/ingreso": JsfBase.getFlashAttribute("retorno"));
 			this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));      
-//      if(JsfBase.getFlashAttribute("retorno")== null)
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      if(JsfBase.getFlashAttribute("retorno")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.attrs.put("concepto", JsfBase.getFlashAttribute("pagina")== null? "Ingreso": Cadena.letraCapital((String)JsfBase.getFlashAttribute("pagina")));
       this.attrs.put("pagina", JsfBase.getFlashAttribute("pagina")== null? "ingreso": JsfBase.getFlashAttribute("pagina"));
       this.attrs.put("titulo", JsfBase.getFlashAttribute("titulo")== null? " ingreso sin factura": JsfBase.getFlashAttribute("titulo"));
       this.attrs.put("idEmpresaMovimiento", JsfBase.getFlashAttribute("idEmpresaMovimiento")== null? -1L: JsfBase.getFlashAttribute("idEmpresaMovimiento"));
@@ -164,10 +166,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       List<UISelectItem> bancos= UISelect.seleccione("TcKalanEmpresasCuentasDto", "bancos", params, "idKey|nombre", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("bancos", bancos);
-      this.movimiento.setIdBanco(-1L);
-      if(bancos!= null && !bancos.isEmpty()) 
+      if(bancos!= null && !bancos.isEmpty()) {
         if(Objects.equals(this.accion, EAccion.AGREGAR)) 
           this.movimiento.setIdBanco((Long)bancos.get(0).getValue());
+      } // if  
+      else
+        this.movimiento.setIdBanco(-1L);          
       this.doLoadCuentas();
     } // try
     catch (Exception e) {
@@ -187,10 +191,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       List<UISelectItem> cuentas= UISelect.seleccione("TcKalanEmpresasCuentasDto", "cuentas", params, "idKey|nombre", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("cuentas", cuentas);
-      this.movimiento.setIdEmpresaCuenta(-1L);
-      if(cuentas!= null && !cuentas.isEmpty()) 
+      if(cuentas!= null && !cuentas.isEmpty()) {
         if(Objects.equals(this.accion, EAccion.AGREGAR)) 
           this.movimiento.setIdEmpresaCuenta((Long)cuentas.get(0).getValue());
+      } // if  
+      else
+        this.movimiento.setIdEmpresaCuenta(-1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -226,6 +232,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar        = null;
     Transaccion transaccion= null;
     try {			
+      this.movimiento.setIdTipoMovimiento(this.idTipoMovimiento);
       transaccion = new Transaccion(this.movimiento);
 			if (transaccion.ejecutar(this.accion)) {
 			  regresar= this.doCancelar();
@@ -245,7 +252,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } 
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idEmpresaGastoProcess", this.attrs.get("idEmpresaGasto"));
+  	JsfBase.setFlashAttribute("idEmpresaMovimientoProcess", this.attrs.get("idEmpresaMovimiento"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 	

@@ -191,13 +191,13 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem value="Modificar" action="#{kalanMovimientosIngresos.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{kalanMovimientosIngresos.attrs.seleccionado.idGastoEstatus eq '1'}"/>
-            <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{kalanMovimientosIngresos.attrs.seleccionado.idGastoEstatus eq '1'}"/>					
-            <p:separator rendered="#{fn:contains('|1|', kalanMovimientosIngresos.attrs.seleccionado.idGastoEstatus)}"/>
+            <p:menuitem value="Modificar" action="#{kalanMovimientosIngresos.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{kalanMovimientosIngresos.attrs.seleccionado.idMovimientoEstatus eq '1'}"/>
+            <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{kalanMovimientosIngresos.attrs.seleccionado.idMovimientoEstatus eq '1'}"/>					
+            <p:separator rendered="#{fn:contains('|1|', kalanMovimientosIngresos.attrs.seleccionado.idMovimientoEstatus)}"/>
             <p:menuitem action="#{kalanMovimientosIngresos.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
             <p:menuitem icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanMovimientosIngresos.doMovimientos}"/>
-            <p:separator rendered="#{fn:contains('|1|2|', kalanMovimientosIngresos.attrs.seleccionado.idGastoEstatus)}"/>					
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanMovimientosIngresos.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', kalanMovimientosIngresos.attrs.seleccionado.idGastoEstatus)}"/>					
+            <p:separator rendered="#{fn:contains('|1|2|', kalanMovimientosIngresos.attrs.seleccionado.idMovimientoEstatus)}"/>					
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanMovimientosIngresos.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', kalanMovimientosIngresos.attrs.seleccionado.idMovimientoEstatus)}"/>					
           </p:contextMenu>			
         </div>
       </div>
