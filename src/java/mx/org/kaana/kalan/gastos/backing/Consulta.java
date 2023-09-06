@@ -113,11 +113,14 @@ public class Consulta extends IBaseFilter implements Serializable {
         subtotal.put("actual", new Value("actual", actual));
         subtotal.put("anterior", new Value("anterior", anterior));
         this.gastos.add(subtotal);
-        Entity ingresos= pivot.clone();
-        ingresos.get("idKey").setData(998L);
-        ingresos.get("clasificacion").setData("INGRESOS VARIOS");
-        ingresos.put("actual", new Value("actual", 0D));
-        ingresos.put("anterior", new Value("anterior", 0D));
+        Entity ingresos= (Entity)DaoFactory.getInstance().toEntity("VistaEmpresasMovimientosDto", "acumulados", params);
+        if(ingresos== null || ingresos.isEmpty()) {
+          ingresos= pivot.clone();
+          ingresos.get("idKey").setData(998L);
+          ingresos.get("clasificacion").setData("INGRESOS VARIOS");
+          ingresos.put("actual", new Value("actual", 0D));
+          ingresos.put("anterior", new Value("anterior", 0D));
+        } // if  
         this.gastos.add(ingresos);
         Entity total= pivot.clone();
         total.get("idKey").setData(999L);
@@ -293,7 +296,7 @@ public class Consulta extends IBaseFilter implements Serializable {
     try {
       params.put("fecha", fecha);
       params.put("idGastoClasificacion", row.toLong("idGastoClasificacion"));
-      params.put("sortOrder", "order by tc_kalan_empresas_gastos.consecutivo desc");
+      params.put("sortOrder", "order by consecutivo desc");
       columns.add(new Columna("clasificacion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("subclasificacion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -301,7 +304,7 @@ public class Consulta extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       // ESTA ES LA CONSULTA PARA DETERMINAR EL DETALLE DE LOS INGRESOS DEL MES SELECCIONADO
       if(Objects.equals(row.toLong("idKey"), 998L))
-        this.lazyModel= new FormatCustomLazy("VistaEmpresasGastosDto", "detalle", params, columns);
+        this.lazyModel= new FormatCustomLazy("VistaEmpresasMovimientosDto", "detalle", params, columns);
       else
         this.lazyModel= new FormatCustomLazy("VistaEmpresasGastosDto", "detalle", params, columns);
       int mes= 0;

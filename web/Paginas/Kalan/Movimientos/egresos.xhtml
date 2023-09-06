@@ -13,7 +13,7 @@
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
-        'fecha'          : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaAplicacion': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'idBanco'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'idEmpresaCuenta': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'idTipoConcepto' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -66,8 +66,8 @@
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="Consecutivo:"/>
               <p:inputText id="consecutivo" value="#{kalanMovimientosEgresos.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="fecha" value="Fecha:"/>
-							<p:calendar id="fecha" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kalanMovimientosEgresos.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaAplicacion" value="Fecha:"/>
+							<p:calendar id="fechaAplicacion" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kalanMovimientosEgresos.attrs.fechaAplicacion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="idBanco" value="Banco:"/>
               <p:selectOneMenu id="idBanco" value="#{kalanMovimientosEgresos.attrs.idBanco}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{kalanMovimientosEgresos.doLoadCuentas}" process="@this" update="idBanco idEmpresaCuenta"/>
@@ -146,11 +146,11 @@
               <h:outputText value="#{row['concepto']}"/>
               <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}"></i>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fecha}">
+            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fechaAplicacion}">
               <f:facet name="header">
-                <h:outputText value="Fecha"/>
+                <h:outputText value="Fecha aplicación"/>
               </f:facet>
-              <h:outputText value="#{row['fecha']}"/>
+              <h:outputText value="#{row['fechaAplicacion']}"/>
               <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Justificación: #{row['justificacion']}"></i>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">

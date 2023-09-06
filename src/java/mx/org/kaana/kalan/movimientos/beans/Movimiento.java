@@ -30,8 +30,8 @@ public class Movimiento extends TcKalanEmpresasMovimientosDto implements Seriali
     this.init();
   }
 
-  public Movimiento(Long idAnticipo, String justificacion, Long idCliente, Long idMovimientoEstatus, Long idEmpresaMovimiento, Long idBanco, Long ejercicio, String consecutivo, Long idTipoConcepto, Date fecha, Double total, Long idTipoMovimiento, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden) {
-    super(idAnticipo, justificacion, idCliente, idMovimientoEstatus, idEmpresaMovimiento, idBanco, ejercicio, consecutivo, idTipoConcepto, fecha, total, idTipoMovimiento, idEmpresaCuenta, idUsuario, observaciones, idEmpresa, orden);
+  public Movimiento(Long idAnticipo, String justificacion, Long idCliente, Long idMovimientoEstatus, Long idEmpresaMovimiento, Long idBanco, Long ejercicio, String consecutivo, Long idTipoConcepto, Date fechaAplicacion, Double total, Long idTipoMovimiento, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden) {
+    super(idAnticipo, justificacion, idCliente, idMovimientoEstatus, idEmpresaMovimiento, idBanco, ejercicio, consecutivo, idTipoConcepto, fechaAplicacion, total, idTipoMovimiento, idEmpresaCuenta, idUsuario, observaciones, idEmpresa, orden);
     this.init();
   }
   

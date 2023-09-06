@@ -56,8 +56,8 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
   private String consecutivo;
   @Column (name="id_tipo_concepto")
   private Long idTipoConcepto;
-  @Column (name="fecha")
-  private Date fecha;
+  @Column (name="fecha_aplicacion")
+  private Date fechaAplicacion;
   @Column (name="total")
   private Double total;
   @Column (name="id_tipo_movimiento")
@@ -82,7 +82,7 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKalanEmpresasMovimientosDto(Long idAnticipo, String justificacion, Long idCliente, Long idMovimientoEstatus, Long idEmpresaMovimiento, Long idBanco, Long ejercicio, String consecutivo, Long idTipoConcepto, Date fecha, Double total, Long idTipoMovimiento, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden) {
+  public TcKalanEmpresasMovimientosDto(Long idAnticipo, String justificacion, Long idCliente, Long idMovimientoEstatus, Long idEmpresaMovimiento, Long idBanco, Long ejercicio, String consecutivo, Long idTipoConcepto, Date fechaAplicacion, Double total, Long idTipoMovimiento, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden) {
     setIdAnticipo(idAnticipo);
     setJustificacion(justificacion);
     setIdCliente(idCliente);
@@ -93,7 +93,7 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setConsecutivo(consecutivo);
     setIdTipoConcepto(idTipoConcepto);
-    setFecha(fecha);
+    setFechaAplicacion(fechaAplicacion);
     setTotal(total);
     setIdTipoMovimiento(idTipoMovimiento);
     setIdEmpresaCuenta(idEmpresaCuenta);
@@ -183,12 +183,12 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
     return idTipoConcepto;
   }
 
-  public void setFecha(Date fecha) {
-    this.fecha = fecha;
+  public void setFechaAplicacion(Date fechaAplicacion) {
+    this.fechaAplicacion = fechaAplicacion;
   }
 
-  public Date getFecha() {
-    return fecha;
+  public Date getFechaAplicacion() {
+    return fechaAplicacion;
   }
 
   public void setTotal(Double total) {
@@ -282,7 +282,7 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoConcepto());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFecha());
+		regresar.append(getFechaAplicacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTotal());
 		regresar.append(Constantes.SEPARADOR);
@@ -314,7 +314,7 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
 		regresar.put("registro", getRegistro());
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idTipoConcepto", getIdTipoConcepto());
-		regresar.put("fecha", getFecha());
+		regresar.put("fechaAplicacion", getFechaAplicacion());
 		regresar.put("total", getTotal());
 		regresar.put("idTipoMovimiento", getIdTipoMovimiento());
 		regresar.put("idEmpresaCuenta", getIdEmpresaCuenta());
@@ -328,7 +328,7 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdAnticipo(), getJustificacion(), getIdCliente(), getIdMovimientoEstatus(), getIdEmpresaMovimiento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdTipoConcepto(), getFecha(), getTotal(), getIdTipoMovimiento(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden()
+      getIdAnticipo(), getJustificacion(), getIdCliente(), getIdMovimientoEstatus(), getIdEmpresaMovimiento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdTipoConcepto(), getFechaAplicacion(), getTotal(), getIdTipoMovimiento(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden()
     };
     return regresar;
   }

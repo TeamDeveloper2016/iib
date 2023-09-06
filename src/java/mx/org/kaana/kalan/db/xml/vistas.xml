@@ -14,7 +14,7 @@ select
 	tc_mantic_clientes.razon_social as cliente,
 	tc_kalan_empresas_movimientos.observaciones,
 	tc_kalan_empresas_movimientos.justificacion,
-  tc_kalan_empresas_movimientos.fecha,
+  tc_kalan_empresas_movimientos.fecha_aplicacion,
 	tc_kalan_empresas_movimientos.total,
 	tc_kalan_empresas_cuentas.nombre as cuenta,
 	tc_kalan_movimientos_estatus.id_movimiento_estatus,
@@ -68,7 +68,53 @@ where
   tc_kalan_movimientos_bitacora.id_empresa_movimiento= {idEmpresaMovimiento}
 order by
   tc_kalan_movimientos_bitacora.registro desc
-			</select>		       
+			</select>		 
+      <select id="acumulados">
+select
+	998 as id_key,
+  998 as id_gasto_clasificacion,
+	tc_mantic_empresas.titulo as empresa,
+	'INGRESOS VARIOS' as clasificacion,
+	'{anterior}' as fecha_anterior,
+	round(sum(if(date_format(tc_kalan_empresas_movimientos.fecha_aplicacion, '%Y|%m')= '{anterior}', tc_kalan_empresas_movimientos.total, 0)), 2) as anterior,
+	'{actual}' as fecha_actual,
+	round(sum(if(date_format(tc_kalan_empresas_movimientos.fecha_aplicacion, '%Y|%m')= '{actual}', tc_kalan_empresas_movimientos.total, 0)), 2) as actual
+from
+	tc_kalan_empresas_movimientos
+inner join
+  tc_mantic_empresas on tc_kalan_empresas_movimientos.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_kalan_movimientos_estatus on tc_kalan_empresas_movimientos.id_movimiento_estatus= tc_kalan_movimientos_estatus.id_movimiento_estatus
+where
+  tc_kalan_empresas_movimientos.id_empresa= {idEmpresa}              
+	and tc_kalan_movimientos_estatus.id_movimiento_estatus= 2
+	and (date_format(tc_kalan_empresas_movimientos.fecha_aplicacion, '%Y|%m')= '{anterior}' or date_format(tc_kalan_empresas_movimientos.fecha_aplicacion, '%Y|%m')= '{actual}')
+group by
+  tc_mantic_empresas.id_empresa
+      </select>            
+      <select id="detalle"> 
+select
+	tc_kalan_empresas_movimientos.id_empresa_movimiento as id_key,
+  tc_kalan_empresas_movimientos.consecutivo,
+	tc_kalan_tipos_conceptos.descripcion as clasificacion,
+	' ' as subclasificacion,
+	tc_kalan_empresas_movimientos.fecha_aplicacion,
+	tc_kalan_empresas_movimientos.observaciones,
+	tc_kalan_empresas_movimientos.total,
+	tc_kalan_movimientos_estatus.id_movimiento_estatus as id_gasto_estatus,
+	tc_kalan_empresas_movimientos.registro
+from
+	tc_kalan_empresas_movimientos
+inner join 
+  tc_kalan_tipos_conceptos on tc_kalan_empresas_movimientos.id_tipo_concepto= tc_kalan_tipos_conceptos.id_tipo_concepto
+inner join 
+  tc_kalan_movimientos_estatus on tc_kalan_empresas_movimientos.id_movimiento_estatus= tc_kalan_movimientos_estatus.id_movimiento_estatus
+where
+  tc_kalan_empresas_movimientos.id_empresa in ({idEmpresa})        
+	and tc_kalan_movimientos_estatus.id_movimiento_estatus= 2
+	and date_format(tc_kalan_empresas_movimientos.fecha_aplicacion, '%Y|%m')= '{fecha}'        
+{sortOrder}         
+      </select>            
     </unit>  
     <unit id="VistaEmpresasGastosDto">
       <select id="lazy">

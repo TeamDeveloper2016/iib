@@ -15,7 +15,7 @@
 				'contenedorGrupos\\:idEmpresa'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
 				'contenedorGrupos\\:idBanco'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
 				'contenedorGrupos\\:idCliente'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'cliente'},
-				'contenedorGrupos\\:fecha'     : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'ingresos'},
+				'contenedorGrupos\\:fechaAplicacion': {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'ingresos'},
 				'contenedorGrupos\\:idEmpresaCuenta': {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
 				'contenedorGrupos\\:idTipoConcepto' : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'ingresos'},
@@ -81,9 +81,9 @@
                     <p:inputNumber id="total" value="#{kalanMovimientosAccion.movimiento.total}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-center" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
                   </p:panelGrid>  
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
-                    <p:outputLabel for="fecha" value="Fecha aplicación:"/>
+                    <p:outputLabel for="fechaAplicacion" value="Fecha aplicación:"/>
                     <p:panelGrid columns="#{kalanMovimientosAccion.idTipoMovimiento eq 1? 2: 1}" styleClass="janal-wid-100" columnClasses="#{kalanMovimientosAccion.idTipoMovimiento eq 1? 'janal-wid-70 janal-column-left, janal-wid-30 janal-column-right': 'janal-wid-100'}">
-                      <p:calendar id="fecha" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanMovimientosAccion.movimiento.fecha}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+                      <p:calendar id="fechaAplicacion" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanMovimientosAccion.movimiento.fechaAplicacion}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
                       <p:selectBooleanCheckbox id="checkCliente" itemLabel="Anticipo:" value="#{kalanMovimientosAccion.movimiento.anticipo}" rendered="#{kalanMovimientosAccion.idTipoMovimiento eq 1}">
                         <p:ajax event="change" process="@this" update="@(.cliente)" oncomplete="janal.refresh()"/>
                       </p:selectBooleanCheckbox>  
