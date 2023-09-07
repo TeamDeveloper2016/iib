@@ -276,6 +276,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				} // else	
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+ 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("proveedores", UIEntity.seleccione("VistaOrdenesComprasDto", "moneda", params, columns, "clave"));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			int index= 0;

@@ -300,6 +300,7 @@ public class Importar extends IBaseImportar implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+ 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
   		this.attrs.put("proveedores", UIEntity.seleccione("VistaOrdenesComprasDto", "moneda", params, columns, "clave"));
     } // try
     catch (Exception e) {

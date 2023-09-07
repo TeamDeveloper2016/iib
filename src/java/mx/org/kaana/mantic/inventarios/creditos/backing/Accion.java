@@ -228,6 +228,7 @@ public class Accion extends IBaseImportar implements Serializable {
 					params.put("idProveedor", this.attrs.get("idProveedor"));
 					this.orden.setImporte(0D);
 					columns.remove(columns.size()- 1);
+ 			    params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 					this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 					List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 					if(proveedores!= null && !proveedores.isEmpty()) {
