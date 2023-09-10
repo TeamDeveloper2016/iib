@@ -72,7 +72,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	private EAccion accion;	
 	private EOrdenes tipoOrden;
-	private Long idOrdenCompra;
 	private boolean aplicar;
 	private TcManticProveedoresDto proveedor;
 	private Calendar fechaEstimada;
@@ -129,9 +128,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
-      this.idOrdenCompra= JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: (Long)JsfBase.getFlashAttribute("idOrdenCompra");
-      this.attrs.put("idOrdenCompra", this.idOrdenCompra);
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Inventarios/Entradas/filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
@@ -153,7 +151,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
-          TcManticOrdenesComprasDto ordenCompra= Objects.equals(this.idOrdenCompra, -1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, this.idOrdenCompra);
+          TcManticOrdenesComprasDto ordenCompra= this.attrs.get("idOrdenCompra").equals(-1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)this.attrs.get("idOrdenCompra"));
 					if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
@@ -211,10 +209,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
-					if(this.doCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) {
-    			  JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
- 				    regresar=  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
-					} // if
+					if(this.toCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) 
+    			  JsfBase.setFlashAttribute("codigosBarras", "/Paginas/Mantic/Catalogos/Articulos/codigos");
 					else
 						regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 					if(this.accion.equals(EAccion.AGREGAR))
@@ -226,7 +222,16 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 					this.getAdminOrden().toStartCalculate();
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
+ 			  JsfBase.setFlashAttribute("retorno", this.attrs.get("retorno"));
   			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+        // ESTO ES PARA IRSE A LA PAGINA PARA CALENDARIZAR EL PAGO
+        if(this.aplicar) {
+          Long idEmpresaDeuda= this.toCheckCuentaPagar(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+          if(!Objects.equals(idEmpresaDeuda, -1L)) {
+  			    regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/prorroga".concat(Constantes.REDIRECIONAR);
+    			  JsfBase.setFlashAttribute("idEmpresaDeuda", idEmpresaDeuda);
+          } // if
+        } // if
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
@@ -276,7 +281,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				} // else	
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
- 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("proveedores", UIEntity.seleccione("VistaOrdenesComprasDto", "moneda", params, columns, "clave"));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			int index= 0;
@@ -514,8 +519,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		Articulo faltante        = null;
 		int relacionados         = this.attrs.get("relacionados")== null? 0: (int)this.attrs.get("relacionados");
 		Integer idTipoComparacion= (Integer)this.attrs.get("idTipoComparacion");
-	  Map<String, Object> params= new HashMap<>();
+	  Map<String, Object> params=null;
 		try {
+			params= new HashMap<>();
 			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
 			int x= 0;
@@ -602,8 +608,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
 	public void doCheckFolio() {
-		Map<String, Object> params= new HashMap<>();
+		Map<String, Object> params=null;
 		try {
+			params=new HashMap<>();
 			params.put("factura", ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura());
 			params.put("idProveedor", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedor());
 			params.put("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
@@ -724,14 +731,32 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // if
 	}
 
-	private boolean doCheckCodigoBarras(Long idNotaEntrada) throws Exception {
+	private boolean toCheckCodigoBarras(Long idNotaEntrada) throws Exception {
 		boolean regresar          = false;
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("idNotaEntrada", idNotaEntrada);
-			Value value= DaoFactory.getInstance().toField("VistaNotasEntradasDto", "codigos", params);
+			Value value= DaoFactory.getInstance().toField("VistaNotasEntradasDto", "codigos", params, "total");
 			if(value.getData()!= null)
 			  regresar= value.toLong()> 0;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	  return regresar;	
+	}
+	
+	private Long toCheckCuentaPagar(Long idNotaEntrada) throws Exception {
+		Long regresar             = -1L;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idNotaEntrada", idNotaEntrada);
+			Value value= DaoFactory.getInstance().toField("TcManticEmpresasDeudasDto", "deuda", params, "idEmpresaDeuda");
+			if(value.getData()!= null)
+			  regresar= value.toLong();
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -898,8 +923,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
   private void toMoveSelectedProveedor() {
 		UISelectEntity temporal   = (UISelectEntity)this.attrs.get("proveedor");
-	  Map<String, Object> params= new HashMap<>();
+	  Map<String, Object> params= null;
 		try {
+			params=new HashMap<>();
 			if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
 			  this.getAdminOrden().toCalculate();
 				if(temporal== null || !this.getEmisor().getRfc().equals(temporal.toString("rfc"))) {

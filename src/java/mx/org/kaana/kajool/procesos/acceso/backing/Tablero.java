@@ -61,7 +61,7 @@ public class Tablero extends Comun implements Serializable {
 
   private static final long serialVersionUID= 5323749709626263801L;
   private static final Log LOG              = LogFactory.getLog(Tablero.class);
-	private String mes[] = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+  
   private List<UISelectItem> sucursales;
 	private List<Entity> articulos;
   protected FormatLazyModel lazyModelPagar;
@@ -379,7 +379,6 @@ public class Tablero extends Comun implements Serializable {
   private void toMensajesNoLeidos() throws Exception {
     Entity mensajesNoLeidos = null;
     try {
-      attrs.put("idUsuario", JsfBase.getAutentifica().getPersona().getIdUsuario());
       mensajesNoLeidos = (Entity) DaoFactory.getInstance().toEntity("VistaTrJanalMensajesUsuariosDto", "contadorNoLeidos", this.attrs);
       this.attrs.put("mensajesNoLeidos", mensajesNoLeidos != null ? mensajesNoLeidos.toString("cantidad") : "0");
     } // try
@@ -725,7 +724,7 @@ public class Tablero extends Comun implements Serializable {
 			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			seleccionada.add(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH)-1);
 			sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
-			this.attrs.put("mes".concat(nombrePivote), this.mes[seleccionada.get(Calendar.MONTH)]);			
+			this.attrs.put("mes".concat(nombrePivote), Fecha.getNombreMes(seleccionada.get(Calendar.MONTH)));			
 			this.attrs.put("mesTitle".concat(nombrePivote), " del " + seleccionada.get(Calendar.YEAR));			
 		} // try
 		catch (Exception e) {			
@@ -781,41 +780,41 @@ public class Tablero extends Comun implements Serializable {
 				seleccionada.set(Calendar.MONTH, 0);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH))).append(" - ");
 				seleccionada.add(Calendar.MONTH, 2);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);				
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH)));				
 			} // if
 			else if (seleccionada.get(Calendar.MONTH)<= 5){
 				seleccionada.set(Calendar.MONTH, 3);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH))).append(" - ");
 				seleccionada.add(Calendar.MONTH, 2);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH)));
 			} // else
 			else if (seleccionada.get(Calendar.MONTH)<= 8){
 				seleccionada.set(Calendar.MONTH, 6);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH))).append(" - ");
 				seleccionada.add(Calendar.MONTH, 2);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH)));
 			} // else
 			else {
 				seleccionada.set(Calendar.MONTH, 9);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH))).append(" - ");
 				seleccionada.add(Calendar.MONTH, 2);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH)));
 			} // else
 			this.attrs.put("trimestre".concat(nombrePivote), "3 meses");			
 			this.attrs.put("trimestreTitle".concat(nombrePivote), title + " del " + seleccionada.get(Calendar.YEAR));			
@@ -873,21 +872,21 @@ public class Tablero extends Comun implements Serializable {
 				seleccionada.set(Calendar.MONTH, 0);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH))).append(" - ");
 				seleccionada.set(Calendar.MONTH, 5);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH)));
 			} // if
 			else{
 				seleccionada.set(Calendar.MONTH, 6);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH))).append(" - ");
 				seleccionada.set(Calendar.MONTH, 11);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);
+				title.append(Fecha.getNombreMes(seleccionada.get(Calendar.MONTH)));
 			} // else
 			this.attrs.put("semestre".concat(nombrePivote), "6 meses");			
 			this.attrs.put("semestreTitle".concat(nombrePivote), title + " del " + seleccionada.get(Calendar.YEAR));			
@@ -957,11 +956,9 @@ public class Tablero extends Comun implements Serializable {
 	
 	public void doLoadVentasEmpleado(){
 		List<VentaEmpleado> ventas= null;
-		Map<String, Object>params = null;
-		BuildChart build          = null;
+		Map<String, Object>params = new HashMap<>();
+		BuildChart build          = new BuildChart();
 		try {
-			build= new BuildChart();
-			params= new HashMap<>();
 			params.put("condicionGeneral", build.toFormatCondicionGeneral(EGraficasTablero.VENTAS_EMPLEADO, toCreateCondicion(EGraficasTablero.VENTAS_EMPLEADO)));
 			params.put("estatusVentas", EEstatusVentas.CREDITO.getIdEstatusVenta()+","+EEstatusVentas.PAGADA.getIdEstatusVenta()+","+EEstatusVentas.TERMINADA.getIdEstatusVenta()+","+EEstatusVentas.TIMBRADA.getIdEstatusVenta());
 			ventas= DaoFactory.getInstance().toEntitySet(VentaEmpleado.class, "VistaIndicadoresTableroDto", "ventasPorEmpleado", params, Constantes.SQL_TODOS_REGISTROS);
@@ -977,9 +974,8 @@ public class Tablero extends Comun implements Serializable {
 	} // doLoadVentasEmpleado	
 	
   private void checkDonwloadBackup() {
-	  Map<String, Object> params= null;
+	  Map<String, Object> params= new HashMap<>();
 		try {
-		  params=new HashMap<>();
 			TcManticRespaldosDto respaldo= (TcManticRespaldosDto)DaoFactory.getInstance().toEntity(TcManticRespaldosDto.class, "TcManticRespaldosDto", "ultimo", Collections.EMPTY_MAP);
 			if(respaldo!= null) {
 			  params.put("idRespaldo", respaldo.getIdRespaldo());
@@ -1005,12 +1001,10 @@ public class Tablero extends Comun implements Serializable {
 	} // checkDonwloadBackup
   
   public void toLoadCuentasCobrar() {
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("id", 1L);      
-      columns = new ArrayList<>();
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("cuentas", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("dias", EFormatoDinamicos.MILES_SIN_DECIMALES));
@@ -1032,7 +1026,9 @@ public class Tablero extends Comun implements Serializable {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("id", 1L);      
+      params.put("estatus", "1, 2, 3");
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("dias", EFormatoDinamicos.MILES_SIN_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       params.put("sortOrder", "order by dias desc");
@@ -1050,12 +1046,10 @@ public class Tablero extends Comun implements Serializable {
   }
   
   public void toLoadCuentasAgendar() {
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("id", 1L);      
-      columns = new ArrayList<>();
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       params.put("sortOrder", "order by tc_mantic_empresas_deudas.registro");
@@ -1096,6 +1090,28 @@ public class Tablero extends Comun implements Serializable {
       Methods.clean(columns);
       sb= null;
     } // finally
+  }
+ 
+  public String doColor(Entity row) {
+    String regresar= "janal-semaforo-amarillo";
+    switch(row.toLong("idEmpresaEstatus").intValue()) {
+      case 1: // elaborada
+        regresar= "janal-semaforo-rojo";
+        break;
+      case 2: // programada
+        regresar= "janal-semaforo-azul";
+        break;
+      case 3: // parcializada
+        regresar= "janal-semaforo-amarilla";
+        break;
+      case 4: // liquidada
+        regresar= "janal-semaforo-verde";
+        break;
+      case 5: // cancelada
+        regresar= "janal-semaforo-naranja";
+        break;
+    } // switch
+    return regresar;
   }
   
 }

@@ -278,7 +278,7 @@
                 <p:separator/>
                 <p:menuitem icon="fa fa-check-square-o" value="Calendarizar" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doModificar}" process="@this detalle" />
                 <p:separator/>
-                <p:menuitem icon="fa fa-external-link" value="Importar XML/PDF" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasCuentasSaldos.doImportar}"/>
+                <p:menuitem icon="fa fa-external-link" value="Importar XML/PDF" title="Importar identificación de representante" onstart="return janal.bloquear()" process="@this detalle" action="#{manticCatalogosEmpresasCuentasSaldos.doImportar}"/>
                 <p:separator/>					
                 <p:menuitem icon="fa fa-sitemap" value="Reporte" onstart="return janal.bloquear()" process="@this detalle" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTA_PAGAR_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:separator/>
