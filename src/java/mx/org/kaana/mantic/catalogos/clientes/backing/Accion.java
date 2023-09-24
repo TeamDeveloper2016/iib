@@ -934,8 +934,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doLoadEspecial() {
 		if(this.attrs.get("idEspecial")!= null && "1".equals((String)this.attrs.get("idEspecial")))
       UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:especial', {validaciones: 'requerido|flotante|mayor-igual({\"cuanto\":5}|menor-igual({\"cuanto\":30})', mascara: 'libre'});");
-		else
+    else {
       UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:especial', {validaciones: 'libre', mascara: 'libre'});");
+      this.registroCliente.getCliente().setEspecial(0D);
+    } // if  
   }
 
   public void doCreateUser(ClienteContactoRepresentante row) {

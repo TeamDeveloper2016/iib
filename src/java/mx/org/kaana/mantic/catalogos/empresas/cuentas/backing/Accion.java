@@ -90,7 +90,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   @Override
   protected void init() {		
     try {
-			this.aplicar  =  false;
+			this.aplicar  =  Boolean.FALSE;
 			if(JsfBase.getFlashAttribute("accion")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.COMPLETO: (EAccion)JsfBase.getFlashAttribute("accion");

@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticCatalogosEmpresasCuentasAccion.attrs.nombreAccion} una nota de entrada (MANUAL)"/>
+	<ui:param name="titulo" value="#{manticCatalogosEmpresasCuentasAccion.attrs.nombreAccion} una cuenta por pagar"/>
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
@@ -108,7 +108,7 @@
 								<p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
+									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -120,7 +120,7 @@
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticCatalogosEmpresasCuentasAccion.doUpdateProveedor}" update="@(.involucrados)" process="@this diasPlazo fechaPago" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '|'} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   

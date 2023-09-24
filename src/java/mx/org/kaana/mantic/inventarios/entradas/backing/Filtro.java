@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -108,23 +109,28 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  idOrdenCompra= ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra");
 			  idNotaTipo   = ((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo");
 			} // if
-			if(idNotaTipo.equals(3L)) {
+			if(Objects.equals(idNotaTipo, 3L)) {
 				regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
 				JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: EAccion.CONSULTAR);
 			} // if	
-			else {
-				if(eaccion.equals(EAccion.COMPLETO)) 
-					JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
-				else 
-					JsfBase.setFlashAttribute("accion", eaccion);		
-				if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && idNotaTipo.equals(2L))) 
-					regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
-				else
-					regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-  			JsfBase.setFlashAttribute("idOrdenCompra", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || idNotaTipo.equals(2L)) && idOrdenCompra!= null? idOrdenCompra: -1L);
-			} // else	
+			else 
+        if(Objects.equals(eaccion, EAccion.ACTIVAR)) {
+	  			regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+  				JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);
+        } // if
+        else {
+          if(Objects.equals(eaccion, EAccion.COMPLETO)) 
+            JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+          else 
+            JsfBase.setFlashAttribute("accion", eaccion);		
+          if(!Objects.equals(eaccion, EAccion.COMPLETO) || ((Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR)) && Objects.equals(idNotaTipo, 2L))) 
+            regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
+          else
+            regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+          JsfBase.setFlashAttribute("idOrdenCompra", (Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR) || Objects.equals(idNotaTipo, 2L)) && idOrdenCompra!= null? idOrdenCompra: -1L);
+        } // else	
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
-			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? idNotaEntrada: -1L);
+			JsfBase.setFlashAttribute("idNotaEntrada", Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR)? idNotaEntrada: -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
