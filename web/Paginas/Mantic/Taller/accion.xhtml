@@ -79,9 +79,9 @@
 								<p:outputLabel for="clienteSinRegistro" value="Cliente:" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="cliente-registrado" />
 								<p:inputText id="clienteSinRegistro" value="#{manticTallerAccion.registroServicio.servicio.cliente}" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="janal-wid-100-txt cliente-registrado"/>
 								<p:outputLabel for="contactoSinRegistro" value="Telefono(s):" styleClass="cliente-registrado" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}"/>
-                <p:inputText id="contactoSinRegistro" placeholder="ej. 4492090432,4491235412" value="#{manticTallerAccion.registroServicio.servicio.telefonos}" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="janal-wid-100-txt cliente-registrado"/>
+                <p:inputText id="contactoSinRegistro" placeholder="Ej. 4492090432,4491235412" value="#{manticTallerAccion.registroServicio.servicio.telefonos}" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="janal-wid-100-txt cliente-registrado"/>
 								<p:outputLabel for="correoSinRegistro" value="Correo(s):" styleClass="cliente-registrado" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}"/>
-                <p:inputText id="correoSinRegistro" placeholder="ej. daniel.davalos@hotmail.com,daniel.davalos@gmail.com" value="#{manticTallerAccion.registroServicio.servicio.correos}" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="janal-wid-100-txt cliente-registrado"/>
+                <p:inputText id="correoSinRegistro" placeholder="Ej. daniel.davalos@hotmail.com,daniel.davalos@gmail.com" value="#{manticTallerAccion.registroServicio.servicio.correos}" rendered="#{!manticTallerAccion.attrs.clienteRegistrado}" styleClass="janal-wid-100-txt cliente-registrado"/>
 								<p:outputLabel for="cliente" value="Cliente:" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
         				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40" rendered="#{manticTallerAccion.attrs.clienteRegistrado}">
 									<p:selectOneMenu id="cliente" value="#{manticTallerAccion.registroServicio.clienteSeleccion}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" converter="janal.convertidor.Entity">
@@ -107,15 +107,15 @@
                 <p:outputLabel for="plazo" value="Plazo de días:" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
                 <p:inputNumber id="plazo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticTallerAccion.registroServicio.cliente.plazoDias}" decimalPlaces="0" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
 								<p:outputLabel for="telefono" value="Teléfono:" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
-								<p:inputText id="telefono" placeholder="ej. 4492090432,4491235412" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.contactoCliente.telefono}" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
+								<p:inputText id="telefono" placeholder="Ej. 4492090432,4491235412" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.contactoCliente.telefono}" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
 								<p:outputLabel for="correo" value="Correo electrónico:" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
-								<p:inputText id="correo" placeholder="ej. daniel.davalos@hotmail.com,daniel.davalos@gmail.com" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.contactoCliente.email}" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
+								<p:inputText id="correo" placeholder="Ej. daniel.davalos@hotmail.com,daniel.davalos@gmail.com" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.contactoCliente.email}" rendered="#{manticTallerAccion.attrs.clienteRegistrado}"/>
               </p:panelGrid>
             </p:tab>
 						<p:tab title="Refacciones">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-8, janal-wid-100">
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
-                <p:selectOneMenu id="idSucursal" placeholder="ej. ELFRIJOLITO" value="#{manticTallerAccion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idSucursal" placeholder="Ej. ELFRIJOLITO" value="#{manticTallerAccion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticTallerAccion.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
 									<f:selectItems value="#{manticTallerAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
 									<p:column headerText="Clave">
@@ -126,7 +126,7 @@
 									</p:column>   
 								</p:selectOneMenu>
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
-                <p:selectOneMenu id="idAlmacen" placeholder="ej. TALLER" value="#{manticTallerAccion.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idAlmacen" placeholder="Ej. TALLER" value="#{manticTallerAccion.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticTallerAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -136,7 +136,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
-                <p:selectOneMenu id="idProveedor" placeholder="ej. BLACK Y DECKER S.A. DE C.V." value="#{manticTallerAccion.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idProveedor" placeholder="Ej. BLACK Y DECKER S.A. DE C.V." value="#{manticTallerAccion.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticTallerAccion.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '-'} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>

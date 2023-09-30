@@ -4,6 +4,65 @@
 -->
 <process>
 	<dml> 
+    <unit id="VistaValesDto">
+      <select id="lazy">
+select
+  tc_kalan_vales.id_vale as id_key,
+  tc_kalan_vales.id_vale,
+  tc_kalan_vales.id_empresa,  
+  tc_mantic_empresas.nombre as empresa,  
+  tc_kalan_vales.consecutivo,  													
+  tc_mantic_almacenes.nombre as almacen,
+  tc_kalan_vales.id_vale_estatus,
+  tc_kalan_vales_estatus.nombre as estatus,
+  tc_kalan_vales_estatus.estatus_asociados, 
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+  count(tc_kalan_vales_detalles.id_vale_detalle) as articulos,
+  tc_kalan_vales.registro
+from 
+  tc_kalan_vales						
+left join 
+  tc_kalan_vales_detalles on tc_kalan_vales.id_vale = tc_kalan_vales_detalles.id_vale
+inner join 
+  tc_mantic_empresas on tc_kalan_vales.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_kalan_vales_estatus on tc_kalan_vales.id_vale_estatus=tc_kalan_vales_estatus.id_vale_estatus
+inner join 
+  tc_mantic_almacenes on tc_kalan_vales.id_almacen= tc_mantic_almacenes.id_almacen
+inner join 
+  tr_mantic_empresa_personal on tc_kalan_vales.id_solicito= tr_mantic_empresa_personal.id_empresa_persona
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona			
+where
+  tc_kalan_vales.id_empresa in ({idEmpresa})
+group by 
+  tc_kalan_vales.id_vale
+{sortOrder}
+      </select>
+      <select id="detalle">
+select      
+  tc_kalan_vales_detalles.id_vale_detalle as id_comodin,
+  tc_kalan_vales_detalles.id_vale_detalle,
+  tc_kalan_vales_detalles.id_vale,
+  tc_kalan_vales_detalles.id_articulo,
+  ifnull(tc_kalan_vales_detalles.codigo, tc_mantic_articulos_codigos.codigo) as codigo,
+  tc_kalan_vales_detalles.nombre,
+  tc_kalan_vales_detalles.cantidad,
+  tc_kalan_vales_detalles.costo,
+  tc_kalan_vales_detalles.precio,
+  tc_kalan_vales_detalles.registro
+from      
+  tc_kalan_vales_detalles
+inner join
+  tc_mantic_articulos on tc_kalan_vales_detalles.id_articulo= tc_mantic_articulos.id_articulo
+left join
+  tc_mantic_articulos_codigos on tc_kalan_vales_detalles.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+where      
+  tc_kalan_vales_detalles.id_vale = {idVale}
+order by
+  tc_kalan_vales_detalles.registro
+      </select>
+    </unit>  
     <unit id="VistaEmpresasMovimientosDto">
       <select id="lazy">
 select

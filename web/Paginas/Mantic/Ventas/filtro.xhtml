@@ -14,6 +14,8 @@
       Janal.Control.fields = {
         idEmpresa     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         consecutivo   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
+        codigo        : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        idArticulo    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 			 	razonSocial   : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         fechaInicio   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -80,7 +82,7 @@
 								</f:facet>
 							</p:autoComplete>	
               <p:outputLabel for="codigo" value="Código:"/>
-              <p:autoComplete id="codigo" placeholder="ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{manticVentasFiltro.attrs.codigo}" completeMethod="#{manticVentasFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+              <p:autoComplete id="codigo" placeholder="Ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{manticVentasFiltro.attrs.codigo}" completeMethod="#{manticVentasFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasFiltro.doAsignaCodigo}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">												
@@ -95,7 +97,7 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="articulo" value="Articulo:"/>
-              <p:autoComplete id="articulo" placeholder="ej. CLAVOS" var="customArticulo" itemLabel="#{customArticulo.nombre}" inputStyleClass="janal-wid-100-txt key-down-articulos filas" itemValue="#{customArticulo}" value="#{manticVentasFiltro.attrs.articulo}" completeMethod="#{manticVentasFiltro.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+              <p:autoComplete id="articulo" placeholder="Ej. CLAVOS" var="customArticulo" itemLabel="#{customArticulo.nombre}" inputStyleClass="janal-wid-100-txt key-down-articulos filas" itemValue="#{customArticulo}" value="#{manticVentasFiltro.attrs.articulo}" completeMethod="#{manticVentasFiltro.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasFiltro.doAsignaArticulo}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												

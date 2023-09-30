@@ -43,7 +43,7 @@
 							<p:outputLabel for="consecutivo" value="Nota entrada:"/>
               <p:inputText id="consecutivo" value="#{manticConsultasProveedor.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="codigo" value="Código:"/>
-              <p:autoComplete id="codigo" placeholder="ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{manticConsultasProveedor.attrs.codigo}" completeMethod="#{manticConsultasProveedor.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+              <p:autoComplete id="codigo" placeholder="Ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{manticConsultasProveedor.attrs.codigo}" completeMethod="#{manticConsultasProveedor.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<f:facet name="itemtip">
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-col-400" columnClasses="janal-wid-col-110, janal-wid-100">
 										<f:facet name="header" class="TexAlCenter">
@@ -57,7 +57,7 @@
 								</f:facet>
 							</p:autoComplete>	
 							<p:outputLabel for="nombre" value="Nombre:"/>							
-							<p:autoComplete id="nombre" placeholder="ej. CLAVO CONCRETO" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticConsultasProveedor.attrs.articulo}" completeMethod="#{manticConsultasProveedor.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
+							<p:autoComplete id="nombre" placeholder="Ej. CLAVO CONCRETO" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticConsultasProveedor.attrs.articulo}" completeMethod="#{manticConsultasProveedor.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">									
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<f:facet name="header" class="TexAlCenter">
@@ -73,7 +73,7 @@
 								</f:facet>
 							</p:autoComplete>	
               <p:outputLabel for="proveedor" value="Proveedor:"/>
-              <p:autoComplete id="proveedor" var="custom" placeholder="ej. HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticConsultasProveedor.attrs.proveedor}" completeMethod="#{manticConsultasProveedor.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+              <p:autoComplete id="proveedor" var="custom" placeholder="Ej. HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticConsultasProveedor.attrs.proveedor}" completeMethod="#{manticConsultasProveedor.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<h:outputText value="Clave:" />

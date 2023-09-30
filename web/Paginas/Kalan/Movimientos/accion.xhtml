@@ -92,7 +92,7 @@
                 </p:panelGrid>  
                 <p:panelGrid columns="1" styleClass="janal-wid-100 cliente" style="display: #{kalanMovimientosAccion.movimiento.anticipo? '': 'none'}" rendered="#{kalanMovimientosAccion.idTipoMovimiento eq 1}">
                   <p:outputLabel for="idCliente" value="Cliente:"/>
-                  <p:autoComplete id="idCliente" var="custom" placeholder="ej. EL FRIJOLITO S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanMovimientosAccion.movimiento.ikCliente}" completeMethod="#{kalanMovimientosAccion.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" groupBy="#{kalanMovimientosAccion.getGroupCliente(custom)}">
+                  <p:autoComplete id="idCliente" var="custom" placeholder="Ej. EL FRIJOLITO S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanMovimientosAccion.movimiento.ikCliente}" completeMethod="#{kalanMovimientosAccion.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" groupBy="#{kalanMovimientosAccion.getGroupCliente(custom)}">
                     <f:facet name="itemtip">
                       <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
                         <h:outputText value="Clave:" />

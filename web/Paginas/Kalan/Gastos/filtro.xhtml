@@ -79,7 +79,7 @@
               <p:outputLabel for="referencia" value="Referencia:"/>
               <p:inputText id="referencia" value="#{kalanGastosFiltro.attrs.Referencia}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="idProveedor" value="Proveedor:"/>
-              <p:autoComplete id="idProveedor" var="custom" placeholder="ej. EL FRIJOLITO S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanGastosFiltro.attrs.idProveedor}" completeMethod="#{kalanGastosFiltro.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" groupBy="#{kalanGastosFiltro.getGroupProveedor(custom)}">
+              <p:autoComplete id="idProveedor" var="custom" placeholder="Ej. EL FRIJOLITO S.A. DE C.V." itemLabel="#{custom.clave}#{empty custom.clave? '': ' | '}#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanGastosFiltro.attrs.idProveedor}" completeMethod="#{kalanGastosFiltro.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" groupBy="#{kalanGastosFiltro.getGroupProveedor(custom)}">
                 <p:ajax event="itemSelect" process="@this" update="@(.proveedores)" />
                 <f:facet name="itemtip">
                   <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">

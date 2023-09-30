@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kalan.db.dto.TcKalanValesDetallesDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
@@ -838,5 +839,20 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		articulo.toCalculate();
 		LOG.info(articulo);
 	}		
-	
+
+	public TcKalanValesDetallesDto toValeDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde al vale de almacen");
+		return new TcKalanValesDetallesDto(
+      this.getCodigo(), // String codigo, 
+      this.getImporte(), // Double precio, 
+      this.getCosto(), // Double costo, 
+      this.getCantidad(), // Double cantidad, 
+      -1L, // Long idVale, 
+      this.getIdArticulo(), // Long idArticulo, 
+      this.getNombre(), // String nombre, 
+      this.getIdComodin() // Long idValeDetalle                
+		);
+	}
+  
 }

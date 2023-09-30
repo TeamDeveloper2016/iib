@@ -182,7 +182,7 @@
 										</p:column>  
                   </p:selectOneMenu>																	
                   <p:outputLabel for="cp" value="Código postal:"/>
-									<p:autoComplete id="codigoPostal" placeholder="ej. 20001" var="customCodigo" itemLabel="#{customCodigo.codigo}" inputStyleClass="janal-wid-100-txt" itemValue="#{customCodigo}" value="#{manticCatalogosProveedoresAccion.attrs.codigoBuscado}" completeMethod="#{manticCatalogosProveedoresAccion.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-150">
+									<p:autoComplete id="codigoPostal" placeholder="Ej. 20001" var="customCodigo" itemLabel="#{customCodigo.codigo}" inputStyleClass="janal-wid-100-txt" itemValue="#{customCodigo}" value="#{manticCatalogosProveedoresAccion.attrs.codigoBuscado}" completeMethod="#{manticCatalogosProveedoresAccion.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-150">
 										<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" update="@(.codigoPostal)" listener="#{manticCatalogosProveedoresAccion.doAsignaCodigo}" oncomplete="janal.refresh();janal.desbloquear();"/>
 									</p:autoComplete>	
                   <p:spacer id="spacerCp" rendered="#{!manticCatalogosProveedoresAccion.registroProveedor.domicilio.nuevoCp}" styleClass="codigoPostal"/>
