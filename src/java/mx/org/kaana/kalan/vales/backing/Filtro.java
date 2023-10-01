@@ -20,6 +20,10 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.kalan.db.dto.TcKalanValesBitacoraDto;
+import mx.org.kaana.kalan.db.dto.TcKalanValesDto;
+import mx.org.kaana.kalan.vales.beans.Vale;
+import mx.org.kaana.kalan.vales.reglas.AdminVales;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Encriptar;
@@ -34,7 +38,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
-import mx.org.kaana.mantic.ventas.reglas.Transaccion;
+import mx.org.kaana.kalan.vales.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
@@ -121,11 +125,14 @@ public class Filtro extends IBaseTicket implements Serializable {
   } // doAccion  
 	
   public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
+		Transaccion transaccion   = null;
+		Entity seleccionado       = null;
+    Map<String, Object> params= new HashMap<>();
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion(new TcManticVentasDto(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
+      params.put("idVale", seleccionado.toLong("idVale"));      
+      Vale vale= (Vale)DaoFactory.getInstance().toEntity(Vale.class, "TcKalanValesDto", "detalle", params);
+			transaccion = new Transaccion(vale);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "El vale se ha eliminado correctamente", ETipoMensaje.ERROR);
 			else
@@ -135,6 +142,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
+    finally {
+      Methods.clean(params);
+    } // finally
   } // doEliminar
 
 	protected Map<String, Object> toPrepare() {
@@ -261,14 +271,16 @@ public class Filtro extends IBaseTicket implements Serializable {
 	} // doLoadEstatus
 	
 	public void doActualizarEstatus() {
-		Transaccion transaccion           = null;
-		TcManticVentasBitacoraDto bitacora= null;
-		Entity seleccionado               = null;
+		Transaccion transaccion         = null;
+		Entity seleccionado             = null;
+    Map<String, Object> params      = new HashMap<>();
+    TcKalanValesBitacoraDto bitacora= null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
-			TcManticVentasDto orden= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, seleccionado.getKey());
-			bitacora= new TcManticVentasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getConsecutivo(), orden.getTotal());
-			transaccion= new Transaccion(bitacora);
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+      params.put("idVale", seleccionado.toLong("idVale"));      
+      Vale vale= (Vale)DaoFactory.getInstance().toEntity(Vale.class, "TcKalanValesDto", "detalle", params);
+      bitacora = new TcKalanValesBitacoraDto((String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), -1L, Long.valueOf((String)this.attrs.get("estatus")), vale.getIdVale());
+			transaccion= new Transaccion(vale, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizó el cambio de estatus", ETipoMensaje.INFORMACION);
 			else

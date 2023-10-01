@@ -18,6 +18,10 @@ public class Columna implements Serializable {
 	private String name;
 	private EFormatoDinamicos format;
 
+	public Columna(String name) {
+    this(name, EFormatoDinamicos.MAYUSCULAS);
+  }
+  
 	public Columna(String name, EFormatoDinamicos format) {
 		this.name=name;
 		this.format=format;

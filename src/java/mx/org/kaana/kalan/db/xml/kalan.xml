@@ -43,6 +43,19 @@ from
 where      
   id_vale_bitacora = {idValeBitacora}
       </select>
+			<select id="ultimo">
+select
+  *
+from
+  tc_kalan_vales_bitacora
+where
+  id_vale= {idVale}
+order by
+  registro desc
+			</select>
+      <delete id="rows">
+delete from tc_kalan_vales_bitacora where id_vale= {idVale}        
+      </delete>  
     </unit>   
     <unit id="TcKalanValesDto">
       <select id="row">
@@ -61,6 +74,14 @@ from
 where      
   consecutivo = '{consecutivo}'
       </select>
+      <select id="detalle">
+select      
+  *
+from      
+  tc_kalan_vales
+where 
+  id_vale= {idVale} 
+      </select>
 			<select id="siguiente">
 select
   max(orden)+ 1 as siguiente
@@ -70,6 +91,15 @@ where
   ejercicio= {ejercicio} 
   and orden{operador} 900000			
 			</select>
+      <select id="consecutivo">
+select      
+  tc_kalan_vales.id_vale as id_key
+from      
+  tc_kalan_vales
+where      
+  id_empresa= {idEmpresa}
+  and consecutivo = '{consecutivo}'
+      </select>
     </unit>  
     <unit id="TcKalanValesDetallesDto">
       <select id="row">
@@ -88,6 +118,18 @@ from
 where      
   id_vale = {idVale} and id_articulo = {idArticulo}
       </select>
+      <select id="igual">
+select      
+  tc_kalan_vales_detalles.id_vale_detalle as id_key,
+  tc_kalan_vales_detalles.*
+from      
+  tc_kalan_vales_detalles
+where      
+  id_vale = {idVale}
+      </select>
+      <delete id="rows">
+delete from tc_kalan_vales_detalles where id_vale= {idVale}        
+      </delete>  
     </unit>       
     <unit id="TcKalanGastosClasificacionesDto">
       <select id="row">

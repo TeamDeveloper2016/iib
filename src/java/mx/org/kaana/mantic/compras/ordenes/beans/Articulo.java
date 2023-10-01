@@ -844,7 +844,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		if(Cadena.isVacio(this.getPropio()))
 		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde al vale de almacen");
 		return new TcKalanValesDetallesDto(
-      this.getCodigo(), // String codigo, 
+      this.getPropio(), // String codigo, 
       this.getImporte(), // Double precio, 
       this.getCosto(), // Double costo, 
       this.getCantidad(), // Double cantidad, 

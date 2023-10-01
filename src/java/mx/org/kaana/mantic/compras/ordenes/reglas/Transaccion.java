@@ -166,8 +166,12 @@ public class Transaccion extends Inventarios implements Serializable {
         throw new Exception("");
 		} // try
 		catch (Exception e) {		
-			Error.mensaje(e);
-			throw new Exception(this.messageError.concat("<br/>")+ e);
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		if(this.orden!= null)
 			LOG.info("Se genero de forma correcta la orden: "+ this.orden.getConsecutivo());

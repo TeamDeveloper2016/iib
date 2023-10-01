@@ -35,6 +35,7 @@ public final class AdminVales extends IAdminArticulos  implements Serializable {
   	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaValesDto", "detalle", orden.toMap(), -1L));
       this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
+      this.orden.setIkSolicito(new UISelectEntity(new Entity(this.orden.getIdSolicito())));
       this.orden.setIdEmpresaBack(this.orden.getIdEmpresa());
 		}	// if
 		else {

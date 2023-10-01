@@ -743,6 +743,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					break;
 				case 2: // VENTAS
 					Long idVenta= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticVentasDto", "ticket");
+      		params.put("idEmpresa", consecutivo.toLong("idEmpresa"));
       		params.put("idVenta", idVenta);
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "venta", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
@@ -786,6 +787,24 @@ public class Kardex extends IBaseAttribute implements Serializable {
 					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "conteo", params, columns, Constantes.SQL_TODOS_REGISTROS);
           this.attrs.put("documentos", documento);
           this.attrs.put("tipoDocumento", "del conteo");
+					break;
+				case 7: // RECEPCION
+					break;
+				case 8: // VALES DE ALMACEN
+					Long idVale= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcKalanValesDto", "consecutivo");
+          columns.remove(new Columna("total"));
+      		params.put("idVale", idVale);
+      		params.put("idAlmacen", ((UISelectEntity)this.attrs.get("idAlmacen")).getKey());
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "vale", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+    			if(documento!= null && !documento.isEmpty()) {
+            Double suma= 0D;
+            for (UISelectEntity item : documento) {
+              suma+= item.toDouble("total");
+            } // for
+   				 documento.get(0).get("total").setData(Numero.toRedondearSat(suma));
+          } // if
+          this.attrs.put("tipoDocumento", "vales de almacen");
 					break;
 			} // switch
 			if(documento!= null && !documento.isEmpty()) {

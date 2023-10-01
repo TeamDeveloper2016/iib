@@ -11,6 +11,9 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.kalan.db.dto.TcKalanValesDetallesDto;
+import mx.org.kaana.kalan.db.dto.TcKalanValesDto;
+import mx.org.kaana.kalan.vales.beans.Vale;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -49,11 +52,77 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 		this.idProveedor= idProveedor;
 	}
 	
-	protected void toAffectAlmacenes(Session sesion, String consecutivo, TcManticNotasEntradasDto notaEntrada, TcManticNotasDetallesDto item, Articulo codigos) throws Exception {
-		Map<String, Object> params= null;
+	protected void toAffectAlmacenes(Session sesion, String consecutivo, Vale vale, TcKalanValesDetallesDto item) throws Exception {
+		Map<String, Object> params= new HashMap<>();
 		double stock= 0D;
 		try {
-			params= new HashMap<>();
+			params.put("idAlmacen", this.idAlmacen);
+			params.put("idArticulo", item.getIdArticulo());
+			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
+			if(ubicacion== null) {
+			  TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
+				if(general== null) {
+  				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), this.idAlmacen, -1L);
+					DaoFactory.getInstance().insert(sesion, general);
+				} // if	
+			  Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosDto", "inventario", params);
+				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(entity.toDouble("minimo"), -1L, general.getIdUsuario(), general.getIdAlmacen(), entity.toDouble("maximo"), general.getIdAlmacenUbicacion(), item.getIdArticulo(), item.getCantidad());
+				DaoFactory.getInstance().insert(sesion, articulo);
+		  } // if
+			else { 
+				stock= ubicacion.getStock();
+				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
+				DaoFactory.getInstance().update(sesion, ubicacion);
+			} // if
+
+			// generar un registro en la bitacora de movimientos de los articulos 
+			TcManticMovimientosDto entrada= new TcManticMovimientosDto(
+			  consecutivo, // String consecutivo, 
+				8L, // Long idTipoMovimiento, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				this.idAlmacen, // Long idAlmacen, 
+				-1L, // Long idMovimiento, 
+				item.getCantidad(), // Double cantidad, 
+				item.getIdArticulo(), // Long idArticulo, 
+				stock, // Double stock, 
+				Numero.toRedondearSat(stock+ item.getCantidad()), // Double calculo
+				null // String observaciones
+		  );
+			DaoFactory.getInstance().insert(sesion, entrada);
+			
+			// afectar el inventario general de articulos dentro del almacen
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
+			if(inventario== null)
+				DaoFactory.getInstance().insert(sesion, 
+          new TcManticInventariosDto(
+            JsfBase.getIdUsuario(), 
+            this.idAlmacen, // idAlmacen
+            item.getCantidad(), // entrada
+            -1L, //idInventario
+            item.getIdArticulo(), // idArticulo
+            0D,  // inicial
+            item.getCantidad(), // stock
+            0D, // salida
+            new Long(Calendar.getInstance().get(Calendar.YEAR)), // ejercicio
+            1L)); // idAutomatico
+			else {
+				inventario.setEntradas(inventario.getEntradas()+ item.getCantidad());
+				inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())+ item.getCantidad());
+				DaoFactory.getInstance().update(sesion, inventario);
+			} // else
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}	
+  
+	protected void toAffectAlmacenes(Session sesion, String consecutivo, TcManticNotasEntradasDto notaEntrada, TcManticNotasDetallesDto item, Articulo codigos) throws Exception {
+		Map<String, Object> params= new HashMap<>();
+		double stock= 0D;
+		try {
 			params.put("idAlmacen", this.idAlmacen);
 			params.put("idArticulo", item.getIdArticulo());
 			params.put("idProveedor", this.idProveedor);

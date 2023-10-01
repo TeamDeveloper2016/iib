@@ -22,7 +22,7 @@
       };
 			
 			fieldsDialog= {
-				'justificacion'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};
 			
 			function validaJustificacion() {
@@ -74,7 +74,7 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="consecutivo" value="No. cuenta:"/>
+              <p:outputLabel for="consecutivo" value="Consecutivo:"/>
               <p:inputText id="consecutivo" value="#{kalanValesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="codigo" value="Código:"/>
               <p:autoComplete id="codigo" placeholder="Ej. CT123" var="customCodigo" itemLabel="#{customCodigo.propio}" inputStyleClass="janal-wid-100-txt key-down-codigos filas" itemValue="#{customCodigo}" value="#{kalanValesFiltro.attrs.codigo}" completeMethod="#{kalanValesFiltro.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
@@ -133,14 +133,14 @@
                 <p:menuButton value="Opciones">
                   <p:menuitem value="Agregar" action="#{kalanValesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
-                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
                 <p:commandButton action="#{kalanValesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-                <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
             <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.empresa}">
@@ -196,9 +196,9 @@
             <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{kalanValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
             <p:separator/>					
             <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanValesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{kalanValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
-						<p:separator/>					
-						<p:menuitem icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanValesFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();"/>
-            <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanValesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:separator rendered="false"/>					
+						<p:menuitem icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanValesFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" rendered="false"/>
+            <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanValesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
           </p:contextMenu>
         </div>
       </div>
@@ -211,7 +211,7 @@
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-					<p:selectOneMenu id="estatusDlg" value="#{kalanValesFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
+          <p:selectOneMenu id="estatusDlg" value="#{kalanValesFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
 						<f:selectItems value="#{kalanValesFiltro.attrs.allEstatus}"/>					
 					</p:selectOneMenu>
 				</h:panelGrid>
@@ -236,7 +236,5 @@
       <p:outputLabel value="Consecutivo:"/>
       <p:outputLabel value="#{kalanValesFiltro.attrs.seleccionado.consecutivo}"/>      
     </h:panelGrid>			
-		<p:outputLabel value="Justificación:"/>
-    <p:inputTextarea value="#{kalanValesFiltro.attrs.justificacionEliminar}" styleClass="janal-wid-100-txt"/>
   </ui:define>
 </ui:composition>

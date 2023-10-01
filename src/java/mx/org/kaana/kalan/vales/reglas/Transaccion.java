@@ -13,9 +13,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.kalan.db.dto.TcKalanValesBitacoraDto;
-import mx.org.kaana.kalan.db.dto.TcKalanValesDetallesDto;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -25,6 +23,7 @@ import mx.org.kaana.kalan.vales.beans.Vale;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.kalan.db.dto.TcKalanValesDetallesDto;
+import mx.org.kaana.kalan.db.dto.TcKalanValesDto;
 import org.apache.log4j.Logger;
 
 /**
@@ -112,21 +111,20 @@ public class Transaccion extends Inventarios implements Serializable {
           this.checkConsecutivo(sesion);
 					DaoFactory.getInstance().update(sesion, this.orden);
 					this.toFillArticulos(sesion);
-					bitacoraOrden= (TcKalanValesBitacoraDto)DaoFactory.getInstance().findFirst(sesion, TcKalanValesBitacoraDto.class, this.orden.toMap(), "ultimo");
+					bitacoraOrden= new TcKalanValesBitacoraDto("", JsfBase.getIdUsuario(), -1L, this.orden.getIdValeEstatus(), this.orden.getIdVale());
   				regresar     = DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
 					break;				
 				case ELIMINAR:
-          this.orden.setIdValeEstatus(2L);
-          regresar= regresar && DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-          bitacoraOrden= new TcKalanValesBitacoraDto("", JsfBase.getIdUsuario(), -1L, 2L, this.orden.getIdVale());
-          regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+          DaoFactory.getInstance().deleteAll(sesion, TcKalanValesDetallesDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TcKalanValesBitacoraDto.class, params);
+          regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 0L;
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden.setIdValeEstatus(this.bitacora.getIdValeEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.orden.getIdValeEstatus().equals(7L)) 
-							this.toCommonNotaEntrada(sesion, -1L, this.orden.toMap());
+						if(Objects.equals(this.orden.getIdValeEstatus(), 2L)) 
+							this.toAlmacen(sesion);
 					} // if
 					break;
 				case DEPURAR:
@@ -137,19 +135,30 @@ public class Transaccion extends Inventarios implements Serializable {
         throw new Exception("");
 		} // try
 		catch (Exception e) {		
-			Error.mensaje(e);
-			throw new Exception(this.messageError.concat("<br/>")+ e);
+      if(e!= null)
+        if(e.getCause()!= null)
+          this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
+        else
+          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+			throw new Exception(this.messageError);
 		} // catch		
 		if(this.orden!= null)
 			LOG.info("Se generó de forma correcta el vale: "+ this.orden.getConsecutivo());
 		return regresar;
 	}	// ejecutar
 
+	private void toAlmacen(Session sesion) throws Exception {
+		List<TcKalanValesDetallesDto> todos= (List<TcKalanValesDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcKalanValesDetallesDto.class, "TcKalanValesDetallesDto", "igual", this.orden.toMap());
+		for (TcKalanValesDetallesDto item: todos) {
+			this.toAffectAlmacenes(sesion, this.orden.getConsecutivo(), this.orden, item);
+		} // for
+	}
+  
 	private void toFillArticulos(Session sesion) throws Exception {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaValesDto", "detalle", this.orden.toMap());
 		for (Articulo item: todos) 
 			if(this.articulos.indexOf(item)< 0)
-				DaoFactory.getInstance().delete(sesion, item.toOrdenDetalle());
+				DaoFactory.getInstance().delete(sesion, item.toValeDetalle());
 		for (Articulo articulo: this.articulos) {
 			TcKalanValesDetallesDto item= articulo.toValeDetalle();
 			item.setIdVale(this.orden.getIdVale());

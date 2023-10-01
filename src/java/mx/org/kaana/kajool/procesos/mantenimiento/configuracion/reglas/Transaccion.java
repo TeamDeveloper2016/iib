@@ -53,7 +53,14 @@ public class Transaccion extends IBaseTnx {
 			TcConfiguraciones.getInstance().reload();
 		} // try
 		catch (Exception e) {			
-			throw new Exception(this.messageError.concat("<br/>")+ e);
+      if (e != null) {
+        if (e.getCause() != null) {
+          this.messageError = this.messageError.concat("<br/>").concat(e.getCause().toString());
+        } else {
+          this.messageError = this.messageError.concat("<br/>").concat(e.getMessage());
+        }
+      }
+      throw new Exception(this.messageError);
 		} // catch		
 		return regresar;
 	}	// ejecutar	

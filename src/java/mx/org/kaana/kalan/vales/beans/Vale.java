@@ -21,6 +21,7 @@ public class Vale extends TcKalanValesDto implements Serializable {
 	
 	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikAlmacen;
+	private UISelectEntity ikSolicito;
   private Long idEmpresaBack;
 
 	public Vale() {
@@ -40,7 +41,7 @@ public class Vale extends TcKalanValesDto implements Serializable {
 	}
 
 	public void setIkEmpresa(UISelectEntity ikEmpresa) {
-		this.ikEmpresa=ikEmpresa;
+		this.ikEmpresa= ikEmpresa;
 		if(this.ikEmpresa!= null)
 		  this.setIdEmpresa(this.ikEmpresa.getKey());
 	}
@@ -50,9 +51,19 @@ public class Vale extends TcKalanValesDto implements Serializable {
 	}
 
 	public void setIkAlmacen(UISelectEntity ikAlmacen) {
-		this.ikAlmacen=ikAlmacen;
+		this.ikAlmacen= ikAlmacen;
 		if(this.ikAlmacen!= null)
 		  this.setIdAlmacen(this.ikAlmacen.getKey());
+	}
+
+	public UISelectEntity getIkSolicito() {
+		return ikSolicito;
+	}
+
+	public void setIkSolicito(UISelectEntity ikSolicito) {
+		this.ikSolicito= ikSolicito;
+		if(this.ikSolicito!= null)
+		  this.setIdSolicito(this.ikSolicito.getKey());
 	}
 
   public Long getIdEmpresaBack() {

@@ -4501,6 +4501,35 @@ from (
 				order by
 				  tc_mantic_ventas_detalles.registro				
 			</select>
+			<select id="vale">
+select
+	tc_kalan_vales_detalles.id_vale_detalle as id_key,
+	concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as razon_social,
+	tc_kalan_vales.registro as fecha,
+	tc_kalan_vales.consecutivo,
+	tc_kalan_vales_detalles.precio as total,
+	tc_kalan_vales_detalles.codigo as propio,
+	tc_kalan_vales_detalles.nombre,
+	tc_kalan_vales_detalles.cantidad,
+	tc_kalan_vales_detalles.costo as precio,
+	0 as impuestos,
+	tc_kalan_vales_detalles.costo as importe,
+  tc_kalan_vales.registro
+from 
+	tc_kalan_vales
+inner join
+	tc_kalan_vales_detalles on tc_kalan_vales.id_vale= tc_kalan_vales_detalles.id_vale
+inner join 
+  tr_mantic_empresa_personal on tc_kalan_vales.id_solicito= tr_mantic_empresa_personal.id_empresa_persona
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona			
+where 
+	tc_kalan_vales.id_vale= {idVale}
+group by
+  tc_kalan_vales_detalles.id_vale_detalle 	
+order by
+	tc_kalan_vales_detalles.registro				
+			</select>
 			<select id="devolucion">
 				select
 					tc_mantic_devoluciones_detalles.id_devolucion_detalle as id_key,

@@ -55,12 +55,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Vales/filtro": JsfBase.getFlashAttribute("retorno"));
 			this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));      
-//      if(JsfBase.getFlashAttribute("retorno")== null)
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      if(JsfBase.getFlashAttribute("retorno")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("idVale", JsfBase.getFlashAttribute("idVale")== null? -1L: JsfBase.getFlashAttribute("idVale"));
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("seleccionado", null);
 			this.doLoad();
+      this.toLoadPersonas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -84,7 +85,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       } // switch
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 			this.doResetDataTable();
-			this.toLoadCatalog();
+			this.toLoadCatalogos();
 			this.attrs.put("before", this.getAdminOrden().getIdAlmacen());
     } // try
     catch (Exception e) {
@@ -102,7 +103,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.doCancelar();
-    			UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 un vale de almacen', '"+ ((Vale)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+    			// UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 un vale de almacen', '"+ ((Vale)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
 				else
 					this.getAdminOrden().toStartCalculate();
@@ -125,7 +126,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 
-	private void toLoadCatalog() {
+	private void toLoadCatalogos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -142,8 +143,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				this.attrs.put("idPedidoSucursal", empresas.get(0));
 				if(this.accion.equals(EAccion.AGREGAR))
   				((Vale)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
-			  else 
-				  ((Vale)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((Vale)this.getAdminOrden().getOrden()).getIkEmpresa())));
+        else {
+          int index= empresas.indexOf(((Vale)this.getAdminOrden().getOrden()).getIkEmpresa());
+          if(index>= 0)
+            ((Vale)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(index));
+          else
+            ((Vale)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
+        } // else  
 			} // if	
   		params.put("sucursales", ((Vale)this.getAdminOrden().getOrden()).getIkEmpresa());
       this.attrs.put("almacenes", UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
@@ -151,8 +157,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			if(!almacenes.isEmpty()) {
 				if(this.accion.equals(EAccion.AGREGAR))
 				  ((Vale)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
-			  else
-				  ((Vale)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(almacenes.indexOf(((Vale)this.getAdminOrden().getOrden()).getIkAlmacen())));
+        else {
+          int index= almacenes.indexOf(((Vale)this.getAdminOrden().getOrden()).getIkAlmacen());
+          if(index>= 0)
+            ((Vale)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(index));
+          else
+            ((Vale)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+        } // else  
 			} // if
     } // try
     catch (Exception e) {
@@ -295,4 +306,35 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // finally
 	} 
 
+  private void toLoadPersonas() {
+    List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      List<UISelectEntity> personas= UIEntity.seleccione("VistaAlmacenesTransferenciasDto", "solicito", params, columns, "nombres");
+      this.attrs.put("personas", personas);
+			if(!personas.isEmpty()) {
+				if(this.accion.equals(EAccion.AGREGAR))
+				  ((Vale)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(0));
+        else {
+          int index= personas.indexOf(((Vale)this.getAdminOrden().getOrden()).getIkSolicito());
+          if(index>= 0)
+				    ((Vale)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(index));
+          else
+  				  ((Vale)this.getAdminOrden().getOrden()).setIkSolicito(personas.get(0));
+        } // else  
+			} // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch    
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally 
+  }
+  
 }
