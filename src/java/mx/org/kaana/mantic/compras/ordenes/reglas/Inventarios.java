@@ -71,7 +71,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 		  } // if
 			else { 
 				stock= ubicacion.getStock();
-				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
+				ubicacion.setStock(ubicacion.getStock()- item.getCantidad());
 				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
 
@@ -85,7 +85,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				item.getCantidad(), // Double cantidad, 
 				item.getIdArticulo(), // Long idArticulo, 
 				stock, // Double stock, 
-				Numero.toRedondearSat(stock+ item.getCantidad()), // Double calculo
+				Numero.toRedondearSat(stock- item.getCantidad()), // Double calculo
 				null // String observaciones
 		  );
 			DaoFactory.getInstance().insert(sesion, entrada);
@@ -106,8 +106,8 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
             new Long(Calendar.getInstance().get(Calendar.YEAR)), // ejercicio
             1L)); // idAutomatico
 			else {
-				inventario.setEntradas(inventario.getEntradas()+ item.getCantidad());
-				inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())+ item.getCantidad());
+				inventario.setEntradas(inventario.getEntradas()- item.getCantidad());
+				inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())- item.getCantidad());
 				DaoFactory.getInstance().update(sesion, inventario);
 			} // else
 		} // try
