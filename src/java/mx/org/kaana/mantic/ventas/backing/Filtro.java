@@ -646,7 +646,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));		
 			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-        case "mantic":
+        case "iib":
    			  parametros.put("REPORTE_SUB_TITULO", "GRANOS Y SEMILLAS");		
           break;
         case "kalan":
