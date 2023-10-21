@@ -293,7 +293,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		finally {
 			this.attrs.put("justificacion", "");
 		} // finally
-	}	
+	}	// doActualizaEstatus
 	
 	public void doUpdateCodigos() {
 		List<Columna> columns     = new ArrayList<>();
@@ -398,18 +398,18 @@ public class Filtro extends IBaseTicket implements Serializable {
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
 		try{				
-			reporteSeleccion= EReportes.VALE_ALMACEN;
+			reporteSeleccion= EReportes.TICKET_VENTA;
 			this.reporte= JsfBase.toReporte();
 			params.put("idVale", ((Entity)this.attrs.get("seleccionado")).getKey());			
       Parametros comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			parametros= comunes.getComunes();
 			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
-		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getTitulo().toUpperCase());
+		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
 			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));		
 			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
       switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-        case "iib":
+        case "mantic":
    			  parametros.put("REPORTE_SUB_TITULO", "GRANOS Y SEMILLAS");		
           break;
         case "kalan":

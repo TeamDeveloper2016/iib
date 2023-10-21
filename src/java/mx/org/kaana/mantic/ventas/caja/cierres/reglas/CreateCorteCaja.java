@@ -88,7 +88,7 @@ public class CreateCorteCaja {
 		StringBuilder regresar= new StringBuilder();
     String slogan= "GRANOS Y SEMILLAS";
     switch(Configuracion.getInstance().getPropiedad("sistema.empresa.principal")) {
-      case "iib":
+      case "mantic":
         slogan= "GRANOS Y SEMILLAS";
         break;
       case "kalan":

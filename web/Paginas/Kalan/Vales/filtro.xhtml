@@ -194,11 +194,11 @@
 						<p:separator rendered="#{kalanValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
             <p:menuitem icon="fa fa-edit" action="#{kalanValesFiltro.doAccion('MODIFICAR')}" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{kalanValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
             <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{kalanValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
-            <p:separator rendered="#{kalanValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanValesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{kalanValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
             <p:separator/>					
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanValesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{kalanValesFiltro.attrs.seleccionado.idValeEstatus eq '1'}"/>
+            <p:separator rendered="false"/>					
 						<p:menuitem icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanValesFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" rendered="false"/>
-            <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanValesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanValesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
           </p:contextMenu>
         </div>
       </div>

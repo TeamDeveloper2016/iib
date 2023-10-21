@@ -5,46 +5,6 @@
 <process>
 	<dml> 
     <unit id="VistaValesDto">
-      <select id="folio">
-select 
-  tc_kalan_vales.id_vale as id_key,
-  tc_kalan_vales.consecutivo,
-  concat(tc_mantic_empresas.clave, '-', tc_kalan_vales.consecutivo) as codigo_barra,
-  tc_kalan_vales.registro,
-  tc_kalan_vales_detalles.*,
-  tc_kalan_vales_detalles.precio,
-  tc_mantic_personas.cuenta,
-  tc_kalan_vales.id_vale_estatus,
-  'VALE DE ALMACEN' as tipo_venta,
-  'CONSECUTIVO' as leyenda_venta,
-  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as entregado,
-  concat(tt_mantic_personas.nombres, ' ', tt_mantic_personas.paterno, ' ', tt_mantic_personas.materno) as usuario,
-  tc_kalan_vales.observaciones
-from 
-  tc_kalan_vales 
-inner join 
-  tc_kalan_vales_detalles on tc_kalan_vales.id_vale= tc_kalan_vales_detalles.id_vale
-inner join 
-  tc_kalan_vales_estatus on tc_kalan_vales.id_vale_estatus= tc_kalan_vales_estatus.id_vale_estatus
-inner join				
-  tc_mantic_empresas on tc_kalan_vales.id_empresa= tc_mantic_empresas.id_empresa
-inner join 
-  tr_mantic_empresa_personal on tc_kalan_vales.id_solicito= tr_mantic_empresa_personal.id_empresa_persona
-inner join				
-  tc_mantic_personas on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona			
-inner join 
-  tc_janal_usuarios on tc_kalan_vales.id_usuario= tc_janal_usuarios.id_usuario
-inner join				
-  tc_mantic_personas as tt_mantic_personas on tt_mantic_personas.id_persona= tc_janal_usuarios.id_persona
-where
-  tc_kalan_vales.id_vale= {idVale}
-group by
-  tc_kalan_vales.id_vale,
-  tc_kalan_vales_detalles.id_vale_detalle
-order by 
-  tc_kalan_vales.id_vale,
-  tc_kalan_vales_detalles.id_vale_detalle asc
-      </select>
       <select id="lazy">
 select
   tc_kalan_vales.id_vale as id_key,
