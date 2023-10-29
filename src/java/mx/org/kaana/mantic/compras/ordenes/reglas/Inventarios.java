@@ -12,7 +12,6 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kalan.db.dto.TcKalanValesDetallesDto;
-import mx.org.kaana.kalan.db.dto.TcKalanValesDto;
 import mx.org.kaana.kalan.vales.beans.Vale;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;

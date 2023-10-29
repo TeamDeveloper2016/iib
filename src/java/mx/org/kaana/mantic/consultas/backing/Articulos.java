@@ -57,7 +57,7 @@ public class Articulos extends Comun implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
-      params.put("sortOrder", "order by tc_mantic_articulos.ticket desc");
+      params.put("sortOrder", "order by tc_mantic_ventas.ticket desc");
       this.lazyModel = new UtilidadArticulosLazy("VistaConsultasDto", "articulo", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try // try

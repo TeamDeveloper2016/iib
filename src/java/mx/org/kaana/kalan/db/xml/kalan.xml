@@ -88,7 +88,8 @@ select
 from 
   tc_kalan_vales
 where
-  ejercicio= {ejercicio} 
+  id_empresa= {idEmpresa}
+  and ejercicio= {ejercicio} 
   and orden{operador} 900000			
 			</select>
       <select id="consecutivo">

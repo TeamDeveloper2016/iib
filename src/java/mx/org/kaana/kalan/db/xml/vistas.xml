@@ -35,6 +35,7 @@ inner join
   tc_mantic_personas on tc_mantic_personas.id_persona= tr_mantic_empresa_personal.id_persona			
 where
   tc_kalan_vales.id_empresa in ({idEmpresa})
+  and {condicion}
 group by 
   tc_kalan_vales.id_vale
 {sortOrder}

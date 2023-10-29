@@ -23,7 +23,6 @@ import mx.org.kaana.kalan.vales.beans.Vale;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.kalan.db.dto.TcKalanValesDetallesDto;
-import mx.org.kaana.kalan.db.dto.TcKalanValesDto;
 import org.apache.log4j.Logger;
 
 /**

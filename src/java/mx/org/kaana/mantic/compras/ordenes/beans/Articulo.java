@@ -788,6 +788,21 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
    	);
 	}
 	
+	public TcKalanValesDetallesDto toValeDetalle() {
+		if(Cadena.isVacio(this.getPropio()))
+		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde al vale de almacen");
+		return new TcKalanValesDetallesDto(
+      this.getPropio(), // String codigo, 
+      this.getImporte(), // Double precio, 
+      this.getCosto(), // Double costo, 
+      this.getCantidad(), // Double cantidad, 
+      -1L, // Long idVale, 
+      this.getIdArticulo(), // Long idArticulo, 
+      this.getNombre(), // String nombre, 
+      this.getIdComodin() // Long idValeDetalle                
+		);
+	}
+ 
 	public UISelectEntity toUISelectEntity() {
 		UISelectEntity regresar= new UISelectEntity(this.getIdArticulo());
 		Map<String, Object> map= this.toMap();
@@ -839,20 +854,5 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		articulo.toCalculate();
 		LOG.info(articulo);
 	}		
-
-	public TcKalanValesDetallesDto toValeDetalle() {
-		if(Cadena.isVacio(this.getPropio()))
-		  LOG.warn("El codigo propio esta vacio ["+ this.getNombre()+ "] corresponde al vale de almacen");
-		return new TcKalanValesDetallesDto(
-      this.getPropio(), // String codigo, 
-      this.getImporte(), // Double precio, 
-      this.getCosto(), // Double costo, 
-      this.getCantidad(), // Double cantidad, 
-      -1L, // Long idVale, 
-      this.getIdArticulo(), // Long idArticulo, 
-      this.getNombre(), // String nombre, 
-      this.getIdComodin() // Long idValeDetalle                
-		);
-	}
-  
+ 
 }
