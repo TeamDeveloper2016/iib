@@ -56,7 +56,7 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesFiltro.lazyModel.rowCount gt manticCatalogosClientesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosClientesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesFiltro.lazyModel.rowCount gt manticCatalogosClientesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header" >
@@ -85,45 +85,105 @@
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.clave}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
-              <h:outputText value="#{filtro['clave']}"/>
-            </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{filtro.rfc}">
+              <h:outputText value="#{row['clave']}"/>
+            </p:column>
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
-              <h:outputText value="#{filtro['rfc']}"/>
+              <h:outputText value="#{row['rfc']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.razonSocial}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.regimen}">
+              <f:facet name="header">
+                <h:outputText value="Regimen"/>
+              </f:facet>
+              <h:outputText value="#{row['regimen']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-6" sortBy="#{row.cfdi}">
+              <f:facet name="header">
+                <h:outputText value="Cfdi"/>
+              </f:facet>
+              <h:outputText value="#{row['cfdi']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
               <f:facet name="header">
                 <h:outputText value="Razón social"/>
               </f:facet>
-              <h:outputText value="#{filtro['razonSocial']}"/>
+              <h:outputText value="#{row['razonSocial']}"/>
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{filtro.credito}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.credito}">
               <f:facet name="header">
                 <h:outputText value="Crédito"/>
               </f:facet>
-              <h:outputText value="#{filtro['credito']}"/>
+              <h:outputText value="#{row['credito']}"/>
             </p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
-							<h:outputText value="#{filtro['saldo']}"/>
+							<h:outputText value="#{row['saldo']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.dias}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.dias}">
 							<f:facet name="header">
 								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
 							</f:facet>
-							<h:outputText value="#{filtro['dias']}"/>
+							<h:outputText value="#{row['dias']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-38" exportable="false">
 							<h:graphicImage library="janal" name="icon/semaforos/#{filtro.idFacturama eq '-1' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Cliente #{filtro.idFacturama eq '-1' ? 'NO': ''} registrado en facturama"/>
 						</p:column>
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.telefono}">
+              <f:facet name="header">
+                <h:outputText value="Telefono"/>
+              </f:facet>
+              <h:outputText value="#{row['telefono']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.correo}">
+              <f:facet name="header">
+                <h:outputText value="Correo"/>
+              </f:facet>
+              <h:outputText value="#{row['correo']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.entidad}">
+              <f:facet name="header">
+                <h:outputText value="Entidad"/>
+              </f:facet>
+              <h:outputText value="#{row['entidad']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.municipio}">
+              <f:facet name="header">
+                <h:outputText value="Municipio"/>
+              </f:facet>
+              <h:outputText value="#{row['municipio']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.asentamiento}">
+              <f:facet name="header">
+                <h:outputText value="Colonia"/>
+              </f:facet>
+              <h:outputText value="#{row['asentamiento']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.calle}">
+              <f:facet name="header">
+                <h:outputText value="Calle"/>
+              </f:facet>
+              <h:outputText value="#{row['calle']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.numeroExterior}">
+              <f:facet name="header">
+                <h:outputText value="Numero"/>
+              </f:facet>
+              <h:outputText value="#{row['numeroExterior']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.codigoPostal}">
+              <f:facet name="header">
+                <h:outputText value="Codigo postal"/>
+              </f:facet>
+              <h:outputText value="#{row['codigoPostal']}"/>
+            </p:column>					
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosClientesFiltro.lazyModel==null?0:manticCatalogosClientesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>

@@ -178,7 +178,7 @@ public class Timbrado extends IBaseJob {
 		String[] emails           = null;
 		Entity factura            = null;
 		try {
-			this.reporte=new Reporte();
+			this.reporte= new Reporte();
 			params.put("header", "...");
 			params.put("footer", "...");
 			params.put("empresa", facturacion.getNombreEmpresa());
@@ -190,7 +190,7 @@ public class Timbrado extends IBaseJob {
 			params.put("celular", Configuracion.getInstance().getEmpresa("celular"));
 			factura= this.toXml(facturacion.getIdFactura());
 			this.doReporte("FACTURAS_FICTICIAS_DETALLE", facturacion);
-			Attachment attachments=new Attachment(Especial.getInstance().getPath().substring(0, Especial.getInstance().getPath().length()-1), this.reporte.getNombre(), Boolean.FALSE, true);
+			Attachment attachments= new Attachment(Especial.getInstance().getPath().substring(0, Especial.getInstance().getPath().length()-1), this.reporte.getNombre(), Boolean.FALSE, true);
 			files= new ArrayList<>();
 			files.add(attachments);
       if(factura!= null) {

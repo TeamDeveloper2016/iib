@@ -91,7 +91,7 @@ public class Transaccion extends IBaseTnx {
 	}
   
 	@Override
-  protected boolean ejecutar(Session sesion, EAccion accion) throws Exception{
+  protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar= false;
     try {
       this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" catalogo de forma masiva.");
@@ -179,9 +179,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Long toFindEntidad(Session sesion, String entidad) throws Exception {
 		Long regresar= -1L;
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			String codigo= entidad.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim();
 			params.put("descripcion", codigo.replaceAll("(,| |\\t)+", ".*.*"));
 			Value value= DaoFactory.getInstance().toField(sesion, "TcJanalEntidadesDto", "entidad", params, "idEntidad");
@@ -205,9 +204,8 @@ public class Transaccion extends IBaseTnx {
 
 	private Long toFindMunicipio(Session sesion, Long idEntidad, String municipio) throws Exception {
 		Long regresar= -1L;
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idEntidad", idEntidad);
 			params.put("descripcion", municipio!= null? municipio.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"): "XYZ");
 			Value value= DaoFactory.getInstance().toField(sesion, "TcJanalMunicipiosDto", "municipio", params, "idMunicipio");
@@ -231,9 +229,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Long toFindLocalidad(Session sesion, Long idMunicipio, String localidad) throws Exception {
 		Long regresar= -1L;
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idMunicipio", idMunicipio);
 			params.put("descripcion", localidad!= null? localidad.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"): "XYZ");
 			Value value= DaoFactory.getInstance().toField(sesion, "TcJanalLocalidadesDto", "localidad", params, "idLocalidad");
@@ -257,9 +254,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Long toFindUsoCFDI(Session sesion, String clave) {
 		Long regresar= 3L;
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("clave", clave.toUpperCase());
 			Value value= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "usoCfdi", params, "idUsoCfdi");
 			if(value!= null && value.getData()!= null)
@@ -274,12 +270,29 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toFindUsoCFDI
 	
+	private Long toFindRegimenFiscal(Session sesion, String clave) {
+		Long regresar= 13L;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("clave", clave.toUpperCase());
+			Value value= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "regimenFiscal", params, "idRegimenFiscal");
+			if(value!= null && value.getData()!= null)
+				regresar= value.toLong();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindRegimenFiscal
+	
 	private TrManticClienteTipoContactoDto toFindTipoContactoCliente(Session sesion, Long idTipoContacto, Long idCliente) {
 		TrManticClienteTipoContactoDto regresar= null;
-		Map<String, Object> params  = null;
+		Map<String, Object> params             = new HashMap<>();
 		try {
 			// 1 telefono, 9 correo, 10 correo personal
-			params=new HashMap<>();
 			params.put("idTipoContacto", idTipoContacto);
 			params.put("idCliente", idCliente);
 			regresar= (TrManticClienteTipoContactoDto)DaoFactory.getInstance().toEntity(sesion, TrManticClienteTipoContactoDto.class, "VistaCargasMasivasDto", "contactoc", params);
@@ -295,10 +308,9 @@ public class Transaccion extends IBaseTnx {
 	
 	private TrManticProveedorTipoContactoDto toFindTipoContactoProveedor(Session sesion, Long idTipoContacto, Long idProveedor) {
 		TrManticProveedorTipoContactoDto regresar= null;
-		Map<String, Object> params  = null;
+		Map<String, Object> params               = new HashMap<>();
 		try {
 			// 1 telefono, 9 correo, 10 correo personal
-			params=new HashMap<>();
 			params.put("idTipoContacto", idTipoContacto);
 			params.put("idProveedor", idProveedor);
 			regresar= (TrManticProveedorTipoContactoDto)DaoFactory.getInstance().toEntity(sesion, TrManticProveedorTipoContactoDto.class, "VistaCargasMasivasDto", "contactop", params);
@@ -314,9 +326,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private TcManticClientesDto toFindCliente(Session sesion, String rfc) {
 		TcManticClientesDto regresar= null;
-		Map<String, Object> params  = null;
+		Map<String, Object> params  = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("rfc", rfc);
 			regresar= (TcManticClientesDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDto.class, "VistaCargasMasivasDto", "cliente", params);
 		} // try
@@ -331,9 +342,8 @@ public class Transaccion extends IBaseTnx {
 
 	private TcManticProveedoresDto toFindProveedor(Session sesion, String rfc, String clave) {
 		TcManticProveedoresDto regresar= null;
-		Map<String, Object> params  = null;
+		Map<String, Object> params     = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("rfc", rfc);
 			params.put("clave", clave);
 			regresar= (TcManticProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcManticProveedoresDto.class, "VistaCargasMasivasDto", "proveedor", params);
@@ -349,9 +359,8 @@ public class Transaccion extends IBaseTnx {
 
 	private Long toFindUnidadMedida(Session sesion, String codigo) {
 		Long regresar= 1L;
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			Value value= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "empaque", params, "idEmpaqueUnidadMedida");
 			if(value!= null && value.getData()!= null)
@@ -368,9 +377,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Long toFindCodigoAuxiliar(Session sesion, String codigo) {
 		Long regresar= -1L;
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			Value value= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "auxiliar", params, "idArticuloCodigo");
 			if(value!= null && value.getData()!= null)
@@ -387,9 +395,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private TcManticArticulosDto toFindArticulo(Session sesion, String codigo, Long idArticuloTipo) {
 		TcManticArticulosDto regresar= null;
-		Map<String, Object> params   = null;
+		Map<String, Object> params   = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			params.put("idArticuloTipo", idArticuloTipo);
 			regresar= (TcManticArticulosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosDto.class, "VistaCargasMasivasDto", "articulo", params);
@@ -405,9 +412,8 @@ public class Transaccion extends IBaseTnx {
 
 	private TcManticRefaccionesDto toFindRefaccion(Session sesion, String codigo, Long idProveedor) {
 		TcManticRefaccionesDto regresar= null;
-		Map<String, Object> params   = null;
+		Map<String, Object> params     = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			params.put("idProveedor", idProveedor);
 			regresar= (TcManticRefaccionesDto)DaoFactory.getInstance().toEntity(sesion, TcManticRefaccionesDto.class, "TcManticRefaccionesDto", "existe", params);
@@ -423,9 +429,8 @@ public class Transaccion extends IBaseTnx {
 
 	private TcManticEncargosDto toFindServicio(Session sesion, String codigo) {
 		TcManticEncargosDto regresar= null;
-		Map<String, Object> params   = null;
+		Map<String, Object> params  = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			regresar= (TcManticEncargosDto)DaoFactory.getInstance().toEntity(sesion, TcManticEncargosDto.class, "TcManticEncargosDto", "existe", params);
 		} // try
@@ -440,9 +445,8 @@ public class Transaccion extends IBaseTnx {
 
 	private TcManticArticulosCodigosDto toFindCodigoFabricante(Session sesion, Long idArticulo, Long idProveedor) {
 		TcManticArticulosCodigosDto regresar= null;
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idArticulo", idArticulo);
 			params.put("idProveedor", idProveedor);
       if(!Objects.equals(idProveedor, null))
@@ -459,9 +463,8 @@ public class Transaccion extends IBaseTnx {
   
 	private Long toFindAlmacen(Session sesion, String almacen) {
 		Long regresar             = -1L;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("clave", almacen);
 			Value value= DaoFactory.getInstance().toField(sesion, "TcManticAlmacenesDto", "conteo", params, "idAlmacen");
@@ -479,9 +482,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private TcManticAlmacenesArticulosDto toFindAlmacenArticulo(Session sesion, Long idAlmacen, Long idArticulo) {
 		TcManticAlmacenesArticulosDto regresar= null;
-		Map<String, Object> params   = null;
+		Map<String, Object> params            = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", idArticulo);
 			regresar= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "ubicacion", params);
@@ -509,9 +511,8 @@ public class Transaccion extends IBaseTnx {
 
 	private TcManticInventariosDto toFindInventario(Session sesion, Long idAlmacen, Long idArticulo, Double stock) {
 		TcManticInventariosDto regresar= null;
-		Map<String, Object> params     = null;
+		Map<String, Object> params     = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", idArticulo);
 			regresar= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
@@ -540,9 +541,8 @@ public class Transaccion extends IBaseTnx {
 
 	private Boolean toFindPrincipal(Session sesion, Long idArticulo, Long idArticuloTipo) {
 		Boolean regresar          = false;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idArticulo", idArticulo);
 			params.put("idArticuloTipo", idArticuloTipo);
 			Value data= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "principal", params, "total");
@@ -850,9 +850,8 @@ public class Transaccion extends IBaseTnx {
 
 	private Long toNextOrden(Session sesion, Long idArticulo) throws Exception {
 		Long regresar             = 1L;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idArticulo", idArticulo);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticArticulosCodigosDto", "siguiente", params, "siguiente");
 			if(next!= null && next.getData()!= null)
@@ -866,9 +865,8 @@ public class Transaccion extends IBaseTnx {
 
 	private TcManticTrabajosDto toFindTrabajo(Session sesion, String codigo) {
 		TcManticTrabajosDto regresar= null;
-		Map<String, Object> params  = null;
+		Map<String, Object> params  = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			regresar= (TcManticTrabajosDto)DaoFactory.getInstance().toEntity(sesion, TcManticTrabajosDto.class, "VistaCargasMasivasDto", "trabajo", params);
 		} // try
@@ -1281,9 +1279,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private TcManticEgresosDto toFindEgreso(Session sesion, String descripcion) {
 		TcManticEgresosDto regresar= null;
-		Map<String, Object> params = null;
+		Map<String, Object> params = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("descripcion", descripcion);
 			regresar= (TcManticEgresosDto)DaoFactory.getInstance().toEntity(sesion, TcManticEgresosDto.class, "VistaCargasMasivasDto", "egresos", params);
 		} // try
@@ -1332,7 +1329,7 @@ public class Transaccion extends IBaseTnx {
 			sheet		= workbook.getSheet(0);
 			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
-				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
+				// LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
 				int fila    = 0;
@@ -1341,8 +1338,8 @@ public class Transaccion extends IBaseTnx {
 					try {
 						if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 							String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
-							// 0    1       2          3       4       5       6       7        8         9     10     11       12
-							//RFC|CLAVE|RAZONSOCIAL|USOCFDI|TELEFONO|CORREO1|CORREO2|ENTIDAD|MUNICIPIO|COLONIA|CALLE|NUMERO|CODIGOPOSTAL
+							// 0    1       2          3       4       5       6       7       8        9         10    11       12        13
+							//RFC|CLAVE|RAZONSOCIAL|USOCFDI|TELEFONO|CORREO1|CORREO2|ENTIDAD|MUNICIPIO|COLONIA|CALLE|NUMERO|CODIGOPOSTAL|REGIMEN
 							String nombre= new String(contenido.toUpperCase().getBytes(ISO_8859_1), UTF_8);
 							if(!Cadena.isVacio(sheet.getCell(5, fila).getContents()) && !Cadena.isVacio(sheet.getCell(7, fila).getContents()) && !Cadena.isVacio(sheet.getCell(8, fila).getContents())) {
 								String rfc= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
@@ -1354,6 +1351,8 @@ public class Transaccion extends IBaseTnx {
 										cliente.setClave(sheet.getCell(1, fila).getContents().trim());
 									if(!Cadena.isVacio(sheet.getCell(3, fila).getContents()))
 										cliente.setIdUsoCfdi(this.toFindUsoCFDI(sesion, Cadena.isVacio(sheet.getCell(3, fila).getContents())? "XYZW": sheet.getCell(3, fila).getContents().trim()));
+									if(!Cadena.isVacio(sheet.getCell(13, fila).getContents()))
+										cliente.setIdRegimenFiscal(this.toFindRegimenFiscal(sesion, Cadena.isVacio(sheet.getCell(13, fila).getContents())? "XYZW": sheet.getCell(13, fila).getContents().trim()));
 									DaoFactory.getInstance().update(sesion, cliente);
 								} // if
 								else {
@@ -1373,7 +1372,7 @@ public class Transaccion extends IBaseTnx {
 										1L, // Long idTipoVenta, 
 										null, // String idFacturama
                     0D, // Double especial 
-                    null, // Long idRegimenFiscal
+                    this.toFindRegimenFiscal(sesion, Cadena.isVacio(sheet.getCell(13, fila).getContents())? "XYZW": sheet.getCell(13, fila).getContents().trim()), // Long idRegimenFiscal
                     1L, // Long idTipoCliente
                     null, // String paterno
                     null, // String materno
@@ -1857,9 +1856,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			params.put("operador", this.getCurrentSign());
@@ -1877,9 +1875,8 @@ public class Transaccion extends IBaseTnx {
 
   private Double toSumAlmacenArticulo(Session sesion, Long idArticulo) {
 		Double regresar           = 0D;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idArticulo", idArticulo);
 			Value value= DaoFactory.getInstance().toField(sesion, "VistaKardexDto", "existencias", params, "total");
@@ -1897,9 +1894,8 @@ public class Transaccion extends IBaseTnx {
 
 	private TcManticArticulosDto toFindArticuloCodigo(Session sesion, String codigo) {
 		TcManticArticulosDto regresar= null;
-		Map<String, Object> params   = null;
+		Map<String, Object> params   = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			regresar= (TcManticArticulosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosDto.class, "VistaCargasMasivasDto", "codigo", params);
 		} // try
@@ -1914,9 +1910,8 @@ public class Transaccion extends IBaseTnx {
 
 	private TcManticArticulosCodigosDto toExistsArticuloCodigo(Session sesion, Long idArticulo, String codigo) {
 		TcManticArticulosCodigosDto regresar= null;
-		Map<String, Object> params   = null;
+		Map<String, Object> params          = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("codigo", codigo);
 			params.put("idArticulo", idArticulo);
 			regresar= (TcManticArticulosCodigosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosCodigosDto.class, "VistaCargasMasivasDto", "encontrado", params);

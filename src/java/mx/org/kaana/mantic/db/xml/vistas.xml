@@ -1346,6 +1346,14 @@
 				where  
 					 upper(tc_mantic_usos_cfdi.clave)= '{clave}'					
 			</select>
+			<select id="regimenFiscal">
+        select
+					tc_mantic_regimenes_fiscales.id_regimen_fiscal
+				from
+					tc_mantic_regimenes_fiscales
+				where  
+					 upper(tc_mantic_regimenes_fiscales.codigo)= '{codigo}'
+			</select>
 			<select id="auxiliar">
 				select
 					tc_mantic_articulos_codigos.id_articulo_codigo,
@@ -5409,18 +5417,44 @@ group by
 					tc_mantic_clientes.id_cliente,
 					tc_mantic_clientes.clave,
 					tc_mantic_clientes.rfc,
-					if(tc_mantic_clientes.id_credito = 1, 'SI', 'NO') credito,
+					tc_mantic_regimenes_fiscales.codigo as regimen,
+					tc_mantic_usos_cfdi.clave as cfdi,
+					if(tc_mantic_clientes.id_credito = 1, 'SI', 'NO') as credito,
 					tc_mantic_clientes.id_credito,
 					concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, '')) as razon_social,
 					tc_mantic_clientes.limite_credito,
 					tc_mantic_clientes.plazo_dias,
-					if(tc_mantic_clientes.saldo is null, 0, tc_mantic_clientes.saldo) saldo,
+					if(tc_mantic_clientes.saldo is null, 0, tc_mantic_clientes.saldo) as saldo,
 					if(tc_mantic_clientes_deudas.limite is null, '0', datediff(tc_mantic_clientes_deudas.limite, now())) as dias,
-				  if(tc_mantic_clientes.id_facturama is null, -1, tc_mantic_clientes.id_facturama) id_facturama
+				  if(tc_mantic_clientes.id_facturama is null, -1, tc_mantic_clientes.id_facturama) as id_facturama,
+          upper(tc_janal_entidades.descripcion) as entidad,
+          upper(tc_janal_municipios.descripcion) as municipio,
+          tc_mantic_domicilios.codigo_postal,
+          tc_mantic_domicilios.asentamiento,
+          tc_mantic_domicilios.calle,
+          tc_mantic_domicilios.numero_exterior,
+          (select tr_mantic_cliente_tipo_contacto.valor from tr_mantic_cliente_tipo_contacto where tr_mantic_cliente_tipo_contacto.id_cliente= tc_mantic_clientes.id_cliente and tr_mantic_cliente_tipo_contacto.id_tipo_contacto in (6, 7, 8) limit 1) as telefono,
+          (select tr_mantic_cliente_tipo_contacto.valor from tr_mantic_cliente_tipo_contacto where tr_mantic_cliente_tipo_contacto.id_cliente= tc_mantic_clientes.id_cliente and tr_mantic_cliente_tipo_contacto.id_tipo_contacto in (9, 10, 11) limit 1) as correo
 				from
-					tc_mantic_clientes 
+					tc_mantic_clientes
+				left join
+				  tc_mantic_regimenes_fiscales on tc_mantic_clientes.id_regimen_fiscal= tc_mantic_regimenes_fiscales.id_regimen_fiscal
+				left join
+				  tc_mantic_usos_cfdi on tc_mantic_clientes.id_uso_cfdi= tc_mantic_usos_cfdi.id_uso_cfdi
 				left join
 					tc_mantic_clientes_deudas on tc_mantic_clientes_deudas.id_cliente= tc_mantic_clientes.id_cliente and tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2)
+				left join
+					tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente 
+				  and tr_mantic_cliente_domicilio.id_tipo_domicilio= 1 
+				  and tr_mantic_cliente_domicilio.id_principal= 1
+				left join
+					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio= tr_mantic_cliente_domicilio.id_domicilio
+  			left join    
+	  			tc_janal_localidades on tc_mantic_domicilios.id_localidad= tc_janal_localidades.id_localidad
+	  		left join
+  				tc_janal_municipios on tc_janal_localidades.id_municipio= tc_janal_municipios.id_municipio
+ 	  		left join
+  				tc_janal_entidades on tc_janal_municipios.id_entidad= tc_janal_municipios.id_entidad
 				where
 					{condicion}					
 				  and tc_mantic_clientes.id_empresa in ({idEmpresa}) 
@@ -5452,7 +5486,7 @@ group by
 				inner join 
 					tc_mantic_tipos_ventas on tc_mantic_clientes.id_tipo_venta = tc_mantic_tipos_ventas.id_tipo_venta
 				left join
-					tr_mantic_cliente_domicilio  on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente 
+					tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente 
 				  and tr_mantic_cliente_domicilio.id_tipo_domicilio= 1 
 				  and tr_mantic_cliente_domicilio.id_principal= 1
 				left join
@@ -6319,7 +6353,7 @@ select
   tc_mantic_personas.cuenta,
   tc_mantic_empresas.nombre sucursal,
   tc_mantic_puestos.nombre puesto,
-  tr_mantic_persona_tipo_contacto.valor contacto,
+  tr_mantic_persona_tipo_contacto.valor as contacto,
   tr_mantic_empresa_personal.id_activo
 from 
   tc_mantic_personas
@@ -6334,7 +6368,7 @@ inner join
 inner join
   tc_janal_tipos_sexos  on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
 left join
-  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
 left join 
   tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 where 				
@@ -6410,7 +6444,7 @@ select
   tc_mantic_personas.cuenta,
   tc_mantic_empresas.nombre as sucursal,
   tc_mantic_puestos.nombre as puesto,
-  tr_mantic_persona_tipo_contacto.valor contacto,
+  tr_mantic_persona_tipo_contacto.valor as contacto,
   tr_mantic_empresa_personal.id_activo,
   if(tr_mantic_empresa_personal.id_activo= 1, 'SI', 'NO') as activo,
   if(tr_mantic_empresa_personal.id_seguro= 1, 'SI', 'NO') as seguro,
@@ -6432,7 +6466,7 @@ inner join
 inner join
   tc_janal_tipos_sexos on tc_janal_tipos_sexos.id_tipo_sexo = tc_mantic_personas.id_tipo_sexo
 left join
-  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
 left join 
   tc_mantic_puestos on tr_mantic_empresa_personal.id_puesto = tc_mantic_puestos.id_puesto
 left join 
