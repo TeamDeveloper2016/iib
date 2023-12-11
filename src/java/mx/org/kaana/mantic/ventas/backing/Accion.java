@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -19,6 +20,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -35,8 +37,10 @@ import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoVenta;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
+import mx.org.kaana.mantic.ventas.caja.especial.beans.Producto;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.apache.commons.logging.Log;
@@ -315,7 +319,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doCalculate(Integer index) {
 		super.validatePrecioAsignado(index);
 		super.doCalculate(index);
-		this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+		this.saldoCliente.setTotalVenta(this.getAdminOrden().getTotales().getTotal());
 		UIBackingUtilities.update("deudor");
 	}	// doCalculate
 	
@@ -745,5 +749,5 @@ public class Accion extends IBaseVenta implements Serializable {
     super.doAsignaCliente(event);
     this.toLoadRegimenesFiscales();
   }
-    
+
 }

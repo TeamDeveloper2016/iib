@@ -11,18 +11,22 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
+import mx.org.kaana.mantic.ventas.caja.especial.beans.Producto;
 import mx.org.kaana.mantic.ventas.caja.especial.reglas.AdminEspecial;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -145,6 +149,98 @@ public class Accion extends mx.org.kaana.mantic.ventas.backing.Accion implements
 		finally {
 			Methods.clean(params);
 		} // finally
-	} // doLoadTicketAbiertos		
+	} 
+  
+	@Override
+	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+		Producto temporal= (Producto) getAdminOrden().getArticulos().get(index);
+		Map<String, Object> params= new HashMap<>();
+		try {
+			if(articulo.size()> 1) {
+        Double precioVenta= articulo.toDouble(this.getPrecio());
+        temporal.setDescripcionPrecio(this.getPrecio());
+        UISelectEntity cliente= (UISelectEntity)this.attrs.get("clienteSeleccion");      
+        List<UISelectEntity> clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");					
+        if(cliente!= null && cliente.size()<= 1 && clientes!= null && !clientes.isEmpty())
+          cliente= clientes.get(clientes.indexOf(cliente));
+        // SI EL CLIENTE TIENE UN PRECIO ESPECIAL ENTONCES DEBEMOS DE CONSIDERAR EL PRECIO BASE * POR EL PORCENTAJE ASIGNADO AL CLIENTE
+        if(cliente!= null && !cliente.isEmpty() && cliente.toDouble("especial")!= 0D) {
+          Double mayoreo= articulo.toDouble("mayoreo");
+          Double venta  = Numero.toRedondearSat(articulo.toDouble("precio")* (1+ (articulo.toDouble("iva")/ 100))* (1+ (cliente.toDouble("especial")/ 100)));
+          Double factor = Numero.toRedondearSat(venta* 100/ articulo.toDouble("precio")/ 100);
+          // SI AUN CUANDO EL PRECIO ESPECIAL ASIGNADO AL CLIENTE NO ES MENOR QUE EL PRECIO SUGERIDO SE RESPETA EL PRECIO MENOR DEL ARTICULO
+          if(mayoreo< venta) {
+            precioVenta= mayoreo;
+            factor     = Numero.toRedondearSat(precioVenta* 100/ articulo.toDouble("precio")/ 100);
+          } // if  
+          else
+            precioVenta= venta;
+				  temporal.setDescripcionPrecio("ESPECIAL");
+          temporal.setFactor(factor);
+        } // if
+				this.doSearchArticulo(articulo.toLong("idArticulo"), index);
+				params.put("idArticulo", articulo.toLong("idArticulo"));
+				params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+				params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+				temporal.setKey(articulo.toLong("idArticulo"));
+				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setFabricante(articulo.toString("fabricante"));
+				temporal.setIdProveedor(this.getAdminOrden().getIdProveedor());
+				temporal.setIdRedondear(articulo.toLong("idRedondear"));
+				temporal.setImagen(articulo.toString("archivo"));
+				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+				temporal.setCodigo(codigo== null? "": codigo.toString());
+				temporal.setPropio(articulo.toString("propio"));
+				temporal.setNombre(articulo.toString("nombre"));
+				temporal.setValor(precioVenta);
+				temporal.setCosto(precioVenta);
+				temporal.setIva(articulo.toDouble("iva"));				
+				temporal.setSat(articulo.get("sat").getData()!= null ? articulo.toString("sat") : "");				
+				temporal.setDescuento(this.getAdminOrden().getDescuento());
+				temporal.setExtras(this.getAdminOrden().getExtras());				
+				// SON ARTICULOS QUE ESTAN EN LA FACTURA MAS NO EN LA ORDEN DE COMPRA
+				if(articulo.containsKey("descuento")) 
+				  temporal.setDescuento(articulo.toString("descuento"));
+				if(articulo.containsKey("cantidad")) {
+				  temporal.setCantidad(articulo.toDouble("cantidad"));
+				  temporal.setSolicitados(articulo.toDouble("cantidad"));
+				} // if	
+				if(temporal.getCantidad()<= 0D)					
+					temporal.setCantidad(1D);
+				temporal.setMenudeo(articulo.toDouble("menudeo"));				
+ 				temporal.setDescuentoActivo((Boolean)this.attrs.get("decuentoAutorizadoActivo"));
+				temporal.setUltimo(this.attrs.get("ultimo")!= null);
+				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
+				temporal.setPrecio(articulo.toDouble("precio"));	
+        temporal.setPesoEstimado(articulo.toDouble("pesoEstimado"));
+        
+				// RECUPERA EL STOCK DEL ALMACEN MAS SABER SI YA FUE HUBO UN CONTEO O NO
+				Entity inventario= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "stock", params);
+				if(inventario!= null && inventario.size()> 0) {
+				  temporal.setStock(inventario.toDouble("stock"));
+				  temporal.setIdAutomatico(inventario.toLong("idAutomatico"));
+				} // if
+				if(index== getAdminOrden().getArticulos().size()- 1) {
+					this.getAdminOrden().getArticulos().add(new Producto(-1L, this.costoLibre));
+					this.getAdminOrden().toAddUltimo(this.getAdminOrden().getArticulos().size()- 1);
+					UIBackingUtilities.execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
+				} // if	
+				UIBackingUtilities.execute("jsArticulos.callback('"+ articulo.getKey()+ "');");
+				this.getAdminOrden().toCalculate();
+			} // if	
+			else
+				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+  
+  @Override
+	public String doCancelar() {   
+  	JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+    return "/Paginas/Mantic/Ventas/filtro".concat(Constantes.REDIRECIONAR);
+  } // doCancelar
   
 }

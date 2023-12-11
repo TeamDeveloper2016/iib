@@ -696,6 +696,7 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
 					this.attrs.put("transporta", ((TicketVenta)this.getAdminOrden().getOrden()).getTransporta());
 					this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
+          this.attrs.put("ajustePreciosCliente", Boolean.FALSE);
 					this.toLoadCatalogos();
 					this.doAsignaClienteTicketAbierto();
 					this.attrs.put("pagarVenta", true);
@@ -784,4 +785,10 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
     return regresar;
   }
 
+  @Override
+	public String doCancelar() {   
+  	JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+    return "/Paginas/Mantic/Ventas/filtro".concat(Constantes.REDIRECIONAR);
+  } // doCancelar
+  
 }

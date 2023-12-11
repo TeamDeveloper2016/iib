@@ -237,7 +237,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
 		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
 		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("cliente")) && !Objects.equals(((Entity)this.attrs.get("cliente")).getKey(), -1L))
+		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !Objects.equals(((Entity)this.attrs.get("razonSocial")).getKey(), -1L))
 			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
 		else 
       if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
@@ -772,6 +772,24 @@ public class Filtro extends IBaseTicket implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+  }
+  
+  public void doUnlock(Entity row) {
+    Transaccion transaccion = null;
+    try {
+      if(Objects.equals(row.toLong("candado"), 1L)) {
+        TcManticVentasDto orden= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, row.getKey());        
+        transaccion= new Transaccion(orden);
+        if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+          JsfBase.addMessage("Desbloquear", "El ticket de venta se ha desbloqueado correctamente", ETipoMensaje.INFORMACION);
+        else
+          JsfBase.addMessage("Desbloquear", "Ocurrió un error al desbloquear el ticket de venta", ETipoMensaje.ERROR);								
+      } // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
   }
   
 	@Override

@@ -1351,8 +1351,7 @@ public class Transaccion extends IBaseTnx {
 										cliente.setClave(sheet.getCell(1, fila).getContents().trim());
 									if(!Cadena.isVacio(sheet.getCell(3, fila).getContents()))
 										cliente.setIdUsoCfdi(this.toFindUsoCFDI(sesion, Cadena.isVacio(sheet.getCell(3, fila).getContents())? "XYZW": sheet.getCell(3, fila).getContents().trim()));
-									if(!Cadena.isVacio(sheet.getCell(13, fila).getContents()))
-										cliente.setIdRegimenFiscal(this.toFindRegimenFiscal(sesion, Cadena.isVacio(sheet.getCell(13, fila).getContents())? "XYZW": sheet.getCell(13, fila).getContents().trim()));
+  								cliente.setIdRegimenFiscal(this.toFindRegimenFiscal(sesion, Cadena.isVacio(sheet.getCell(13, fila).getContents())? "XYZW": sheet.getCell(13, fila).getContents().trim()));
 									DaoFactory.getInstance().update(sesion, cliente);
 								} // if
 								else {

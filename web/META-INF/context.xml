@@ -7,9 +7,9 @@
   <!-- XULHA
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" username="casaelfr_track" password="track2023" type="javax.sql.DataSource" url="jdbc:mysql://casaelfrijolito.com:3306/casaelfr_testing?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
    -->
-  <!-- IIB	
+  <!-- IIB
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" username="casaelfr_tester" password="tester2023" type="javax.sql.DataSource" url="jdbc:mysql://casaelfrijolito.com:3306/casaelfr_training?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
-  -->
+  	-->
   <!-- DEVELOMENT
     <Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" username="mantic" password="mantic" type="javax.sql.DataSource" url="jdbc:mariadb://localhost:3306/iib?zeroDateTimeBehavior=convertToNull&amp;useUnicode=true&amp;characterEncoding=utf8mb4&amp;connectionCollation=utf8mb4_spanish_ci"/>
 	  -->
