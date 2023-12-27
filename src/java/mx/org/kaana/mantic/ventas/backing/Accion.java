@@ -11,7 +11,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -20,7 +19,6 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -37,10 +35,8 @@ import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoVenta;
-import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
-import mx.org.kaana.mantic.ventas.caja.especial.beans.Producto;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.apache.commons.logging.Log;
@@ -206,20 +202,21 @@ public class Accion extends IBaseVenta implements Serializable {
 		EAccion eaccion        = null;
 		boolean bandera        = true;
     try {			
-			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()>0 && getAdminOrden().getArticulos().get(0).isValid()){
+			if(!this.getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()> 0 && getAdminOrden().getArticulos().get(0).isValid()) {
 				this.loadOrdenVenta();
 				eaccion= (EAccion) this.attrs.get("accion");						
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (!transaccion.ejecutar(eaccion)) {
-					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);      			
 					bandera= false;
 				} // if
 			} // if
-			else if (((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L) {
-				transaccion= new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
-				transaccion.ejecutar(EAccion.ELIMINAR);
-			} // else if			
+			else 
+        if (((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta()> 0L) {
+				  transaccion= new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
+				  transaccion.ejecutar(EAccion.ELIMINAR);
+			  } // else if			
 			if(bandera) {
 				JsfBase.setFlashAttribute("idVenta", null);
 				JsfBase.setFlashAttribute("accion", null);				

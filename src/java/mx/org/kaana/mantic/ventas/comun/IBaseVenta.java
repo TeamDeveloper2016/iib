@@ -591,7 +591,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // catch		
 	} // doReCalculatePreciosArticulos
 	
-	protected void doLoadSaldos(Long idCliente) throws Exception{
+	protected void doLoadSaldos(Long idCliente) throws Exception {
 		Entity cliente     = null;
 		MotorBusqueda motor= null;
 		this.saldoCliente  = null;
@@ -603,7 +603,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				this.saldoCliente.setIdCliente(idCliente);
 				this.saldoCliente.setTotalCredito(cliente.toDouble("limiteCredito"));
 				this.saldoCliente.setTotalDeuda(motor.toDeudaCliente());
-				this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+				this.saldoCliente.setTotalVenta(this.getAdminOrden().getTotales().getTotal());
 			} // if
 		} // try
 		catch (Exception e) {			

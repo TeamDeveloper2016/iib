@@ -1510,7 +1510,7 @@
       </select>
 			<select id="articulosDetalle">
          select      				  
-          tc_mantic_servicios_detalles.id_servicio_detalle AS id_key,
+          tc_mantic_servicios_detalles.id_servicio_detalle as id_key,
           tc_mantic_servicios_detalles.id_servicio_detalle,
           tc_mantic_servicios_detalles.id_servicio,
           tc_mantic_servicios_detalles.id_articulo,
@@ -1530,7 +1530,7 @@
           tc_mantic_servicios_detalles.cantidad as inicial,
           tc_mantic_articulos.precio,
           tc_mantic_articulos.sat,
-          tc_mantic_unidades_medidas.nombre unidad_medida,
+          tc_mantic_unidades_medidas.nombre as unidad_medida,
           (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
           tc_mantic_articulos.stock
         from      
@@ -1817,7 +1817,7 @@
 				  tc_mantic_articulos.medio_mayoreo,
 				  tc_mantic_articulos.mayoreo,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
-				  if(tc_mantic_articulos.id_facturama is null, -1, tc_mantic_articulos.id_facturama) id_facturama,
+				  if(tc_mantic_articulos.id_facturama is null, -1, tc_mantic_articulos.id_facturama) as id_facturama,
 				  tc_mantic_ventas.registro
 				from 
 					tc_mantic_articulos
@@ -1836,7 +1836,7 @@
 				where 
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
 					and tc_mantic_ventas.ticket is not null
-					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15)
+					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)
 				  and {condicion}					
 				{sortOrder}
 			</select>
@@ -1873,7 +1873,7 @@
 				where 
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
 					and tc_mantic_ventas.ticket is not null
-					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15)
+					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)
 				  and {condicion}					
 				group by 
           tc_mantic_articulos.id_articulo
@@ -5480,7 +5480,10 @@ group by
 					tc_mantic_tipos_ventas.nombre as tipo_venta,
 					tc_mantic_clientes.saldo,
           tc_mantic_clientes.especial,
-          tc_mantic_clientes.id_regimen_fiscal
+          tc_mantic_clientes.id_regimen_fiscal,
+          tc_mantic_clientes.id_credito,
+          ifnull(tc_mantic_clientes_deudas.saldo, 0) as deuda,
+          (tc_mantic_clientes.limite_credito- ifnull(tc_mantic_clientes_deudas.saldo, 0)) as disponible
 				from
 					tc_mantic_clientes 
 				inner join 
@@ -5491,6 +5494,8 @@ group by
 				  and tr_mantic_cliente_domicilio.id_principal= 1
 				left join
 					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
+        left join
+          tc_mantic_clientes_deudas on tc_mantic_clientes_deudas.id_cliente=tc_mantic_clientes.id_cliente        
 				where   
 					({condicion})
 				  and tc_mantic_clientes.id_empresa in ({idEmpresa})

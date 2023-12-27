@@ -14,11 +14,13 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -242,5 +244,39 @@ public class Accion extends mx.org.kaana.mantic.ventas.backing.Accion implements
   	JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
     return "/Paginas/Mantic/Ventas/filtro".concat(Constantes.REDIRECIONAR);
   } // doCancelar
+ 
+  @Override
+  public String doAceptar() {
+    String regresar              = null;
+    Boolean continuar            = Boolean.TRUE;
+		UISelectEntity cliente       = null;
+		List<UISelectEntity> clientes= null;
+		try {
+			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
+      if(clientes!= null && !clientes.isEmpty()) {
+        int index= clientes.indexOf(((TicketVenta)this.getAdminOrden().getOrden()).getIkCliente());
+        if(index>= 0) 
+          cliente= clientes.get(index); 
+        if(!Objects.equals(cliente, null) && !cliente.isEmpty()) {
+          if(!Objects.equals(cliente.toLong("idCliente"), Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY) && 
+              Objects.equals(cliente.toLong("idCredito"), 1L) && 
+              cliente.toDouble("disponible")< this.getAdminOrden().getTotales().getTotal()) {
+            // JsfBase.addMessage("El cliente no tiene suficiente línea de crédito suficiente !", ETipoMensaje.ERROR); 
+            String disponible= Numero.formatear(Numero.MONEDA_CON_DECIMALES, cliente.toDouble("disponible"));
+            UIBackingUtilities.execute("janal.show([{summary: 'Precaución:', detail: 'El cliente no tiene suficiente línea de crédito, disponible: ["+ disponible+ "].'}], 'error');"); 
+            UIBackingUtilities.execute("janal.desbloquear();");
+            continuar= Boolean.FALSE;
+          } // if  
+        } // if 
+      } // if
+      if(continuar)
+        regresar= super.doAceptar();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		    
+    return regresar;
+  }  
   
 }
