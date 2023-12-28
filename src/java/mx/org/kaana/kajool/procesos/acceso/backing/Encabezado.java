@@ -115,7 +115,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       UIBackingUtilities.resetDataTable("verificadorTabla");
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     finally {
@@ -252,7 +252,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       UIBackingUtilities.resetDataTable("faltantesTabla");
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     finally {
@@ -356,9 +356,8 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 
 	public void doLoadListaPrecios() {
-    List<Columna> columns= null;
+    List<Columna> columns= new ArrayList<>();
     try {
-      columns = new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("auxiliar", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
@@ -368,7 +367,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       UIBackingUtilities.resetDataTable("listaPreciosTabla");
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     finally {
@@ -400,7 +399,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       UIBackingUtilities.resetDataTable("catalogoArticulosTabla");
     } // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     finally {

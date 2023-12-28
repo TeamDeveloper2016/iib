@@ -35,6 +35,11 @@
 				janal.readingMode('#{manticVentasAccion.attrs.nombreAccion}');
       });			
       
+      function triggerLocalEvent(index, keyCode) {
+        janal.console("triggerLocalEvent: index="+ index+ ", keyCode= "+ keyCode);
+        $("#tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('focus'));
+        $("#tabla\\:"+ index+ "\\:codigos_input").trigger(jQuery.Event('keydown', {which: keyCode}));
+      }
 		</script>   
 		<style type="text/css">
 			.janal-total-compra { font-size: 25px !important; font-weight: bold !important; font-style: italic;	}			
@@ -204,7 +209,7 @@
                   </f:facet>
                   <h:outputText value="#{index+ 1}.-"/>
                 </p:column>		
-                <p:column class="MarAuto Responsive janal-wid-13">
+                <p:column class="MarAuto Responsive janal-wid-20">
                   <f:facet name="header">
                     <p:selectBooleanCheckbox value="#{manticVentasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
                       <p:ajax event="change" process="@this" update="@this"/>
@@ -216,29 +221,36 @@
                     </pe:tooltip>
                   </f:facet>
                   <div class="ui-grid-row janal-grid-row">
-                    <div class="ui-grid-col-12">
-                      <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
-                      <p:inputText id="locks" value="0" style="display:none"/>
-                      <p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasAccion.attrs.articulo}" completeMethod="#{manticVentasAccion.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="Ej. FRN1K1">
-                        <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
-                        <p:ajax event="focus" process="@this" listener="#{manticVentasAccion.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
-                        <f:facet name="itemtip">
-                          <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
-                            <f:facet name="header" class="TexAlCenter">
-                              <a data-magnify="gallery" href="#{manticVentasAccion.pathImage}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
-                                <p:graphicImage url="#{manticVentasAccion.pathImage}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
-                              </a>
-                            </f:facet>
-                            <h:outputText value="Código:" />
-                            <h:outputText value="#{custom.propio}" />
-                            <h:outputText value="Precio venta:" />
-                            <p:outputLabel value="$ #{custom.precioCliente}" styleClass="janal-color-blue janal-font-bold"/>
-                            <h:outputText value="Código auxiliar:" />
-                            <h:outputText value="#{custom.codigo}" />
-                          </h:panelGrid>
-                        </f:facet>
-                      </p:autoComplete>												
-                    </div>	
+                    <div style="display: flex;">
+                      <div class="ui-grid-col-12" style="padding-right: 14px; flex: 0 0 40% !important">
+                        <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+                        <p:inputText id="locks" value="0" style="display:none"/>
+                        <p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasAccion.attrs.articulo}" completeMethod="#{manticVentasAccion.doCompleteArticuloPrecioCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" forceSelection="true" placeholder="Ej. FRN1K1">
+                          <p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
+                          <p:ajax event="focus" process="@this" listener="#{manticVentasAccion.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" onstart="return jsArticulos.valid();" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));" />
+                          <f:facet name="itemtip">
+                            <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+                              <f:facet name="header" class="TexAlCenter">
+                                <a data-magnify="gallery" href="#{manticVentasAccion.pathImage}#{custom.archivo}" data-caption="#{custom.archivo}" data-group="icon-image" title="Click para ver más grande la imagen">
+                                  <p:graphicImage url="#{manticVentasAccion.pathImage}#{custom.archivo}" width="105" height="80" style="cursor:zoom-in;"/>
+                                </a>
+                              </f:facet>
+                              <h:outputText value="Código:" />
+                              <h:outputText value="#{custom.propio}" />
+                              <h:outputText value="Precio venta:" />
+                              <p:outputLabel value="$ #{custom.precioCliente}" styleClass="janal-color-blue janal-font-bold"/>
+                              <h:outputText value="Código auxiliar:" />
+                              <h:outputText value="#{custom.codigo}" />
+                            </h:panelGrid>
+                          </f:facet>
+                        </p:autoComplete>												
+                      </div>	
+                      <div style="flex: 1;">  
+                        <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary"/>
+                        <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary janal-display-none"/>
+                        <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary"/>
+                      </div>  
+                    </div>  
                   </div>	
                 </p:column>
                 <p:column class="MarAuto Responsive">
@@ -269,7 +281,7 @@
                      </div>
                   </div>									
                 </p:column>		
-                <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                <p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-display-none">
                   <f:facet name="header">
                     <h:outputText value="Descuento %"/>
                   </f:facet>

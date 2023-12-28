@@ -61,6 +61,7 @@
     VK_COMILLA  : 219,
 		VK_PIPE     : 220,
     VK_ICONGNITA: 221,
+    VK_BRACKET  : 222,
 		VK_MAYOR    : 226,
 	  change      : [13, 27, 106, 107, 110, 111, 121, 186, 187, 188, 189, 191, 219, 220, 221, 222, 226],
 	  control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
@@ -265,8 +266,9 @@
    				  if($('ul.ui-autocomplete-items:visible').length<= 0)
   						return $articulos.down(true);
 						break;
-					case $articulos.VK_ASTERISK:
 					case $articulos.VK_MAS:
+					case $articulos.VK_BRACKET:
+					case $articulos.VK_ASTERISK:
 						if(calculate)
 						  return true;
 						else
@@ -278,8 +280,8 @@
 						else
               return $articulos.div();
 						break;
-          case $articulos.VK_COMA:
 					case $articulos.VK_APOSTROFE:
+          case $articulos.VK_COMA:
 					case $articulos.VK_PLUS:
 						if(calculate)
 						  return true;
