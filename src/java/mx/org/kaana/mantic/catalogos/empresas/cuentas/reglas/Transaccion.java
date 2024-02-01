@@ -474,6 +474,7 @@ public class Transaccion extends IBaseTnx {
 				item.setImporte(importe);
 				item.setPagar(importe);
 				item.setSaldo(this.calculateSaldo(sesion, importe, this.detalle.getKey()));
+				item.setObservaciones(String.valueOf(this.detalle.get("observaciones")));
 				DaoFactory.getInstance().update(sesion, item);
         TcManticEmpresasBitacoraDto bitacora= new TcManticEmpresasBitacoraDto(
           String.valueOf(this.detalle.get("observaciones")), // String justificacion, 

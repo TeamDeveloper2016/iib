@@ -154,7 +154,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
   		sb.append("(tc_kalan_vales.id_almacen=").append(this.attrs.get("idAlmacen")).append(") and ");
 		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 
-	 	  sb.append("tc_kalan_vales_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
+	 	  sb.append("tc_kalan_vales_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*")).append(".*' and ");
 //		else 
 //		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
 //			  sb.append("(upper(tc_kalan_vales_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					

@@ -272,7 +272,9 @@ public class Accion extends IBaseVenta implements Serializable {
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
-			clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
+      UISelectEntity clienteVenta= new UISelectEntity(clienteDefault);
+      if(clientesSeleccion.indexOf(clienteVenta)< 0)
+			  clientesSeleccion.add(0, clienteVenta);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -455,7 +457,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.init();
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta", ETipoMensaje.ERROR);      			
 			} // if	
 			if(((TicketVenta)this.getAdminOrden().getOrden()).isValid()){
 				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()));

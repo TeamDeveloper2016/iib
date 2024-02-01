@@ -275,7 +275,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			buscaPorCodigo= consulta.startsWith(".");
 			if(buscaPorCodigo)
 				consulta= consulta.trim().substring(1);
-			consulta= consulta.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			consulta= consulta.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			params.put("codigo", consulta);
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         articulos= (List<UISelectEntity>) UIEntity.build("VistaPrecioClienteDto", "porCodigo", params, columns, 20L);
@@ -487,7 +487,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 						buscarCodigoPor= 0;
 				if(search.startsWith(".") || search.startsWith(":"))
 					search= search.trim().substring(1);				
-				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
+        if(Cadena.isVacio(search))
+          search= ".*";
 			} // if	
 			else
 				search= "WXYZ";
@@ -539,7 +541,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 						buscarCodigoPor= 1;
 				if(search.startsWith(".") || search.startsWith(":"))
 					search= search.trim().substring(1);				
-				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
+        if(Cadena.isVacio(search))
+          search= ".*";
 			} // if	
 			else
 				search= "WXYZ";
@@ -586,7 +590,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			} // if	
 			else
 				codigo= "WXYZ";
-			params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
+			params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*"));
 			if(buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaPrecioClienteDto", "porCodigo", params, columns));
 			else
@@ -639,7 +643,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				buscaPorCodigo= consulta.startsWith(".");
 				if(buscaPorCodigo)
 					consulta= consulta.trim().substring(1);
-				consulta= consulta.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				consulta= consulta.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				consulta= "WXYZ";

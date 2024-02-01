@@ -58,15 +58,14 @@ public class Articulos extends BaseMenu implements Serializable {
   }
   
   public void doLoadArticulos(String codigo) {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			codigo= !Cadena.isVacio(codigo)? codigo.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "";
-  		params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));		
+  		params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*"));		
       params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
       if(!Cadena.isVacio(codigo))
         this.lazyModel= new FormatCustomLazy("VistaOrdenesComprasDto", "porAmbos", params, columns);

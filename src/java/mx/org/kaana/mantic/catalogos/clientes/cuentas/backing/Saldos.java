@@ -144,8 +144,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("limitePago", "credenciales");
       this.attrs.put("tipoCorreoEspecial", "CREDITO");
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-				this.loadSucursales();
+  		this.toLoadSucursales();
       this.toLoadCatalog();
 			if(!this.idCliente.equals(-1L)) {
 				this.doLoad();
@@ -197,37 +196,47 @@ public class Saldos extends IBaseFilter implements Serializable {
 		StringBuilder sb            = new StringBuilder("");
 	  UISelectEntity cliente      = (UISelectEntity)this.attrs.get("cliente");
 		List<UISelectEntity>clientes= (List<UISelectEntity>)this.attrs.get("clientes");
-    if(!this.idCliente.equals(-1L))
-      sb.append("tc_mantic_clientes_deudas.id_cliente= ").append(this.idCliente).append(" and ");
-		if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-			sb.append("tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%' and ");			
-		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
-  		sb.append("tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%' and ");						
-  	if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ventas.ticket like '%").append(this.attrs.get("consecutivo")).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
-  		sb.append("(now()> tc_mantic_clientes_deudas.limite) and ");
-		if(!Cadena.isVacio(this.attrs.get("dias")))
-  		sb.append("((datediff(tc_mantic_clientes_deudas.limite, now())* -1)>= ").append(this.attrs.get("dias")).append(") and ");
-    UISelectEntity estatus= (UISelectEntity) this.attrs.get("idClienteEstatus");
-    if(estatus!= null)
-      if(Objects.equals(0L, estatus.getKey()))
-        sb.append("tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2) and ");
+    try {      
+      // ESTO ES UN PARCHE PARA MOSTRAR SOLO LOS REGISTROS DEL VENDEDOR 31/01/2024
+      if(!JsfBase.isAdminEncuestaOrAdmin())
+        sb.append("(tc_mantic_ventas.id_usuario= ").append(JsfBase.getIdUsuario()).append(") and ");
+    
+      if(!this.idCliente.equals(-1L))
+        sb.append("tc_mantic_clientes_deudas.id_cliente= ").append(this.idCliente).append(" and ");
+      if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
+        sb.append("tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%' and ");			
+      else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
+        sb.append("tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%' and ");						
+      if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+        sb.append("(tc_mantic_ventas.ticket like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+      if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+        sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+      if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+        sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+      if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
+        sb.append("(now()> tc_mantic_clientes_deudas.limite) and ");
+      if(!Cadena.isVacio(this.attrs.get("dias")))
+        sb.append("((datediff(tc_mantic_clientes_deudas.limite, now())* -1)>= ").append(this.attrs.get("dias")).append(") and ");
+      UISelectEntity estatus= (UISelectEntity) this.attrs.get("idClienteEstatus");
+      if(estatus!= null)
+        if(Objects.equals(0L, estatus.getKey()))
+          sb.append("tc_mantic_clientes_deudas.id_cliente_estatus in (1, 2) and ");
+        else
+          if(!Objects.equals(-1L, estatus.getKey()))
+            sb.append("(tc_mantic_clientes_deudas.id_cliente_estatus= ").append(estatus.getKey()).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))			
+        regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
       else
-        if(!Objects.equals(-1L, estatus.getKey()))
-          sb.append("(tc_mantic_clientes_deudas.id_cliente_estatus= ").append(estatus.getKey()).append(") and ");
-    if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))			
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+        regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(sb.length()== 0)
+        regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else	
+        regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
 		return regresar;		
 	} // toPrepare	
 
@@ -289,14 +298,12 @@ public class Saldos extends IBaseFilter implements Serializable {
 	} 
 
 	public void doSeleccionado() {
-		List<UISelectEntity> listado= null;
-		List<UISelectEntity> unico  = null;
+		List<UISelectEntity> listado= (List<UISelectEntity>) this.attrs.get("clientes");
+		List<UISelectEntity> unico  = new ArrayList<>();
 		UISelectEntity cliente      = null;
 		try {
-			listado= (List<UISelectEntity>) this.attrs.get("clientes");
 			cliente= listado.get(listado.indexOf(this.encontrado));
 			this.attrs.put("cliente", cliente);						
-			unico  = new ArrayList<>();
 			unico.add(cliente);
 			this.attrs.put("unico", unico);						
 		} // try
@@ -306,12 +313,15 @@ public class Saldos extends IBaseFilter implements Serializable {
 		} // catch		
 	}
 	
-	private void loadSucursales() {
+	private void toLoadSucursales() {
 		List<UISelectEntity> sucursales= null;
 		Map<String, Object>params      = new HashMap<>();
 		List<Columna> columns          = new ArrayList<>();
 		try {
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz()) 
+			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      else 
+			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			sucursales=(List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
@@ -322,7 +332,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // loadSucursales
+	} 
 	
 	public String doPago() {
 		String regresar    = null;
@@ -541,7 +551,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";

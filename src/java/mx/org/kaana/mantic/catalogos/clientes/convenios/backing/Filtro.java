@@ -146,7 +146,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);
-				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";
@@ -175,10 +175,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(this.attrs.get("idArticuloClienteProcess")!= null && !Cadena.isVacio(this.attrs.get("idArticuloClienteProcess")))
 			sb.append("tc_keet_articulos_clientes.id_articulo_cliente =").append(this.attrs.get("idArticuloClienteProcess")).append(" and ");
     if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-      sb.append("tc_mantic_clientes.razon_social regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+      sb.append("tc_mantic_clientes.razon_social regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*")).append(".*' and ");				
     else 
       if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-        sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+        sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*")).append(".*' and ");				
     if(!Cadena.isVacio(this.attrs.get("grupo")))
       sb.append("tc_mantic_clientes.grupo like '%").append(this.attrs.get("grupo")).append("%' and ");
     if(!Cadena.isVacio(this.attrs.get("rfc")))
@@ -191,7 +191,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       sb.append("tc_mantic_articulos.id_articulo=").append(((UISelectEntity)this.attrs.get("nombre")).getKey()).append(" and ");						
     else 
       if(!Cadena.isVacio(JsfBase.getParametro("nombre_input"))) { 
-        String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+        String nombre= JsfBase.getParametro("nombre_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
         sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
       } // if	
 		if(this.attrs.get("idEmpresa")!= null && ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()>= 1L)
@@ -269,8 +269,11 @@ public class Filtro extends IBaseFilter implements Serializable {
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 
-			if(!Cadena.isVacio(search)) 
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");			
+			if(!Cadena.isVacio(search)) {
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim().toUpperCase().replaceAll("(,| |\\t)+", ".*");			
+        if(Cadena.isVacio(search))
+          search= ".*";
+      } // if  
 			else
 				search= "WXYZ";
   		params.put("codigo", search);			        

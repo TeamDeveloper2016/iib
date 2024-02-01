@@ -200,11 +200,10 @@ public class Accion extends IBaseVenta implements Serializable {
   } // doLoad
 	
 	protected void loadDatosCliente(Long idVenta) throws Exception{
-		Map<String, Object>params = null;
+		Map<String, Object>params = new HashMap<>();
 		Entity descripcionGarantia= null;
-		Entity entity            = null;
+		Entity entity             = null;
 		try {
-			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", ((TicketVenta)getAdminOrden().getOrden()).getIdEmpresa());
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_ventas.id_venta=" + idVenta);
@@ -320,14 +319,12 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // verificarDevolucionCredito
 	
 	public void toDetalleDeudaCliente(){
-		Map<String, Object>params= null;
-		List<Columna>columns     = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", ((UISelectEntity) this.attrs.get("clienteSeleccion")).getKey());									
 			params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");			
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes_deudas.id_cliente_estatus in (".concat(EEstatusClientes.INICIADA.getIdEstatus().toString()).concat(",").concat(EEstatusClientes.PARCIALIZADA.getIdEstatus().toString()).concat(")"));			
-			columns= new ArrayList<>();
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
@@ -530,11 +527,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // loadVentaFinalizada
 	
 	protected void loadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+		  columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", this.attrs.get("idEmpresa"));
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenPrincipal", params, columns));
@@ -578,17 +574,15 @@ public class Accion extends IBaseVenta implements Serializable {
 	@Override
 	public void doLoadTicketAbiertos() {
 		List<UISelectEntity> ticketsAbiertos= null;
-		Map<String, Object>params           = null;
-		List<Columna> campos                = null;
-		List<Columna> columns               = null;
+		Map<String, Object>params           = new HashMap<>();
+		List<Columna> campos                = new ArrayList<>();
+		List<Columna> columns               = new ArrayList<>();
 		EAccion accion                      = null;
 		Entity entity                       = null;
 		try {
 			loadCajas();
-			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			campos= new ArrayList<>();
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion());
@@ -615,7 +609,6 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("clienteAsignado", false);
 			this.attrs.put("tabIndex", 0);		
 			this.attrs.put("registroCliente", new TcManticClientesDto());
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.clear();
@@ -671,10 +664,9 @@ public class Accion extends IBaseVenta implements Serializable {
 	}
 	
 	protected String toCondicionOpenTicket(boolean cobroCaja) {
-		StringBuilder regresar= null;
+		StringBuilder regresar= new StringBuilder();
 		Entity ticket         = null;
 		try {
-			regresar= new StringBuilder();
 			if(this.attrs.get("openTicket")!= null){
 				regresar.append(" tc_mantic_ventas.ticket like '%");
 				regresar.append(this.attrs.get("openTicket"));	
@@ -704,7 +696,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	@Override
 	public void doAsignaTicketAbierto(){
-		Map<String, Object>params           = null;
+		Map<String, Object>params           = new HashMap<>();
 		UISelectEntity ticketAbierto        = null;
 		UISelectEntity ticketAbiertoPivote  = null;
 		List<UISelectEntity> ticketsAbiertos= null;
@@ -716,7 +708,6 @@ public class Accion extends IBaseVenta implements Serializable {
 			accion= (EAccion) this.attrs.get("accion");
 			if(!(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))){
 				ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-				params= new HashMap<>();
 				params.put("idVenta", ticketAbierto.getKey());
 				this.setDomicilio(new Domicilio());
 				this.attrs.put("registroCliente", new TcManticClientesDto());
@@ -795,14 +786,13 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doAsignaCliente
 	
   private void toFindOpenTicket(UISelectEntity seleccion) {
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		EAccion accion           = null;
 		MotorBusqueda motor      = null;
 		Entity factura           = null;
 		try {
 			accion= (EAccion) this.attrs.get("accion");
 			if(!(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))){
-				params= new HashMap<>();
 				params.put("idVenta", seleccion.getKey());
 				this.setDomicilio(new Domicilio());
 				this.attrs.put("registroCliente", new TcManticClientesDto());
@@ -899,12 +889,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	private void loadCajas() {
 		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		EAccion accion            = null;
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			accion= (EAccion) this.attrs.get("accion");
 			if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))
 				params.put("idEmpresa", ((TicketVenta)this.getAdminOrden().getOrden()).getIdEmpresa());
@@ -921,7 +909,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch	
 	} // loadCajas		
 	
-	public void doOpenCobro(){
+	public void doOpenCobro() {
 		try {
 			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))))
 				this.attrs.put("tabIndex", 1);
@@ -950,6 +938,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("idArticulo", articuloAltered.getIdArticulo());
 			this.attrs.put("descripcion", articuloAltered.getNombre());
 			super.doCalculate(index);
+      // POR ALGUNA RAZÓN ESTE IMPORTE NO SE ASIGNA Y ESTA EN CEROS CUANDO DEBERIA DE TENER EL VALOR TOTAL DEL ARTICULO (09/01/2023)
+      // SOLO APLICA PARA LAS DEVOLUCIONES, POR EL MOMENTO NO HE DETERMINADO LA CAUSA PERO NO MODIFICO LA INTERFAZ PARA NO AFECTAR
+      // A OTRO PROCESO 
+      this.getAdminOrden().getArticulos().get(index).setTotal(Numero.toRedondearSat(this.getAdminOrden().getArticulos().get(index).getImporte()));	
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

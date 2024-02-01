@@ -644,6 +644,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			this.getOrden().setCobro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       if(this.getOrden().getIdBanco()!= null && this.getOrden().getIdBanco()<= -1L)
         this.getOrden().setIdBanco(null);
+      // ESTO SUCEDE CUANDO SE TIENE 2 METODOS DE PAGO CON TARJETA DE CREDITO Y DEBITO
+      if(this.getOrden().getIdTipoMedioPago()!= null && this.getOrden().getIdTipoMedioPago()<= -1L)
+        this.getOrden().setIdTipoMedioPago(null);
 			if(this.ventaFinalizada.isFacturar() && validacionEstatus) {				
 				this.clienteDeault= getOrden().getIdCliente().equals(this.toClienteDefault(sesion));
 				if(this.clienteDeault) {

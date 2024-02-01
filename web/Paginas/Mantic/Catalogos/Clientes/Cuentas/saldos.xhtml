@@ -68,8 +68,8 @@
 					<p:panel id="panelBusqueda" header="Búsqueda:" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
-							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesCuentasSaldos.attrs.isMatriz}"/>
-							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesCuentasSaldos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:outputLabel for="idEmpresa" value="Sucursal:"/>
+							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesCuentasSaldos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" onstart="return janal.bloquear();" process="@this idEmpresa" oncomplete="janal.desbloquear();"/>
 								<f:selectItems value="#{manticCatalogosClientesCuentasSaldos.attrs.sucursales}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.titulo or element.titulo eq ''? '': '-'} #{element.titulo}"/>
 								<p:column headerText="Clave">

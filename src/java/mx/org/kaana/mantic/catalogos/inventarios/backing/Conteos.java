@@ -368,7 +368,9 @@ public class Conteos extends IBaseFilter implements Serializable {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+        if(Cadena.isVacio(search))
+          search= ".*";
 			} // if	
 			else
 				search= "WXYZ";

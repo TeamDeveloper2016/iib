@@ -164,7 +164,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
       sb.append("tc_mantic_personas.id_persona=").append(this.attrs.get("idPersona")).append(" and ");
     }
     if (this.attrs.get("nombre") != null && !Cadena.isVacio(this.attrs.get("nombre"))) {
-      String nombre = ((String) this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+      String nombre = ((String) this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*");
       sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, ' '), ' ', ifnull(tc_mantic_personas.apodo, ' '))) regexp '.*").append(nombre).append(".*') and ");
     } // if
     if (!Cadena.isVacio(this.attrs.get("rfc"))) {

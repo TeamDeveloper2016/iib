@@ -107,7 +107,9 @@ public class Imagenes extends IBaseFilter implements Serializable {
 				buscaPorCodigo= search.startsWith(".");
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+        if(Cadena.isVacio(search))
+          search= ".*";
 			} // if	
 			else
 				search= "WXYZ";
@@ -205,7 +207,9 @@ public class Imagenes extends IBaseFilter implements Serializable {
 				buscaPorCodigo= search.startsWith(".");
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+        if(Cadena.isVacio(search))
+          search= ".*";
 			} // if	
 			else
 				search= "WXYZ";

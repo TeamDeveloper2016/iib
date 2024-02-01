@@ -213,48 +213,58 @@ public class Filtro extends IBaseTicket implements Serializable {
 
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb= new StringBuilder();
-		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idVentaEstatus");
-		if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 
-	 	  sb.append("tc_mantic_ventas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
-//		else 
-//		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
-//			  sb.append("(upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					
-		if(!Cadena.isVacio(this.attrs.get("articulo")) && !Objects.equals(((Entity)this.attrs.get("articulo")).getKey(), -1L))
-			sb.append("(tc_mantic_ventas_detalles.id_articulo= ").append(((Entity)this.attrs.get("articulo")).getKey()).append(") and ");					
-		else 
-  		if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
-    		sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
-		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
-  		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("montoInicio")))
-		  sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("montoTermino")))
-		  sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
-		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !Objects.equals(((Entity)this.attrs.get("razonSocial")).getKey(), -1L))
-			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
-		else 
-      if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-				sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");
-		if(estatus!= null && !estatus.getKey().equals(-1L))
-  		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0) {
-      Periodo periodo= new Periodo();
-      periodo.addMeses(-2);
-		  regresar.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
-    } // if  
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		StringBuilder sb            = new StringBuilder();
+		UISelectEntity estatus      = (UISelectEntity) this.attrs.get("idVentaEstatus");
+    try {      
+      // ESTO ES UN PARCHE PARA MOSTRAR SOLO LOS REGISTROS DEL VENDEDOR 31/01/2024
+      if(!JsfBase.isAdminEncuestaOrAdmin())
+        sb.append("(tc_mantic_ventas.id_usuario= ").append(JsfBase.getIdUsuario()).append(") and ");
+
+      if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 
+        sb.append("tc_mantic_ventas_detalles.codigo regexp '.*").append(JsfBase.getParametro("codigo_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*")).append(".*' and ");
+  //		else 
+  //		  if(!Cadena.isVacio(this.attrs.get("codigo")) && !this.attrs.get("codigo").toString().equals("-1"))
+  //			  sb.append("(upper(tc_mantic_ventas_detalles.codigo) like upper('%").append(((Entity)this.attrs.get("codigo")).getKey()).append("%')) and ");					
+      if(!Cadena.isVacio(this.attrs.get("articulo")) && !Objects.equals(((Entity)this.attrs.get("articulo")).getKey(), -1L))
+        sb.append("(tc_mantic_ventas_detalles.id_articulo= ").append(((Entity)this.attrs.get("articulo")).getKey()).append(") and ");					
+      else 
+        if(!Cadena.isVacio(JsfBase.getParametro("articulo_input")))
+          sb.append("(upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(JsfBase.getParametro("articulo_input")).append("%')) and ");
+      if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
+        sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+        sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+      if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+        sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+      if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+        sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+      if(!Cadena.isVacio(this.attrs.get("montoInicio")))
+        sb.append("(tc_mantic_ventas.total>= ").append((Double)this.attrs.get("montoInicio")).append(") and ");			
+      if(!Cadena.isVacio(this.attrs.get("montoTermino")))
+        sb.append("(tc_mantic_ventas.total<= ").append((Double)this.attrs.get("montoTermino")).append(") and ");			
+      if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !Objects.equals(((Entity)this.attrs.get("razonSocial")).getKey(), -1L))
+        sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
+      else 
+        if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
+          sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*")).append(".*' and ");
+      if(estatus!= null && !estatus.getKey().equals(-1L))
+        sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+        regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+      else
+        regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(sb.length()== 0) {
+        Periodo periodo= new Periodo();
+        periodo.addMeses(-2);
+        regresar.put(Constantes.SQL_CONDICION, "date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '".concat(periodo.toString()).concat("'"));
+      } // if  
+      else	
+        regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
 		return regresar;		
 	}
 	
@@ -262,11 +272,14 @@ public class Filtro extends IBaseTicket implements Serializable {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz()) {
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			else
+			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      } // if  
+      else {
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      } // else
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -482,7 +495,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());			
 			String search= (String)this.attrs.get("codigoCliente"); 
-			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*") : "WXYZ";
   		params.put(Constantes.SQL_CONDICION, "upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
       this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
 		} // try
