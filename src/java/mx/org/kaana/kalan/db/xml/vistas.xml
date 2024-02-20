@@ -706,6 +706,7 @@ order by
 select
   tc_mantic_personas.id_persona as id_key,
   tc_mantic_personas.id_persona,
+  tc_mantic_empresas.nombre as empresa,
   tr_mantic_empresa_personal.id_empresa_persona,
   tc_mantic_personas.rfc,
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
@@ -714,6 +715,8 @@ select
   ifnull((select count(*) from tc_kalan_citas where tc_kalan_citas.id_atendio= tr_mantic_empresa_personal.id_empresa_persona and date_format(tc_kalan_citas.inicio, '%Y%m%d')= '{fecha}' group by tc_kalan_citas.id_cliente), 0) as citados
 from
   tr_mantic_empresa_personal
+inner join 
+  tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa= tc_mantic_empresas.id_empresa
 left join (
   select
     tr_mantic_persona_tipo_contacto.id_persona,

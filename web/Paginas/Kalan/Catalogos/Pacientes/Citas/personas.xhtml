@@ -25,7 +25,7 @@
         <div id="collapse-find" class="ui-grid-col-12">
           <p:focus context="razonSocial"/>
           <p:panelGrid columns="3" styleClass="janal-wid-100-txt" columnClasses="janal-fix-80, janal-fix-15, janal-fix-5">
-            <p:autoComplete id="razonSocial" var="item" placeholder="BUSCAR EMPLEADO Ej. JUAN PEREZ LOPEZ" itemLabel="#{item.empleado}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{kalanCatalogosPacientesCitasPersonas.attrs.persona}" completeMethod="#{kalanCatalogosPacientesCitasPersonas.doCompletePersona}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+            <p:autoComplete id="razonSocial" var="item" placeholder="Ej. JUAN PEREZ LOPEZ" itemLabel="#{item.empleado}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{kalanCatalogosPacientesCitasPersonas.attrs.persona}" completeMethod="#{kalanCatalogosPacientesCitasPersonas.doCompletePersona}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
               <f:facet name="itemtip">
                 <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
                   <h:outputText value="Nombre:" />

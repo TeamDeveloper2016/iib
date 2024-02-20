@@ -1836,48 +1836,159 @@
 				where 
 					tc_mantic_ventas.id_empresa in ({idEmpresa})
 					and tc_mantic_ventas.ticket is not null
-					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)
+					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 12, 15, 18)
 				  and {condicion}					
 				{sortOrder}
 			</select>
 			<select id="acumulados">
-				select 
-				  tc_mantic_articulos.id_articulo as id_key,
-				  tc_mantic_articulos.id_vigente,
-				  tc_mantic_articulos.nombre,
-				  avg(tc_mantic_articulos.precio) as precios,
-				  avg(tc_mantic_ventas_detalles.precio) as precio,
-				  avg(tc_mantic_ventas_detalles.costo) as costo,
-				  sum(tc_mantic_ventas_detalles.iva) as iva,
-				  sum(tc_mantic_ventas_detalles.cantidad) as cantidad,
-				  sum(tc_mantic_ventas_detalles.importe) as importe,
-				  tc_mantic_articulos.menudeo,
-				  tc_mantic_articulos.medio_mayoreo,
-				  tc_mantic_articulos.mayoreo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
-          count(tc_mantic_articulos.id_articulo) as ventas
-				from 
-					tc_mantic_articulos
-				inner join
-					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
-				inner join 
-					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
-				inner join
-					tc_mantic_ventas_detalles on tc_mantic_articulos.id_articulo = tc_mantic_ventas_detalles.id_articulo
-				inner join
-					tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta = tc_mantic_ventas.id_venta
-				inner join 
-					tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
-				inner join				
-					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
-				where 
-					tc_mantic_ventas.id_empresa in ({idEmpresa})
-					and tc_mantic_ventas.ticket is not null
-					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)
-				  and {condicion}					
-				group by 
-          tc_mantic_articulos.id_articulo
-				{sortOrder}
+select 
+  tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_articulos.id_articulo,
+  if({todas}, 'TODAS', tc_mantic_empresas.nombre) as empresa,
+  tc_mantic_articulos.id_vigente,
+  tc_mantic_articulos.nombre,
+  avg(tc_mantic_articulos.precio) as precios,
+  avg(tc_mantic_ventas_detalles.precio) as precio,
+  avg(tc_mantic_ventas_detalles.costo) as costo,
+  sum(tc_mantic_ventas_detalles.iva) as iva,
+  sum(tc_mantic_ventas_detalles.cantidad) as cantidad,
+  sum(tc_mantic_ventas_detalles.importe) as importe,
+  tc_mantic_articulos.menudeo,
+  tc_mantic_articulos.medio_mayoreo,
+  tc_mantic_articulos.mayoreo,
+  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+  count(tc_mantic_articulos.id_articulo) as ventas
+from 
+  tc_mantic_articulos
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+inner join
+  tc_mantic_ventas_detalles on tc_mantic_articulos.id_articulo = tc_mantic_ventas_detalles.id_articulo
+inner join
+  tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta = tc_mantic_ventas.id_venta
+inner join 
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa
+inner join 
+  tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+where 
+  tc_mantic_ventas.id_empresa in ({idEmpresa})
+  and tc_mantic_ventas.ticket is not null
+  and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 12, 15, 18)
+  and {condicion}					
+group by 
+  tc_mantic_articulos.id_articulo
+{sortOrder}
+			</select>
+			<select id="general">
+select 
+  tc_mantic_articulos.id_articulo as id_key,
+  avg(tc_mantic_articulos.precio) as precios,
+  avg(tc_mantic_ventas_detalles.precio) as precio,
+  avg(tc_mantic_ventas_detalles.costo) as costo,
+  sum(tc_mantic_ventas_detalles.iva) as iva,
+  sum(tc_mantic_ventas_detalles.cantidad) as cantidad,
+  sum(tc_mantic_ventas_detalles.importe) as importe,
+  count(tc_mantic_articulos.id_articulo) as ventas
+from 
+  tc_mantic_articulos
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+inner join
+  tc_mantic_ventas_detalles on tc_mantic_articulos.id_articulo = tc_mantic_ventas_detalles.id_articulo
+inner join
+  tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta = tc_mantic_ventas.id_venta
+inner join 
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa
+inner join 
+  tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+where 
+  tc_mantic_ventas.id_empresa in ({idEmpresa})
+  and tc_mantic_ventas.ticket is not null
+  and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 12, 15, 18)
+  and {condicion}					
+			</select>
+			<select id="registro">
+select 
+  tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_articulos.id_articulo,
+  tc_mantic_empresas.nombre as empresa,
+  tc_mantic_articulos.id_vigente,
+  tc_mantic_articulos.nombre,
+  tc_mantic_ventas.ticket,
+  avg(tc_mantic_articulos.precio) as precios,
+  avg(tc_mantic_ventas_detalles.precio) as precio,
+  avg(tc_mantic_ventas_detalles.costo) as costo,
+  sum(tc_mantic_ventas_detalles.iva) as iva,
+  sum(tc_mantic_ventas_detalles.cantidad) as cantidad,
+  sum(tc_mantic_ventas_detalles.importe) as importe,
+  tc_mantic_articulos.menudeo,
+  tc_mantic_articulos.medio_mayoreo,
+  tc_mantic_articulos.mayoreo,
+  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+  count(tc_mantic_articulos.id_articulo) as ventas,
+	tc_mantic_personas.cuenta,
+	concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor,
+  tc_mantic_ventas_estatus.nombre as estatus,
+  tc_mantic_ventas.registro
+from 
+  tc_mantic_articulos
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+inner join
+  tc_mantic_ventas_detalles on tc_mantic_articulos.id_articulo = tc_mantic_ventas_detalles.id_articulo
+inner join
+  tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta = tc_mantic_ventas.id_venta
+inner join 
+  tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+inner join 
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa
+inner join 
+  tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+where 
+  tc_mantic_ventas.id_empresa in ({idEmpresa})
+  and tc_mantic_ventas.ticket is not null
+  and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)
+  and {condicion}					
+group by 
+  tc_mantic_ventas.id_venta,
+  tc_mantic_articulos.id_articulo
+{sortOrder}
+			</select>
+			<select id="particular">
+select 
+  tc_mantic_articulos.id_articulo as id_key,
+  avg(tc_mantic_articulos.precio) as precios,
+  avg(tc_mantic_ventas_detalles.precio) as precio,
+  avg(tc_mantic_ventas_detalles.costo) as costo,
+  sum(tc_mantic_ventas_detalles.iva) as iva,
+  sum(tc_mantic_ventas_detalles.cantidad) as cantidad,
+  sum(tc_mantic_ventas_detalles.importe) as importe,
+  count(tc_mantic_articulos.id_articulo) as ventas
+from 
+  tc_mantic_articulos
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+inner join
+  tc_mantic_ventas_detalles on tc_mantic_articulos.id_articulo = tc_mantic_ventas_detalles.id_articulo
+inner join
+  tc_mantic_ventas on tc_mantic_ventas_detalles.id_venta = tc_mantic_ventas.id_venta
+inner join 
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa
+inner join 
+  tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+where 
+  tc_mantic_ventas.id_empresa in ({idEmpresa})
+  and tc_mantic_ventas.ticket is not null
+  and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)
+  and {condicion}					
 			</select>
 			<select id="disponible">
         select
@@ -2585,19 +2696,19 @@ from (
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)
 			</select>
 			<select id="detalle">
-				select
-					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
-          tc_mantic_ventas_detalles.*,
-          tc_mantic_ventas_detalles.cantidad as cuantos,
-          tc_mantic_ventas_detalles.cantidad as inicial,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
-					tc_mantic_articulos.stock
-				from 
-					tc_mantic_ventas_detalles 
-				inner join
-					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo				
-				where  
-					id_venta = {idVenta}				
+select
+  tc_mantic_ventas_detalles.id_venta_detalle as id_key,
+  tc_mantic_ventas_detalles.*,
+  tc_mantic_ventas_detalles.cantidad as cuantos,
+  tc_mantic_ventas_detalles.cantidad as inicial,
+  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+  tc_mantic_articulos.stock
+from 
+  tc_mantic_ventas_detalles 
+inner join
+  tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo				
+where  
+  id_venta = {idVenta}				
 			</select>
 		</unit>
 		<unit id="VistaHistorialIvaDto">

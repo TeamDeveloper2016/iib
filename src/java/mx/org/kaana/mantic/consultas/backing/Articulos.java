@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -35,9 +36,7 @@ public class Articulos extends Comun implements Serializable {
     try {
     	this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
-      //this.attrs.put("nombre", "");
       this.attrs.put("idTipoArticulo", 1L);
-      this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));      
 			this.toLoadCatalog();
     } // try
     catch (Exception e) {
@@ -82,10 +81,33 @@ public class Articulos extends Comun implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			// this.attrs.put("idEmpresa", new UISelectEntity("-1"));
-      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
-			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+      List<UISelectEntity> empresas= UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "nombre");
+      this.attrs.put("empresas", empresas);
+			this.attrs.put("idEmpresa",  UIBackingUtilities.toFirstKeySelectEntity(empresas));
+      List<UISelectEntity> almacenes= UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "nombre");
+      this.attrs.put("almacenes", (List<UISelectEntity>) almacenes);
+			this.attrs.put("idAlmacen", UIBackingUtilities.toFirstKeySelectEntity(almacenes));
+      this.toLoadVentaEstatus();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+
+	private void toLoadVentaEstatus() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put("idTipoDocumento", "2");
+			params.put("estatusAsociados", "3, 4, 12, 15, 18");
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      List<UISelectEntity> estatus= UIEntity.seleccione("TcManticVentasEstatusDto", "estatus", params, columns, "nombre");
+      this.attrs.put("estatus", estatus);
+			this.attrs.put("idVentaEstatus", UIBackingUtilities.toFirstKeySelectEntity(estatus));
     } // try
     catch (Exception e) {
       throw e;
@@ -119,7 +141,16 @@ public class Articulos extends Comun implements Serializable {
 		  		sb.append("(tc_mantic_articulos.nombre regexp '.*").append(nombre).append(".*' or tc_mantic_articulos.descripcion regexp '.*").append(nombre).append(".*') and ");				
 				} // if	
 		  sb.append("tc_mantic_articulos.id_vigente=").append(this.attrs.get("idVigente")).append(" and ");
-			if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
+		  if(!Cadena.isVacio(this.attrs.get("idVentaEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idVentaEstatus")).getKey(), -1L))
+  		  sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(((UISelectEntity)this.attrs.get("idVentaEstatus")).getKey()).append(") and ");
+			if(this.attrs.get("vendedor")!= null && ((UISelectEntity)this.attrs.get("vendedor")).getKey()> 0L) 
+				sb.append("tc_mantic_personas.id_persona=").append(((UISelectEntity)this.attrs.get("vendedor")).getKey()).append(" and ");						
+  		else 
+	  		if(!Cadena.isVacio(JsfBase.getParametro("vendedor_input"))) { 
+					String nombre= JsfBase.getParametro("vendedor_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
+		  		sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*").append(nombre).append(".*') and ");
+				} // if	
+		  if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !Objects.equals(((UISelectEntity)this.attrs.get("idAlmacen")).getKey(), -1L))
   		  regresar.put("almacen", " and (tc_mantic_almacenes_articulos.id_almacen= "+ ((UISelectEntity)this.attrs.get("idAlmacen")).getKey()+ ")");
 			else
   		  regresar.put("almacen", " ");
@@ -127,16 +158,19 @@ public class Articulos extends Comun implements Serializable {
 				regresar.put("condicion", Constantes.SQL_VERDADERO);
 			else
 			  regresar.put("condicion", sb.substring(0, sb.length()- 4));			
-		  if(!Cadena.isVacio(this.attrs.get("idEmpresa")) || this.attrs.get("idEmpresa").toString().equals("-1"))
+      regresar.put("todas", Constantes.SQL_FALSO);
+		  if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
 			  regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
-			else
+      else {
 			  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
+        regresar.put("todas", Constantes.SQL_VERDADERO);
+      } // if
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar;
-	} // toCondicion
+	} 
 
 	public void doUpdateArticulos() {
 		List<Columna> columns         = new ArrayList<>();
@@ -207,6 +241,36 @@ public class Articulos extends Comun implements Serializable {
 			this.attrs.put("montoTermino", this.attrs.get("montoInicio"));
 	  if(this.attrs.get("montoTermino")!= null && this.attrs.get("montoInicio")== null)
 			this.attrs.put("montoInicio", this.attrs.get("montoTermino"));
-	} // doMontoUpdate
+	} 
 
+	public List<UISelectEntity> doCompletePersona(String codigo) {
+ 		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("correo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("citados", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+			} // if	
+			else
+				codigo= "WXYZ";
+			params.put("fecha", Fecha.toRegistro());			
+  		params.put(Constantes.SQL_CONDICION, "(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(tc_mantic_personas.rfc) regexp '.*").concat(codigo).concat(".*')"));
+      this.attrs.put("personas", UIEntity.build("VistaClientesCitasDto", "citados", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		return (List<UISelectEntity>)this.attrs.get("personas");
+	}
+  
 }
