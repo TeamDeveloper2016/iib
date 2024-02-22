@@ -661,7 +661,7 @@
 					</div>
 				</div>
 			</p:tab>
-			<p:tab id="tabCliente" title="Cliente">
+      <p:tab id="tabCliente" title="Cliente" rendered="false">
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">          
@@ -812,7 +812,7 @@
 					</div>
 				</div>		
 			</p:tab>			
-			<p:tab id="tabApartado" title="Apartado" rendered="#{manticVentasCajaEspecialAccion.attrs.tabApartado}">
+			<p:tab id="tabApartado" title="Apartado" rendered="#{false and manticVentasCajaEspecialAccion.attrs.tabApartado}">
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">          							
@@ -838,7 +838,7 @@
 					</div>
 				</div>		
 			</p:tab>
-			<p:tab id="tabTickets" title="Tickets">
+      <p:tab id="tabTickets" title="Tickets" rendered="false">
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">          							
@@ -1487,12 +1487,12 @@
 		<hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
 		<div class="janal-line-button">
 			<div class="lg-pantalla">
-				<p:commandButton id="aceptCotizacion" value="Cotización" widgetVar="wAceptarCotizacion" icon="fa fa-list-ul" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaEspecialAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
+				<p:commandButton id="aceptCotizacion" value="Cotización" widgetVar="wAceptarCotizacion" icon="fa fa-list-ul" process="@form" styleClass="cotizar janal-text-white janal-display-none" actionListener="#{manticVentasCajaEspecialAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
 				<p:commandButton id="aceptar" value="Aceptar" widgetVar="wAceptarCompra" icon="fa fa-check" accesskey="a"  process="@this" styleClass="cotizar janal-text-white" onstart="return janal.bloquear();" actionListener="#{manticVentasCajaEspecialAccion.doValidateConfirmacionFactura}" oncomplete="jsArticulos.applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaEspecialAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaEspecialAccion.pagar? '': 'none'}"/>			
 				<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasCajaEspecialAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 			</div>		
 			<div class="xs-pantalla">
-				<p:commandButton id="cotizacionIcon" title="Cotización" widgetVar="wAceptarCotizacionIcon" icon="fa fa-check" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaEspecialAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
+				<p:commandButton id="cotizacionIcon" title="Cotización" widgetVar="wAceptarCotizacionIcon" icon="fa fa-check" process="@form" styleClass="cotizar janal-text-white janal-display-none" actionListener="#{manticVentasCajaEspecialAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
 				<p:commandButton id="aceptarIcon" title="Aceptar" widgetVar="wAceptarCompraIcon" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" onstart="return janal.bloquear();" actionListener="#{manticVentasCajaEspecialAccion.doValidateConfirmacionFactura}" oncomplete="jsArticulos.applyValidacionesGeneral();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaEspecialAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaEspecialAccion.pagar? '': 'none'}"/>			
 				<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaEspecialAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 			</div>		

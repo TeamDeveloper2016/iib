@@ -124,7 +124,7 @@ public class Filtro extends IBaseTicket implements Serializable {
   }
   
   public String getGeneral() {
-    String kilos= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("kilos"));
+    String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("kilos"));
     String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
     return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
   }
@@ -136,7 +136,6 @@ public class Filtro extends IBaseTicket implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
-      this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
       this.attrs.put("general", this.toEmptyTotales());
 			this.toLoadCatalog();
       if(this.attrs.get("idVenta")!= null) {
@@ -156,12 +155,12 @@ public class Filtro extends IBaseTicket implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-			params.put("sortOrder", this.attrs.get("sortOrder"));
+			params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("kilos", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("kilos", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
       this.lazyModel= new FormatCustomLazy("VistaVentasDto", params, columns);
       this.attrs.put("general", this.toTotales("VistaVentasDto", "general", params));

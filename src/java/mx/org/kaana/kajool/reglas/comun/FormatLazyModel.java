@@ -68,7 +68,7 @@ public class FormatLazyModel<T extends IBaseDto> extends EntityLazyModel<T> impl
 			for(T entity: regresar) {
 				for(Columna columna: this.fields) {
 					if(!((Entity)entity).containsKey(columna.getName())) {
-						throw new RuntimeException("No existe la columna "+ columna.getName()+ " en la proceso seleccionado.");
+						throw new RuntimeException("No existe la columna "+ columna.getName()+ " en la proceso seleccionado");
 					} // if
 					Value value= ((Entity)entity).get(columna.getName());
 					value.setData(Global.format(columna.getFormat(), value.getData()));

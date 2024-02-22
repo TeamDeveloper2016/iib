@@ -69,10 +69,9 @@ public class FormatCustomLazy extends FormatLazyModel<IBaseDto> {
 
   @Override
   protected String toFilters(Map<String, Object> filters, EFiltersWith like) {
-    StringBuilder regresar= new StringBuilder("");
-    Map<String, Object> params = null;
+    StringBuilder regresar    = new StringBuilder("");
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       for (String key : filters.keySet()) {
         params.put("value", filters.get(key));
         String start= this.format(key);
@@ -99,10 +98,9 @@ public class FormatCustomLazy extends FormatLazyModel<IBaseDto> {
   }
 
   private String format(String msg) {
-    String regresar= Cadena.eliminar(msg, (char)39);
-    Map<String, Object> params = null;
+    String regresar           = Cadena.eliminar(msg, (char)39);
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("punto", ".");
       params.put("apostrofe", "'");
       params.put("fecha", "'dd/mm/yyyy'");

@@ -224,11 +224,17 @@
               </f:facet>
               <h:outputText value="#{row['cuenta']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
+            </p:column>
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.deudaEstatus}">
+              <f:facet name="header">
+                <h:outputText value="Deuda"/>
+              </f:facet>
+              <h:outputText value="#{row['deudaEstatus']}"/>
             </p:column>
             <p:column class="janal-column-center MarAuto Responsive janal-wid-col-130" sortBy="#{row.registro}">
               <f:facet name="header">
@@ -236,7 +242,7 @@
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>
-            <p:column headerText="Factura" styleClass="janal-display-none" style="width:50px; text-align:center" exportable="false" rendered="false">
+            <p:column headerText="Factura" styleClass="janal-display-none" style="width:50px; text-align: center" exportable="false" rendered="false">
 							<p:commandButton process="@this" update="descargar" icon="fa fa-eye-slash" title="Ver documento PDF" action="#{manticVentasCajaFiltro.doIrFacturas}" rendered="#{row.folio eq '1'}">
 							  <f:setPropertyActionListener value="#{filtro}" target="#{manticVentasCajaFiltro.attrs.seleccionado}" />
 							</p:commandButton>
