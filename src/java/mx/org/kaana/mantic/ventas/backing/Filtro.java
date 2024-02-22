@@ -13,6 +13,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -24,6 +25,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Encriptar;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -121,14 +123,21 @@ public class Filtro extends IBaseTicket implements Serializable {
     this.celular = celular;
   }
   
+  public String getGeneral() {
+    String kilos= Numero.formatear(Numero.MILES_SIN_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("kilos"));
+    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
+    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("idEmpresa", new UISelectEntity(JsfBase.getAutentifica().getEmpresa().getIdEmpresa()));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
+      this.attrs.put("general", this.toEmptyTotales());
 			this.toLoadCatalog();
       if(this.attrs.get("idVenta")!= null) {
 			  this.doLoad();
@@ -154,7 +163,8 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("kilos", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaVentasDto", params, columns);
+      this.lazyModel= new FormatCustomLazy("VistaVentasDto", params, columns);
+      this.attrs.put("general", this.toTotales("VistaVentasDto", "general", params));
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -247,6 +257,13 @@ public class Filtro extends IBaseTicket implements Serializable {
       else 
         if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
           sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*")).append(".*' and ");
+			if(this.attrs.get("vendedor")!= null && ((UISelectEntity)this.attrs.get("vendedor")).getKey()> 0L) 
+				sb.append("tc_mantic_personas.id_persona=").append(((UISelectEntity)this.attrs.get("vendedor")).getKey()).append(" and ");						
+  		else 
+	  		if(!Cadena.isVacio(JsfBase.getParametro("vendedor_input"))) { 
+					String nombre= JsfBase.getParametro("vendedor_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
+		  		sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*").append(nombre).append(".*') and ");
+				} // if	
       if(estatus!= null && !estatus.getKey().equals(-1L))
         sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
       if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
@@ -283,8 +300,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "titulo"));
+			//this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
 			columns.clear();
       this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
@@ -296,25 +314,24 @@ public class Filtro extends IBaseTicket implements Serializable {
 	}
 	
 	public boolean doVerificarReporte() {
-    boolean regresar = false;
+    boolean regresar = Boolean.FALSE;
 		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L) {
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
-      regresar = true;
-    }
+      regresar = Boolean.TRUE;
+    } // if
     else {
 			rc.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
     return regresar;
-	} // doVerificarReporte		
+	} 
 	
 	public void doLoadEstatus(){
-		Entity seleccionado          = null;
+		Entity seleccionado          = (Entity)this.attrs.get("seleccionado");
 		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticVentasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
@@ -332,9 +349,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 	public void doActualizarEstatus() {
 		Transaccion transaccion           = null;
 		TcManticVentasBitacoraDto bitacora= null;
-		Entity seleccionado               = null;
+		Entity seleccionado               = (Entity)this.attrs.get("seleccionado");
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
 			TcManticVentasDto orden= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, seleccionado.getKey());
 			bitacora= new TcManticVentasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getConsecutivo(), orden.getTotal());
 			transaccion= new Transaccion(bitacora);
@@ -365,9 +381,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 	} // doTicketExpress
 	
 	public String doGarantia(){
-		Entity seleccionado= null;
+		Entity seleccionado= (Entity) this.attrs.get("seleccionado");
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");
 			JsfBase.setFlashAttribute("idVenta", seleccionado.getKey());
 			JsfBase.setFlashAttribute("registroVenta", seleccionado.toTimestamp("registro"));
 			JsfBase.setFlashAttribute("accionVenta", EAccion.CONSULTAR);
@@ -514,7 +529,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 		List<UISelectEntity> clientes= null;
 		try {
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
-			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
+      int index= clientes.indexOf((UISelectEntity)event.getObject());
+      if(index>= 0)
+			  seleccion= clientes.get(index);
 			this.toFindCliente(seleccion);
 		} // try
 		catch (Exception e) {
@@ -524,10 +541,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 	} // doAsignaCliente
 	
 	private void toFindCliente(UISelectEntity seleccion) {
-		List<UISelectEntity> clientesSeleccion= null;
+		List<UISelectEntity> clientesSeleccion= new ArrayList<>();
 		MotorBusqueda motorBusqueda           = null;
 		try {
-			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			motorBusqueda= new MotorBusqueda(-1L);
 			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
@@ -570,12 +586,11 @@ public class Filtro extends IBaseTicket implements Serializable {
 	} // doLoadMails
   
 	public void doLoadPhones() {
-		Entity seleccionado= null;
+		Entity seleccionado               = (Entity)this.attrs.get("seleccionado");
 		mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda motor= null; 
 		List<ClienteTipoContacto>contactos= null;
     Correo item                       = null;
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");			
 			motor= new mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda(seleccionado.toLong("idCliente"));
 			contactos= motor.toClientesTipoContacto();
 			this.celulares= new ArrayList<>();
@@ -751,10 +766,9 @@ public class Filtro extends IBaseTicket implements Serializable {
 	} 
   
   public void doSendWhatsup() {
-    StringBuilder sb= new StringBuilder();
-    Map<String, Object> params= null;
+    StringBuilder sb          = new StringBuilder();
+    Map<String, Object> params= new HashMap<>();
     try {      
-      params = new HashMap<>();      
       Entity seleccionado= (Entity)this.attrs.get("seleccionado");			
       if(this.selectedCelulares!= null && !this.selectedCelulares.isEmpty()) {
         for(Correo phone: this.selectedCelulares) {
@@ -809,5 +823,57 @@ public class Filtro extends IBaseTicket implements Serializable {
 	protected void finalize() throws Throwable {
     super.finalize();		
 	}	// finalize
-	
+
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+  
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.put("kilos", new Value("kilos", 0D));
+    regresar.put("total", new Value("total", 0D));
+    regresar.put("ventas", new Value("ventas", 0D));
+    return regresar;
+  }
+
+	public List<UISelectEntity> doCompletePersona(String codigo) {
+ 		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("correo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("citados", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+			} // if	
+			else
+				codigo= "WXYZ";
+			params.put("fecha", Fecha.toRegistro());			
+  		params.put(Constantes.SQL_CONDICION, "(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(tc_mantic_personas.rfc) regexp '.*").concat(codigo).concat(".*')"));
+      this.attrs.put("personas", UIEntity.build("VistaClientesCitasDto", "citados", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		return (List<UISelectEntity>)this.attrs.get("personas");
+	}
+  
 }

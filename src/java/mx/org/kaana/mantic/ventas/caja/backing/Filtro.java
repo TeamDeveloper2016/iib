@@ -22,6 +22,7 @@ import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -107,6 +108,13 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
       else 
         if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
           sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").replaceAll("(,| |\\t)+", ".*")).append(".*' and ");
+			if(this.attrs.get("vendedor")!= null && ((UISelectEntity)this.attrs.get("vendedor")).getKey()> 0L) 
+				sb.append("tc_mantic_personas.id_persona=").append(((UISelectEntity)this.attrs.get("vendedor")).getKey()).append(" and ");						
+  		else 
+	  		if(!Cadena.isVacio(JsfBase.getParametro("vendedor_input"))) { 
+					String nombre= JsfBase.getParametro("vendedor_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
+		  		sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*").append(nombre).append(".*') and ");
+				} // if	
       if(estatus!= null) { 
         if(!estatus.getKey().equals(-1L))
           sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
@@ -148,8 +156,9 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "titulo"));
+//			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 //      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaVentasDto", "clientes", params, columns));
 //			this.attrs.put("idCliente", new UISelectEntity("-1"));
@@ -170,11 +179,9 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 	} // toLoadCatalog
 	
 	private String toEstatusCaja(){
-		StringBuilder regresar= null;
-		String allEstatusCaja = null;
+		StringBuilder regresar= new StringBuilder("id_venta_estatus in (");
+		String allEstatusCaja = "";
 		try {
-			regresar= new StringBuilder("id_venta_estatus in (");
-			allEstatusCaja= "";
 			for(EEstatusVentas estatus: EEstatusVentas.values()){
 				if(estatus.equals(EEstatusVentas.CANCELADA) || estatus.equals(EEstatusVentas.PAGADA) || estatus.equals(EEstatusVentas.CREDITO) || estatus.equals(EEstatusVentas.APARTADOS) || estatus.equals(EEstatusVentas.TIMBRADA) || estatus.equals(EEstatusVentas.TIMBRADA))
 					allEstatusCaja= allEstatusCaja.concat(estatus.getIdEstatusVenta().toString()).concat(",");
@@ -204,10 +211,9 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
-    Entity seleccionado          = null;
+    Entity seleccionado          = ((Entity)this.attrs.get("seleccionado"));
 		try {		
       params= this.toPrepare();	
-      seleccionado = ((Entity)this.attrs.get("seleccionado"));
 			//recuperar el sello digital en caso de que la factura ya fue timbrada para que salga de forma correcta el reporte
 			if(seleccionado.toString("idFacturama")!= null && seleccionado.toString("selloSat")== null) {
 				Transferir transferir= null;
@@ -255,11 +261,10 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
   } // doReporte
 
 	public void doMoveSection() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> documento= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
@@ -287,14 +292,12 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 	}
 
 	public void doUpdateArticulosFiltro() {
-		List<Columna> columns         = null;
-    Map<String, Object> params    = null;
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			String search= (String) this.attrs.get("codigoFiltro"); 

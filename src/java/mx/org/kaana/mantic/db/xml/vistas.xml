@@ -1884,12 +1884,12 @@ group by
 			<select id="general">
 select 
   tc_mantic_articulos.id_articulo as id_key,
-  avg(tc_mantic_articulos.precio) as precios,
-  avg(tc_mantic_ventas_detalles.precio) as precio,
-  avg(tc_mantic_ventas_detalles.costo) as costo,
-  sum(tc_mantic_ventas_detalles.iva) as iva,
-  sum(tc_mantic_ventas_detalles.cantidad) as cantidad,
-  sum(tc_mantic_ventas_detalles.importe) as importe,
+  ifnull(avg(tc_mantic_articulos.precio), 0) as precios,
+  ifnull(avg(tc_mantic_ventas_detalles.precio), 0) as precio,
+  ifnull(avg(tc_mantic_ventas_detalles.costo), 0) as costo,
+  ifnull(sum(tc_mantic_ventas_detalles.iva), 0) as iva,
+  ifnull(sum(tc_mantic_ventas_detalles.cantidad), 0) as cantidad,
+  ifnull(sum(tc_mantic_ventas_detalles.importe), 0) as importe,
   count(tc_mantic_articulos.id_articulo) as ventas
 from 
   tc_mantic_articulos
@@ -1914,6 +1914,7 @@ where
 			<select id="registro">
 select 
   tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_ventas.id_venta,
   tc_mantic_articulos.id_articulo,
   tc_mantic_empresas.nombre as empresa,
   tc_mantic_articulos.id_vigente,
@@ -1933,6 +1934,7 @@ select
 	tc_mantic_personas.cuenta,
 	concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor,
   tc_mantic_ventas_estatus.nombre as estatus,
+  tc_mantic_clientes.razon_social as cliente,
   tc_mantic_ventas.registro
 from 
   tc_mantic_articulos
@@ -1950,6 +1952,8 @@ inner join
   tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
 inner join				
   tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+left join 
+  tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
 where 
   tc_mantic_ventas.id_empresa in ({idEmpresa})
   and tc_mantic_ventas.ticket is not null
@@ -1963,12 +1967,12 @@ group by
 			<select id="particular">
 select 
   tc_mantic_articulos.id_articulo as id_key,
-  avg(tc_mantic_articulos.precio) as precios,
-  avg(tc_mantic_ventas_detalles.precio) as precio,
-  avg(tc_mantic_ventas_detalles.costo) as costo,
-  sum(tc_mantic_ventas_detalles.iva) as iva,
-  sum(tc_mantic_ventas_detalles.cantidad) as cantidad,
-  sum(tc_mantic_ventas_detalles.importe) as importe,
+  ifnull(avg(tc_mantic_articulos.precio), 0) as precios,
+  ifnull(avg(tc_mantic_ventas_detalles.precio), 0) as precio,
+  ifnull(avg(tc_mantic_ventas_detalles.costo), 0) as costo,
+  ifnull(sum(tc_mantic_ventas_detalles.iva), 0) as iva,
+  ifnull(sum(tc_mantic_ventas_detalles.cantidad), 0) as cantidad,
+  ifnull(sum(tc_mantic_ventas_detalles.importe), 0) as importe,
   count(tc_mantic_articulos.id_articulo) as ventas
 from 
   tc_mantic_articulos
@@ -3893,6 +3897,36 @@ where
 				group by 
 					tc_mantic_ventas.id_venta
 				{sortOrder}
+			</select>
+			<select id="general">
+				select
+					tc_mantic_ventas.id_venta as id_key,
+					ifnull(sum(tc_mantic_ventas.total), 0) as total, 
+          ifnull(round(sum(tc_mantic_ventas_detalles.peso_estimado* tc_mantic_ventas_detalles.cantidad), 2), 0) as kilos,
+          ifnull(count(tc_mantic_ventas.id_venta), 0) as ventas
+				from 
+					tc_mantic_ventas						
+				left join 
+					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+				inner join 
+					tc_mantic_almacenes on tc_mantic_ventas.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join 
+				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona			
+				inner join 
+					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				left join 
+					tc_mantic_facturas on tc_mantic_ventas.id_factura = tc_mantic_facturas.id_factura		
+        left join
+           tr_mantic_venta_medio_pago on tr_mantic_venta_medio_pago.id_venta= tc_mantic_ventas.id_venta
+				where
+					tc_mantic_ventas.id_empresa in ({idEmpresa})
+					and {condicion}
 			</select>
 			<select id="bloqueadas">
 				select

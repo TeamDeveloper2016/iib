@@ -190,5 +190,4 @@ public class Acumulados extends Articulos implements Serializable {
     return regresar;
   }
   
-  
 }

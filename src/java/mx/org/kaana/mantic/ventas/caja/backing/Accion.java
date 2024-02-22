@@ -717,22 +717,24 @@ public class Accion extends IBaseVenta implements Serializable {
 	@Override
 	public void doAsignaCliente(SelectEvent event) {
 		UISelectEntity seleccion              = null;
-		UISelectEntity ticketAbierto          = null;
-		List<UISelectEntity> clientes         = null;
+		UISelectEntity ticketAbierto          = (UISelectEntity) this.attrs.get("ticketAbierto");
+		List<UISelectEntity> clientes         = (List<UISelectEntity>) this.attrs.get("clientes");
 		List<UISelectEntity> clientesSeleccion= new ArrayList<>();
 		Transaccion transaccion               = null;		
 		boolean facturarVenta                 = false;
 		MotorBusqueda motor                   = new MotorBusqueda(-1L);
 		try {
-			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-			clientes = (List<UISelectEntity>) this.attrs.get("clientes");
-			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
+      int index= clientes.indexOf((UISelectEntity)event.getObject());
+      if(index>= 0)
+			  seleccion= clientes.get(index);
 			clientesSeleccion.add(seleccion);			
 			this.attrs.put("mostrarCorreos", seleccion== null || seleccion.getKey().equals(-1L) || Objects.equals(seleccion.getKey(), motor.toClienteDefault().getKey()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			facturarVenta= (Boolean)this.attrs.get("facturarVenta") && !(Boolean)this.attrs.get("mostrarCorreos");
-			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()) {				
+			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()) {
+        // ESTO SE AJUSTO PARA QUE TODAS LAS VENTAS SIEMPRE SEAN A CREDITO SI EL CLIENTE TIENE CREDITO ACEPTADO 21/02/2024
+        this.attrs.put("creditoVenta", Objects.equals(seleccion.toLong("idCredito"), 1L));
         ((TicketVenta)this.getAdminOrden().getOrden()).setIkCliente(seleccion);
 				this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
         if(Objects.equals(this.idEspecial, 2L))
@@ -759,7 +761,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doAsignaCliente
+	} 
 		
 	public void doLoadTicketAbiertosPrincipal() {		
 		Map<String, Object>params= new HashMap<>();
@@ -1812,10 +1814,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doAsignaApartado() {
 		try {			
 			super.doAsignaApartado();			
-			this.attrs.put("mostrarApartado", true);			
-			this.attrs.put("apartado", false);
-			this.attrs.put("creditoVenta", false);
-			this.attrs.put("ajustePreciosCliente", true);			
+			this.attrs.put("mostrarApartado", Boolean.TRUE);			
+			this.attrs.put("apartado", Boolean.FALSE);
+			this.attrs.put("creditoVenta", Boolean.FALSE);
+			this.attrs.put("ajustePreciosCliente", Boolean.TRUE);			
 			this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("apartados").toString()))));
 			this.doAsignaTicketAbierto();
 		} // try

@@ -10,6 +10,8 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.comun.Comun;
@@ -37,6 +39,7 @@ public class Articulos extends Comun implements Serializable {
     	this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
       this.attrs.put("idTipoArticulo", 1L);
+      this.attrs.put("idTipoDocumento", 2L);
 			this.toLoadCatalog();
     } // try
     catch (Exception e) {
@@ -271,6 +274,38 @@ public class Articulos extends Comun implements Serializable {
       Methods.clean(params);
     } // finally
 		return (List<UISelectEntity>)this.attrs.get("personas");
+	}
+ 
+	public void doMoveSection(Entity row) {
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
+		List<UISelectEntity> documento= null;
+    try {
+      this.attrs.put("seleccionado", row);
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("precio", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA));
+			params.put("idVenta", row.toLong("idVenta"));
+			documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "venta", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("documentos", documento);
+			if(documento!= null && !documento.isEmpty()) {
+				documento.get(0).put("articulos", new Value("articulos", documento.size()));
+        this.attrs.put("documento", documento.get(0));
+			} // if	
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
 	}
   
 }

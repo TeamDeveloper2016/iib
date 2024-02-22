@@ -152,7 +152,7 @@
 								</f:facet>
 								<h:outputText value="#{row['empresa']}"/>
 							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.propio}">
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-8 janal-display-none" sortBy="#{row.propio}">
 								<f:facet name="header">
 									<h:outputText value="Código"/>
 								</f:facet>
@@ -189,7 +189,7 @@
 								<h:outputText value="#{row['importe']}"/>
 							</p:column>					
               <p:column class="janal-column-center MarAuto Responsive janal-wid-col-40">
-  							<p:commandButton icon="fa fa-search" title="Partida(s)" actionListener="#{manticConsultasAcumulados.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+  							<p:commandButton icon="fa fa-search" title="Detalle ventas" actionListener="#{manticConsultasAcumulados.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
               </p:column>
 							<f:facet name="footer">
                 <p:outputLabel styleClass="general" style="float: left;" value="#{manticConsultasAcumulados.general}" escape="false"/>
@@ -230,18 +230,31 @@
 								</f:facet>
 								<h:outputText value="#{row['empresa']}"/>
 							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.propio}">
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-8 janal-display-none" sortBy="#{row.propio}">
 								<f:facet name="header">
 									<h:outputText value="Código"/>
 								</f:facet>
 								<h:outputText value="#{row['propio']}"/>
 							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}">
+							<p:column class="janal-column-left MarAuto Responsive janal-display-none">
+								<f:facet name="header">
+									<h:outputText value="Ticket"/>
+								</f:facet>
+								<h:outputText value="#{row['ticket']}"/>
+							</p:column>			
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.nombre}" exportable="false">
+								<f:facet name="header">
+									<h:outputText value="Nombre"/>
+								</f:facet>
+                <p:commandLink actionListener="#{manticConsultasAcumulados.doMoveSection(row)}" process="@this tabla" update="documento informacion @(.documento)" onstart="return janal.bloquear()" oncomplete="janal.bloquear();PF('widgetDetalle').show();" title="Ver ticket">
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:commandLink>
+							</p:column>			
+							<p:column class="janal-column-left MarAuto Responsive janal-display-none" sortBy="#{row.nombre}">
 								<f:facet name="header">
 									<h:outputText value="Nombre"/>
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
-                <i class="fa fa-cart-plus janal-color-blue janal-float-right" title="Ticket: #{row.ticket}"></i>
 							</p:column>			
 							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidad}">
 								<f:facet name="header">
@@ -267,7 +280,20 @@
 								</f:facet>
 								<h:outputText value="#{row['vendedor']}"/>
 							</p:column>					
-              <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.estutus}">
+              <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.estutus}" exportable="false">
+                <f:facet name="header">
+                  <h:outputText value="Estutus"/>
+                </f:facet>
+                <h:outputText value="#{row['estatus']}"/>
+                <i class="fa fa-user janal-color-blue" style="float: right" title="Cliente: #{row.cliente}"></i>
+              </p:column>			
+              <p:column class="janal-column-center MarAuto Responsive janal-wid-8 janal-display-none">
+                <f:facet name="header">
+                  <h:outputText value="Cliente"/>
+                </f:facet>
+                <h:outputText value="#{row['cliente']}"/>
+              </p:column>			
+              <p:column class="janal-column-center MarAuto Responsive janal-wid-8 janal-display-none" sortBy="#{row.estutus}">
                 <f:facet name="header">
                   <h:outputText value="Estutus"/>
                 </f:facet>
@@ -295,4 +321,64 @@
 			</div>
 		</div>		           				
 	</ui:define>    
+  <ui:define name="dialogos">  
+		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle del ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="480px" resizable="false" appendTo="@(body)">
+			<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-col-80 janal-column-center, janal-wid-60 janal-column-center, janal-wid-10 janal-column-center, janal-wid-col-60 janal-column-center, janal-wid-10 janal-column-center">
+				<p:outputLabel value="Consecutivo"/>
+				<p:outputLabel value="Razón social"/>
+				<p:outputLabel value="Fecha"/>
+				<p:outputLabel value="Articulos"/>
+				<p:outputLabel value="Total"/>
+				<p:inputText value="#{manticConsultasAcumulados.attrs.documento.consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticConsultasAcumulados.attrs.documento.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
+				<p:inputText value="#{manticConsultasAcumulados.attrs.documento.fecha}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticConsultasAcumulados.attrs.documento.articulos}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+				<p:inputText value="#{manticConsultasAcumulados.attrs.documento.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+			</p:panelGrid>
+			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		
+				<p:dataTable id="informacion" var="item" value="#{manticConsultasAcumulados.attrs.documentos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
+					<p:column headerText="No" styleClass="janal-wid-3">
+						<p:outputLabel value="#{index+ 1}.-"/>
+					</p:column>   
+					<p:column headerText="Código" styleClass="janal-wid-12">
+						<p:outputLabel value="#{item.propio}"/>
+					</p:column>   
+					<p:column headerText="Nombre">
+						<p:outputLabel value="#{item.nombre}"/>
+					</p:column>   
+					<p:column headerText="Inicial" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticConsultasAcumulados.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.inicial}"/>
+					</p:column>   
+					<p:column headerText="#{manticConsultasAcumulados.attrs.idTipoDocumento eq 6? 'Entradas': 'Cantidad'}" styleClass="janal-wid-10 janal-column-right documento">
+						<p:outputLabel value="#{item.cantidad}"/>
+					</p:column>   
+					<p:column headerText="Origen" styleClass="janal-wid-15 documento" rendered="#{manticConsultasAcumulados.attrs.idTipoDocumento eq 4}">
+						<p:outputLabel value="#{item.origen}"/>
+					</p:column>   
+					<p:column headerText="Destino" styleClass="janal-wid-15 documento" rendered="#{manticConsultasAcumulados.attrs.idTipoDocumento eq 4}">
+						<p:outputLabel value="#{item.destino}"/>
+					</p:column>   
+					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right" rendered="#{not(manticConsultasAcumulados.attrs.idTipoDocumento eq 6) and not(manticConsultasAcumulados.attrs.idTipoDocumento eq 4)}">
+						<p:outputLabel value="#{item.precio}"/>
+					</p:column>   
+					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right documento" rendered="#{not(manticConsultasAcumulados.attrs.idTipoDocumento eq 6) and not(manticConsultasAcumulados.attrs.idTipoDocumento eq 4)}">
+						<p:outputLabel value="#{item.importe}"/>
+					</p:column>   
+					<p:column headerText="Salidas" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticConsultasAcumulados.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.salidas}"/>
+					</p:column>   
+					<p:column headerText="Stock" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticConsultasAcumulados.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.stock}"/>
+					</p:column>   
+					<p:column headerText="Registro" styleClass="janal-wid-15 janal-column-right documento" rendered="#{manticConsultasAcumulados.attrs.idTipoDocumento eq 4 or manticConsultasAcumulados.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.registro}"/>
+					</p:column>   
+				</p:dataTable>
+			</p:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cerrar" oncomplete="PF('widgetDetalle').hide();"/>
+			</div>
+		</p:dialog>	    
+	</ui:define>		
 </ui:composition>
