@@ -3906,7 +3906,7 @@ where
 			<select id="general">
 				select
 					tc_mantic_ventas.id_venta as id_key,
-					ifnull(sum(tc_mantic_ventas.total), 0) as total, 
+					ifnull(sum(tc_mantic_ventas_detalles.importe), 0) as total, 
           ifnull(round(sum(tc_mantic_ventas_detalles.peso_estimado* tc_mantic_ventas_detalles.cantidad), 2), 0) as kilos,
           ifnull(count(tc_mantic_ventas.id_venta), 0) as ventas
 				from 

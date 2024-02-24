@@ -447,8 +447,8 @@ public class Accion extends IBaseVenta implements Serializable {
                 ticket= new CreateTicket(((AdminTickets)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket);
               else
                 ticket= new CreateTicket(((AdminTickets)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"), this.toCajero(((AdminTickets)this.getAdminOrden()).getOrden().getKey()));
-            UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
-            UIBackingUtilities.execute("jsTicket.clicTicket();");
+            // UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
+            // UIBackingUtilities.execute("jsTicket.clicTicket();");
           } // if  
 					JsfBase.addMessage("Se finalizó el pago del ticket de venta", ETipoMensaje.INFORMACION);
 					this.setAdminOrden(new AdminTickets(new TicketVenta()));
@@ -464,6 +464,7 @@ public class Accion extends IBaseVenta implements Serializable {
       UIBackingUtilities.update("contenedorGrupos");
       UIBackingUtilities.update("@(.filas)");
       UIBackingUtilities.update("@(.recalculo)");
+      UIBackingUtilities.update("@(.cotizar)");
       UIBackingUtilities.update("contenedorGrupos:deudorPago");
       UIBackingUtilities.update("contenedorGrupos:deudor");
     } // try
