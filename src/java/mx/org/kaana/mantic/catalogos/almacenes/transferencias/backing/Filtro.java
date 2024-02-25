@@ -68,14 +68,13 @@ public class Filtro extends Comun implements Serializable {
 	}
 
 	public StreamedContent getArchivo() {
-		StreamedContent regresar= null;
-		Xls xls                 = null;
-		String template         = "CONTEOS";
-		Map<String, Object> params=null;
+		StreamedContent regresar  = null;
+		Xls xls                   = null;
+		String template           = "CONTEOS";
+		Map<String, Object> params= new HashMap<>();
 		try {
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
-			params         = new HashMap<>();
 			params.put("idTransferencia", this.attrs.get("seleccionado")!= null? ((Entity)this.attrs.get("seleccionado")).toLong("idTransferencia"): -1L);
       xls= new Xls(fileName, new Modelo(params, "VistaConfrontasDto", "origen", template), "CODIGO,NOMBRE,FECHA,STOCK");	
 			if(xls.procesar()) {

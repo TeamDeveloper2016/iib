@@ -537,8 +537,9 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
                 ticket= new CreateTicket(((AdminEspecial)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket);
               else
                 ticket= new CreateTicket(((AdminEspecial)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"), this.toCajero(((AdminEspecial)this.getAdminOrden()).getOrden().getKey()));
-            UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminEspecial)this.getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
-            UIBackingUtilities.execute("jsTicket.clicTicket();");
+            // SE QUITA ESTO DE FORMA TEMPORAL QUE LANCE EL TICKET E INVESTIAR PORQUE SE BLOQUEA EL NAVEGADOR
+            // UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminEspecial)this.getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
+            // UIBackingUtilities.execute("jsTicket.clicTicket();");
           } // if  
 					JsfBase.addMessage("Se finalizó el pago del ticket de venta", ETipoMensaje.INFORMACION);
           this.toSaveCostoCliente(ventaFinalizada);
@@ -555,8 +556,10 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
       UIBackingUtilities.update("contenedorGrupos");
       UIBackingUtilities.update("@(.filas)");
       UIBackingUtilities.update("@(.recalculo)");
+      UIBackingUtilities.update("@(.cotizar)");
       UIBackingUtilities.update("contenedorGrupos:deudorPago");
       UIBackingUtilities.update("contenedorGrupos:deudor");
+      UIBackingUtilities.execute("setTimeout('comenzar()', 1500)");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

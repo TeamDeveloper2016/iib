@@ -450,7 +450,7 @@ public class Filtro extends Comun implements Serializable {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // doExportarFdDbf  
+	} 
 	
 	public void doHabilitar(){
 		Transaccion transaccion= null;

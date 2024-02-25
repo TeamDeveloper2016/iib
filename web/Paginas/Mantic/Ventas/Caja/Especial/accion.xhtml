@@ -125,9 +125,14 @@
         setTimeout("janal.bloquear(); PF('widgetDialogoAutorizacion').show();", 1000);
       }
       
+      function comenzar() {
+        $('#contenedorGrupos\\:tabla\\:0\\:codigos_input').focus();
+      }
+      
 			function focus() {
 				setTimeout("$('#cuenta').focus();", 1000);
 			}
+      
       function start() {
         janal.bloquear();
       }

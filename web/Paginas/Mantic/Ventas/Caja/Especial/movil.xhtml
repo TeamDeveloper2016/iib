@@ -125,6 +125,10 @@
         } // if  
       }
       
+      function comenzar() {
+        $('#contenedorGrupos\\:tabla\\:0\\:codigos_input').focus();
+      }
+      
 			function autorizacion() {
         setTimeout("janal.bloquear(); PF('widgetDialogoAutorizacion').show();", 1000);
       }
@@ -132,6 +136,7 @@
 			function focus() {
 				setTimeout("$('#cuenta').focus();", 1000);
 			}
+      
       function start() {
         janal.bloquear();
       }

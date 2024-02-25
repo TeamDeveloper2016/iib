@@ -21,6 +21,15 @@
         montoInicio   : {validaciones: 'flotante', mascara: 'libre'},
         montoTermino  : {validaciones: 'flotante', mascara: 'libre'}
 			};
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
 		</script>		
 	</ui:define>
 	<ui:define name="contenido">		
@@ -55,9 +64,9 @@
                 </p:column>   
               </p:selectOneMenu>
 							<p:outputLabel for="codigo" value="Código:"/>
-							<p:inputText id="codigo" value="#{manticConsultasAcumulados.attrs.codigo}" styleClass="janal-wid-100-txt"/>              							
+              <p:inputText id="codigo" value="#{manticConsultasAcumulados.attrs.codigo}" placeholder="Ej. NEG:O:PN-E:ENBOL" styleClass="janal-wid-100-txt"/>              							
 							<p:outputLabel for="nombre" value="Nombre:"/>							
-							<p:autoComplete id="nombre" var="custom" placeholder="Nombre articulo" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticConsultasAcumulados.attrs.nombre}" completeMethod="#{manticConsultasAcumulados.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+							<p:autoComplete id="nombre" var="custom" placeholder="Ej. PINTO S" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticConsultasAcumulados.attrs.nombre}" completeMethod="#{manticConsultasAcumulados.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<f:facet name="header" class="TexAlCenter">
@@ -96,14 +105,14 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-							<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
-							<p:selectOneMenu id="idTipoArticulo" value="#{manticConsultasAcumulados.attrs.idTipoArticulo}" styleClass="janal-wid-100-txt">									
+              <p:outputLabel for="idTipoArticulo" value="Tipo articulo:" styleClass="janal-display-none"/>
+							<p:selectOneMenu id="idTipoArticulo" value="#{manticConsultasAcumulados.attrs.idTipoArticulo}" styleClass="janal-wid-100-txt janal-display-none">									
 								<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
 								<f:selectItem itemLabel="REFACCIÓN" itemValue="2"/>
 								<f:selectItem itemLabel="SERVICIO" itemValue="3"/>
-							</p:selectOneMenu>								
+							</p:selectOneMenu>
 							<p:outputLabel for="idVigente" value="Vigentes:"/>
-							<p:selectOneMenu id="idVigente" value="#{manticConsultasAcumulados.attrs.idVigente}" styleClass="janal-wid-100-txt">									
+							<p:selectOneMenu id="idVigente" value="#{manticConsultasAcumulados.attrs.idVigente}" styleClass="janal-wid-100-txt">
 								<f:selectItem itemLabel="SI" itemValue="1"/>
 								<f:selectItem itemLabel="NO" itemValue="2"/>
 							</p:selectOneMenu>								
@@ -134,10 +143,17 @@
                 <p:menuButton value="Opciones" styleClass="lg-pantalla">
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-indent" value="Desglose" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                    <p:fileDownload value="#{manticConsultasAcumulados.desglose}" />
+                  </p:menuitem>	
                 </p:menuButton>
 								<div class="xs-pantalla">
 									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:commandButton icon="fa fa fa-indent" title="Desglose" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                    <p:fileDownload value="#{manticConsultasAcumulados.desglose}" />
+                  </p:commandButton>  
 								</div>	
 							</f:facet>												
 							<p:column class="janal-column-left MarAuto Responsive janal-wid-3">
