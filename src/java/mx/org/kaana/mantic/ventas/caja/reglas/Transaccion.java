@@ -1424,7 +1424,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
   } // insertarBitacora
   
   public boolean procesarCancela(Session sesion) throws Exception {
-    boolean regresar          = false;
+    boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= new HashMap<>();
 		List<TrManticVentaMedioPagoDto> pagos= null;
 		try {									
@@ -1460,7 +1460,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
       venta.setObservaciones((this.getOrden().getObservaciones()!= null? "": this.getOrden().getObservaciones().concat(", ")).concat("TICKET CANCELADO"));
       DaoFactory.getInstance().update(sesion, venta);
       this.registraBitacora(sesion, venta.getIdVenta(), venta.getIdVentaEstatus(), "TICKET CANCELADO");
-      regresar= true;
+      regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
       throw e;

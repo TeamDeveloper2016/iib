@@ -115,11 +115,13 @@
 								<p:separator/>
 								<p:menuitem id="empleadosPdf" icon="fa fa-file-pdf-o" value="Personal" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doReporte('EMPLEADOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</p:menuButton>
-							<p:commandButton styleClass="xs-pantalla" action="#{manticCatalogosEmpleadosFiltro.doAccion('AGREGAR')}" ajax="false" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar" onstart="return janal.bloquear();" action="#{manticCatalogosEmpleadosFiltro.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
-							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Personal" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doReporte('EMPLEADOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+              <div class="xs-pantalla">
+                <p:commandButton styleClass="xs-pantalla" action="#{manticCatalogosEmpleadosFiltro.doAccion('AGREGAR')}" ajax="false" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar" onstart="return janal.bloquear();" action="#{manticCatalogosEmpleadosFiltro.doExportar}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
+                <p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Personal" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpleadosFiltro.doReporte('EMPLEADOS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+              </div>   
             </f:facet>	  						
 						<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.empresa}">
               <f:facet name="header">

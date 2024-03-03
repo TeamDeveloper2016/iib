@@ -55,6 +55,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   @PostConstruct
   protected void init() {
+  	this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): null);
     CargaInformacionUsuarios carga = null;
     try {
       this.criteriosBusqueda = new CriteriosBusqueda();
@@ -62,6 +63,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       carga.init();
 			this.toLoadCatalog();
       this.attrs.put("isPermisoDelega", JsfBase.isAdmin());
+			if(!Cadena.isVacio(this.attrs.get("idUsuario")))
+        this.recargarTablaDatos(ETipoBusqueda.SIN_CONDICION);
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -118,6 +121,10 @@ public class Filtro extends IBaseFilter implements Serializable {
         case SIN_CONDICION:
           break;
       } // switch
+			if(!Cadena.isVacio(this.attrs.get("idUsuario")) && !this.attrs.get("idUsuario").toString().equals("-1")) {
+				sb.append("(tc_janal_usuarios.id_usuario= ").append(this.attrs.get("idUsuario")).append(") and ");
+        this.attrs.remove("idUsuario");
+      } // if  
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				sb.append("(tr_mantic_empresa_personal.id_empresa= ").append(this.attrs.get("idEmpresa")).append(") and ");
       if(sb.length()== 0)

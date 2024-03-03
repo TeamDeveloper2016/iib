@@ -428,9 +428,13 @@ public class CFDIFactory implements Serializable {
 		Client regresar= null;
 		Client cliente = null;
 		Client pivote  = null;
+    Boolean clean  = Boolean.FALSE;
 		try {
 			cliente= this.loadCliente(detalleCliente);
 			pivote = this.clientFindById(id);
+      clean  = Objects.equals(pivote, null);
+      if(clean)
+        pivote= this.createClient(detalleCliente);
 			pivote.setAddress(cliente.getAddress());
 			pivote.setCfdiUse(cliente.getCfdiUse());
 			pivote.setEmail(cliente.getEmail());
@@ -438,15 +442,19 @@ public class CFDIFactory implements Serializable {
 			pivote.setRfc(cliente.getRfc());
       pivote.setFiscalRegime(cliente.getFiscalRegime()); // CFDI 4.0
       pivote.setTaxZipCode(cliente.getTaxZipCode()); // CFDI 4.0
-			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
-			  regresar= this.facturama.Clients().Update(pivote, pivote.getId());
+      if(!clean) {
+			  if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
+  			  regresar= this.facturama.Clients().Update(pivote, pivote.getId());
+      } // if  
+      else
+        regresar= pivote;
 		} // try
 		catch (Exception e) {			
 			LOG.error("Cliente: "+ detalleCliente);
 			throw e;
 		} // catch	
 		return regresar;
-	} // updateCliente
+	} 
 	
 	public Client clientFindById(String id) throws Exception, Exception {
 		Client regresar= null;

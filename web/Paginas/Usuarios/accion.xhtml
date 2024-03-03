@@ -66,7 +66,7 @@
                   <p:password id="contrasenia" readonly="#{kajoolUsuariosAccion.lockField}" value="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" styleClass="information janal-wid-100-txt" placeholder="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" redisplay="true"/>
 									<div class="information" title="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" style="float: right; display: #{kajoolUsuariosAccion.lockField? 'none': ''}"><i class="fa fa-fw fa-eye-slash"/></div>
 								</p:panelGrid>	
-                <p:outputLabel for="confirmar" value="Confirmar:" rendered="#{kajoolUsuariosAccion.attrs.isModificar}"/>
+                <p:outputLabel for="confirmar" value="Confirmar: #{util.isMobile? kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia: ''}" rendered="#{kajoolUsuariosAccion.attrs.isModificar}"/>
                 <p:password id="confirmar" readonly="#{kajoolUsuariosAccion.lockField}" value="#{kajoolUsuariosAccion.attrs.confirmar}" styleClass="information janal-wid-100-txt" placeholder="#{kajoolUsuariosAccion.attrs.tcManticPersonasDto.contrasenia}" redisplay="true" rendered="#{kajoolUsuariosAccion.attrs.isModificar}"/>
               </p:panelGrid>              
             </p:tab>						

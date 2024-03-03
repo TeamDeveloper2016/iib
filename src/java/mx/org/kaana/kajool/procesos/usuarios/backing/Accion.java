@@ -102,6 +102,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       persona.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       transaccion = new Transaccion(usuario, persona);
       if (transaccion.ejecutar(this.accion)) {
+   			JsfBase.setFlashAttribute("idUsuario", usuario.getIdUsuario());
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Usuarios", this.accion.equals(EAccion.AGREGAR) ? "Se agregó el usuario con éxito" : "Se modificó el usuario con éxito", ETipoMensaje.INFORMACION);
       } // if
@@ -175,7 +176,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
   
 	public String doCancelar() {
-		return "filtro";
+  	JsfBase.setFlashAttribute("idUsuario", this.attrs.get("idUsuario"));
+		return "filtro".concat(Constantes.REDIRECIONAR);
 	} 
 
   protected void loadPerfiles() {
