@@ -108,7 +108,8 @@ public class CambioUsuario extends Acceso implements Serializable{
       persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
       if (persona != null) {
 				this.setIdPersona(persona.getIdPersona());
-        regresar= this.verificaPerfil(persona) && this.verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()) && persona.getIdAutoriza()== 1L; 
+        regresar= this.verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()) && persona.getIdAutoriza()== 1L; 
+        // regresar= this.verificaPerfil(persona) && this.verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()) && persona.getIdAutoriza()== 1L; 
 			} // if
     } // try
     catch (Exception e) {
@@ -129,7 +130,8 @@ public class CambioUsuario extends Acceso implements Serializable{
       persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "autoriza", params);
       if (persona != null) {
 				this.setIdPersona(persona.getIdPersona());
-        regresar= this.verificaPerfil(persona) && this.verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()); 
+        regresar= this.verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()) && persona.getIdAutoriza()== 1L; 
+        // regresar= this.verificaPerfil(persona) && this.verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia()); 
 			} // if
     } // try
     catch (Exception e) {
@@ -170,6 +172,6 @@ public class CambioUsuario extends Acceso implements Serializable{
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // verificaPerfil
+	} 
   
 }

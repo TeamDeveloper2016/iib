@@ -80,7 +80,7 @@ public class Ventas extends IBaseTicket implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       columns.add(new Columna("hora", EFormatoDinamicos.HORA_CORTA));      			
-      this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "general", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "globales", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -113,7 +113,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		sb.append("tc_mantic_tipos_documentos.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
-		sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+		sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("vendedor")) && !this.attrs.get("vendedor").toString().equals("-1"))
 			sb.append("tc_mantic_ventas.id_usuario=").append(this.attrs.get("vendedor")).append(" and ");					
 		if(!Cadena.isVacio(this.attrs.get("tipoPago")) && !this.attrs.get("tipoPago").toString().equals("-1"))
@@ -145,10 +145,9 @@ public class Ventas extends IBaseTicket implements Serializable {
 	} // toPrepare
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -191,9 +190,8 @@ public class Ventas extends IBaseTicket implements Serializable {
 	
 	private void loadTiposPagos(){
 		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
 			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposPagos", tiposPagos);
@@ -202,18 +200,16 @@ public class Ventas extends IBaseTicket implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // loadTiposPagos
+	} 
 	
 	public void doReporte() throws Exception {
-		Map<String, Object>params    = null;
-		Map<String, Object>parametros= null;
+		Map<String, Object>params    = new HashMap<>();
+		Map<String, Object>parametros= new HashMap<>();
 		EReportes reporteSeleccion   = null;
 		try{				
 			reporteSeleccion= EReportes.ORDEN_COMPRA;
 			this.reporte= JsfBase.toReporte();
-			params= new HashMap<>();
 			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());			
-			parametros= new HashMap<>();
 			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
 		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
@@ -226,7 +222,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
     } // catch	
-	} // doReporte
+	} 
 	
 	public void doVerificarReporte() {
 		RequestContext rc= UIBackingUtilities.getCurrentInstance();
@@ -236,23 +232,22 @@ public class Ventas extends IBaseTicket implements Serializable {
 			rc.execute("generalHide()");		
 			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
-	} // doVerificarReporte		
+	} 
 	
 	public void doConsultarDetalle(){
-		Map<String, Object>params= null;
-		List<Columna> campos     = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna> columns    = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
 			this.attrs.put("fechaDetalle", Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((Entity)this.attrs.get("seleccionado")).toTimestamp("registro")));
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			this.detalle= new FormatLazyModel("VistaConsultasDto", "detalle", params, campos);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			this.detalle= new FormatLazyModel("VistaConsultasDto", "detalle", params, columns);
 			UIBackingUtilities.resetDataTable("tablaDetalle");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // doConsultarDetalle
+	} 
+  
 }

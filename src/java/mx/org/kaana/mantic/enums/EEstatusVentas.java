@@ -6,6 +6,8 @@ import java.util.Map;
 
 public enum EEstatusVentas {
 
+//  3, 4, 6, 12, 15, 18
+
   ELABORADA  (1L),
   ABIERTA    (2L),
   PAGADA     (3L),

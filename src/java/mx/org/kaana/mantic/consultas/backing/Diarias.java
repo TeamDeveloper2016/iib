@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -104,7 +105,6 @@ public class Diarias extends IBaseTicket implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
-		Entity total= null;
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -112,9 +112,7 @@ public class Diarias extends IBaseTicket implements Serializable {
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
 			this.attrs.put("fechaInicio", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.toLoadCatalog();      
-			total= new Entity();
-			total.put("total", new Value("total", 0L));
-			this.attrs.put("total", total);
+      this.toDefaultTotal();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -131,8 +129,12 @@ public class Diarias extends IBaseTicket implements Serializable {
     try {
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));      
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));      
-      this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "ventas", params, columns);
-			this.attrs.put("total", DaoFactory.getInstance().toEntity("VistaConsultasDto", "diariasTotales", params));
+      this.lazyModel= new FormatCustomLazy("VistaConsultasDto", "ventas", params, columns);
+      Entity total  = (Entity)DaoFactory.getInstance().toEntity("VistaConsultasDto", "diariasTotales", params);
+      if(Objects.equals(total, null) || Objects.equals(total.toDouble("total"), null))
+        this.toDefaultTotal();
+      else
+  			this.attrs.put("total", total);
       UIBackingUtilities.resetDataTable();
 			columns.remove(columns.size()- 1);
 			apartado= this.toPrepare(EEstatusVentas.APARTADOS);
@@ -351,5 +353,11 @@ public class Diarias extends IBaseTicket implements Serializable {
 	public String toColor(Entity row) {
 		return Cadena.isVacio(row.toString("garantia"))? "": "janal-tr-lime";
 	} 
+
+  private void toDefaultTotal() {
+		Entity total= new Entity();
+    total.put("total", new Value("total", 0L));
+    this.attrs.put("total", total);
+  }
   
 }
