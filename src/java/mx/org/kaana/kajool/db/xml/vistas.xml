@@ -187,10 +187,8 @@
           tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
         where
           tc_janal_usuarios.id_usuario= {idUsuario}
-        and
-          tc_mantic_personas.cuenta='{cuenta}'
-        and
-          tc_janal_usuarios.id_perfil= {idPerfil}
+          and tc_mantic_personas.cuenta='{cuenta}'
+          and tc_janal_usuarios.id_perfil= {idPerfil}
 			</select>
 			<select id="mensajes">
         select
@@ -454,8 +452,7 @@
            tc_janal_mensajes on tc_janal_mensajes.id_mensaje = tr_janal_mensajes_usuarios.id_mensaje
          where
            tr_janal_mensajes_usuarios.id_usuario={idUsuario}
-         and
-           tc_janal_mensajes.id_tipo_mensaje=5
+           and tc_janal_mensajes.id_tipo_mensaje=5
          order by
            tc_janal_mensajes.registro desc
        </select>
@@ -487,18 +484,12 @@
 					tc_janal_booleanos on tr_janal_mensajes_usuarios.id_booleano = tc_janal_booleanos.id_booleano
 				where
 					tc_janal_usuarios.id_usuario = {idUsuario}
-				and
-					tr_janal_mensajes_usuarios.id_booleano in ({idBooleano})
-				and
-					tc_janal_mensajes.id_prioridad in ({idPrioridad})
-        and
-          tc_janal_mensajes.descripcion like '%{mensaje}%'
-				and
-          (str_to_date(date_format(now(), '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
-        between
-          str_to_date(date_format(tc_janal_mensajes.vigencia_ini, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
-        and
-          str_to_date(date_format(tc_janal_mensajes.vigencia_fin, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i'))
+          and tr_janal_mensajes_usuarios.id_booleano in ({idBooleano})
+          and tc_janal_mensajes.id_prioridad in ({idPrioridad})
+          and tc_janal_mensajes.descripcion like '%{mensaje}%'
+          and (str_to_date(date_format(now(), '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
+          between str_to_date(date_format(tc_janal_mensajes.vigencia_ini, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
+          and str_to_date(date_format(tc_janal_mensajes.vigencia_fin, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i'))
 				{sortOrder}
       </select>
       <select id="contadorNoLeidos">
@@ -646,7 +637,7 @@
 			<select id="perfilUsuario">
 				select
 					tc_janal_usuarios.id_usuario as id_key,
-					concat(nombres,' ',paterno,' ',materno) nombre_completo,
+					concat(nombres,' ',ifnull(paterno, ''), ' ', ifnull(materno, '')) as nombre_completo,
 					tc_janal_perfiles.descripcion as nombre_perfil,
 					tc_mantic_personas.id_persona
 				from

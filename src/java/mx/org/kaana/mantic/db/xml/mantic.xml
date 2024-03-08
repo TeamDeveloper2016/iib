@@ -6599,7 +6599,7 @@ group by
         from      
           tc_mantic_clientes_deudas
         where      
-          id_cliente = {idCliente} and id_venta = {idVenta} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+          id_cliente = {idCliente} and id_venta = {idVenta}
       </select>
       <select id="saldoCliente">
 				select 

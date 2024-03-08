@@ -44,6 +44,8 @@ import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
@@ -1460,8 +1462,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 			  caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()- suma));
     	  DaoFactory.getInstance().update(sesion, caja);
       } // if
-      // FALTA METER REVERSA SOBRE LOS INVENTARIOS ASOCIADOS AL ALMACEN DE DONDE SALIERON LOS ARTICULOS
+      // METER REVERSA SOBRE LOS INVENTARIOS ASOCIADOS AL ALMACEN DE DONDE SALIERON LOS ARTICULOS
       this.toCancelarStockArticulos(sesion, venta);
+      // METER DE REVERSA LA CUENTA POR COBRAR SI ES QUE ESTA TIENE UNA ASOCIADA
+      this.toCancelarCuentaCobrar(sesion, venta);
       regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
@@ -1679,5 +1683,68 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
     );
 	  DaoFactory.getInstance().insert(sesion, movimiento); 
 	} 
+
+  private boolean toCancelarCuentaCobrar(Session sesion, TcManticVentasDto venta) throws Exception {  
+    boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+		TcManticClientesDeudasDto deuda= null;		
+    try {      
+      params.put("idVenta", venta.getIdVenta());      
+      deuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDeudasDto.class, "TcManticClientesDeudasDto", "detalle", params);
+      if(!Objects.equals(deuda, null)) {      
+        params.put("idUsuario", JsfBase.getIdUsuario());      
+        Entity usuario= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaUsuariosDto", "perfilUsuario", params);
+        deuda.setIdClienteEstatus(5L); // CANCELAR
+        deuda.setObservaciones(Objects.equals(deuda.getObservaciones(), null)?  
+          "DEUDA CANECELADA POR ".concat(usuario.toString("nombreCompleto")): 
+          deuda.getObservaciones().concat(", DEUDA CANECELADA POR ").concat(usuario.toString("nombreCompleto"))
+        );
+        DaoFactory.getInstance().update(sesion, deuda);
+        TcManticClientesBitacoraDto movimiento= new TcManticClientesBitacoraDto(
+          -1L, // Long idClienteBitacora, 
+          deuda.getIdClienteEstatus(), // Long idClienteEstatus, 
+          "DEUDA CANECELADA", // String justificacion, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          deuda.getIdClienteDeuda() // Long idClienteDeuda
+        );
+        DaoFactory.getInstance().insert(sesion, movimiento);
+        // ENVIAR EL ESTADO DE CUENTA ACTUALIZADO POR CORREO O CELULAR
+        this.toNotificacionCredito(sesion, venta);
+      } // if
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
+  private Boolean toNotificacionCredito(Session sesion, TcManticVentasDto venta) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {      
+      TcManticClientesDto cliente= (TcManticClientesDto)DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, venta.getIdCliente());
+      String razonSocial= Objects.equals(cliente.getIdTipoCliente(), 1L)? 
+         cliente.getRazonSocial(): cliente.getRazonSocial()+ (Objects.equals(cliente.getPaterno(), null)? "": " "+ cliente.getPaterno())+ (Objects.equals(cliente.getMaterno(), null)? "": " "+ cliente.getMaterno());
+      NotificaCliente notifica= new NotificaCliente(sesion,
+        venta.getIdCliente(), // Long idCliente, 
+        razonSocial, // String razonSocial, 
+        null, // String correos, 
+        EReportes.CUENTAS_POR_COBRAR, // EReportes reportes, 
+        ECorreos.CREDITO, // ECorreos correo, 
+        true, // boolean notifica
+        venta.getIdVenta() // idVenta
+      );
+      notifica.doSendMail();
+      notifica.doSendWhatsup();
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
   
 }

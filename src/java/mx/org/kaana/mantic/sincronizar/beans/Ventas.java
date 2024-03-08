@@ -48,9 +48,8 @@ public class Ventas implements Serializable, ISincronizar {
 	private List<TcManticApartadosPagosDto> apagos;
 
 	public Ventas(Long idVenta) {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idVenta", idVenta);
 			this.venta   = (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, idVenta);
 			this.vdetalle = (List<TcManticVentasDetallesDto>)DaoFactory.getInstance().findViewCriteria(TcManticVentasDetallesDto.class, params, "detalle");
