@@ -744,6 +744,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
           this.attrs.put("tipoDocumento", "de la nota de entrada");
 					break;
 				case 2: // VENTAS
+				case 10: // CENCELACIONES
 					Long idVenta= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticVentasDto", "ticket");
       		params.put("idEmpresa", consecutivo.toLong("idEmpresa"));
       		params.put("idVenta", idVenta);

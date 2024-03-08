@@ -206,17 +206,17 @@
               </f:facet>
               <h:outputText value="#{row['cliente']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.total}">
-              <f:facet name="header">
-                <h:outputText value="Importe"/>
-              </f:facet>
-              <h:outputText value="#{row['total']}"/>
-            </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.kilos}">
               <f:facet name="header">
                 <h:outputText value="Kilos"/>
               </f:facet>
               <h:outputText value="#{row['kilos']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.total}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['total']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.cuenta}">
               <f:facet name="header">

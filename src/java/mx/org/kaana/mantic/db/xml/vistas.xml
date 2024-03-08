@@ -4572,6 +4572,7 @@ group by
 					tc_mantic_movimientos.id_movimiento as id_key,
 					tc_mantic_tipos_movimientos.id_tipo_movimiento,
 					tc_mantic_tipos_movimientos.nombre as concepto,
+          tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.clave,
 					tc_mantic_empresas.nombre as nombre_empresa,
 					tc_mantic_almacenes.id_almacen,
