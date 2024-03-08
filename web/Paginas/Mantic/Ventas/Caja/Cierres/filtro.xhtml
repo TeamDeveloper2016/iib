@@ -5,6 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Listados de cierres de caja" />
   <ui:define name="librerias">
@@ -73,9 +74,9 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasCajaCierresFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticVentasCajaCierresFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticVentasCajaCierresFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticVentasCajaCierresFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="idCierreEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idCierreEstatus" value="#{manticVentasCajaCierresFiltro.attrs.idCierreEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
@@ -87,120 +88,282 @@
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticVentasCajaCierresFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticVentasCajaCierresFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticVentasCajaCierresFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaDetalle"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticVentasCajaCierresFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla tablaDetalle" />
 						</div>
           </p:panel>
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCierresFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasCajaCierresFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasCajaCierresFiltro.lazyModel.rowCount gt manticVentasCajaCierresFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticVentasCajaCierresFiltro.toColor(row)}">
-            <p:ajax event="rowSelect" update="@(.parche) kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="@this tabla" skipChildren="false"/>
-						<p:ajax event="contextMenu" update="@(.parche) kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
-            <f:facet name="header" >
-              <div class="lg-pantalla">
-                <p:menuButton value="Opciones">
-                  <p:menuitem value="Aperturar caja" action="#{manticVentasCajaCierresFiltro.doAperturarCaja}" icon="fa fa-plus" title="Aperturar caja" onstart="return janal.bloquear()"/>						
+					<div class="ui-grid-row janal-grid-row" style="display: block">
+            <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCierresFiltro.lazyModel}" styleClass="janal-wid-100-txt" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasCajaCierresFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasCajaCierresFiltro.lazyModel.rowCount gt manticVentasCajaCierresFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" rowStyleClass="#{manticVentasCajaCierresFiltro.toColor(row)}">
+              <p:ajax event="rowSelect" update="@(.parche) kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="@this tabla" skipChildren="false"/>
+              <p:ajax event="contextMenu" update="@(.parche) kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+              <f:facet name="header" >
+                <div class="lg-pantalla">
+                  <p:menuButton value="Opciones">
+                    <p:menuitem value="Aperturar caja" action="#{manticVentasCajaCierresFiltro.doAperturarCaja}" icon="fa fa-plus" title="Aperturar caja" onstart="return janal.bloquear()"/>						
+                    <p:separator/>
+                    <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:separator/>
+                    <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresFiltro.doReporte('CIERRES_CAJA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                  </p:menuButton>
+                </div>  
+                <div class="xs-pantalla">         
+                  <p:commandButton action="#{manticVentasCajaCierresFiltro.doAperturarCaja}" icon="fa fa-plus" title="Aperturar caja" onstart="return janal.bloquear()"/>						
                   <p:separator/>
-                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
-                  <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresFiltro.doReporte('CIERRES_CAJA')}" oncomplete="janal.desbloquear();" update="descargar"/>
-                </p:menuButton>
-              </div>  
-              <div class="xs-pantalla">         
-                <p:commandButton action="#{manticVentasCajaCierresFiltro.doAperturarCaja}" icon="fa fa-plus" title="Aperturar caja" onstart="return janal.bloquear()"/>						
-                <p:separator/>
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:separator/>
-                <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresFiltro.doReporte('CIERRES_CAJA')}" oncomplete="janal.desbloquear();" update="descargar"/>
-              </div>  
-            </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-col-40">
-              <f:facet name="header">
-                <h:outputText value="No."/>
+                  <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresFiltro.doReporte('CIERRES_CAJA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                </div>  
+              </f:facet>	            
+              <p:column class="MarAuto Responsive janal-wid-col-40">
+                <f:facet name="header">
+                  <h:outputText value="No."/>
+                </f:facet>
+                <h:outputText value="#{index+ 1}.-"/>
+              </p:column>		
+              <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.empresa}">
+                <f:facet name="header">
+                  <h:outputText value="Sucursal"/>
+                </f:facet>
+                <h:outputText value="#{row['nombreEmpresa']}"/>
+              </p:column>		
+              <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.caja}">
+                <f:facet name="header">
+                  <h:outputText value="Caja"/>
+                </f:facet>
+                <h:outputText value="#{row['caja']}"/>
+              </p:column>		
+              <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.disponible}">
+                <f:facet name="header">
+                  <h:outputText value="Fondo"/>
+                </f:facet>
+                <h:outputText value="#{row['disponible']}"/>
+              </p:column>		
+              <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.acumulado}">
+                <f:facet name="header">
+                  <h:outputText value="Ventas"/>
+                </f:facet>
+                <h:outputText value="#{row['acumulado']}"/>
+              </p:column>		
+              <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.saldo}">
+                <f:facet name="header">
+                  <h:outputText value="Saldo"/>
+                </f:facet>
+                <h:outputText value="#{row['saldo']}"/>
+              </p:column>		
+              <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
+                <f:facet name="header">
+                  <h:outputText value="Fecha"/>
+                </f:facet>
+                <h:outputText value="#{row['registro']}"/>
+              </p:column>		
+              <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+                <f:facet name="header">
+                  <h:outputText value="Estatus"/>
+                </f:facet>
+                <h:outputText value="#{row['estatus']}"/>
+              </p:column>		
+              <p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
+                <f:facet name="header">
+                  <h:outputText value="Usuario"/>
+                </f:facet>
+                <h:outputText value="#{row['usuario']}"/>
+              </p:column>		
+              <p:column style="width: 80px; text-align: center">
+                <p:commandButton icon="fa fa-search" title="Detalle ventas" actionListener="#{manticVentasCajaCierresFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                <p:commandButton icon="ui-icon-print" title="Ticket" action="#{manticVentasCajaCierresFiltro.doPrintCorte}" rendered="#{row.estatus == 'TERMINADO'}">
+                  <f:setPropertyActionListener value="#{row}" target="#{manticVentasCajaCierresFiltro.attrs.seleccionado}" />
+                </p:commandButton>
+              </p:column>
+              <f:facet name="footer">
+                <p:outputLabel value="Key: #{manticVentasCajaCierresFiltro.attrs.seleccionado}" style="float:left" styleClass="parche"/>
+                <p:outputLabel value="Total [#{manticVentasCajaCierresFiltro.lazyModel== null? 0: manticVentasCajaCierresFiltro.lazyModel.rowCount}] registros"/>
               </f:facet>
-              <h:outputText value="#{index+ 1}.-"/>
-            </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.empresa}">
+            </p:dataTable>
+            <h:outputText value="Nota: Las filas que estan en color son cajas donde su efectivo sobrepasa al limite establecido !"/>
+            <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+              <p:menuitem action="#{manticVentasCajaCierresFiltro.doAccion('AGREGAR')}" icon="fa fa-briefcase" ajax="false" value="Realizar cierre" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+              <p:menuitem action="#{manticVentasCajaCierresFiltro.doFondoCaja}" icon="fa fa-briefcase" ajax="false" value="Fondo de caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus) and manticVentasCajaCierresFiltro.admin}"/>
+              <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+              <p:menuitem action="#{manticVentasCajaCierresFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+              <p:menuitem icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doMovimientos}"/>
+              <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+              <p:menuitem icon="fa fa-sign-out" value="Retiros parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doRetiros}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+              <p:menuitem icon="fa fa-sign-in" value="Abonos parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doAbonos}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+              <p:separator/>
+              <p:menuitem icon="fa fa-dollar" value="Ver abonos/retiros" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doVerAmbos}"/>
+              <p:separator/>
+              <p:menuitem icon="fa fa-server" value="Movimientos" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doCorteCaja}"/>
+              <p:separator/>
+              <p:menuitem action="#{manticVentasCajaCierresFiltro.doConsultar()}" process="@this tabla" update="tablaDetalle @(.detalle)" icon="fa fa-search" value="Detalle ventas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            </p:contextMenu>
+          </div>
+					<div class="ui-grid-row janal-grid-row">
+            <p:dataTable lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticVentasCajaCierresFiltro.lazyDetalle}" styleClass="detalle janal-wid-100 #{manticVentasCajaCierresFiltro.lazyDetalle eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasCajaCierresFiltro.attrs.detalle}" selectionMode="single" paginator="#{manticVentasCajaCierresFiltro.lazyDetalle.rowCount gt manticVentasCajaCierresFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
               <f:facet name="header">
-                <h:outputText value="Sucursal"/>
+                <div style="float: left">
+                  <p:outputLabel value="Detalle de las ventas asociadas al corte de caja: #{manticVentasCajaCierresFiltro.attrs.seleccionado.caja}" styleClass="detalle janal-text-white"/>
+                </div>  
+                <div class="lg-pantalla">
+                  <p:menuButton value="Opciones">
+                    <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfDetalle', 'tablaDetalle')" oncomplete="janal.desbloquear()"/>
+                    <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsDetalle', 'tablaDetalle')" oncomplete="janal.desbloquear()"/>
+                  </p:menuButton>
+                </div>	
+                <div class="xs-pantalla">
+                  <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfDetalle', 'tablaDetalle')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsDetalle', 'tablaDetalle')" oncomplete="janal.desbloquear()"/>
+                </div>	
+              </f:facet>												
+              <p:column class="janal-column-center MarAuto Responsive janal-wid-3">
+                <f:facet name="header">
+                  <h:outputText value="No."/>
+                </f:facet>
+                <h:outputText value="#{index+ 1}.-"/>
+              </p:column>														
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.empresa}">
+								<f:facet name="header">
+									<h:outputText value="Empresa"/>
+								</f:facet>
+								<h:outputText value="#{row['empresa']}"/>
+							</p:column>														
+              <p:column class="janal-column-left MarAuto Responsive janal-display-none">
+                <f:facet name="header">
+                  <h:outputText value="Ticket"/>
+                </f:facet>
+                <h:outputText value="#{row['ticket']}"/>
+              </p:column>			
+							<p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.ticket}" exportable="false">
+								<f:facet name="header">
+									<h:outputText value="Ticket"/>
+								</f:facet>
+                <p:commandLink actionListener="#{manticVentasCajaCierresFiltro.doMoveSection(row)}" process="@this tablaDetalle" update="documento informacion @(.documento)" onstart="return janal.bloquear()" oncomplete="janal.bloquear();PF('widgetDetalle').show();" title="Ver ticket">
+  								<h:outputText value="#{row['ticket']}"/>
+                </p:commandLink>
+							</p:column>			
+							<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
+								<f:facet name="header">
+									<h:outputText value="Cliente"/>
+								</f:facet>
+                <h:outputText value="#{row['cliente']}"/>
+							</p:column>		
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidad}">
+								<f:facet name="header">
+									<h:outputText value="Kilos"/>
+								</f:facet>
+								<h:outputText value="#{row['cantidad']}"/>
+							</p:column>					
+              <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
+								<f:facet name="header">
+									<h:outputText value="Precio"/>
+								</f:facet>
+								<h:outputText value="#{row['costo']}"/>
+							</p:column>					
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
+								<f:facet name="header">
+									<h:outputText value="Importe"/>
+								</f:facet>
+								<h:outputText value="#{row['importe']}"/>
+							</p:column>					
+							<p:column class="MarAuto Responsive" sortBy="#{row.vendedor}">
+								<f:facet name="header">
+									<h:outputText value="Vendedor"/>
+								</f:facet>
+								<h:outputText value="#{row['vendedor']}"/>
+							</p:column>					
+              <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.estutus}">
+                <f:facet name="header">
+                  <h:outputText value="Estatus"/>
+                </f:facet>
+                <h:outputText value="#{row['estatus']}"/>
+              </p:column>			
+              <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.registro}">
+                <f:facet name="header">
+                  <h:outputText value="Fecha"/>
+                </f:facet>
+                <h:outputText value="#{row['registro']}"/>
+              </p:column>			
+              <f:facet name="footer">
+                <p:outputLabel styleClass="detalle" style="float: left;" value="#{manticVentasCajaCierresFiltro.particular}" escape="false"/>
+                <p:outputLabel value="Total [#{manticVentasCajaCierresFiltro.lazyDetalle== null? 0: manticVentasCajaCierresFiltro.lazyDetalle.rowCount}] registros"/>
               </f:facet>
-              <h:outputText value="#{row['nombreEmpresa']}"/>
-            </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.caja}">
-              <f:facet name="header">
-                <h:outputText value="Caja"/>
-              </f:facet>
-              <h:outputText value="#{row['caja']}"/>
-            </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.disponible}">
-              <f:facet name="header">
-                <h:outputText value="Fondo"/>
-              </f:facet>
-              <h:outputText value="#{row['disponible']}"/>
-            </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.acumulado}">
-              <f:facet name="header">
-                <h:outputText value="Ventas"/>
-              </f:facet>
-              <h:outputText value="#{row['acumulado']}"/>
-            </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.saldo}">
-              <f:facet name="header">
-                <h:outputText value="Saldo"/>
-              </f:facet>
-              <h:outputText value="#{row['saldo']}"/>
-            </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
-              <f:facet name="header">
-                <h:outputText value="Fecha"/>
-              </f:facet>
-              <h:outputText value="#{row['registro']}"/>
-            </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
-              <f:facet name="header">
-                <h:outputText value="Estatus"/>
-              </f:facet>
-              <h:outputText value="#{row['estatus']}"/>
-            </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
-              <f:facet name="header">
-                <h:outputText value="Usuario"/>
-              </f:facet>
-              <h:outputText value="#{row['usuario']}"/>
-            </p:column>		
-            <p:column style="width:40px;text-align: center">
-              <p:commandButton icon="ui-icon-print" title="Ticket" action="#{manticVentasCajaCierresFiltro.doPrintCorte}" rendered="#{row.estatus == 'TERMINADO'}">
-                <f:setPropertyActionListener value="#{row}" target="#{manticVentasCajaCierresFiltro.attrs.seleccionado}" />
-              </p:commandButton>
-            </p:column>
-            <f:facet name="footer">
-							<p:outputLabel value="Key: #{manticVentasCajaCierresFiltro.attrs.seleccionado}" style="float:left" styleClass="parche"/>
-              <p:outputLabel value="Total [#{manticVentasCajaCierresFiltro.lazyModel== null? 0: manticVentasCajaCierresFiltro.lazyModel.rowCount}] registros"/>
-            </f:facet>
-          </p:dataTable>
-          <h:outputText value="Nota: Las filas que estan en color son cajas donde su efectivo sobrepasa al limite establecido !"/>
-          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-           <p:menuitem action="#{manticVentasCajaCierresFiltro.doAccion('AGREGAR')}" icon="fa fa-briefcase" ajax="false" value="Realizar cierre" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:menuitem action="#{manticVentasCajaCierresFiltro.doFondoCaja}" icon="fa fa-briefcase" ajax="false" value="Fondo de caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus) and manticVentasCajaCierresFiltro.admin}"/>
- 						<p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:menuitem action="#{manticVentasCajaCierresFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-            <p:menuitem icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doMovimientos}"/>
-            <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:menuitem icon="fa fa-sign-out" value="Retiros parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doRetiros}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:menuitem icon="fa fa-sign-in" value="Abonos parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doAbonos}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:separator/>
-            <p:menuitem icon="fa fa-dollar" value="Ver abonos/retiros" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doVerAmbos}"/>
-            <p:separator/>
-            <p:menuitem icon="fa fa-server" value="Movimientos" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doCorteCaja}"/>
-          </p:contextMenu>
+            </p:dataTable>
+            <h:commandLink id="dataPdfDetalle">                    
+              <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="tablaDetalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+            </h:commandLink>
+            <h:commandLink id="dataXlsDetalle">
+              <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tablaDetalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+            </h:commandLink>	             
+				  </div>	        
         </div>
       </div>
     </div>	
     <svg id="barcode" style="display: none"></svg>	
 		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>
   </ui:define>   
-  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+  <ui:define name="dialogos">
+		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle del ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="480px" resizable="false" appendTo="@(body)">
+			<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-col-80 janal-column-center, janal-wid-60 janal-column-center, janal-wid-10 janal-column-center, janal-wid-col-60 janal-column-center, janal-wid-10 janal-column-center">
+				<p:outputLabel value="Consecutivo"/>
+				<p:outputLabel value="Razón social"/>
+				<p:outputLabel value="Fecha"/>
+				<p:outputLabel value="Articulos"/>
+				<p:outputLabel value="Total"/>
+				<p:inputText value="#{manticVentasCajaCierresFiltro.attrs.documento.consecutivo}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticVentasCajaCierresFiltro.attrs.documento.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/>
+				<p:inputText value="#{manticVentasCajaCierresFiltro.attrs.documento.fecha}" styleClass="janal-wid-100-txt janal-column-center" readonly="true"/>
+				<p:inputText value="#{manticVentasCajaCierresFiltro.attrs.documento.articulos}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+				<p:inputText value="#{manticVentasCajaCierresFiltro.attrs.documento.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+			</p:panelGrid>
+			<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">		
+				<p:dataTable id="informacion" var="item" value="#{manticVentasCajaCierresFiltro.attrs.documentos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="documento" rowIndexVar="index">
+					<p:column headerText="No" styleClass="janal-wid-3">
+						<p:outputLabel value="#{index+ 1}.-"/>
+					</p:column>   
+					<p:column headerText="Código" styleClass="janal-wid-12">
+						<p:outputLabel value="#{item.propio}"/>
+					</p:column>   
+					<p:column headerText="Nombre">
+						<p:outputLabel value="#{item.nombre}"/>
+					</p:column>   
+					<p:column headerText="Inicial" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.inicial}"/>
+					</p:column>   
+					<p:column headerText="#{manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 6? 'Entradas': 'Cantidad'}" styleClass="janal-wid-10 janal-column-right documento">
+						<p:outputLabel value="#{item.cantidad}"/>
+					</p:column>   
+					<p:column headerText="Origen" styleClass="janal-wid-15 documento" rendered="#{manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 4}">
+						<p:outputLabel value="#{item.origen}"/>
+					</p:column>   
+					<p:column headerText="Destino" styleClass="janal-wid-15 documento" rendered="#{manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 4}">
+						<p:outputLabel value="#{item.destino}"/>
+					</p:column>   
+					<p:column headerText="Precio" styleClass="janal-wid-13 janal-column-right" rendered="#{not(manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 6) and not(manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 4)}">
+						<p:outputLabel value="#{item.precio}"/>
+					</p:column>   
+					<p:column headerText="Importe" styleClass="janal-wid-13 janal-column-right documento" rendered="#{not(manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 6) and not(manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 4)}">
+						<p:outputLabel value="#{item.importe}"/>
+					</p:column>   
+					<p:column headerText="Salidas" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.salidas}"/>
+					</p:column>   
+					<p:column headerText="Stock" styleClass="janal-wid-10 janal-column-right documento" rendered="#{manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.stock}"/>
+					</p:column>   
+					<p:column headerText="Registro" styleClass="janal-wid-15 janal-column-right documento" rendered="#{manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 4 or manticVentasCajaCierresFiltro.attrs.idTipoDocumento eq 6}">
+						<p:outputLabel value="#{item.registro}"/>
+					</p:column>   
+				</p:dataTable>
+			</p:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cerrar" oncomplete="PF('widgetDetalle').hide();"/>
+			</div>
+		</p:dialog>	    
+	</ui:define>		
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla tablaDetalle"/>
 </ui:composition>

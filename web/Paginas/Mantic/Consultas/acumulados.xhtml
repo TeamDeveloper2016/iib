@@ -298,7 +298,7 @@
 							</p:column>					
               <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.estutus}" exportable="false">
                 <f:facet name="header">
-                  <h:outputText value="Estutus"/>
+                  <h:outputText value="Estatus"/>
                 </f:facet>
                 <h:outputText value="#{row['estatus']}"/>
                 <i class="fa fa-user janal-color-blue" style="float: right" title="Cliente: #{row.cliente}"></i>
@@ -311,7 +311,7 @@
               </p:column>			
               <p:column class="janal-column-center MarAuto Responsive janal-wid-8 janal-display-none" sortBy="#{row.estutus}">
                 <f:facet name="header">
-                  <h:outputText value="Estutus"/>
+                  <h:outputText value="Estatus"/>
                 </f:facet>
                 <h:outputText value="#{row['estatus']}"/>
               </p:column>			
@@ -337,7 +337,7 @@
 			</div>
 		</div>		           				
 	</ui:define>    
-  <ui:define name="dialogos">  
+  <ui:define name="dialogos">
 		<p:dialog id="documento" widgetVar="widgetDetalle" header="Detalle del ticket" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" width="1000px" height="480px" resizable="false" appendTo="@(body)">
 			<p:panelGrid columns="5" styleClass="janal-wid-100" columnClasses="janal-wid-col-80 janal-column-center, janal-wid-60 janal-column-center, janal-wid-10 janal-column-center, janal-wid-col-60 janal-column-center, janal-wid-10 janal-column-center">
 				<p:outputLabel value="Consecutivo"/>

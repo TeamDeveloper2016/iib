@@ -142,6 +142,7 @@ public class Diarias extends IBaseTicket implements Serializable {
 			credito= this.toPrepare(EEstatusVentas.CREDITO);
       columns.add(new Columna("devuelto", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("cuando", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA_CORTA));      
       this.lazyCredito = new FormatCustomLazy("VistaConsultasDto", "credito", credito, columns);
     } // try
     catch (Exception e) {
@@ -201,7 +202,7 @@ public class Diarias extends IBaseTicket implements Serializable {
       else
         regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
       if(!Cadena.isVacio(this.attrs.get("idCaja")) && !this.attrs.get("idCaja").toString().equals("-1"))
-        sf.append("(tc_mantic_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
+        sf.append("(tc_mantic_cierres_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
       if(!Cadena.isVacio(this.attrs.get("idMedioPago")) && !this.attrs.get("idMedioPago").toString().equals("-1"))
         sf.append("(tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= ").append(this.attrs.get("idMedioPago")).append(") and ");
       if(sf.length()== 0)

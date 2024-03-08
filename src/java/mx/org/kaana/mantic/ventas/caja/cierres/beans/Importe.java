@@ -63,7 +63,7 @@ public class Importe extends TcManticCierresCajasDto implements Cloneable, Seria
 	public String getDiferencia$() {
 		if(this.diferencia== null)
 			this.diferencia= 0D;
-		return "<span class='"+ (this.diferencia<0? "janal-color-orange": this.diferencia> 0? "janal-color-blue": "janal-color-green")+ "'><strong>"+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(this.diferencia))+ "</span></strong>";
+		return "<span class='"+ (this.diferencia<0? "janal-color-black": this.diferencia> 0? "janal-color-blue": "janal-color-green")+ "'><strong>"+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(this.diferencia))+ "</span></strong>";
 	}
 	
 	@Override

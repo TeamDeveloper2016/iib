@@ -5,18 +5,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -56,6 +59,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private List<Denominacion> fondos;
 	private FormatCustomLazy lazyModel;
 	private EAccion accion;
+  private FormatLazyModel lazyDetalle;
 
 	public List<Importe> getImportes() {
 		return importes;
@@ -78,6 +82,16 @@ public class Accion extends IBaseAttribute implements Serializable {
 		return "";
 	}
 		
+	public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}		
+
+  public String getParticular() {
+    String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("cantidad"));
+    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("importe"));
+    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+  }
+
   @Override
 	@PostConstruct
   protected void init() {		
@@ -116,6 +130,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.denominaciones= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
   		    this.attrs.put("idEfectivo", 2);
 					this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
+          this.attrs.put("particular", this.toEmptyTotales());          
 					break;	
 			} // switch
 			this.toLoadEmpresas();
@@ -144,7 +159,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 				else
 					this.importes.add(pivote);
 			} // if
-			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -205,24 +219,26 @@ public class Accion extends IBaseAttribute implements Serializable {
   } 
 	
 	private void toLoadEmpresas() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			List<UISelectEntity> sucursales= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", this.attrs, columns);
       this.attrs.put("sucursales", sucursales);
 			this.doLoadCajas();
     } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
     finally {
       Methods.clean(columns);
     }// finally
 	}
 	
 	public void doLoadCajas() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			List<UISelectEntity> cajas= (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "unica", this.attrs, columns);
@@ -237,26 +253,27 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}
 
 	private void toLoadCuentas() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("dia", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       this.attrs.put("cuentas", UIEntity.build("VistaCierresCajasDto", "abiertas", this.attrs, columns));
  			this.attrs.put("idCuenta", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cuentas")));
     } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
     finally {
       Methods.clean(columns);
     }// finally
 	}
 
 	private void toLoadCreditos() throws Exception {
-		List<Columna> columns     = null;
-		Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
     try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put("idCaja", this.attrs.get("idCaja"));
 			TcManticCierresDto cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, (Long)this.attrs.get("idCierre"));
@@ -271,10 +288,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 			} // switch		
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			params.put("idCierre", cierre.getIdCierre());
       this.attrs.put("creditos", UIEntity.build("VistaCierresCajasDto", "creditos", params, columns));
  			this.attrs.put("idCredito", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("creditos")));
   		this.attrs.put("totalCreditos", ((List<UISelectEntity>)this.attrs.get("creditos")).size());
     } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
     finally {
       Methods.clean(columns);
 			Methods.clean(params);
@@ -331,12 +353,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}
 
 	private void doLoadRetirosAbonos() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= new HashMap<>();
     try {
       params.put("idCierre", this.attrs.get("idCierre"));
       params.put("sortOrder", "order by tc_mantic_cierres_retiros.id_abono, tc_mantic_cierres_retiros.consecutivo ");
-      columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("concepto", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
@@ -344,7 +365,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("caja", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "retiros", params, columns);
-      UIBackingUtilities.resetDataTable();
+      UIBackingUtilities.resetDataTable("contenedorGrupos:movimientos");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -371,4 +392,90 @@ public class Accion extends IBaseAttribute implements Serializable {
 	  this.attrs.put("retiros", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, retiros));
 	}	
 
+  public void doConsultar() {
+    this.doDetalle((Importe)this.attrs.get("seleccionado"));
+  }
+  
+  public void doDetalle(Importe row) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+		try {
+			if(row!= null) {
+        this.attrs.put("seleccionado", row);
+        params.put("idCierre", row.getIdCierre());
+        params.put("idTipoMedioPago", row.getIdTipoMedioPago());
+        params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
+        columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("ventas", EFormatoDinamicos.MILES_SIN_DECIMALES));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+				this.lazyDetalle= new FormatLazyModel("VistaCierresCajasDto", "desglosado", params, columns);
+				UIBackingUtilities.resetDataTable("contenedorGrupos:tablaDetalle");
+        this.attrs.put("particular", this.toTotales("VistaCierresCajasDto", "general", params));
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
+
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+  
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.put("cantidad", new Value("cantidad", 0D));
+    regresar.put("importe", new Value("importe", 0D));
+    regresar.put("ventas", new Value("ventas", 0D));
+    return regresar;
+  }
+
+	public void doMoveSection(Entity row) {
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
+		List<UISelectEntity> documento= null;
+    try {
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("precio", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA));
+			params.put("idVenta", row.toLong("idVenta"));
+			documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "venta", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("documentos", documento);
+			if(documento!= null && !documento.isEmpty()) {
+				documento.get(0).put("articulos", new Value("articulos", documento.size()));
+        this.attrs.put("documento", documento.get(0));
+			} // if	
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+  
 }

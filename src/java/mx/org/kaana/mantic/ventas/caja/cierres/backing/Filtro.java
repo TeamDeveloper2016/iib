@@ -6,21 +6,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -42,7 +46,13 @@ import org.primefaces.context.RequestContext;
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
+  
 	private Reporte reporte;
+  private FormatLazyModel lazyDetalle;
+
+	public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}		
 	
 	public boolean getAdmin() {
 		boolean regresar= false;
@@ -55,6 +65,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	}
 	
+  public String getParticular() {
+    String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("cantidad"));
+    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("importe"));
+    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -68,6 +84,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  this.doPrintCorte();
       if(this.attrs.get("idCierre")!= null) 
 			  this.doLoad();
+      this.attrs.put("particular", this.toEmptyTotales());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -94,6 +111,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idCierre", null);
+      this.lazyDetalle= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -148,10 +166,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticCierresEstatusDto", "row", params, columns));
@@ -236,16 +253,16 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doReporte
   
   public boolean doVerificarReporte() {
-    boolean regresar = false;
+    boolean regresar = Boolean.FALSE;
 		RequestContext rc= UIBackingUtilities.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L){
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
-      regresar = true;
-    }
-		else{
+      regresar = Boolean.TRUE;
+    } // if
+    else {
 			rc.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-      regresar = false;
+      regresar = Boolean.FALSE;
 		} // else
     return regresar;
 	} // doVerificarReporte	
@@ -277,6 +294,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Ventas/Caja/Cierres/filtro");
 	  } // try
 		catch (Exception e) {
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
@@ -289,6 +307,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
 	  } // try
 		catch (Exception e) {
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
 		return "retiros".concat(Constantes.REDIRECIONAR);
@@ -312,6 +331,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("accion", EAccion.REGISTRAR);
 	  } // try
 		catch (Exception e) {
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
 		return "apertura".concat(Constantes.REDIRECIONAR);
@@ -324,6 +344,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
 	  } // try
 		catch (Exception e) {
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
 		return "abonos".concat(Constantes.REDIRECIONAR);
@@ -337,6 +358,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
 	  } // try
 		catch (Exception e) {
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
 		return "ambos".concat(Constantes.REDIRECIONAR);
@@ -376,7 +398,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     finally {
 			Methods.clean(params);
 		} // finally
-  } // doAccion
+  } 
 
 	public String doCorteCaja() {
 		try {
@@ -390,9 +412,96 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.setFlashAttribute("acumulado", ((Entity)this.attrs.get("seleccionado")).toDouble("acumulado"));
 	  } // try
 		catch (Exception e) {
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
 		return "corte".concat(Constantes.REDIRECIONAR);
 	}
-	
+
+  public void doConsultar() {
+    this.doDetalle((Entity)this.attrs.get("seleccionado"));
+  }
+  
+  public void doDetalle(Entity row) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+		try {
+			if(row!= null && !row.isEmpty()) {
+        this.attrs.put("seleccionado", row);
+        params.put("idCierre", row.toLong("idCierre"));
+        params.put("sortOrder", "order by tc_mantic_ventas.registro desc");
+        columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("ventas", EFormatoDinamicos.MILES_SIN_DECIMALES));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+				this.lazyDetalle= new FormatLazyModel("VistaCierresCajasDto", "registro", params, columns);
+				UIBackingUtilities.resetDataTable("tablaDetalle");
+        this.attrs.put("particular", this.toTotales("VistaCierresCajasDto", "particular", params));
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
+
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+  
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.put("cantidad", new Value("cantidad", 0D));
+    regresar.put("importe", new Value("importe", 0D));
+    regresar.put("ventas", new Value("ventas", 0D));
+    return regresar;
+  }
+
+	public void doMoveSection(Entity row) {
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
+		List<UISelectEntity> documento= null;
+    try {
+      this.attrs.put("seleccionado", row);
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("precio", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA));
+			params.put("idVenta", row.toLong("idVenta"));
+			documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "venta", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("documentos", documento);
+			if(documento!= null && !documento.isEmpty()) {
+				documento.get(0).put("articulos", new Value("articulos", documento.size()));
+        this.attrs.put("documento", documento.get(0));
+			} // if	
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+  
 }
