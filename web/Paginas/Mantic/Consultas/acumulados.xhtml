@@ -240,7 +240,7 @@
                 </f:facet>
                 <h:outputText value="#{index+ 1}.-"/>
               </p:column>														
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.empresa}">
+							<p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{row.empresa}">
 								<f:facet name="header">
 									<h:outputText value="Empresa"/>
 								</f:facet>
@@ -272,13 +272,13 @@
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
 							</p:column>			
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidad}">
+							<p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.cantidad}">
 								<f:facet name="header">
 									<h:outputText value="Kilos"/>
 								</f:facet>
 								<h:outputText value="#{row['cantidad']}"/>
 							</p:column>					
-              <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
+              <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.costo}">
 								<f:facet name="header">
 									<h:outputText value="Precio"/>
 								</f:facet>
@@ -296,7 +296,7 @@
 								</f:facet>
 								<h:outputText value="#{row['vendedor']}"/>
 							</p:column>					
-              <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.estutus}" exportable="false">
+              <p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{row.estutus}" exportable="false">
                 <f:facet name="header">
                   <h:outputText value="Estatus"/>
                 </f:facet>
@@ -309,11 +309,23 @@
                 </f:facet>
                 <h:outputText value="#{row['cliente']}"/>
               </p:column>			
-              <p:column class="janal-column-center MarAuto Responsive janal-wid-8 janal-display-none" sortBy="#{row.estutus}">
+              <p:column class="MarAuto Responsive janal-wid-6 janal-display-none" sortBy="#{row.estutus}">
                 <f:facet name="header">
                   <h:outputText value="Estatus"/>
                 </f:facet>
                 <h:outputText value="#{row['estatus']}"/>
+              </p:column>			
+              <p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.deuda}">
+                <f:facet name="header">
+                  <h:outputText value="Deuda"/>
+                </f:facet>
+                <h:outputText value="#{row['deuda']}"/>
+              </p:column>			
+              <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.saldo}">
+                <f:facet name="header">
+                  <h:outputText value="Saldo"/>
+                </f:facet>
+                <h:outputText value="#{row['debe'].toDouble() gt row['tiene'].toDouble()? row['importe']: row['saldo']}"/>
               </p:column>			
               <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.registro}">
                 <f:facet name="header">

@@ -161,6 +161,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("kilos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));      
       this.lazyModel= new FormatCustomLazy("VistaVentasDto", params, columns);
       this.attrs.put("general", this.toTotales("VistaVentasDto", "general", params));

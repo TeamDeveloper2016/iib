@@ -2023,12 +2023,13 @@ select
   tc_mantic_articulos.id_vigente,
   tc_mantic_articulos.nombre,
   tc_mantic_ventas.ticket,
-  avg(tc_mantic_articulos.precio) as precios,
-  avg(tc_mantic_ventas_detalles.precio) as precio,
-  avg(tc_mantic_ventas_detalles.costo) as costo,
-  sum(tc_mantic_ventas_detalles.iva) as iva,
-  sum(tc_mantic_ventas_detalles.cantidad) as cantidad,
-  sum(tc_mantic_ventas_detalles.importe) as importe,
+  ifnull(avg(tc_mantic_articulos.precio), 0) as precios,
+  ifnull(avg(tc_mantic_ventas_detalles.precio), 0) as precio,
+  ifnull(avg(tc_mantic_ventas_detalles.costo), 0) as costo,
+  ifnull(sum(tc_mantic_ventas_detalles.iva), 0) as iva,
+  ifnull(sum(tc_mantic_ventas_detalles.cantidad), 0) as cantidad,
+  ifnull(sum(tc_mantic_ventas_detalles.importe), 0) as importe,
+  ifnull(sum(tc_mantic_ventas_detalles.importe), 0) as tiene,
   tc_mantic_articulos.menudeo,
   tc_mantic_articulos.medio_mayoreo,
   tc_mantic_articulos.mayoreo,
@@ -2038,6 +2039,9 @@ select
 	concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor,
   tc_mantic_ventas_estatus.nombre as estatus,
   tc_mantic_clientes.razon_social as cliente,
+  ifnull(tc_mantic_clientes_deudas.saldo, 0) as saldo,      
+  ifnull(tc_mantic_clientes_deudas.saldo, 0) as debe,      
+  ifnull(tc_mantic_clientes_estatus.nombre, 'NO APLICA') as deuda,        
   tc_mantic_ventas.registro
 from 
   tc_mantic_articulos
@@ -2057,6 +2061,10 @@ inner join
   tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
 left join 
   tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+left join 
+  tc_mantic_clientes_deudas on tc_mantic_ventas.id_cliente= tc_mantic_clientes_deudas.id_cliente
+left join 
+  tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus= tc_mantic_clientes_estatus.id_cliente_estatus
 where 
   tc_mantic_ventas.id_empresa in ({idEmpresa})
   and tc_mantic_ventas.ticket is not null
@@ -3043,6 +3051,8 @@ select
 	concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor,
   tc_mantic_ventas_estatus.nombre as estatus,
   tc_mantic_clientes.razon_social as cliente,
+  ifnull(tc_mantic_clientes_deudas.saldo, 0) as saldo,      
+  ifnull(tc_mantic_clientes_estatus.nombre, 'NO APLICA') as deuda,        
   tc_mantic_ventas.registro
 from 
   tc_mantic_ventas
@@ -3060,6 +3070,10 @@ inner join
   tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
 left join 
   tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+left join 
+  tc_mantic_clientes_deudas on tc_mantic_ventas.id_cliente= tc_mantic_clientes_deudas.id_cliente
+left join 
+  tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus= tc_mantic_clientes_estatus.id_cliente_estatus
 where 
   tc_mantic_ventas.ticket is not null
   and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)
@@ -3109,6 +3123,8 @@ select
 	concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as vendedor,
   tc_mantic_ventas_estatus.nombre as estatus,
   tc_mantic_clientes.razon_social as cliente,
+  ifnull(tc_mantic_clientes_deudas.saldo, 0) as saldo,      
+  ifnull(tc_mantic_clientes_estatus.nombre, 'NO APLICA') as deuda,        
   tc_mantic_ventas.registro
 from 
   tc_mantic_ventas
@@ -3126,6 +3142,10 @@ inner join
   tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
 left join 
   tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+left join 
+  tc_mantic_clientes_deudas on tc_mantic_ventas.id_cliente= tc_mantic_clientes_deudas.id_cliente
+left join 
+  tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus= tc_mantic_clientes_estatus.id_cliente_estatus
 where 
   tc_mantic_ventas.ticket is not null
   and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)

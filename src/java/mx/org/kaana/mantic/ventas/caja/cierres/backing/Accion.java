@@ -108,6 +108,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("total", 0D);
 			this.attrs.put("disponible", 0D);
 			this.attrs.put("continuar", this.accion.equals(EAccion.CONSULTAR)? "": "none");
+      this.attrs.put("particular", this.toEmptyTotales());          
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -130,7 +131,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.denominaciones= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
   		    this.attrs.put("idEfectivo", 2);
 					this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
-          this.attrs.put("particular", this.toEmptyTotales());          
 					break;	
 			} // switch
 			this.toLoadEmpresas();
@@ -409,6 +409,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
         columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
         columns.add(new Columna("ventas", EFormatoDinamicos.MILES_SIN_DECIMALES));
+        columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SIN_DECIMALES));
 				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 				this.lazyDetalle= new FormatLazyModel("VistaCierresCajasDto", "desglosado", params, columns);
 				UIBackingUtilities.resetDataTable("contenedorGrupos:tablaDetalle");

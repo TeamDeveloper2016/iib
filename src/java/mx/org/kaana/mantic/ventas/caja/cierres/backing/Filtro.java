@@ -434,6 +434,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
         columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
         columns.add(new Columna("ventas", EFormatoDinamicos.MILES_SIN_DECIMALES));
+        columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SIN_DECIMALES));
 				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 				this.lazyDetalle= new FormatLazyModel("VistaCierresCajasDto", "registro", params, columns);
 				UIBackingUtilities.resetDataTable("tablaDetalle");

@@ -1418,7 +1418,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
     Map<String, Object> params= new HashMap<>();
 		List<TrManticVentaMedioPagoDto> pagos= null;
     Double suma              = 0D;
-    Long idCierre            = -1L;
 		try {									
       TcManticVentasDto venta= (TcManticVentasDto)DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.idVenta);
         // CANCELAR LA FACTURA ACTUAL PARA GENERAR LA NUEVA FACTURA
@@ -1436,7 +1435,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
       if(pagos!= null && !pagos.isEmpty()) {
         for (TrManticVentaMedioPagoDto item: pagos) {
           // REGISTRAR EN CAJA EL PAGO EN NEGATIVO DEL IMPORTE DEL TICKET ORIGINAL
-          idCierre= item.getIdCierre();
           suma   += item.getImporte();
           TrManticVentaMedioPagoDto clon= (TrManticVentaMedioPagoDto)item.clone();
           item.setKey(-1L);
@@ -1456,7 +1454,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
       DaoFactory.getInstance().update(sesion, venta);
       this.registraBitacora(sesion, venta.getIdVenta(), venta.getIdVentaEstatus(), "TICKET CANCELADO");
       // AQUI FALTA DESCONTAR EL TOTAL DE LA VENTA DEL CIERRE DE CAJA ACTIVO EN EL IMPORTE ACUMULADO Y EN EL SALDO
-			TcManticCierresCajasDto	caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findById(sesion, TcManticCierresCajasDto.class, idCierre);
+			TcManticCierresCajasDto	caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findById(sesion, TcManticCierresCajasDto.class, this.idCierreVigente);
       if(caja!= null) {
     	  caja.setSaldo(Numero.toRedondearSat((caja.getDisponible()+ caja.getAcumulado())- suma));
 			  caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()- suma));
@@ -1465,8 +1463,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
       // METER REVERSA SOBRE LOS INVENTARIOS ASOCIADOS AL ALMACEN DE DONDE SALIERON LOS ARTICULOS
       this.toCancelarStockArticulos(sesion, venta);
       // METER DE REVERSA LA CUENTA POR COBRAR SI ES QUE ESTA TIENE UNA ASOCIADA
-      this.toCancelarCuentaCobrar(sesion, venta);
-      regresar= Boolean.TRUE;
+      regresar= this.toCancelarCuentaCobrar(sesion, venta);
     } // try
     catch (Exception e) {
       throw e;
