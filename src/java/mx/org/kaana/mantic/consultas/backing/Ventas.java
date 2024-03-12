@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -21,6 +24,7 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -51,6 +55,13 @@ public class Ventas extends IBaseTicket implements Serializable {
 		return detalle;
 	}	
 	
+  public String getParticular() {
+    String ventas= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("ventas"));
+    String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("cantidad"));
+    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("importe"));
+    return "Ventas: <strong>"+ ventas+ "</strong>     kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -61,6 +72,7 @@ public class Ventas extends IBaseTicket implements Serializable {
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
 			this.loadTiposPagos();
 			this.toLoadCatalog();      
+      this.attrs.put("particular", this.toEmptyTotales());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -77,10 +89,16 @@ public class Ventas extends IBaseTicket implements Serializable {
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("subTotal", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       columns.add(new Columna("hora", EFormatoDinamicos.HORA_CORTA));      			
       this.lazyModel = new FormatCustomLazy("VistaConsultasDto", "globales", params, columns);
+      this.attrs.put("particular", this.toTotales("VistaConsultasDto", "criterio", params));
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -241,6 +259,11 @@ public class Ventas extends IBaseTicket implements Serializable {
 			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());
 			this.attrs.put("fechaDetalle", Fecha.formatear(Fecha.FECHA_HORA_CORTA, ((Entity)this.attrs.get("seleccionado")).toTimestamp("registro")));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("impuestos", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("subTotal", EFormatoDinamicos.MILES_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
 			this.detalle= new FormatLazyModel("VistaConsultasDto", "detalle", params, columns);
 			UIBackingUtilities.resetDataTable("tablaDetalle");
 		} // try
@@ -249,5 +272,27 @@ public class Ventas extends IBaseTicket implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} 
+
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+  
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.put("cantidad", new Value("cantidad", 0D));
+    regresar.put("importe", new Value("importe", 0D));
+    regresar.put("ventas", new Value("ventas", 0D));
+    return regresar;
+  }
   
 }

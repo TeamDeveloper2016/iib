@@ -101,49 +101,86 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	  
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ticket}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.ticket}">
               <f:facet name="header">
                 <h:outputText value="No. ticket"/>
               </f:facet>
               <h:outputText value="#{row['ticket']}"/>
             </p:column>		                        
-            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
-              <f:facet name="header">
-                <h:outputText value="Vendedor"/>
-              </f:facet>
-              <h:outputText value="#{row['nombre']}"/>
-            </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.nombreEmpresa}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
               <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>																
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+            <p:column class="MarAuto Responsive janal-display-none">
               <f:facet name="header">
-                <h:outputText value="Importe ($)"/>
+                <h:outputText value="Codigo"/>
+              </f:facet>
+              <h:outputText value="#{row['codigo']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive" sortBy="#{row.articulo}">
+              <f:facet name="header">
+                <h:outputText value="Producto"/>
+              </f:facet>
+              <h:outputText value="#{row['articulo']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.cantidad}">
+              <f:facet name="header">
+                <h:outputText value="Kilos"/>
+              </f:facet>
+              <h:outputText value="#{row['cantidad']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.costo}">
+              <f:facet name="header">
+                <h:outputText value="Precio"/>
+              </f:facet>
+              <h:outputText value="#{row['costo']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['importe']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.total}">
+              <f:facet name="header">
+                <h:outputText value="Total"/>
               </f:facet>
               <h:outputText value="#{row['total']}"/>
             </p:column>		
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+            <p:column class="MarAuto Responsive janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Cliente"/>
+              </f:facet>
+              <h:outputText value="#{row['cliente']}"/>
+            </p:column>		
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-7" sortBy="#{row.hora}">
+            <p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.cuenta}">
+              <f:facet name="header">
+                <h:outputText value="Vendedor"/>
+              </f:facet>
+              <h:outputText value="#{row['cuenta']}"/>
+            </p:column>		
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-4" sortBy="#{row.hora}">
               <f:facet name="header">
                 <h:outputText value="Hora"/>
               </f:facet>
               <h:outputText value="#{row['hora']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		            
             <f:facet name="footer">
+              <p:outputLabel styleClass="detalle" style="float: left;" value="#{manticConsultasVentas.particular}" escape="false"/>
               <p:outputLabel value="Total [#{manticConsultasVentas.lazyModel==null?0:manticConsultasVentas.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
@@ -158,34 +195,29 @@
 		<svg id="barcode" style="display: none"></svg>	
 		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>
 		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle de venta" closable="false" resizable="false" width="70%">
-			<h:panelGrid columns="4" style="width: 100%" columnClasses="janal-wid-20, janal-wid-60, janal-wid-10 janal-column-right, janal-wid-10 janal-column-right">
+			<h:panelGrid columns="5" style="width: 100%" columnClasses="janal-wid-15, janal-wid-20, janal-wid-40, janal-wid-15 janal-column-right, janal-wid-10 janal-column-right">
 				<p:outputLabel value="Ticket:" styleClass="janal-wid-100-txt"/>
+				<p:outputLabel value="Fecha:" styleClass="janal-wid-100-txt"/>
 				<p:outputLabel value="Empresa:" styleClass="janal-wid-100-txt"/>
-				<p:outputLabel value="Iva: $" styleClass="janal-wid-100-txt janal-column-right "/>
+				<p:outputLabel value="Iva:" styleClass="janal-wid-100-txt janal-column-right "/>
 				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.impuestos}" disabled="true" styleClass="janal-wid-100-txt janal-column-right"/>				
+        
 				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.ticket}" disabled="true" styleClass="janal-wid-100-txt"/>
-				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.nombreEmpresa}" disabled="true" styleClass="janal-wid-100-txt"/>
-				<p:outputLabel value="Subtotal: $" styleClass="janal-wid-100-txt janal-column-right "/>
-				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.subTotal}" disabled="true" styleClass="janal-wid-100-txt janal-column-right"/>								
-				<p:outputLabel value="Fecha" styleClass="janal-wid-100-txt"/>
-				<p:outputLabel value="Almacen" styleClass="janal-wid-100-txt"/>
-				<p:outputLabel value="Total: $" styleClass="janal-wid-100-txt janal-column-right "/>
-				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.total}" disabled="true" styleClass="janal-wid-100-txt janal-column-right"/>								
 				<p:inputText value="#{manticConsultasVentas.attrs.fechaDetalle}" disabled="true" styleClass="janal-wid-100-txt"/>
-				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.almacen}" disabled="true" styleClass="janal-wid-100-txt"/>
-				<p:spacer/><p:spacer/>								
-				<p:outputLabel value="Forma pago" styleClass="janal-wid-100-txt"/>
-				<p:outputLabel value="Cliente" styleClass="janal-wid-100-txt"/>
-				<p:spacer/><p:spacer/>								
-				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.medioPago}" disabled="true" styleClass="janal-wid-100-txt"/>
+				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.nombreEmpresa}" disabled="true" styleClass="janal-wid-100-txt"/>
+				<p:outputLabel value="Subtotal:" styleClass="janal-wid-100-txt janal-column-right "/>
+				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.subTotal}" disabled="true" styleClass="janal-wid-100-txt janal-column-right"/>								
+        
+				<p:outputLabel value="Estatus" styleClass="janal-wid-100-txt"/>
+				<p:outputLabel value="Cliente:" styleClass="janal-wid-100-txt"/>
+				<p:outputLabel value="Vendedor:" styleClass="janal-wid-100-txt"/>
+        <p:spacer/><p:spacer/>
+        
+				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.estatus}" disabled="true" styleClass="janal-wid-100-txt"/>
 				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.cliente}" disabled="true" styleClass="janal-wid-100-txt"/>
-				<p:spacer/><p:spacer/>
-				<p:spacer/>
-				<p:outputLabel value="Vendedor" styleClass="janal-wid-100-txt"/>
-				<p:spacer/><p:spacer/>		
-				<p:spacer/>
 				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.nombre}" disabled="true" styleClass="janal-wid-100-txt"/>
-				<p:spacer/><p:spacer/>
+				<p:outputLabel value="Total:" styleClass="janal-wid-100-txt janal-column-right "/>
+				<p:inputText value="#{manticConsultasVentas.attrs.seleccionado.total}" disabled="true" styleClass="janal-wid-100-txt janal-column-right"/>								
 			</h:panelGrid>
 			<p:spacer height="10px"/>
 			<p:dataTable lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticConsultasVentas.detalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticConsultasVentas.attrs.seleccionadoDetalle}" selectionMode="single" paginator="#{manticConsultasVentas.detalle.rowCount gt manticConsultasVentas.detalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">								
@@ -203,15 +235,15 @@
 				</p:column>						
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.cantidad}">
 					<f:facet name="header">
-						<h:outputText value="Cantidad"/>
+						<h:outputText value="Kilos"/>
 					</f:facet>
 					<h:outputText value="#{row['cantidad']}"/>
 				</p:column>																
-				<p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.impuestos}">
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.costo}">
 					<f:facet name="header">
-						<h:outputText value="Iva"/>
+						<h:outputText value="Precio"/>
 					</f:facet>
-					<h:outputText value="#{row['impuestos']}"/>
+					<h:outputText value="#{row['costo']}"/>
 				</p:column>		
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.subTotal}">
 					<f:facet name="header">
@@ -225,26 +257,8 @@
 					</f:facet>
 					<h:outputText value="#{row['importe']}"/>
 				</p:column>		
-				<p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.utilida}">
-					<f:facet name="header">
-						<h:outputText value="Utilidad"/>
-					</f:facet>
-					<h:outputText value="#{row['utilidad']}"/>
-				</p:column>		            
-				<p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.unidadMedida}">
-					<f:facet name="header">
-						<h:outputText value="Unidad medida"/>
-					</f:facet>
-					<h:outputText value="#{row['unidadMedida']}"/>
-				</p:column>		            
-				<p:column class="janal-column-right MarAuto Responsive janal-wid-7" sortBy="#{row.stock}">
-					<f:facet name="header">
-						<h:outputText value="Stock"/>
-					</f:facet>
-					<h:outputText value="#{row['stock']}"/>
-				</p:column>		            
 				<f:facet name="footer">
-					<p:outputLabel value="Total [#{manticConsultasVentas.detalle==null?0:manticConsultasVentas.detalle.rowCount}] registros"/>
+					<p:outputLabel value="Total [#{manticConsultasVentas.detalle== null? 0: manticConsultasVentas.detalle.rowCount}] registros"/>
 				</f:facet>
 			</p:dataTable>
 			<hr class="ui-widget-content"/>

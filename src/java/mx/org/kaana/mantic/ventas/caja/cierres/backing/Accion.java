@@ -204,7 +204,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el cierre de caja."), ETipoMensaje.INFORMACION);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al realizar el cierre de caja.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al realizar el cierre de caja", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
