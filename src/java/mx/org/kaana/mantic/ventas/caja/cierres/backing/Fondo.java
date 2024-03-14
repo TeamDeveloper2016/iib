@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.ventas.caja.cierres.backing;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -80,7 +81,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
 			this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
 			this.toLoadEmpresas();
 			this.doCalculate();
-			if(importe.getDisponible()> (Double)this.attrs.get("disponible"))
+			if(!Objects.equals(importe, null) && importe.getDisponible()> (Double)this.attrs.get("disponible"))
         this.attrs.put("disponible", importe.getDisponible());		
     } // try
     catch (Exception e) {

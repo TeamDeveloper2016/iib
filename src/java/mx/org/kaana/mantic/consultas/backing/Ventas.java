@@ -49,7 +49,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 	
 	public Reporte getReporte() {
 		return reporte;
-	}	// getReporte
+	}	
 
 	public FormatLazyModel getDetalle() {
 		return detalle;
@@ -78,7 +78,7 @@ public class Ventas extends IBaseTicket implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // init
+  } 
  
   @Override
   public void doLoad() {
@@ -109,7 +109,7 @@ public class Ventas extends IBaseTicket implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
+  } 
 	
   public String doAccion(String accion) {
     EAccion eaccion= null;
@@ -125,7 +125,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
 		return regresar;
-  } // doAccion    
+  } 
 
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
@@ -160,7 +160,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;		
-	} // toPrepare
+	} 
 	
 	protected void toLoadCatalog() {
 		List<Columna> columns     = new ArrayList<>();
@@ -176,7 +176,7 @@ public class Ventas extends IBaseTicket implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", this.toDefaultSucursal((List<UISelectEntity>)this.attrs.get("sucursales")));
-			doLoadVendedores();
+			this.doLoadVendedores();
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaVentasDto", "clientes", params, columns));
 			this.attrs.put("idCliente", new UISelectEntity("-1"));
@@ -204,7 +204,7 @@ public class Ventas extends IBaseTicket implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // doLoadVendedores
+	} 
 	
 	private void loadTiposPagos(){
 		List<UISelectEntity> tiposPagos= null;

@@ -1,6 +1,5 @@
 package mx.org.kaana.mantic.ventas.comun;
 
-import com.google.common.base.Objects;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -8,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -165,9 +165,9 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // loadSucursales
+	} 
 	
-	protected void loadSucursalesPerfil(){
+	protected void loadSucursalesPerfil() {
 		List<UISelectEntity> sucursales= null;
 		Map<String, Object>params      = new HashMap<>();
 		List<Columna> columns          = new ArrayList<>();
@@ -210,7 +210,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // doDetailArticulo
+	} 
 	
 	public void doLoadTicketAbiertos() {	
 		List<Columna> columns    = new ArrayList<>();
@@ -280,7 +280,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			Methods.clean(params);
 			Methods.clean(columns);
 		} // finally
-	} // doLoadCotizaciones
+	} 
 	
 	protected String toCondicion() {
 		return toCondicion(false);
@@ -355,30 +355,35 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			throw e;
 		} // catch		
 		return regresar.toString();
-	} // toCondicion	
+	} 
 	
 	public void doAsignaTicketAbierto() {
-		Map<String, Object>params = new HashMap<>();
+		Map<String, Object>params= new HashMap<>();
+    Entity cuenta            = (Entity)this.attrs.get("selectedCuentaAbierta");
 		try {
-			params.put("idVenta", ((Entity)this.attrs.get("selectedCuentaAbierta")).get("idVenta"));
-			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
-    	this.unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
-			this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
-			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
-			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
-			this.toLoadCatalogos();
-			this.doAsignaClienteTicketAbierto();
-			this.doResetDataTable();      
-			UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
+      if(!Objects.equals(cuenta, null) && !cuenta.isEmpty() && cuenta.containsKey("idVenta")) {
+        params.put("idVenta", cuenta.get("idVenta"));
+        this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
+        this.unlockVentaExtends(Long.valueOf(params.get("idVenta").toString()), (Long)this.attrs.get("ticketLock"));
+        this.attrs.put("ticketLock", Long.valueOf(params.get("idVenta").toString()));
+        this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+        this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
+        this.toLoadCatalogos();
+        this.doAsignaClienteTicketAbierto();
+        this.doResetDataTable();      
+        UIBackingUtilities.execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
+      } // if  
+      else
+        JsfBase.addMessage("Intente de nuevo seleccionar la cuenta", ETipoMensaje.ERROR);        
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-		finally {
+		finally{
 			Methods.clean(params);
 		} // finally
-	} // doAsignaTicketAbierto
+	} 
 	
 	public void doAsignaCotizacion(){
 		Map<String, Object>params = new HashMap<>();
@@ -402,7 +407,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // doAsignaTicketAbierto	
+	} 
 	
 	public void doAsignaApartado() {
 		Map<String, Object>params = new HashMap<>();
@@ -488,7 +493,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			clienteDefault= motorBusqueda.toClienteDefault();
-      if(!Objects.equal(seleccion.getKey(), clienteDefault.getKey()))
+      if(!Objects.equals(seleccion.getKey(), clienteDefault.getKey()))
 			  clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
 			this.attrs.put("mostrarCorreos", seleccion.getKey().equals(-1L) || seleccion.getKey().equals(clienteDefault.getKey()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
@@ -500,11 +505,11 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		catch (Exception e) {	
 			throw e;
 		} // catch		
-	} // doAsignaClienteTicketAbierto
+	} 
 	
 	public void doReCalculatePreciosArticulos(Long idCliente) {
 		this.doReCalculatePreciosArticulos(true, idCliente);
-	} // doReCalculatePreciosArticulos
+	} 
 	
 	public void doReCalculatePreciosArticulos(boolean descuentoVigente, Long idCliente) {
 		MotorBusqueda motor= null;
@@ -1039,7 +1044,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 					if(articulos.indexOf(articulo)>= 0) 
 						articulo= articulos.get(articulos.indexOf(articulo));
 					else
-						articulo= articulos.get(0);
+						if(!Objects.equals(articulos, null) && !articulos.isEmpty()) 						
+						  articulo= articulos.get(0);
 			if(articulo.size()> 1) {
 				int position= this.getAdminOrden().getArticulos().indexOf(new ArticuloVenta(articulo.toLong("idArticulo"), this.costoLibre));
 				if(articulo.size()> 1 && position>= 0) {
@@ -1100,7 +1106,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
       ((TicketVenta)this.getAdminOrden().getOrden()).setIkCliente(seleccion);
 			motorBusqueda= new MotorBusqueda(-1L);
 			clienteDefault= motorBusqueda.toClienteDefault();
-      if(!Objects.equal(seleccion.getKey(), clienteDefault.getKey()))
+      if(!Objects.equals(seleccion.getKey(), clienteDefault.getKey()))
 			  clientesSeleccion.add(0, new UISelectEntity(clienteDefault));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
