@@ -188,65 +188,71 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.nombreEmpresa}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
               <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ticket}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ticket}">
               <f:facet name="header">
                 <h:outputText value="No. ticket"/>
               </f:facet>
               <h:outputText value="#{row['ticket']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.cliente}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.cliente}">
               <f:facet name="header">
                 <h:outputText value="Cliente"/>
               </f:facet>
               <h:outputText value="#{row['cliente']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.kilos}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.kilos}">
               <f:facet name="header">
                 <h:outputText value="Kilos"/>
               </f:facet>
               <h:outputText value="#{row['kilos']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.total}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.total}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['total']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.cuenta}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.cuenta}">
               <f:facet name="header">
                 <h:outputText value="Vendedor"/>
               </f:facet>
               <h:outputText value="#{row['cuenta']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.deudaEstatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.deudaEstatus}">
               <f:facet name="header">
                 <h:outputText value="Deuda"/>
               </f:facet>
               <h:outputText value="#{row['deudaEstatus']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.saldo}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{row.saldo}">
               <f:facet name="header">
                 <h:outputText value="Saldo"/>
               </f:facet>
               <h:outputText value="#{row['saldo']}"/>
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.registro}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
+            </p:column>
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-5" style="width: 230px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;text-overflow: ellipsis;" sortBy="#{row.observaciones}">
+              <f:facet name="header">
+                <h:outputText value="Obs"/>
+              </f:facet>
+              <h:outputText value="#{row['observaciones']}" title="#{row['observaciones']}"/>
             </p:column>
             <p:column headerText="Factura" styleClass="janal-display-none" style="width:50px; text-align: center" exportable="false" rendered="false">
 							<p:commandButton process="@this" update="descargar" icon="fa fa-eye-slash" title="Ver documento PDF" action="#{manticVentasCajaFiltro.doIrFacturas}" rendered="#{row.folio eq '1'}">

@@ -736,7 +736,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()) {
         // ESTO SE AJUSTO PARA QUE TODAS LAS VENTAS SIEMPRE SEAN A CREDITO SI EL CLIENTE TIENE CREDITO ACEPTADO 21/02/2024
         // Y SI ES PLANTA SE DEBE DE ACTIVAR QUE LAS VENTAS SEAN A CREDITO PLANTA ES IGUAL A ID_EMPRESA= 2
-        Long idEmpresa= ((UISelectEntity)this.attrs.get("idEmpresa")).getKey();
+        Long idEmpresa= this.attrs.get("idEmpresa") instanceof Long? (Long)this.attrs.get("idEmpresa"): ((UISelectEntity)this.attrs.get("idEmpresa")).getKey();
         this.attrs.put("creditoVenta", Objects.equals(idEmpresa, 2L) && Objects.equals(seleccion.toLong("idCredito"), 1L));
         ((TicketVenta)this.getAdminOrden().getOrden()).setIkCliente(seleccion);
 				this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
