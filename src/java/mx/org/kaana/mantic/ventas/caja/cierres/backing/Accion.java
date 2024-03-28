@@ -60,6 +60,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private FormatCustomLazy lazyModel;
 	private EAccion accion;
   private FormatLazyModel lazyDetalle;
+  private FormatLazyModel lazyMedios;
 
 	public List<Importe> getImportes() {
 		return importes;
@@ -86,10 +87,19 @@ public class Accion extends IBaseAttribute implements Serializable {
 		return lazyDetalle;
 	}		
 
+	public FormatLazyModel getLazyMedios() {
+		return lazyMedios;
+	}		
+
   public String getParticular() {
     String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("cantidad"));
     String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("importe"));
     return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+  }
+
+  public String getGeneral() {
+    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("importe"));
+    return "Abono(s): <strong>"+ total+ "</strong>";  
   }
 
   @Override
@@ -109,6 +119,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("disponible", 0D);
 			this.attrs.put("continuar", this.accion.equals(EAccion.CONSULTAR)? "": "none");
       this.attrs.put("particular", this.toEmptyTotales());          
+      this.attrs.put("general", this.toEmptyTotales());          
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -414,6 +425,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				this.lazyDetalle= new FormatLazyModel("VistaCierresCajasDto", "desglosado", params, columns);
 				UIBackingUtilities.resetDataTable("contenedorGrupos:tablaDetalle");
         this.attrs.put("particular", this.toTotales("VistaCierresCajasDto", "general", params));
+        this.doMedios(row);
 			} // if
 		} // try
 		catch (Exception e) {
@@ -478,5 +490,32 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     } // finally
 	}
+ 
+  private void doMedios(Importe row) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+		try {
+			if(row!= null) {
+        this.attrs.put("seleccionado", row);
+        params.put("idCierre", row.getIdCierre());
+        params.put("idTipoMedioPago", row.getIdTipoMedioPago());
+        params.put("sortOrder", "order by tc_mantic_clientes_pagos.registro desc");
+        columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+				columns.add(new Columna("fechaPago", EFormatoDinamicos.FECHA_CORTA));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+				this.lazyMedios= new FormatLazyModel("VistaCierresCajasDto", "medios", params, columns);
+				UIBackingUtilities.resetDataTable("contenedorGrupos:tablaMedios");
+        this.attrs.put("general", this.toTotales("VistaCierresCajasDto", "complicado", params));
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
   
 }

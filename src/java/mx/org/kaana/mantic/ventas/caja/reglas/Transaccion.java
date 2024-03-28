@@ -1435,7 +1435,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
       if(pagos!= null && !pagos.isEmpty()) {
         for (TrManticVentaMedioPagoDto item: pagos) {
           // REGISTRAR EN CAJA EL PAGO EN NEGATIVO DEL IMPORTE DEL TICKET ORIGINAL
-          suma   += item.getImporte();
           TrManticVentaMedioPagoDto clon= (TrManticVentaMedioPagoDto)item.clone();
           item.setKey(-1L);
           clon.setIdCierre(this.idCierreVigente);
@@ -1446,6 +1445,18 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
           clon.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
           clon.setObservaciones("SE CANCELO EL TICKET ["+ this.getOrden().getTicket()+ "]");
           DaoFactory.getInstance().insert(sesion, clon);
+          // AQUI FALTA DESCONTAR EL TOTAL DE LA VENTA DEL CIERRE DE CAJA ACTIVO EN EL IMPORTE ACUMULADO Y EN EL SALDO
+          // ESTO ESTAMAL ES EL ID_CIERRE, MAS EL ID_MEDIO_DE_PAGO
+          params.put("idCierre", this.idCierreVigente);
+          params.put("idTipoMedioPago", item.getIdTipoMedioPago());
+          params.put("importe", item.getImporte());
+          DaoFactory.getInstance().updateAll(sesion, TcManticCierresCajasDto.class, params);
+//          TcManticCierresCajasDto	caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findById(sesion, TcManticCierresCajasDto.class, this.idCierreVigente);
+//          if(caja!= null) {
+//            caja.setSaldo(Numero.toRedondearSat((caja.getDisponible()+ caja.getAcumulado())- suma));
+//            caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()- suma));
+//            DaoFactory.getInstance().update(sesion, caja);
+//          } // if
         } // for
       } // if
       // CANCELAR EL TICKET ANTERIOR PARA QUE NO SE PUEDA HACER OTRA DEVOLUCION 
@@ -1453,13 +1464,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
       venta.setObservaciones((this.getOrden().getObservaciones()!= null? "": this.getOrden().getObservaciones().concat(", ")).concat("TICKET CANCELADO"));
       DaoFactory.getInstance().update(sesion, venta);
       this.registraBitacora(sesion, venta.getIdVenta(), venta.getIdVentaEstatus(), "TICKET CANCELADO");
-      // AQUI FALTA DESCONTAR EL TOTAL DE LA VENTA DEL CIERRE DE CAJA ACTIVO EN EL IMPORTE ACUMULADO Y EN EL SALDO
-			TcManticCierresCajasDto	caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findById(sesion, TcManticCierresCajasDto.class, this.idCierreVigente);
-      if(caja!= null) {
-    	  caja.setSaldo(Numero.toRedondearSat((caja.getDisponible()+ caja.getAcumulado())- suma));
-			  caja.setAcumulado(Numero.toRedondearSat(caja.getAcumulado()- suma));
-    	  DaoFactory.getInstance().update(sesion, caja);
-      } // if
       // METER REVERSA SOBRE LOS INVENTARIOS ASOCIADOS AL ALMACEN DE DONDE SALIERON LOS ARTICULOS
       this.toCancelarStockArticulos(sesion, venta);
       // METER DE REVERSA LA CUENTA POR COBRAR SI ES QUE ESTA TIENE UNA ASOCIADA

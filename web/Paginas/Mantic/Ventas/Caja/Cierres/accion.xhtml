@@ -184,7 +184,7 @@
 												<p:outputLabel value="#{row['diferencia$']}" escape="false" styleClass="totales filas"/>
 											</p:column>			
                       <p:column style="width: 40px; text-align: center; display: #{manticVentasCajaCierresAccion.attrs.continuar}">
-                        <p:commandButton icon="fa fa-search" title="Detalle ventas" actionListener="#{manticVentasCajaCierresAccion.doDetalle(row)}" process="@this" update="contenedorGrupos:tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" styleClass="janal-not-lock"/>
+                        <p:commandButton icon="fa fa-search" title="Detalle ventas" actionListener="#{manticVentasCajaCierresAccion.doDetalle(row)}" process="@this" update="contenedorGrupos:tablaDetalle @(.detalle) contenedorGrupos:tablaMedios @(.abonos)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();" styleClass="janal-not-lock"/>
                       </p:column>
 											<f:facet name="footer">
 												<p:outputLabel for="total" styleClass="filas totales janal-color-blue" value="Total: &lt;strong&gt; $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.total)}&lt;/strong&gt;" escape="false"/>
@@ -231,7 +231,6 @@
 									</div>		
 								</div>	
                 <div class="ui-grid-row janal-grid-row">
-
                   <p:dataTable lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="item" value="#{manticVentasCajaCierresAccion.lazyDetalle}" styleClass="detalle janal-wid-100 #{manticVentasCajaCierresAccion.lazyDetalle eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasCajaCierresAccion.attrs.detalle}" selectionMode="single" paginator="#{manticVentasCajaCierresAccion.lazyDetalle.rowCount gt manticVentasCajaCierresAccion.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
                     <f:facet name="header">
                       <div style="float: left">
@@ -266,7 +265,7 @@
                       </f:facet>
                       <h:outputText value="#{item['ticket']}"/>
                     </p:column>			
-                    <p:column class="janal-column-center MarAuto Responsive janal-wid-6" sortBy="#{item.ticket}" exportable="false">
+                    <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{item.ticket}" exportable="false">
                       <f:facet name="header">
                         <h:outputText value="Ticket"/>
                       </f:facet>
@@ -339,8 +338,91 @@
                   <h:commandLink id="dataXlsDetalle">
                     <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:tablaDetalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
                   </h:commandLink>	             
-                  
-                  
+                </div>  
+                <div class="ui-grid-row janal-grid-row">
+                  <br/>
+                  <br/>
+                  <p:dataTable lazy="true" id="tablaMedios" widgetVar="kajoolTableMedios" var="one" value="#{manticVentasCajaCierresAccion.lazyMedios}" styleClass="abonos janal-wid-100 #{manticVentasCajaCierresAccion.lazyMedios eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasCajaCierresAccion.attrs.medios}" selectionMode="single" paginator="#{manticVentasCajaCierresAccion.lazyMedios.rowCount gt manticVentasCajaCierresAccion.lazyMedios.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                    <f:facet name="header">
+                      <div style="float: left">
+                        <p:outputLabel value="Detalle de pagos registrados en caja en [#{manticVentasCajaCierresAccion.attrs.seleccionado.medioPago}]" styleClass="abonos janal-text-white"/>
+                      </div>  
+                      <div class="lg-pantalla">
+                        <p:menuButton value="Opciones">
+                          <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataPdfMedios', 'contenedorGrupos\\:tablaMedios')" oncomplete="janal.desbloquear()"/>
+                          <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsMedios', 'contenedorGrupos\\:tablaMedios')" oncomplete="janal.desbloquear()"/>
+                        </p:menuButton>
+                      </div>	
+                      <div class="xs-pantalla">
+                        <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('contenedorGrupos\\:dataPdfMedios', 'contenedorGrupos\\:tablaMedios')" oncomplete="janal.desbloquear()"/>
+                        <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('contenedorGrupos\\:dataXlsMedios', 'contenedorGrupos\\:tablaMedios')" oncomplete="janal.desbloquear()"/>
+                      </div>	
+                    </f:facet>												
+                    <p:column class="janal-column-center MarAuto Responsive janal-wid-3">
+                      <f:facet name="header">
+                        <h:outputText value="No."/>
+                      </f:facet>
+                      <h:outputText value="#{index+ 1}.-"/>
+                    </p:column>														
+                    <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{one.empresa}">
+                      <f:facet name="header">
+                        <h:outputText value="Empresa"/>
+                      </f:facet>
+                      <h:outputText value="#{one['empresa']}"/>
+                    </p:column>														
+                    <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{one.consecutivo}">
+                      <f:facet name="header">
+                        <h:outputText value="Folio"/>
+                      </f:facet>
+                      <h:outputText value="#{one['consecutivo']}"/>
+                    </p:column>			
+                    <p:column class="janal-column-left MarAuto Responsive" sortBy="#{one.cliente}">
+                      <f:facet name="header">
+                        <h:outputText value="Cliente"/>
+                      </f:facet>
+                      <h:outputText value="#{one['cliente']}"/>
+                    </p:column>		
+                    <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{one.medio}">
+                      <f:facet name="header">
+                        <h:outputText value="Medio"/>
+                      </f:facet>
+                      <h:outputText value="#{one['medio']}"/>
+                    </p:column>					
+                    <p:column class="janal-column-right MarAuto Responsive janal-wid-6" sortBy="#{one.importe}">
+                      <f:facet name="header">
+                        <h:outputText value="Pago"/>
+                      </f:facet>
+                      <h:outputText value="#{one['importe']}"/>
+                    </p:column>					
+                    <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{one.fechaPago}">
+                      <f:facet name="header">
+                        <h:outputText value="Fecha"/>
+                      </f:facet>
+                      <h:outputText value="#{one['fechaPago']}"/>
+                    </p:column>			
+                    <p:column class="janal-column-left MarAuto Responsive" sortBy="#{one.recibio}">
+                      <f:facet name="header">
+                        <h:outputText value="Recibio"/>
+                      </f:facet>
+                      <h:outputText value="#{one['recibio']}"/>
+                    </p:column>		
+                    <p:column class="janal-column-center MarAuto Responsive janal-wid-12" sortBy="#{one.registro}">
+                      <f:facet name="header">
+                        <h:outputText value="Registro"/>
+                      </f:facet>
+                      <h:outputText value="#{one['registro']}"/>
+                    </p:column>			
+                    <f:facet name="footer">
+                      <p:outputLabel styleClass="abonos" style="float: left;" value="#{manticVentasCajaCierresAccion.general}" escape="false"/>
+                      <p:outputLabel value="Total [#{manticVentasCajaCierresAccion.lazyMedios== null? 0: manticVentasCajaCierresAccion.lazyMedios.rowCount}] registros"/>
+                    </f:facet>
+                  </p:dataTable>
+                  <h:commandLink id="dataPdfMedios">                    
+                    <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="contenedorGrupos:tablaMedios" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                  </h:commandLink>
+                  <h:commandLink id="dataXlsMedios">
+                    <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="contenedorGrupos:tablaMedios" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                  </h:commandLink>	             
                 </div>  
 							</div>
 						</p:tab>

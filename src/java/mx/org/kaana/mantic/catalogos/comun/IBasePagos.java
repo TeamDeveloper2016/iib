@@ -35,27 +35,25 @@ public abstract class IBasePagos extends mx.org.kaana.mantic.inventarios.comun.I
 			this.attrs.put("xml", ""); 
 			this.attrs.put("file", ""); 
 			if(JsfBase.isAdminEncuestaOrAdmin())
-				loadSucursales();							
-			doLoadCajas();
-			loadTiposPagos();
-			loadBancos();
+				this.loadSucursales();							
+			this.doLoadCajas();
+			this.loadTiposPagos();
+			this.loadBancos();
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // initValues
+	} 
 	
 	protected void loadBancos(){
 		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
-		List<Columna> campos       = null;
+		Map<String, Object> params = new HashMap<>();
+		List<Columna> columns      = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("bancos", bancos);
 		} // try
 		catch (Exception e) {
@@ -67,19 +65,17 @@ public abstract class IBasePagos extends mx.org.kaana.mantic.inventarios.comun.I
 		} // finally
 	} // loadBancos
 	
-	protected void loadSucursales(){
+	protected void loadSucursales() {
 		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
 			this.attrs.put("sucursales", sucursales);
-			this.attrs.put("idEmpresa", sucursales.get(0));
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity(sucursales));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -87,19 +83,17 @@ public abstract class IBasePagos extends mx.org.kaana.mantic.inventarios.comun.I
 		} // catch		
 	} // loadSucursales
 	
-	public void doLoadCajas(){
+	public void doLoadCajas() {
 		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			cajas=(List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
 			this.attrs.put("cajas", cajas);
-			this.attrs.put("caja", cajas.get(0));
+			this.attrs.put("caja", UIBackingUtilities.toFirstKeySelectEntity(cajas));
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -108,9 +102,8 @@ public abstract class IBasePagos extends mx.org.kaana.mantic.inventarios.comun.I
 	
 	protected void loadTiposPagos(){
 		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
+		Map<String, Object>params      = new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
 			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposPagos", tiposPagos);

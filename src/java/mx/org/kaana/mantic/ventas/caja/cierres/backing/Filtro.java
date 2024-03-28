@@ -103,10 +103,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("caja", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("disponible", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("acumulado", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("capturado", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("disponible", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("acumulado", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("capturado", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));      
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", params, columns);
       UIBackingUtilities.resetDataTable();

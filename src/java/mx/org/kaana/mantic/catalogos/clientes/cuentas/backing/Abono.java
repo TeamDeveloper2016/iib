@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -25,6 +26,7 @@ import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
@@ -55,22 +57,22 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("saldar", "2");						
 			this.attrs.put("fechaPago", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.initValues();
-			this.loadClienteDeuda();
+			this.toLoadClienteDeuda();
 			this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // init	
+  } 
 	
-	private void loadClienteDeuda() throws Exception {
-		Entity deuda             = null;
-		Map<String, Object>params= null;
+	private void toLoadClienteDeuda() throws Exception {
+		Entity deuda                   = null;
+		Map<String, Object>params      = new HashMap<>();
+    List<UISelectEntity> sucursales=(List<UISelectEntity>)this.attrs.get("sucursales");
 		try {
-			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));			
-			params.put("sortOrder", this.attrs.get("sortOrder"));
+			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro");
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.id_cliente_deuda=" + this.attrs.get("idClienteDeuda"));
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "cuentas", params);
 			this.attrs.put("permitirPago", deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus()));
@@ -78,6 +80,15 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("pago", deuda.toDouble("saldo"));			
       if(!deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())) 
         UIBackingUtilities.execute("janal.bloquear();PF('dlgPago').show();");
+      
+      // POSICIONAR LA SUCURSAL BASADO EN DONDE SE REALIZÓ LA VENTA
+			if(!Objects.equals(sucursales, null) && !sucursales.isEmpty()) {
+        int index= sucursales.indexOf(new UISelectEntity(deuda.toLong("idEmpresa")));
+        if(index>= 0) {
+			    this.attrs.put("idEmpresa", sucursales.get(index));
+          this.doLoadCajas();
+        } // if  
+      } // if
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -85,16 +96,14 @@ public class Abono extends IBasePagos implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // loadClienteDeuda
+	} 
 	
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();	
     try {  	  
-			params= new HashMap<>();
 			params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));			
-      columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			columns.add(new Columna("fechaPago", EFormatoDinamicos.FECHA_CORTA));
 			columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
@@ -112,13 +121,13 @@ public class Abono extends IBasePagos implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
+  } 
 
 	public String doRegresar() {	  
 		JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));
 		JsfBase.setFlashAttribute("idClienteDeuda", this.attrs.get("idClienteDeuda"));
 		return "saldos".concat(Constantes.REDIRECIONAR);
-	} // doRegresar
+	} 
 	
 	public void doRegistrarPago() {
 		Transaccion transaccion      = null;
@@ -138,7 +147,7 @@ public class Abono extends IBasePagos implements Serializable {
       transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf(this.attrs.get("idCliente").toString()), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), saldar);
       if(transaccion.ejecutar(EAccion.AGREGAR)){
         JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
-        this.loadClienteDeuda();
+        this.toLoadClienteDeuda();
       } // if
       else
         JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
@@ -147,14 +156,13 @@ public class Abono extends IBasePagos implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // doRegistrarPago
+	} 
 	
 	@Override
 	public void doLoadImportados() {
-		List<Columna> columns                 = null;
+		List<Columna> columns                 = new ArrayList<>();
 		TcManticClientesDeudasDto clienteDeuda= null;
 		try {
-			columns= new ArrayList<>();
       columns.add(new Columna("ruta", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
@@ -170,15 +178,14 @@ public class Abono extends IBasePagos implements Serializable {
     finally {
       Methods.clean(columns);
     }// finally
-  } // doLoadImportados	
+  } 
 	
 	@Override
 	public void doLoadFiles() {
 		TcManticClientesPagosArchivosDto tmp= null;
 		if((Long) this.attrs.get("idClienteDeuda") > 0L) {
-			Map<String, Object> params=null;
+			Map<String, Object> params= new HashMap<>();
 			try {
-				params=new HashMap<>();
 				params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));				
 				params.put("idTipoArchivo", 2L);
 				tmp= (TcManticClientesPagosArchivosDto) DaoFactory.getInstance().toEntity(TcManticClientesPagosArchivosDto.class, "VistaClientesDto", "existsPagos", params); 
@@ -195,15 +202,13 @@ public class Abono extends IBasePagos implements Serializable {
 				Methods.clean(params);
 			} // finally
 		} // if
-	} // doLoadFiles	
+	} 
 	
 	@Override
 	public void doLoadPagosArchivos(){
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();      
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));
 			this.attrs.put("pagos", UIEntity.build("VistaClientesDto", "pagosDeuda", params, columns));
@@ -216,7 +221,7 @@ public class Abono extends IBasePagos implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	} // doLoadPagosArchivos	
+	} 
 	
 	public String doImportar() {
 		String regresar        = null;
@@ -273,5 +278,6 @@ public class Abono extends IBasePagos implements Serializable {
 			if(result!= null)
 			  result.delete();
 		} // catch
-	} // doFileUpload		
+	} 
+  
 }

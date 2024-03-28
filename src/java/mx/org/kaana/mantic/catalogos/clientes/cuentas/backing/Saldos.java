@@ -198,7 +198,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		List<UISelectEntity>clientes= (List<UISelectEntity>)this.attrs.get("clientes");
     try {      
       // ESTO ES UN PARCHE PARA MOSTRAR SOLO LOS REGISTROS DEL VENDEDOR 31/01/2024
-      if(!JsfBase.isAdminEncuestaOrAdmin())
+      if(!JsfBase.isEncargado())
         sb.append("(tc_mantic_ventas.id_usuario= ").append(JsfBase.getIdUsuario()).append(") and ");
     
       if(!this.idCliente.equals(-1L))

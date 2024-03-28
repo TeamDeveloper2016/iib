@@ -125,13 +125,13 @@
                 </f:facet>
                 <h:outputText value="#{index+ 1}.-"/>
               </p:column>		
-              <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.empresa}">
+              <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.empresa}">
                 <f:facet name="header">
                   <h:outputText value="Sucursal"/>
                 </f:facet>
                 <h:outputText value="#{row['nombreEmpresa']}"/>
               </p:column>		
-              <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.caja}">
+              <p:column class="MarAuto Responsive janal-wid-6" sortBy="#{row.caja}">
                 <f:facet name="header">
                   <h:outputText value="Caja"/>
                 </f:facet>
@@ -167,13 +167,13 @@
                 </f:facet>
                 <h:outputText value="#{row['estatus']}"/>
               </p:column>		
-              <p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
+              <p:column class="MarAuto Responsive janal-display-none" sortBy="#{row.usuario}">
                 <f:facet name="header">
                   <h:outputText value="Usuario"/>
                 </f:facet>
                 <h:outputText value="#{row['usuario']}"/>
               </p:column>		
-              <p:column style="width: 80px; text-align: center">
+              <p:column style="width: 60px; text-align: center">
                 <p:commandButton icon="fa fa-search" title="Detalle ventas" actionListener="#{manticVentasCajaCierresFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 <p:commandButton icon="ui-icon-print" title="Ticket" action="#{manticVentasCajaCierresFiltro.doPrintCorte}" rendered="#{row.estatus == 'TERMINADO'}">
                   <f:setPropertyActionListener value="#{row}" target="#{manticVentasCajaCierresFiltro.attrs.seleccionado}" />

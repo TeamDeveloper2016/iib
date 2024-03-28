@@ -115,9 +115,8 @@ public class Cancela extends IBaseAttribute implements Serializable {
   } // doCancelar
   
   private void toClonVenta(Long idVenta) {
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
     try {      
-      params = new HashMap<>();      
       params.put("idVenta", idVenta);     
       this.ticket   = (TcManticVentasDto)this.venta.clone();
       this.articulos= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticGarantiasArticulosDto", "detalle", params);
@@ -202,11 +201,9 @@ public class Cancela extends IBaseAttribute implements Serializable {
   public void doUpdateCatalogos() {
 		List<UISelectEntity> cajas = null;
     List<UISelectEntity> bancos= null;
-    List<Columna> columns      = null;    
-    Map<String, Object> params = null;
+    List<Columna> columns      = new ArrayList<>();    
+    Map<String, Object> params = new HashMap<>();
     try {      
-      columns= new ArrayList<>();
-      params = new HashMap<>();      
 			params.put("idEmpresa", this.venta.getIdEmpresa());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -242,13 +239,12 @@ public class Cancela extends IBaseAttribute implements Serializable {
   
   private Long toCierreCaja() {
     Long regresar             = -1L;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {      
 			List<UISelectEntity> cajas= (List<UISelectEntity>)this.attrs.get("cajas");
       int index= cajas.indexOf((UISelectEntity)this.attrs.get("caja"));
       if(index>= 0)
 			  this.attrs.put("caja", cajas.get(index));
-      params = new HashMap<>();      
       params.put("estatusAbierto", "1, 2");
       params.put("idEmpresa", ((UISelectEntity)this.attrs.get("caja")).toLong("idEmpresa"));
       params.put("idCaja", ((UISelectEntity)this.attrs.get("caja")).getKey());			

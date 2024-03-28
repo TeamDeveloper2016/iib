@@ -77,7 +77,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 		UISelectEntity estatus      = (UISelectEntity) this.attrs.get("idVentaEstatus");
     try {      
       // ESTO ES UN PARCHE PARA MOSTRAR SOLO LOS REGISTROS DEL VENDEDOR 31/01/2024
-      if(!JsfBase.isAdminEncuestaOrAdmin())
+      if(!JsfBase.isEncargado())
         sb.append("(tc_mantic_ventas.id_usuario= ").append(JsfBase.getIdUsuario()).append(") and ");
     
       if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))

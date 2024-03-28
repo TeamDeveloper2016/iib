@@ -2065,13 +2065,13 @@ select
   tc_mantic_articulos.id_vigente,
   tc_mantic_articulos.nombre,
   tc_mantic_ventas.ticket,
-  ifnull(avg(tc_mantic_articulos.precio), 0) as precios,
-  ifnull(avg(tc_mantic_ventas_detalles.precio), 0) as precio,
-  ifnull(avg(tc_mantic_ventas_detalles.costo), 0) as costo,
-  ifnull(sum(tc_mantic_ventas_detalles.iva), 0) as iva,
-  ifnull(sum(tc_mantic_ventas_detalles.cantidad), 0) as cantidad,
-  ifnull(sum(tc_mantic_ventas_detalles.importe), 0) as importe,
-  ifnull(sum(tc_mantic_ventas_detalles.importe), 0) as tiene,
+  ifnull(tc_mantic_articulos.precio, 0) as precios,
+  ifnull(tc_mantic_ventas_detalles.precio, 0) as precio,
+  ifnull(tc_mantic_ventas_detalles.costo, 0) as costo,
+  ifnull(tc_mantic_ventas_detalles.iva, 0) as iva,
+  ifnull(tc_mantic_ventas_detalles.cantidad, 0) as cantidad,
+  ifnull(tc_mantic_ventas_detalles.importe, 0) as importe,
+  ifnull(tc_mantic_ventas_detalles.importe, 0) as tiene,
   tc_mantic_articulos.menudeo,
   tc_mantic_articulos.medio_mayoreo,
   tc_mantic_articulos.mayoreo,
@@ -3113,7 +3113,7 @@ inner join
 left join 
   tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
 left join 
-  tc_mantic_clientes_deudas on tc_mantic_ventas.id_cliente= tc_mantic_clientes_deudas.id_cliente
+  tc_mantic_clientes_deudas on tc_mantic_ventas.id_venta= tc_mantic_clientes_deudas.id_venta
 left join 
   tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus= tc_mantic_clientes_estatus.id_cliente_estatus
 where 
@@ -3144,8 +3144,6 @@ inner join
   tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario
 inner join				
   tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
-left join 
-  tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
 where 
   tc_mantic_ventas.ticket is not null
   and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)
@@ -3185,7 +3183,7 @@ inner join
 left join 
   tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
 left join 
-  tc_mantic_clientes_deudas on tc_mantic_ventas.id_cliente= tc_mantic_clientes_deudas.id_cliente
+  tc_mantic_clientes_deudas on tc_mantic_ventas.id_venta= tc_mantic_clientes_deudas.id_venta
 left join 
   tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus= tc_mantic_clientes_estatus.id_cliente_estatus
 where 
@@ -3226,6 +3224,60 @@ where
   and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)
   and tr_mantic_venta_medio_pago.id_cierre= {idCierre}    
   and tr_mantic_venta_medio_pago.id_tipo_medio_pago= {idTipoMedioPago}
+			</select>
+			<select id="medios">
+select 
+  tc_mantic_clientes_pagos.id_cliente_pago as id_key,
+  tc_mantic_clientes_pagos.consecutivo,
+  tc_mantic_empresas.nombre as empresa,
+  tc_mantic_tipos_medios_pagos.nombre as medio,
+  tc_mantic_clientes_pagos.fecha_pago,
+  tc_mantic_clientes_pagos.pago as importe,
+	tc_mantic_personas.cuenta,
+	concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as recibio,
+  tc_mantic_clientes.razon_social as cliente,
+  tc_mantic_clientes_pagos.registro
+from 
+  tc_mantic_clientes_pagos
+inner join 
+  tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
+inner join 
+  tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+inner join
+  tc_mantic_tipos_medios_pagos on tc_mantic_clientes_pagos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+inner join 
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa
+inner join 
+  tc_janal_usuarios on tc_mantic_clientes_pagos.id_usuario= tc_janal_usuarios.id_usuario
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona
+left join 
+  tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+where 
+  tc_mantic_clientes_pagos.id_cierre= {idCierre} 
+  and tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= {idTipoMedioPago}
+group by 
+  tc_mantic_clientes_pagos.id_cliente_pago
+{sortOrder}
+			</select>
+			<select id="complicado">
+select 
+  tc_mantic_clientes_pagos.id_cliente_pago as id_key,
+  0 as cantidad,
+  ifnull(sum(tc_mantic_clientes_pagos.pago), 0) as importe
+from 
+  tc_mantic_clientes_pagos
+inner join 
+  tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
+inner join 
+  tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+inner join
+  tc_mantic_tipos_medios_pagos on tc_mantic_clientes_pagos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+inner join 
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa
+where 
+  tc_mantic_clientes_pagos.id_cierre= {idCierre} 
+  and tc_mantic_tipos_medios_pagos.id_tipo_medio_pago= {idTipoMedioPago}
 			</select>
 			<select id="lazy">
 select
@@ -6009,38 +6061,39 @@ group by
 				  and tc_mantic_clientes.id_cliente= {idCliente}				                       
 			</select>    
 			<select id="cuentas">
-				select
-					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
-					tc_mantic_clientes_deudas.id_cliente,
-					tc_mantic_ventas.ticket,
-					tc_mantic_ventas.consecutivo,
-					tc_mantic_ventas.id_manual,
-					tc_mantic_clientes_deudas.importe,
-					tc_mantic_clientes_deudas.saldo,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
-					tc_mantic_clientes_deudas.limite,
-					tc_mantic_clientes_deudas.registro,
-					(datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
-					tc_mantic_clientes.razon_social,
-					tc_mantic_clientes_deudas.id_cliente_estatus,
-					tc_mantic_ventas.id_venta,
-					tc_mantic_clientes_estatus.nombre as estatus
-				from
-					tc_mantic_clientes_deudas
-				inner join
-					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
-				inner join 
-					tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente = tc_mantic_clientes.id_cliente
-				inner join
-					tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
-				inner join
-					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
-				inner join 
-					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus
-				where
-					tc_mantic_clientes_deudas.id_cliente= {idCliente}
-				  and {condicion}
-				{sortOrder}								
+select
+  tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+  tc_mantic_clientes_deudas.id_cliente,
+  tc_mantic_ventas.ticket,
+  tc_mantic_ventas.id_empresa,
+  tc_mantic_ventas.consecutivo,
+  tc_mantic_ventas.id_manual,
+  tc_mantic_clientes_deudas.importe,
+  tc_mantic_clientes_deudas.saldo,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+  tc_mantic_clientes_deudas.limite,
+  tc_mantic_clientes_deudas.registro,
+  (datediff(tc_mantic_clientes_deudas.limite, now())* -1) as dias,
+  tc_mantic_clientes.razon_social,
+  tc_mantic_clientes_deudas.id_cliente_estatus,
+  tc_mantic_ventas.id_venta,
+  tc_mantic_clientes_estatus.nombre as estatus
+from
+  tc_mantic_clientes_deudas
+inner join
+  tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+inner join 
+  tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente = tc_mantic_clientes.id_cliente
+inner join
+  tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+inner join 
+  tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus
+where
+  tc_mantic_clientes_deudas.id_cliente= {idCliente}
+  and {condicion}
+{sortOrder}								
 			</select>	
 			<select id="clientes">	
 				select

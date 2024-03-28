@@ -42,7 +42,7 @@
     <p:dataTable lazy="true" id="tabla" reflow="true" rowIndexVar="index" styleClass="janal-content-table" style="width: 100%"  var="row" value="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.lazyModel.rowCount gt TC_JANAL_.lazyModel.pageSize}" selection="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.seleccionado}">
       <f:facet name="header">
         <p:menuButton value="Opciones" id="accionesTabla">
-          <p:menuitem value="Agregar perfil" icon="fa fa-plus" update=":datos:tabla" oncomplete="janal.bloquear();PF('wAgregar').show();" process="@this"/>
+          <p:menuitem value="Agregar" icon="fa fa-plus" update=":datos:tabla" oncomplete="janal.bloquear();PF('wAgregar').show();" process="@this"/>
         </p:menuButton>
       </f:facet>
 			<p:column class="MarAuto Responsive janal-wid-3">

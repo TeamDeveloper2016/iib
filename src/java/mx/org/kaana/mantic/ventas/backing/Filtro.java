@@ -227,7 +227,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		UISelectEntity estatus      = (UISelectEntity) this.attrs.get("idVentaEstatus");
     try {      
       // ESTO ES UN PARCHE PARA MOSTRAR SOLO LOS REGISTROS DEL VENDEDOR 31/01/2024
-      if(!JsfBase.isAdminEncuestaOrAdmin())
+      if(!JsfBase.isEncargado())
         sb.append("(tc_mantic_ventas.id_usuario= ").append(JsfBase.getIdUsuario()).append(") and ");
 
       if(!Cadena.isVacio(JsfBase.getParametro("codigo_input"))) 

@@ -226,9 +226,13 @@ public final class UIEntity {
 				} // for
 			regresar.add(new UISelectEntity(todos));
 			regresar.addAll(build(dtos,formato));				
- 
     } // if
-    return regresar;        
+    else {
+      todos.put("idKey", new Value("idKey", -1L));
+      todos.put(name, new Value(name, "TODOS"));
+			regresar.add(new UISelectEntity(todos));
+    } // if      
+   return regresar;        
   } 
   public static List<UISelectEntity> seleccione(List<? extends IBaseDto> dtos, List<Columna> formato, String name) {
 		List<UISelectEntity> regresar= new ArrayList<>();
@@ -244,9 +248,13 @@ public final class UIEntity {
 				} // for
 			regresar.add(new UISelectEntity(todos));
 			regresar.addAll(build(dtos,formato));				
- 
     } // if
-    return regresar;        
+    else {
+      todos.put("idKey", new Value("idKey", -1L));
+      todos.put(name, new Value(name, "SELECCIONE"));
+			regresar.add(new UISelectEntity(todos));
+    } // if      
+   return regresar;        
   } 
 
   public static List<UISelectEntity> personalizado(List<? extends IBaseDto> dtos, List<Columna> formato, String label, String descripcion) {
@@ -263,8 +271,12 @@ public final class UIEntity {
 				} // for
 			regresar.add(new UISelectEntity(todos));
 			regresar.addAll(build(dtos,formato));				
- 
     } // if
+    else {
+      todos.put("idKey", new Value("idKey", -1L));
+      todos.put(label, new Value(label, descripcion));
+			regresar.add(new UISelectEntity(todos));
+    } // if      
     return regresar;
   }
 	
