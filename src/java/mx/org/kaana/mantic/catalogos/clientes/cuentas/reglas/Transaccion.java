@@ -447,14 +447,41 @@ public class Transaccion extends TransaccionFactura{
 	} // toDeudas	
 	
 	private boolean toCierreCaja(Session sesion, Double pago) throws Exception {
-		mx.org.kaana.mantic.ventas.caja.reglas.Transaccion cierre= null;
-		VentaFinalizada datosCierre= null;
+		mx.org.kaana.mantic.ventas.caja.reglas.Transaccion cierre;
+		VentaFinalizada datosCierre;
+    ETipoMediosPago medioPago;
 		boolean regresar= false;
 		try {
 			datosCierre= new VentaFinalizada();
 			datosCierre.getTicketVenta().setIdEmpresa(this.idEmpresa);
 			datosCierre.setIdCaja(this.idCaja);
-			datosCierre.getTotales().setEfectivo(pago);
+      medioPago= ETipoMediosPago.fromIdTipoPago(this.pago.getIdTipoMedioPago());
+			switch(medioPago) {
+				case CHEQUE:
+    			datosCierre.getTotales().setCheque(pago);
+					break;
+				case EFECTIVO:					
+    			datosCierre.getTotales().setEfectivo(pago);
+					break;
+				case TARJETA_CREDITO:
+    			datosCierre.getTotales().setCredito(pago);
+					break;
+				case TRANSFERENCIA:
+    			datosCierre.getTotales().setTransferencia(pago);
+					break;
+				case TARJETA_DEBITO:
+    			datosCierre.getTotales().setDebito(pago);
+					break;
+				case VALES_DESPENSA:
+          datosCierre.getTotales().setVales(pago);
+					break;
+				case INTERMEDIARIO_PAGOS:
+					break;
+        default:
+    			datosCierre.getTotales().setEfectivo(pago);
+          break;
+			} // switch	      
+			datosCierre.getTotales().getTotales().setTotal(pago);
 			cierre= new mx.org.kaana.mantic.ventas.caja.reglas.Transaccion(datosCierre);
 			if(cierre.verificarCierreCaja(sesion)){
 				this.idCierreActivo= cierre.getIdCierreVigente();

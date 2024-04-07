@@ -345,7 +345,7 @@
                   <p:dataTable lazy="true" id="tablaMedios" widgetVar="kajoolTableMedios" var="one" value="#{manticVentasCajaCierresAccion.lazyMedios}" styleClass="abonos janal-wid-100 #{manticVentasCajaCierresAccion.lazyMedios eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasCajaCierresAccion.attrs.medios}" selectionMode="single" paginator="#{manticVentasCajaCierresAccion.lazyMedios.rowCount gt manticVentasCajaCierresAccion.lazyMedios.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
                     <f:facet name="header">
                       <div style="float: left">
-                        <p:outputLabel value="Detalle de pagos registrados en caja en [#{manticVentasCajaCierresAccion.attrs.seleccionado.medioPago}]" styleClass="abonos janal-text-white"/>
+                        <p:outputLabel value="Detalle de pagos registrados en caja como [#{manticVentasCajaCierresAccion.attrs.seleccionado.medioPago}]" styleClass="abonos janal-text-white"/>
                       </div>  
                       <div class="lg-pantalla">
                         <p:menuButton value="Opciones">

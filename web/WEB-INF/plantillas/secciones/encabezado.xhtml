@@ -47,7 +47,7 @@
 			<div class="ui-g-1 janal-content-center janal-column-center">
 				<p:commandLink action="#{kajoolEncabezado.doMovePageStart()}" title="Ir a la página de inicio" styleClass="janal-global-dashboard">
 					<p:graphicImage library="janal" name="img/sistema/#{kajoolUtilAplicacion.logoIcon}" styleClass="lg-pantalla janal-logo-mini" style="#{kajoolUtilAplicacion.logoWidth}"/>
-				  <p:graphicImage library="janal" name="img/sistema/logo-#{kajoolUtilAplicacion.logoEmpresa}" styleClass="xs-pantalla janal-logo-mini" style="width: 35px !important;"/>
+				  <p:graphicImage library="janal" name="img/sistema/logo-#{kajoolUtilAplicacion.logoEmpresa}" styleClass="xs-pantalla janal-logo-mini" style="width: 41px !important;"/>
 				</p:commandLink>	
 			</div>	
 			<div class="ui-g-11 janal-content-center">
@@ -64,15 +64,15 @@
         <div class="ui-g ui-grid-row janal-grid-row">
 					<div class="ui-g-4 janal-content-center">
 						<span id="reloj" class="fecha lg-pantalla"></span>
-						<span class="fecha xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+						<span class="fecha xs-pantalla Fs12">#{kajoolUtilAplicacion.currentDate}</span>
 					</div>
 					<div class="ui-g-4 janal-content-center margin-desarrollo" style="text-align: center;">
 						<p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
-						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs12" value=".#{kajoolUtilAplicacion.servidorEspecial}."/>
 					</div>
 					<div class="ui-g-4 janal-content-center margin-version" style="text-align: right;">
 						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
-						<span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+						<span id="version" class="version xs-pantalla Fs12">#{kajoolUtilAplicacion.version}</span>
 					</div>
 				</div>	
 			</div>

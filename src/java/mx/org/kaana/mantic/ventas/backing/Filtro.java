@@ -853,17 +853,18 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("correo", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("citados", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(Objects.equals(this.attrs.get("idEmpresa"), null) || Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
+  		  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      else
+        params.put("sucursales", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			if(!Cadena.isVacio(codigo)) {
   			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			} // if	
 			else
 				codigo= "WXYZ";
-			params.put("fecha", Fecha.toRegistro());			
   		params.put(Constantes.SQL_CONDICION, "(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(tc_mantic_personas.rfc) regexp '.*").concat(codigo).concat(".*')"));
-      this.attrs.put("personas", UIEntity.build("VistaClientesCitasDto", "citados", params, columns, 40L));
+      this.attrs.put("personas", UIEntity.build("VistaConsultasDto", "vendedores", params, columns, 40L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -875,5 +876,9 @@ public class Filtro extends IBaseTicket implements Serializable {
     } // finally
 		return (List<UISelectEntity>)this.attrs.get("personas");
 	}
+  
+  public void doVendedores() {
+    LOG.info("Empresa: "+ ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());  
+  }
   
 }

@@ -13,7 +13,8 @@ public enum ETipoMediosPago {
   TARJETA_CREDITO     (4L,  true),
   VALES_DESPENSA      (7L,  false),
   TARJETA_DEBITO      (18L, true),
-	INTERMEDIARIO_PAGOS (21L, false);
+	INTERMEDIARIO_PAGOS (21L, false),
+  POR_DEFINIR         (22L, true);
 
   private Long idTipoMedioPago;
 	private boolean caja;

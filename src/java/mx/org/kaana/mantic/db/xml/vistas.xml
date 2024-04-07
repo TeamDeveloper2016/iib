@@ -1550,6 +1550,62 @@
       </select>
 		</unit>
 		<unit id="VistaConsultasDto">
+			<select id="vendedores">
+select
+  tc_mantic_personas.id_persona as id_key,
+  tc_mantic_personas.id_persona,
+  tc_mantic_empresas.nombre as empresa,
+  tr_mantic_empresa_personal.id_empresa_persona,
+  tc_mantic_personas.rfc,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
+  tt_mantic_persona_celular.celular,
+  tt_mantic_persona_correo.correo
+from
+  tc_mantic_ventas
+inner join 
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+	tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+inner join				
+	tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona		
+inner join 		
+  tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+left join (
+  select
+    tr_mantic_persona_tipo_contacto.id_persona,
+    tr_mantic_persona_tipo_contacto.valor as celular
+  from
+    tr_mantic_persona_tipo_contacto
+  where
+    tr_mantic_persona_tipo_contacto.id_tipo_contacto in (6, 7, 8)
+    and tr_mantic_persona_tipo_contacto.id_preferido= 1
+  order by
+    tr_mantic_persona_tipo_contacto.orden      
+) as tt_mantic_persona_celular on tr_mantic_empresa_personal.id_persona= tt_mantic_persona_celular.id_persona
+left join (
+  select
+    tr_mantic_persona_tipo_contacto.id_persona,
+    tr_mantic_persona_tipo_contacto.valor as correo
+  from
+    tr_mantic_persona_tipo_contacto
+  where
+    tr_mantic_persona_tipo_contacto.id_tipo_contacto in (9, 10, 11)
+    and tr_mantic_persona_tipo_contacto.id_preferido= 1
+  order by
+    tr_mantic_persona_tipo_contacto.orden      
+) as tt_mantic_persona_correo on tr_mantic_empresa_personal.id_persona= tt_mantic_persona_correo.id_persona
+where
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and tr_mantic_empresa_personal.id_activo= 1
+  and tc_mantic_personas.id_tipo_persona!= 1
+  and {condicion}  
+group by
+  tr_mantic_empresa_personal.id_persona
+order by
+  tc_mantic_personas.nombres, 
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno	
+      </select>  
 			<select id="maximo">
         select
 					tc_mantic_ventas.id_venta as id_key,

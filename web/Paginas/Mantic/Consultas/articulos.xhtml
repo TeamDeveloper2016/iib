@@ -75,7 +75,7 @@
 								</f:facet>
 							</p:autoComplete>	
               <p:outputLabel for="vendedor" value="Vendedor:"/>							
-              <p:autoComplete id="vendedor" var="item" placeholder="Ej. JUAN PEREZ LOPEZ" itemLabel="#{item.empleado}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{manticConsultasArticulos.attrs.vendedor}" completeMethod="#{manticConsultasArticulos.doCompletePersona}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+              <p:autoComplete id="vendedor" var="item" placeholder="Ej. JUAN PEREZ LOPEZ" itemLabel="#{item.empleado}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{item}" value="#{manticConsultasArticulos.attrs.vendedor}" completeMethod="#{manticConsultasArticulos.doCompleteVendedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
                 <f:facet name="itemtip">
                   <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
                     <h:outputText value="Nombre:" />
