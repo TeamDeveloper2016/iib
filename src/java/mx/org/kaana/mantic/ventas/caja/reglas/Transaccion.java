@@ -85,6 +85,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private static final Long PAGADO         = 10L;
 	private static final Long SI             = 1L;
 	private static final Long NO             = 2L;	
+  
 	private VentaFinalizada ventaFinalizada;
 	private IBaseDto dto;
 	private boolean clienteDeault;
@@ -103,21 +104,21 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	
 	public Transaccion(IBaseDto orden, List<Articulo> articulos) {
 		super((TcManticVentasDto)orden, articulos);		
-	} // Transaccion
+	} 
 	
 	public Transaccion(IBaseDto dto) {
 		super(new TicketVenta());
 		this.dto= dto;
-	} // Transaccion
+	} 
 	
 	public Transaccion(VentaFinalizada ventaFinalizada) {
 		this(ventaFinalizada, ventaFinalizada.getTicketVenta());
-	} // Transaccion
+	} 
 
 	public Transaccion(VentaFinalizada ventaFinalizada, IBaseDto dto) {
 		super(ventaFinalizada.getTicketVenta(), ventaFinalizada.getArticulos());
 		this.ventaFinalizada = ventaFinalizada;		
-	}	// Transaccion	
+	}	
 
 	public Transaccion(Long idVenta, Long idCliente) {
 		this(idVenta, idCliente, "");
@@ -128,14 +129,14 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		this.idVenta      = idVenta;
 		this.idCliente    = idCliente;		
 		this.observaciones= observaciones;
-	} // Transaccion	
+	} 
 
 	public Transaccion(VentaFinalizada ventaFinalizada, Long idCliente, String observaciones) {
 		super(ventaFinalizada.getTicketVenta(), ventaFinalizada.getArticulos());
 		this.idVenta      = ventaFinalizada.getTicketVenta().getIdVenta();
 		this.idCliente    = idCliente;		
 		this.observaciones= observaciones;
-	} // Transaccion	
+	} 
 
 	public Transaccion(Facturacion facturacion) {
 		super(new TicketVenta());
@@ -148,7 +149,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
     this.idCliente= idCliente;
     this.factura  = factura;
     this.idCierreVigente= idCierreVigente;
-	} // Transaccion
+	} 
   
 	public Long getIdCierreVigente() {
 		return idCierreVigente;
@@ -890,15 +891,15 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		if(pago!= null)
 			regresar.add(pago);		
 		return regresar;
-	} // loadPagos
+	} 
 	
 	private TrManticVentaMedioPagoDto toPagoEfectivo() {
 		TrManticVentaMedioPagoDto regresar= null;		
-		if(this.ventaFinalizada.getTotales().getEfectivo() > 0D) {
+		if(this.ventaFinalizada.getTotales().getEfectivo()> 0D || Objects.equals(this.getOrden().getTotal(), 0D)) {
 			regresar= new TrManticVentaMedioPagoDto();
 			regresar.setIdTipoMedioPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
-			regresar.setIdVenta(getOrden().getIdVenta());
+			regresar.setIdVenta(this.getOrden().getIdVenta());
 			regresar.setImporte(this.ventaFinalizada.getTotales().getEfectivo());	
 			regresar.setIdCierre(this.idCierreVigente);
 			regresar.setTotal(this.ventaFinalizada.getTotales().getEfectivo() - this.ventaFinalizada.getTotales().getCambio());
