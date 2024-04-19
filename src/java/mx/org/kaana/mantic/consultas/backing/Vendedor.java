@@ -138,19 +138,23 @@ public class Vendedor extends IBaseFilter implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}
 	
 	public void doLoadVendedores() {
+    Map<String, Object> params= new HashMap<>();
 		try {						
-			this.attrs.put("condicionVendedor", !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("idEmpresa") : JsfBase.getAutentifica().getEmpresa().getSucursales());
-			this.attrs.put("vendedores", (List<UISelectItem>) UISelect.build("VistaConsultasDto", "vendedor", this.attrs, "nombre",  EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
+			params.put(Constantes.SQL_CONDICION, !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1")? this.attrs.get("idEmpresa"): JsfBase.getAutentifica().getEmpresa().getSucursales());
+			this.attrs.put("vendedores", (List<UISelectItem>) UISelect.build("VistaConsultasDto", "vendedor", params, "nombre",  EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
 			this.attrs.put("vendedor", new UISelectEntity("-1"));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // doLoadVendedores
+    finally {
+      Methods.clean(params);
+    } // finally
+	} 
 	
 }

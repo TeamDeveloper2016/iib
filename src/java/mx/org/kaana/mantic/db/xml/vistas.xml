@@ -1569,7 +1569,7 @@ inner join
 inner join				
 	tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona		
 inner join 		
-  tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+  tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_ventas.id_empresa= tr_mantic_empresa_personal.id_empresa
 left join (
   select
     tr_mantic_persona_tipo_contacto.id_persona,
@@ -2886,27 +2886,29 @@ from (
 					hora) totales
 			</select>
 			<select id="vendedor">
-				select
-					tc_mantic_ventas.id_usuario as id_key,					
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre					
-				from
-					tc_mantic_ventas
-				inner join 
-					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
-				inner join
-					tc_mantic_tipos_documentos on tc_mantic_tipos_documentos.id_tipo_documento= tc_mantic_ventas_estatus.id_tipo_documento
-				inner join
-					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
-				inner join 
-					tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
-				inner join				
-					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
-				where
-					tc_mantic_empresas.id_empresa in ({condicionVendedor})
-				  and tc_mantic_ventas.id_usuario> 1
-				group by 
-					tc_mantic_ventas.id_usuario,					
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)
+select
+  tc_mantic_ventas.id_usuario as id_key,					
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre					
+from
+  tc_mantic_ventas
+inner join 
+  tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+inner join
+  tc_mantic_tipos_documentos on tc_mantic_tipos_documentos.id_tipo_documento= tc_mantic_ventas_estatus.id_tipo_documento
+inner join
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+inner join				
+  tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+inner join 		
+  tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_ventas.id_empresa= tr_mantic_empresa_personal.id_empresa
+where
+  tc_mantic_empresas.id_empresa in ({condicion})
+  and tc_mantic_ventas.id_usuario&gt; 1
+group by 
+  tc_mantic_ventas.id_usuario,					
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)
 			</select>
 			<select id="detalle">
 select

@@ -166,11 +166,14 @@ public class Ventas extends IBaseTicket implements Serializable {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz()) {
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			else
+   			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      } // if  
+      else {
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+   			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      } // else  
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -195,15 +198,19 @@ public class Ventas extends IBaseTicket implements Serializable {
 	}
 	
 	public void doLoadVendedores() {
+    Map<String, Object> params= new HashMap<>();
 		try {						
-			this.attrs.put("condicionVendedor", !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("idEmpresa") : JsfBase.getAutentifica().getEmpresa().getSucursales());
-			this.attrs.put("vendedores", (List<UISelectItem>) UISelect.build("VistaConsultasDto", "vendedor", this.attrs, "nombre",  EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
+			params.put(Constantes.SQL_CONDICION, !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1")? this.attrs.get("idEmpresa"): JsfBase.getAutentifica().getEmpresa().getSucursales());
+			this.attrs.put("vendedores", (List<UISelectItem>) UISelect.build("VistaConsultasDto", "vendedor", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
 			this.attrs.put("vendedor", new UISelectEntity("-1"));
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
 	} 
 	
 	private void loadTiposPagos(){
