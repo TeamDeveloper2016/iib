@@ -152,9 +152,12 @@ public class IBaseMail implements Serializable {
 		List<BodyPart> items = new ArrayList<>();
     try {
       properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
+      properties.put("mail.smtp.ssl.enable", "true");
+      properties.put("mail.smtp.ssl.trust", "*");
+      properties.put("mail.smtp.starttls.enable", "true");
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
-      properties.put("mail.smtp.port", "26");			
+      properties.put("mail.smtp.port", Configuracion.getInstance().getPropiedadServidor("mail.smtp.port"));			
 			session    = Session.getInstance(properties, this.authenticator);            
       message= new MimeMessage(session);
 			if(Cadena.isVacio(this.alias))
