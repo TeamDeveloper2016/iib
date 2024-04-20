@@ -130,35 +130,44 @@ public class Ventas extends IBaseTicket implements Serializable {
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		sb.append("tc_mantic_tipos_documentos.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
-		sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("vendedor")) && !this.attrs.get("vendedor").toString().equals("-1"))
-			sb.append("tc_mantic_ventas.id_usuario=").append(this.attrs.get("vendedor")).append(" and ");					
-		if(!Cadena.isVacio(this.attrs.get("tipoPago")) && !this.attrs.get("tipoPago").toString().equals("-1"))
-			sb.append("tc_mantic_ventas.id_venta in (select id_venta from tr_mantic_venta_medio_pago where id_tipo_medio_pago in (").append(this.attrs.get("tipoPago")).append("))").append(" and ");					
-		if(!Cadena.isVacio(this.attrs.get("articulo")))
-			sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%') and");					
-		if(!Cadena.isVacio(this.attrs.get("cliente"))) {
-      String search= (String) this.attrs.get("cliente"); 
-			search= !Cadena.isVacio(search)? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*"): "WXYZ";      
-			sb.append("(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*') and ")));
-    } // if      
-		if(!Cadena.isVacio(this.attrs.get("proveedor")))
-			sb.append("(upper(tc_mantic_proveedores.razon_social) like upper('%").append(this.attrs.get("proveedor")).append("%')").append(" or upper(tc_mantic_proveedores.rfc) like upper('%").append(this.attrs.get("proveedor")).append("%') or upper(tc_mantic_proveedores.clave) like upper('%").append(this.attrs.get("proveedor")).append("%')) and");									
-		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");			
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    try {
+      // ESTO ES UN PARCHE PARA MOSTRAR SOLO LOS REGISTROS DEL VENDEDOR 31/01/2024
+      if(!JsfBase.isEncargado())
+        sb.append("(tc_mantic_ventas.id_usuario= ").append(JsfBase.getIdUsuario()).append(") and ");
+      sb.append("tc_mantic_tipos_documentos.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
+      sb.append("tc_mantic_ventas_estatus.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.CREDITO.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("vendedor")) && !this.attrs.get("vendedor").toString().equals("-1"))
+        sb.append("tc_mantic_ventas.id_usuario=").append(this.attrs.get("vendedor")).append(" and ");					
+      if(!Cadena.isVacio(this.attrs.get("tipoPago")) && !this.attrs.get("tipoPago").toString().equals("-1"))
+        sb.append("tc_mantic_ventas.id_venta in (select id_venta from tr_mantic_venta_medio_pago where id_tipo_medio_pago in (").append(this.attrs.get("tipoPago")).append("))").append(" and ");					
+      if(!Cadena.isVacio(this.attrs.get("articulo")))
+        sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%') and");					
+      if(!Cadena.isVacio(this.attrs.get("cliente"))) {
+        String search= (String) this.attrs.get("cliente"); 
+        search= !Cadena.isVacio(search)? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*"): "WXYZ";      
+        sb.append("(upper(concat(tc_mantic_clientes.razon_social, ' ', ifnull(tc_mantic_clientes.paterno, ''), ' ', ifnull(tc_mantic_clientes.materno, ''))) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*') and ")));
+      } // if      
+      if(!Cadena.isVacio(this.attrs.get("proveedor")))
+        sb.append("(upper(tc_mantic_proveedores.razon_social) like upper('%").append(this.attrs.get("proveedor")).append("%')").append(" or upper(tc_mantic_proveedores.rfc) like upper('%").append(this.attrs.get("proveedor")).append("%') or upper(tc_mantic_proveedores.clave) like upper('%").append(this.attrs.get("proveedor")).append("%')) and");									
+      if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+        sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+      if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+        sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+      if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+        sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");			
+      if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+        regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+      else
+        regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(sb.length()== 0)
+        regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else	
+        regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    } // try
+    catch(Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+    } // catch
 		return regresar;		
 	} 
 	
@@ -199,8 +208,15 @@ public class Ventas extends IBaseTicket implements Serializable {
 	
 	public void doLoadVendedores() {
     Map<String, Object> params= new HashMap<>();
+		StringBuilder sb          = new StringBuilder();
 		try {						
-			params.put(Constantes.SQL_CONDICION, !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1")? this.attrs.get("idEmpresa"): JsfBase.getAutentifica().getEmpresa().getSucursales());
+      // ESTO ES UN PARCHE PARA MOSTRAR SOLO LOS REGISTROS DEL VENDEDOR 31/01/2024
+  	  params.put("sucursales", !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1")? this.attrs.get("idEmpresa"): JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(JsfBase.isEncargado())
+        sb.append(Constantes.SQL_VERDADERO);
+      else
+        sb.append("(tc_mantic_ventas.id_usuario= ").append(JsfBase.getIdUsuario()).append(")");
+  	  params.put(Constantes.SQL_CONDICION, sb.toString());
 			this.attrs.put("vendedores", (List<UISelectItem>) UISelect.build("VistaConsultasDto", "vendedor", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
 			this.attrs.put("vendedor", new UISelectEntity("-1"));
 		} // try

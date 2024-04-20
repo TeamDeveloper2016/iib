@@ -2904,8 +2904,9 @@ inner join
 inner join 		
   tr_mantic_empresa_personal on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona and tc_mantic_ventas.id_empresa= tr_mantic_empresa_personal.id_empresa
 where
-  tc_mantic_empresas.id_empresa in ({condicion})
+  tc_mantic_empresas.id_empresa in ({sucursales})
   and tc_mantic_ventas.id_usuario&gt; 1
+  and {condicion}
 group by 
   tc_mantic_ventas.id_usuario,					
   concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)

@@ -54,14 +54,13 @@ public class Vendedor extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= null;
 		Double ventas             = 1D;
 		Double utilidad           = 1D;
     try {
 			params = this.toPrepare();
       params.put("sortOrder", "order by tc_mantic_empresas.nombre, tc_mantic_personas.nombres, tc_mantic_personas.paterno");
-      columns= new ArrayList<>();
       columns.add(new Columna("nombreEmpresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("vendedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("ventas", EFormatoDinamicos.MILES_SIN_DECIMALES));
@@ -96,30 +95,38 @@ public class Vendedor extends IBaseFilter implements Serializable {
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		sb.append("tc_mantic_ventas.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
-		sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("vendedor")) && !this.attrs.get("vendedor").toString().equals("-1"))
-			sb.append("tc_mantic_ventas.id_usuario=").append(this.attrs.get("vendedor")).append(" and ");					
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  regresar.put("fechaInicio", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio")));
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  regresar.put("fechaTermino", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino")));
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    try {
+      // ESTO ES UN PARCHE PARA MOSTRAR SOLO LOS REGISTROS DEL VENDEDOR 31/01/2024
+      if(!JsfBase.isEncargado())
+        sb.append("(tc_mantic_ventas.id_usuario= ").append(JsfBase.getIdUsuario()).append(") and ");
+      sb.append("tc_mantic_ventas.id_tipo_documento=").append(ETipoDocumento.VENTAS_NORMALES.getIdTipoDocumento()).append(" and ");
+      sb.append("tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TIMBRADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("vendedor")) && !this.attrs.get("vendedor").toString().equals("-1"))
+        sb.append("tc_mantic_ventas.id_usuario=").append(this.attrs.get("vendedor")).append(" and ");					
+      if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+        regresar.put("fechaInicio", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio")));
+      if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+        regresar.put("fechaTermino", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino")));
+      if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+        regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+      else
+        regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(sb.length()== 0)
+        regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else	
+        regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    } // try
+    catch(Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+    } // catch
 		return regresar;		
 	} // toPrepare
 	
 	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -143,8 +150,15 @@ public class Vendedor extends IBaseFilter implements Serializable {
 	
 	public void doLoadVendedores() {
     Map<String, Object> params= new HashMap<>();
+		StringBuilder sb          = new StringBuilder();
 		try {						
-			params.put(Constantes.SQL_CONDICION, !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1")? this.attrs.get("idEmpresa"): JsfBase.getAutentifica().getEmpresa().getSucursales());
+      // ESTO ES UN PARCHE PARA MOSTRAR SOLO LOS REGISTROS DEL VENDEDOR 31/01/2024
+  	  params.put("sucursales", !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1")? this.attrs.get("idEmpresa"): JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(JsfBase.isEncargado())
+        sb.append(Constantes.SQL_VERDADERO);
+      else
+        sb.append("(tc_mantic_ventas.id_usuario= ").append(JsfBase.getIdUsuario()).append(")");
+  	  params.put(Constantes.SQL_CONDICION, sb.toString());
 			this.attrs.put("vendedores", (List<UISelectItem>) UISelect.build("VistaConsultasDto", "vendedor", params, "nombre",  EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
 			this.attrs.put("vendedor", new UISelectEntity("-1"));
 		} // try
