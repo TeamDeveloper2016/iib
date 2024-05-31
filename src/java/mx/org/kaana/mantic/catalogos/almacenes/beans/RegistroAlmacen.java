@@ -18,7 +18,6 @@ import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
 public class RegistroAlmacen implements Serializable{

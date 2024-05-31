@@ -45,6 +45,7 @@ import mx.org.kaana.mantic.db.dto.TcManticTrabajosDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorDomicilioDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
 import static org.apache.commons.io.Charsets.ISO_8859_1;
 import static org.apache.commons.io.Charsets.UTF_8;
@@ -1489,7 +1490,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toClientes
 
-	private void toProcessContactoProveedor(Session sesion, String valor, Long idTipoContacto, Long idProveedor) throws Exception {
+	private void toProcessContactoProveedor(Session sesion, String valor, Long idTipoContacto, Long idProveedor, Long orden) throws Exception {
 		TrManticProveedorTipoContactoDto contacto= this.toFindTipoContactoProveedor(sesion, idTipoContacto, idProveedor);
 		if(contacto== null) {
       contacto= new TrManticProveedorTipoContactoDto(
@@ -1497,10 +1498,10 @@ public class Transaccion extends IBaseTnx {
 				JsfBase.getIdUsuario(), // Long idUsuario, 
 				valor.trim(), // String valor, 
 				"", // String observaciones, 
-				1L, // Long orden, 
+				orden, // Long orden, 
 				-1L, // Long idProveedorTipoContacto, 
 				idTipoContacto, // Long idTipoContacto
-        2L // idPreferido
+        1L // idPreferido
 			);
 			DaoFactory.getInstance().insert(sesion, contacto);
 		} // if
@@ -1607,15 +1608,26 @@ public class Transaccion extends IBaseTnx {
 										"" // String observaciones
 									);
 									DaoFactory.getInstance().insert(sesion, particular);
+                  TrManticProveedorPagoDto condicion= new TrManticProveedorPagoDto(
+                    -1L, // Long idProveedorPago, 
+                    proveedor.getIdProveedor(), // Long idProveedor, 
+                    "TRANSFERENCIA", // String clave, 
+                    2L, // Long idTipoPago, 
+                    JsfBase.getIdUsuario(), // Long idUsuario, 
+                    "0.00", // String descuento, 
+                    null, // String observaciones, 
+                    30L // Long plazo      
+                  );
+									DaoFactory.getInstance().insert(sesion, condicion);
 								} // if
 								// telefono
 								if(!Cadena.isVacio(sheet.getCell(3, fila).getContents())) 
-									this.toProcessContactoProveedor(sesion, sheet.getCell(3, fila).getContents(), 1L, proveedor.getIdProveedor());
+									this.toProcessContactoProveedor(sesion, sheet.getCell(3, fila).getContents(), 1L, proveedor.getIdProveedor(), 1L);
 								// correos
 								if(!Cadena.isVacio(sheet.getCell(4, fila).getContents())) 
-									this.toProcessContactoProveedor(sesion, sheet.getCell(4, fila).getContents(), 9L, proveedor.getIdProveedor());
+									this.toProcessContactoProveedor(sesion, sheet.getCell(4, fila).getContents(), 9L, proveedor.getIdProveedor(), 2L);
 								if(!Cadena.isVacio(sheet.getCell(5, fila).getContents())) 
-									this.toProcessContactoProveedor(sesion, sheet.getCell(5, fila).getContents(), 10L, proveedor.getIdProveedor());
+									this.toProcessContactoProveedor(sesion, sheet.getCell(5, fila).getContents(), 10L, proveedor.getIdProveedor(), 3L);
 								monitoreo.incrementar();
 								if(fila% this.categoria.getTuplas()== 0) {
 									if(bitacora== null) {

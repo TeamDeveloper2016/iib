@@ -23,13 +23,12 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 	private static final long serialVersionUID = -2088985265691847994L;
 	
 	public void doTicket() {
-		Entity seleccionado      = null;
+		Entity seleccionado      = (Entity) this.attrs.get("seleccionado");
 		Map<String, Object>params= new HashMap<>();
 		CreateTicket ticket      = null;
 		AdminTickets adminTicket = null;
     String       cliente     = "";
 		try {			
-			seleccionado= (Entity) this.attrs.get("seleccionado");
 			params.put("idVenta", seleccionado.toLong("idVenta"));
       if(seleccionado.containsKey("cliente") && !Objects.equals(Constantes.VENTA_AL_PUBLICO_GENERAL, seleccionado.toString("cliente"))) 
         cliente= seleccionado.toString("cliente");
@@ -44,10 +43,9 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 	} // doTicket
 	
 	private String toTipoTransaccion(Long idEstatus) {
-		String regresar       = null;
+		String regresar       = "VENTA DE MOSTRADOR";
 		EEstatusVentas estatus= null;		
 		try {
-			regresar= "VENTA DE MOSTRADOR";
 			if(idEstatus<= EEstatusVentas.EN_CAPTURA.getIdEstatusVenta() || idEstatus.equals(EEstatusVentas.TIMBRADA.getIdEstatusVenta())) {
 				estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
 				switch(estatus) {
@@ -146,5 +144,6 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 			throw e; 
 		} // catch		
 		return regresar;
-	} // toPago
+	} 
+  
 }

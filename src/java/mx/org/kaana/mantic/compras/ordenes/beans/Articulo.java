@@ -349,7 +349,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
   }
 
   public String getImporte$() {
-		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getImporte());
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.getImporte());
 	}
 
 	public String getDescuento$() {
@@ -357,7 +357,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public String getDiferencia() {
-		String color     = this.diferencia< -5? "janal-color-orange": Numero.toRedondear(this.diferencia)> 5? "janal-color-blue": "janal-color-green";
+		String color= this.diferencia< -5? "janal-color-orange": Numero.toRedondear(this.diferencia)> 5? "janal-color-blue": "janal-color-green";
 		return "<span class='".concat(color).concat("' style='float:left;'>[").concat(String.valueOf(Numero.toRedondear(this.diferencia))).concat("%]</span>");
 	}
 
@@ -556,7 +556,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getIdOrdenDetalle()== null? this.getCantidad()- this.getSolicitados(): 0D,
 			this.real,
 			this.calculado,
-			this.getOrigen()
+			this.getOrigen(),
+      this.getImporte()      
 		);	
 	}
 

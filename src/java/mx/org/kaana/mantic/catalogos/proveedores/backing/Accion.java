@@ -66,7 +66,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
-      doLoad(); 
+      this.doLoad(); 
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -74,21 +74,21 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // initload
   
-	private void loadCollections(){
-		loadBancos();
-		loadTiposProveedores();
-		loadTipoPago();
-		loadTiposContactos();
-		loadTiposDomicilios();	
-		loadDomicilios();
-		loadEntidades();
-		toAsignaEntidad();
-		loadMunicipios();
-		toAsignaMunicipio();
-		loadLocalidades();
-		toAsignaLocalidad();
-		loadCodigosPostales();      
-		toAsignaCodigoPostal();
+	private void toLoadCollections() {
+		this.loadBancos();
+		this.loadTiposProveedores();
+		this.loadTipoPago();
+		this.loadTiposContactos();
+		this.loadTiposDomicilios();	
+		this.loadDomicilios();
+		this.loadEntidades();
+		this.toAsignaEntidad();
+		this.loadMunicipios();
+		this.toAsignaMunicipio();
+		this.loadLocalidades();
+		this.toAsignaLocalidad();
+		this.loadCodigosPostales();      
+		this.toAsignaCodigoPostal();
 	}
 	
   public void doLoad() {
@@ -100,21 +100,22 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:
           this.registroProveedor = new RegistroProveedor();
-					loadCollections();
+					this.toLoadCollections();
           break;
         case MODIFICAR:
         case CONSULTAR:
           idProveedor = Long.valueOf(this.attrs.get("idProveedor").toString());
           this.registroProveedor = new RegistroProveedor(idProveedor);
-					loadCollections();
-					if(!this.registroProveedor.getProveedoresDomicilio().isEmpty()){
+					this.toLoadCollections();
+					if(!this.registroProveedor.getProveedoresDomicilio().isEmpty()) {
 						this.registroProveedor.setProveedorDomicilioSeleccion(this.registroProveedor.getProveedoresDomicilio().get(0));
-						doConsultarProveedorDomicilio();
+						this.doConsultarProveedorDomicilio();
 					} // if
-					if(!this.registroProveedor.getPersonasTiposContacto().isEmpty()){
+					if(!this.registroProveedor.getPersonasTiposContacto().isEmpty()) {
 						this.registroProveedor.setPersonaTipoContacto(this.registroProveedor.getPersonasTiposContacto().get(0));
 						this.registroProveedor.doConsultarAgente();
 					} // if
+          this.attrs.put("tipoProveedor", new UISelectEntity(this.registroProveedor.getProveedor().getIdTipoProveedor()));
           break;
       } // switch      
     } // try
@@ -149,9 +150,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 	
 	private void loadTiposContactos() {
-    List<UISelectItem> tiposContactos = null;
+    List<UISelectItem> tiposContactos= new ArrayList<>();
     try {
-      tiposContactos = new ArrayList<>();
       for (ETiposContactos tipoContacto : ETiposContactos.values()) 
         tiposContactos.add(new UISelectItem(tipoContacto.getKey(), Cadena.reemplazarCaracter(tipoContacto.name(), '_', ' ')));      
       this.attrs.put("tiposContactos", tiposContactos);
@@ -162,9 +162,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadTiposContactos
 
   private void loadTiposDomicilios() {
-    List<UISelectItem> tiposDomicilios = null;
+    List<UISelectItem> tiposDomicilios = new ArrayList<>();
     try {
-      tiposDomicilios = new ArrayList<>();
       for (ETiposDomicilios tipoDomicilio : ETiposDomicilios.values()) 
         tiposDomicilios.add(new UISelectItem(tipoDomicilio.getKey(), Cadena.reemplazarCaracter(tipoDomicilio.name(), '_', ' ')));      
       this.attrs.put("tiposDomicilios", tiposDomicilios);
@@ -191,14 +190,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // finally
   } // loadTipoPago
 	
-	private void loadTiposProveedores(){
+	private void loadTiposProveedores() {
 		List<UISelectEntity> tiposProveedores= null;
-    List<Columna> formatos               = null;
-    Map<String, Object> params           = null;
+    List<Columna> formatos               = new ArrayList<>();
+    Map<String, Object> params           = new HashMap();
     try {
-      params = new HashMap();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      formatos = new ArrayList<>();      
       formatos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       formatos.add(new Columna("dias", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       tiposProveedores= UIEntity.build("TcManticTiposProveedoresDto", params, formatos);
@@ -215,15 +212,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	private void loadEntidades() {
     List<UISelectEntity> entidades= null;
-		List<Columna>campos= null;
-    Map<String, Object> params= null;
+		List<Columna>columns      = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-      params = new HashMap<>();
       params.put("idPais", 1);
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
-			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-      entidades = UIEntity.build("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      entidades = UIEntity.build("TcJanalEntidadesDto", "comboEntidades", params, columns, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("entidades", entidades);
       this.registroProveedor.getDomicilio().setIdEntidad(entidades.get(0));
     } // try
@@ -236,7 +231,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadEntidades
 	
 	private void toAsignaEntidad(){
-		Entity domicilio= null;
+		Entity domicilio     = null;
 		List<Entity>entidades= null;
 		try {
 			if(!this.registroProveedor.getDomicilio().getIdDomicilio().equals(-1L)){
@@ -257,15 +252,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private void loadMunicipios() {
     List<UISelectEntity> municipios= null;
-    Map<String, Object> params= null;
-		List<Columna>campos= null;
+    Map<String, Object> params= new HashMap<>();
+		List<Columna>columns      = new ArrayList<>();
     try {
 			if(!this.registroProveedor.getDomicilio().getIdEntidad().getKey().equals(-1L)){
-				params = new HashMap<>();
 				params.put("idEntidad", this.registroProveedor.getDomicilio().getIdEntidad().getKey());
-				campos= new ArrayList<>();
-				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+				municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, columns, Constantes.SQL_TODOS_REGISTROS);
 				this.attrs.put("municipios", municipios);
 				this.registroProveedor.getDomicilio().setIdMunicipio(municipios.get(0));
 			} // if
@@ -281,7 +274,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadMunicipios
 	
 	private void toAsignaMunicipio(){
-		Entity domicilio= null;
+		Entity domicilio      = null;
 		List<Entity>municipios= null;
 		try {
 			if(!this.registroProveedor.getDomicilio().getIdMunicipio().getKey().equals(-1L)){
@@ -300,15 +293,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private void loadLocalidades() {
     List<UISelectEntity> localidades= null;
-    Map<String, Object> params= null;
-		List<Columna>campos= null;
+    Map<String, Object> params= new HashMap<>();
+		List<Columna>columns      = new ArrayList<>();
     try {
 			if(!this.registroProveedor.getDomicilio().getIdMunicipio().getKey().equals(-1L)){
-				params = new HashMap<>();
 				params.put("idMunicipio", this.registroProveedor.getDomicilio().getIdMunicipio().getKey());
-				campos= new ArrayList<>();
-				campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-				localidades = UIEntity.build("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+				localidades = UIEntity.build("TcJanalLocalidadesDto", "comboLocalidades", params, columns, Constantes.SQL_TODOS_REGISTROS);
 				this.attrs.put("localidades", localidades);
 				this.registroProveedor.getDomicilio().setLocalidad(localidades.get(0));
 				this.registroProveedor.getDomicilio().setIdLocalidad(localidades.get(0).getKey());
@@ -356,7 +347,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	private void toAsignaCodigoPostal() {
 		Entity domicilio           = null;
-    Map<String, Object> params = null;
+    Map<String, Object> params = new HashMap<>();
 		List<UISelectEntity>codigos= null;
 		try {
 			this.registroProveedor.getDomicilio().setNuevoCp(false);
@@ -364,7 +355,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.registroProveedor.getDomicilio().setCodigoPostal("");
 			if(!this.registroProveedor.getDomicilio().getIdDomicilio().equals(-1L)) {
 				domicilio= this.registroProveedor.getDomicilio().getDomicilio();
-				params= new HashMap<>();
 				params.put("idEntidad", domicilio.getKey());
 				params.put("codigo", domicilio.toString("codigoPostal"));
 				codigos= (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "entidadCodigo", params, Collections.EMPTY_LIST, 30L);
@@ -399,20 +389,18 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
   public void doBusquedaDomicilios() {
     List<UISelectEntity> domicilios= null;
-    Map<String, Object> params= null;
-		List<Columna>campos= null;
+    Map<String, Object> params= new HashMap<>();
+		List<Columna>columns      = new ArrayList<>();
     try {
-      params = new HashMap<>();      
       params.put(Constantes.SQL_CONDICION, "upper(calle) like upper('%".concat(this.attrs.get("calle").toString()).concat("%')"));
-			campos= new ArrayList<>();
-			campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("numeroExterior", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("numeroInterior", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("entidad", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
-      domicilios = UIEntity.build("VistaDomiciliosCatalogosDto", "domicilios", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			columns.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("numeroExterior", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("numeroInterior", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("entidad", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
+      domicilios = UIEntity.build("VistaDomiciliosCatalogosDto", "domicilios", params, columns, Constantes.SQL_TODOS_REGISTROS);
       this.registroProveedor.getDomicilio().setDomicilio(new Entity(-1L));
       this.registroProveedor.getDomicilio().setIdDomicilio(-1L);
 			this.attrs.put("domiciliosBusqueda", domicilios);      
@@ -427,25 +415,24 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doLoadDomicilios
 
 	public void doAsignaDomicilio(){
-		List<UISelectEntity> domicilios        = null;
+		List<UISelectEntity> domicilios        = new ArrayList<>();
 		List<UISelectEntity> domiciliosBusqueda= null;
 		UISelectEntity domicilio               = null;
 		try {
 			domiciliosBusqueda=(List<UISelectEntity>) this.attrs.get("domiciliosBusqueda");
 			domicilio= domiciliosBusqueda.get(domiciliosBusqueda.indexOf(this.domicilioBusqueda));
-			domicilios= new ArrayList<>();
 			domicilios.add(domicilio);
 			this.attrs.put("domicilios", domicilios);			
 			this.registroProveedor.getDomicilio().setDomicilio(domicilio);
       this.registroProveedor.getDomicilio().setIdDomicilio(domicilio.getKey());
-			toAsignaEntidad();
-			loadMunicipios();
-			toAsignaMunicipio();
-			loadLocalidades();
-			toAsignaLocalidad();
-			loadCodigosPostales();      
-			toAsignaCodigoPostal();
-			loadAtributosComplemento();						
+			this.toAsignaEntidad();
+			this.loadMunicipios();
+			this.toAsignaMunicipio();
+			this.loadLocalidades();
+			this.toAsignaLocalidad();
+			this.loadCodigosPostales();      
+			this.toAsignaCodigoPostal();
+			this.loadAtributosComplemento();						
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -467,8 +454,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doActualizaLocalidades() {
     try {
-      loadLocalidades();
-      loadCodigosPostales();
+      this.loadLocalidades();
+      this.loadCodigosPostales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -478,7 +465,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doActualizaCodigosPostales() {
     try {
-      loadCodigosPostales();
+      this.loadCodigosPostales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -487,7 +474,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doActualizaMunicipios
 
   public void doLoadAtributos() {
-		doLoadAtributos(true);
+		this.doLoadAtributos(true);
 	} // doLoadAtributos
 	
   public void doLoadAtributos(boolean all) {    
@@ -561,8 +548,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.registroProveedor.doAgregarProveedorDomicilio();
       this.registroProveedor.setDomicilio(new Domicilio());
-      loadDomicilios();
-      doLoadAtributos(true);
+      this.loadDomicilios();
+      this.doLoadAtributos(true);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -571,8 +558,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAgregarProveedor
 
   public void doConsultarProveedorDomicilio() {
-    Domicilio domicilio = null;
-    List<UISelectItem> codigos = null;
+    Domicilio domicilio       = null;
+    List<UISelectItem> codigos= null;
     try {
       this.registroProveedor.doConsultarProveedorDomicilio();
 			domicilio = this.registroProveedor.getDomicilioPivote();
@@ -619,8 +606,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
 			this.registroProveedor.doActualizarProveedorDomicilio();
 			this.registroProveedor.setDomicilio(new Domicilio());
-      loadDomicilios();
-      doLoadAtributos(true);
+      this.loadDomicilios();
+      this.doLoadAtributos(true);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -691,14 +678,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	private void loadBancos() {
 		List<UISelectItem> bancos= null;
-		Map<String, Object>params= null;
-		List<String> campos= null;
+		Map<String, Object>params= new HashMap<>();
+		List<String> columns     = new ArrayList<>();
 		try {
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
-			campos.add("nombre");
-			bancos= UISelect.build("TcManticBancosDto", "row", params, campos, " ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			columns.add("nombre");
+			bancos= UISelect.build("TcManticBancosDto", "row", params, columns, " ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("bancos", bancos);
 		} // try
 		catch (Exception e) {
@@ -710,13 +695,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}
 	
 	public List<UISelectEntity> doCompleteCodigo(String query) {
-		List<Columna> columns        = null;
-    Map<String, Object> params   = null;
+		List<Columna> columns        = new ArrayList<>();
+    Map<String, Object> params   = new HashMap<>();
 		List<UISelectEntity> regresar= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
-			params= new HashMap<>();
   		params.put("idEntidad", this.registroProveedor.getDomicilio().getIdEntidad().getKey());
   		params.put("codigo", query);
       regresar= (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "existe", params, columns, 30L);
@@ -735,9 +718,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public void doAsignaCodigo(SelectEvent event) {
 		UISelectEntity seleccion    = null;
-		List<UISelectEntity> codigos= null;
+		List<UISelectEntity> codigos= (List<UISelectEntity>) this.attrs.get("codigosPostales");
 		try {
-			codigos= (List<UISelectEntity>) this.attrs.get("codigosPostales");
 			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
 			if(seleccion!= null && !seleccion.isEmpty()) {
 				this.registroProveedor.getDomicilio().setIdCodigoPostal(seleccion.getKey());

@@ -265,9 +265,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     try {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(JsfBase.isAdminEncuestaOrAdmin())
+			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      else
+			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
-      this.attrs.put("almacenes", UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave"));
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "origen", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
 				if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen()== null)
