@@ -94,7 +94,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
   public void setIdEmpresaBack(Long idEmpresaBack) {
     this.idEmpresaBack = idEmpresaBack;
   }
-	
+
 	@Override
 	public Class toHbmClass() {
 		return TcManticOrdenesComprasDto.class;

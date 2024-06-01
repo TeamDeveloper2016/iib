@@ -28,7 +28,8 @@ where
     <unit id="TcManticTiposCostosDto">
       <select id="row">
 select      
-  *
+  tc_mantic_tipos_costos.id_tipo_costo as id_key,
+  tc_mantic_tipos_costos.*
 from      
   tc_mantic_tipos_costos
 where 
@@ -41,6 +42,15 @@ from
   tc_mantic_tipos_costos
 where      
   clave = '{clave}'
+      </select>
+      <select id="igual">
+select      
+  tc_mantic_tipos_costos.id_tipo_costo as id_key,
+  tc_mantic_tipos_costos.*
+from      
+  tc_mantic_tipos_costos
+where      
+  id_tipo_costo= {idTipoCosto}
       </select>
     </unit>    
     <unit id="TcManticArticulosPromediosDto">
@@ -58,7 +68,19 @@ select
 from      
   tc_mantic_articulos_promedios
 where      
-  id_empresa = {idEmpresa} and id_articulo = {idArticulo}
+  id_articulo_promedio= {idArticuloPromedio}
+      </select>
+      <select id="ultimo">
+select      
+  tc_mantic_articulos_promedios.id_articulo_promedio as id_key,
+  tc_mantic_articulos_promedios.*
+from      
+  tc_mantic_articulos_promedios
+where      
+  id_empresa= {idEmpresa}
+  and id_articulo= {idArticulo}      
+order by
+  registro desc                
       </select>
     </unit>    
     <unit id="TcManticTiposClientesDto">
@@ -4110,7 +4132,22 @@ where
         from      
           tr_mantic_proveedor_pago
         where      
-          id_proveedor_pago = {idProveedorPago} and id_proveedor = {idProveedor} and id_tipo_pago = {idTipoPago}
+          id_proveedor_pago = {idProveedorPago} 
+          and id_proveedor = {idProveedor} 
+          and id_tipo_pago = {idTipoPago}
+      </select>
+      <select id="dias">
+        select      
+          tr_mantic_proveedor_pago.id_proveedor_pago as id_key,
+          tr_mantic_proveedor_pago.*
+        from      
+          tr_mantic_proveedor_pago
+        where      
+          id_proveedor= {idProveedor} 
+          and id_vigente= 1
+          and id_tipo_pago= 2
+        order by
+          plazo asc
       </select>
 			<select id="maximo">
         select      
@@ -5962,6 +5999,15 @@ order by
         where      
           id_nota_entrada = {idNotaEntrada} and id_articulo= {idArticulo}
       </select>
+			<select id="igual">
+select
+  tc_mantic_notas_detalles.id_nota_detalle as id_key,
+  tc_mantic_notas_detalles.*
+from
+  tc_mantic_notas_detalles
+where      
+  id_nota_entrada= {idNotaEntrada}
+			</select>
 			<select id="errores">
 				select
 					count(*) as total

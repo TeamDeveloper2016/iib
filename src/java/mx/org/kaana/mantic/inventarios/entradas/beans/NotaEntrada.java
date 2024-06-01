@@ -3,11 +3,16 @@ package mx.org.kaana.mantic.inventarios.entradas.beans;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import org.bouncycastle.asn1.esf.ESFAttributes;
 
 /**
  *@company KAANA
@@ -26,6 +31,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
   private UISelectEntity ikProveedorPago;
 	private UISelectEntity ikOrdenCompra;
   private Long idEmpresaBack;
+  private List<Costo> costos;
 
 	public NotaEntrada() throws Exception {
 		this(-1L, null);
@@ -93,6 +99,57 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
     this.idEmpresaBack = idEmpresaBack;
   }
 
+  public List<Costo> getCostos() {
+    return costos;
+  }
+
+  public void setCostos(List<Costo> costos) {
+    this.costos = costos;
+  }
+	
+  public void add(Costo costo) {
+    int index= this.costos.indexOf(costo);
+    if(index>= 0) {
+      if(Objects.equals(this.costos.get(index).getSql(), ESql.DELETE)) {
+        this.costos.get(index).setIdUsuario(costo.getIdUsuario());
+        this.costos.get(index).setIdGenerar(costo.getIdGenerar());
+        this.costos.get(index).setProveedor(costo.getProveedor());
+        this.costos.get(index).setIdProveedor(costo.getIdProveedor());
+        this.costos.get(index).setImporte(costo.getImporte());
+        this.costos.get(index).setRegistro(costo.getRegistro());
+        this.costos.get(index).setObservaciones(costo.getObservaciones());
+        this.costos.get(index).setSql(ESql.UPDATE);
+      } // if
+      else 
+        JsfBase.addMessage("Costo", "El costo ya existe en la lista !");
+    } // if  
+    else 
+      this.costos.add(costo);
+  }
+  
+  public void remove(Costo costo) {
+    int index= this.costos.indexOf(costo);
+    if(index>= 0) {
+      if(Objects.equals(this.costos.get(index).getSql(), ESql.SELECT) || Objects.equals(this.costos.get(index).getSql(), ESql.UPDATE)) 
+        this.costos.get(index).setSql(ESql.DELETE);
+      else
+        this.costos.remove(index);
+      JsfBase.addMessage("Costo", "El costo fue eliminado de la lista !");
+    } // if
+    else
+      JsfBase.addMessage("Costo", "El costo NO existe en la lista !");
+  }
+  
+  public void recover(Costo costo) {
+    int index= this.costos.indexOf(costo);
+    if(index>= 0) {
+      if(Objects.equals(this.costos.get(index).getSql(), ESql.DELETE)) 
+        this.costos.get(index).setSql(ESql.UPDATE);
+    } // if
+    else
+      JsfBase.addMessage("Costo", "El costo NO existe en la lista !");
+  }
+  
 	@Override
 	public Class toHbmClass() {
 		return TcManticNotasEntradasDto.class;

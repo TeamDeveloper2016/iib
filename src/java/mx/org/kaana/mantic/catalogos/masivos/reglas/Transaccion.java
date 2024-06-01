@@ -598,8 +598,8 @@ public class Transaccion extends IBaseTnx {
 				for(int fila= 1; fila< sheet.getRows() && monitoreo.isCorriendo(); fila++) {
 					try {
 						if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
-							// 0           1          2        3          4          5          6           7        8        9            10            11          12      13         14         15
-							//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT|CODIGOFABRICANTE|FACTOR
+							// 0           1          2        3          4          5          6           7        8        9            10            11          12      13         14         15         16
+							//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT|CODIGOFABRICANTE|FACTOR|TIPO PRODUCTO  
 							String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							double costo   = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							double menudeo = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
@@ -613,6 +613,7 @@ public class Transaccion extends IBaseTnx {
 							String sat     = new String(sheet.getCell(13, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							String fabricante= new String(sheet.getCell(14, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							double pesoEstimado= Numero.getDouble(sheet.getCell(15, fila).getContents()!= null? sheet.getCell(15, fila).getContents().replaceAll("[$, ]", ""): "0", 1D);
+							long articuloTipo  = Numero.getLong(sheet.getCell(16, fila).getContents()!= null? sheet.getCell(16, fila).getContents().replaceAll("[$, ]", ""): "1", 1L);
 							String nombre  = new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(costo>= 0 && menudeo>= 0 && medio>= 0 && mayoreo>= 0) {
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
@@ -679,7 +680,7 @@ public class Transaccion extends IBaseTnx {
 											lmenudeo, // Double limiteMedioMayoreo, 
 											lmayoreo, // Double limiteMayoreo, 
 											Cadena.isVacio(sat)? Constantes.CODIGO_SAT: sat, // String sat, 
-											1L, // Long idArticuloTipo, 
+											articuloTipo, // Long idArticuloTipo, 
 											2L, // Long idBarras, 
 											"0", // String descuento, 
 											"0", // String extra, 

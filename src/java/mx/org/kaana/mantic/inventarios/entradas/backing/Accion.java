@@ -47,8 +47,11 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import mx.org.kaana.mantic.inventarios.entradas.beans.Costo;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.SelectEvent;
@@ -75,6 +78,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private boolean aplicar;
 	private TcManticProveedoresDto proveedor;
 	private Calendar fechaEstimada;
+	private Costo costo;
 
 	public String getValidacion() {
 		return this.tipoOrden.equals(EOrdenes.NORMAL)? "libre": "requerido";
@@ -115,12 +119,29 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	public Boolean getDiferente() {
 	  return this.getEmisor()!= null && this.proveedor!= null &&	!this.getEmisor().getRfc().equals(this.proveedor.getRfc());
 	}
+
+  public Costo getCosto() {
+    return costo;
+  }
+
+  public void setCosto(Costo costo) {
+    this.costo = costo;
+  }
 	
+  public List<Costo> getCostos() {
+    return ((NotaEntrada)this.getAdminOrden().getOrden()).getCostos();
+  }
+  
+  public void setCostos(List<Costo> costos) {
+    ((NotaEntrada)this.getAdminOrden().getOrden()).setCostos(costos);
+  }
+  
 	@PostConstruct
   @Override
   protected void init() {		
     try {
 			this.attrs.put("idTipoComparacion", 1);
+      this.attrs.put("idArticuloTipo", 4L);      
 			this.aplicar  =  false;
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
@@ -178,7 +199,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       } // switch
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
 			this.doResetDataTable();
-			this.toLoadCatalog();
+			this.toLoadCatalogos();
 			this.doFilterRows();
     } // try
     catch (Exception e) {
@@ -196,23 +217,16 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
-			// this.getAdminOrden().toCheckTotales();
 			((NotaEntrada)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			this.getAdminOrden().toAdjustArticulos();
-			// este ajuste fue para recuperar el importe total de la factura asociada para confrontarla con el importe total de la nota de entrada
-			//if(((NotaEntrada)this.getAdminOrden().getOrden()).getOriginal().equals(0D))
-			//	((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(((NotaEntrada)this.getAdminOrden().getOrden()).getTotal());
 			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
-					if(this.toCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) 
-    			  JsfBase.setFlashAttribute("codigosBarras", "/Paginas/Mantic/Catalogos/Articulos/codigos");
-					else
-						regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+				if(Objects.equals(this.accion, EAccion.AGREGAR) || this.aplicar) {
+  				regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 					if(this.accion.equals(EAccion.AGREGAR))
     			  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					else
@@ -259,7 +273,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
-	private void toLoadCatalog() {
+	private void toLoadCatalogos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -284,6 +298,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				} // else	
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+		  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       this.attrs.put("proveedores", UIEntity.seleccione("VistaOrdenesComprasDto", "moneda", params, columns, "clave"));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
@@ -311,6 +326,12 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			  if(!ordenes.isEmpty()) 
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkOrdenCompra(ordenes.get(0));
 			} // if	
+      
+      List<UISelectItem> costos= UISelect.build("TcManticTiposCostosDto", params, "descripcion", EFormatoDinamicos.MAYUSCULAS);
+      this.attrs.put("costos", costos);
+      List<UISelectItem> contratistas= UISelect.build("VistaOrdenesComprasDto", "moneda", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS);
+      this.attrs.put("contratistas", contratistas);
+      this.toNewCosto();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -412,6 +433,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				UIBackingUtilities.update("contenedorGrupos:sinIva");
 				UIBackingUtilities.update("contenedorGrupos:paginator");
 			} // if
+      else
+    		if(event.getTab().getTitle().equals("Costos")) {
+          this.doPrepare();
+        } // if
 	}
 	
 	public void doFileUpload(FileUploadEvent event) {
@@ -840,12 +865,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     //UIBackingUtilities.execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	}
 	
-	public static void main(String ... args) {
-	  LOG.info("H2-111109".replaceAll(Constantes.CLEAN_STR, ""));	
-	  LOG.info("H2 111109".replaceAll(Constantes.CLEAN_STR, ""));	
-	  LOG.info(Cadena.toEqualsString("H2 111109", "H2-111109"));	
-	}
-
 	private void doResetArticuloFromXmlFile(String origen) {
 		Articulo item           = null;
 		List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
@@ -967,6 +986,203 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // finally	
 	}
 
+	public void doPrepareDisponibles() {
+		this.doLoadXmlFile();
+	}
+
+  @Override
+	public List<UISelectEntity> doCompleteArticulo(String query) {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+		int buscarCodigoPor       = 2;
+    try {
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put("precioCliente", "menudeo");
+			params.put("idAlmacen", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen());
+  		params.put("sucursales", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdEmpresa());
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+			params.put("idCliente", -1L);
+			String search= query; 
+			if(!Cadena.isVacio(search)) {
+				if((boolean)this.attrs.get("buscaPorCodigo"))
+			    buscarCodigoPor= 1;
+				if(search.startsWith("."))
+					buscarCodigoPor= 1;
+				else 
+					if(search.startsWith(":"))
+						buscarCodigoPor= 0;
+				if(search.startsWith(".") || search.startsWith(":"))
+					search= search.trim().substring(1);				
+				search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
+        if(Cadena.isVacio(search))
+          search= ".*";
+			} // if	
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);	
+  		params.put("idArticuloTipo", this.attrs.get("idArticuloTipo"));	
+			switch(buscarCodigoPor) {      
+				case 0: 
+					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaPrecioClienteDto", "porCodigoIgual", params, columns, 20L));
+					break;
+				case 1: 
+					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaPrecioClienteDto", "porCodigo", params, columns, 20L));
+					break;
+				case 2:
+          this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaPrecioClienteDto", "porNombre", params, columns, 20L));
+          break;
+			} // switch
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		return (List<UISelectEntity>)this.attrs.get("articulos");
+	}	
+ 
+  @Override
+	public void doUpdateDialogArticulos(String codigo) {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = Boolean.FALSE;
+    try {
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			params.put("precioCliente", "menudeo");
+			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+			params.put("idCliente", this.getAdminOrden().getIdCliente());
+			if(!Cadena.isVacio(codigo)) {
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+			} // if	
+			else
+				codigo= "WXYZ";
+			params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*"));
+  		params.put("idArticuloTipo", this.attrs.get("idArticuloTipo"));	
+			if(buscaPorCodigo)
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaPrecioClienteDto", "porCodigo", params, columns));
+			else
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaPrecioClienteDto", "porNombre", params, columns));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+  
+  public void doAdd() {
+    List<UISelectItem> contratistas= (List<UISelectItem>)this.attrs.get("contratistas");
+    try {
+      this.costo.setIdNotaEntrada(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+      int index= contratistas.indexOf(new UISelectItem(this.costo.getIdProveedor()));
+      if(index>= 0)
+        this.costo.setProveedor(contratistas.get(index).getLabel());
+      if(Objects.equals(costo.getIdCuenta(), 2L)) {
+        this.costo.setIdProveedor(null);
+        this.costo.setProveedor(null);
+        this.costo.setIdGenerar(2L);
+      } // if 
+      else
+        this.costo.setIdGenerar(1L);
+      ((NotaEntrada)this.getAdminOrden().getOrden()).add(costo);   
+      this.toNewCosto();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+
+  public void doPrepare() {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idTipoCosto", this.costo.getIdTipoCosto());      
+      Entity item= (Entity)DaoFactory.getInstance().toEntity("TcManticTiposCostosDto", "igual", params);
+      if(!Objects.equals(item, null) && !item.isEmpty()) {
+        this.costo.setClave(item.toString("clave"));
+        this.costo.setNombre(item.toString("descripcion"));
+        this.costo.setIdCuenta(item.toLong("idCuenta"));
+        if(Objects.equals(this.costo.getIdCuenta(), 1L)) {
+          UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratista', {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'});");
+          UIBackingUtilities.execute("PF('contratista').enable()");
+        } // if
+        else {
+          UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratista', {validaciones: 'libre', mascara: 'libre', grupo: 'costo'});");
+          UIBackingUtilities.execute("PF('contratista').disable()");
+        } // else
+      } // if
+      else {
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratista', {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'});");
+        UIBackingUtilities.execute("PF('contratista').enable()");
+      } //   
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }  
+
+  private void toNewCosto() {
+    List<UISelectItem> costos      = (List<UISelectItem>)this.attrs.get("costos");
+    List<UISelectItem> contratistas= (List<UISelectItem>)this.attrs.get("contratistas");
+    try {      
+      this.costo= new Costo(-1L);
+      if(!Objects.equals(costos, null)) {
+        this.costo.setIdTipoCosto((Long)costos.get(0).getValue());
+        this.doPrepare();
+      } // if  
+      if(!Objects.equals(contratistas, null)) 
+        this.costo.setProveedor((String)contratistas.get(0).getLabel());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }  
+ 
+  public void doDelete(Costo costo) {
+    try {   
+      ((NotaEntrada)this.getAdminOrden().getOrden()).remove(costo);
+      this.costo.setIdTipoCosto(costo.getIdTipoCosto());
+      this.costo.setIdProveedor(costo.getIdProveedor());
+      this.costo.setImporte(costo.getImporte());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doRecover(Costo costo) {
+    try {   
+      ((NotaEntrada)this.getAdminOrden().getOrden()).recover(costo);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+
+  public void doParamExpress() {
+    
+  }
+          
 	@Override
 	protected void finalize() throws Throwable {
 		try {
@@ -976,9 +1192,5 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			super.finalize();
 		} // finally	
 	}
-	
-	public void doPrepareDisponibles() {
-		this.doLoadXmlFile();
-	}
-	
+  
 }

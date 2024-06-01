@@ -16,7 +16,6 @@
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:descuento': {validaciones: 'porcentaje', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:dias_entrega': {validaciones: 'entero', mascara: 'entero', grupo: 'general'},
         'contenedorGrupos\\:idTipoDia': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idTipoMoneda': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
@@ -86,18 +85,18 @@
                     <h:outputText value="#{item.dias}"/>
                   </p:column>   
                 </p:selectOneMenu>                
-                <p:outputLabel  for="diasEntrega" value="Tiempo de entrega (dias):"/>
-                <p:inputText id="diasEntrega" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.diasEntrega}"  /> 
-                <p:outputLabel value="Tipo de dias de entrega:" for="idTipoDia"/>
-                <p:selectOneMenu id="idTipoDia" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoDia}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt">
+                <p:outputLabel for="diasEntrega" value="Tiempo de entrega (dias):" styleClass="janal-display-none"/>
+                <p:inputText id="diasEntrega" styleClass="janal-wid-100-txt janal-display-none" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.diasEntrega}"  /> 
+                <p:outputLabel value="Tipo de dias de entrega:" for="idTipoDia" styleClass="janal-display-none"/>
+                <p:selectOneMenu id="idTipoDia" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoDia}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt janal-display-none">
                   <f:selectItem itemLabel="NATURALES" itemValue="1"/>
                   <f:selectItem itemLabel="HÁBILES" itemValue="2"/>
                   <f:selectItem itemLabel="NO ESPECIFICADO" itemValue="3"/>
                 </p:selectOneMenu>
-                <p:outputLabel value="Descuento:" for="descuento"/>
-                <p:inputText id="descuento" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.descuento}" /> 
-                <p:outputLabel value="Tipo de mondeda:" for="idTipoMoneda"/>
-                <p:selectOneMenu id="idTipoMoneda" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoMoneda}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt">
+                <p:outputLabel for="descuento" value="Descuento:" styleClass="janal-display-none"/>
+                <p:inputText id="descuento" styleClass="janal-wid-100-txt janal-display-none" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.descuento}" /> 
+                <p:outputLabel for="idTipoMoneda" value="Tipo de mondeda:" styleClass="janal-display-none"/>
+                <p:selectOneMenu id="idTipoMoneda" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoMoneda}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt janal-display-none">
                   <f:selectItem itemLabel="PESOS" itemValue="1"/>
                   <f:selectItem itemLabel="DOLARES" itemValue="2"/>
                   <f:selectItem itemLabel="EUROS" itemValue="3"/>

@@ -330,7 +330,7 @@ public class JsfUtilities {
 		return Constantes.ENTER.concat("<script type=\"text/javascript\">Janal.Control.name= [").concat(doContextRoot()).concat("];Janal.Control.stage= [").concat(Cadena.stringToBytes(getStage())).concat("];</script>").concat(Constantes.ENTER);
   }
 
-  public static void  cleanSesion(HttpSession session) {
+  public static void cleanSesion(HttpSession session) {
     Enumeration attributes = session.getAttributeNames();
     String elemento = null;
     while (attributes.hasMoreElements()) {

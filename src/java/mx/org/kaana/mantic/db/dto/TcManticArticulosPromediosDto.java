@@ -40,8 +40,8 @@ public class TcManticArticulosPromediosDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="promedio")
   private Double promedio;
-  @Column (name="kilos")
-  private Double kilos;
+  @Column (name="cantidad")
+  private Double cantidad;
   @Column (name="observaciones")
   private String observaciones;
   @Id
@@ -66,11 +66,11 @@ public class TcManticArticulosPromediosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticArticulosPromediosDto(Long idTipoMovimiento, Long idUsuario, Double promedio, Double kilos, String observaciones, Long idArticuloPromedio, Long idEmpresa, Long idArticulo, Double importe) {
+  public TcManticArticulosPromediosDto(Long idTipoMovimiento, Long idUsuario, Double promedio, Double cantidad, String observaciones, Long idArticuloPromedio, Long idEmpresa, Long idArticulo, Double importe) {
     setIdTipoMovimiento(idTipoMovimiento);
     setIdUsuario(idUsuario);
     setPromedio(promedio);
-    setKilos(kilos);
+    setCantidad(cantidad);
     setObservaciones(observaciones);
     setIdArticuloPromedio(idArticuloPromedio);
     setIdEmpresa(idEmpresa);
@@ -103,12 +103,12 @@ public class TcManticArticulosPromediosDto implements IBaseDto, Serializable {
     return promedio;
   }
 
-  public void setKilos(Double kilos) {
-    this.kilos = kilos;
+  public void setCantidad(Double cantidad) {
+    this.cantidad = cantidad;
   }
 
-  public Double getKilos() {
-    return kilos;
+  public Double getCantidad() {
+    return cantidad;
   }
 
   public void setObservaciones(String observaciones) {
@@ -180,7 +180,7 @@ public class TcManticArticulosPromediosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPromedio());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getKilos());
+		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
@@ -203,7 +203,7 @@ public class TcManticArticulosPromediosDto implements IBaseDto, Serializable {
 		regresar.put("idTipoMovimiento", getIdTipoMovimiento());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("promedio", getPromedio());
-		regresar.put("kilos", getKilos());
+		regresar.put("cantidad", getCantidad());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idArticuloPromedio", getIdArticuloPromedio());
 		regresar.put("idEmpresa", getIdEmpresa());
@@ -216,7 +216,7 @@ public class TcManticArticulosPromediosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTipoMovimiento(), getIdUsuario(), getPromedio(), getKilos(), getObservaciones(), getIdArticuloPromedio(), getIdEmpresa(), getIdArticulo(), getImporte(), getRegistro()
+      getIdTipoMovimiento(), getIdUsuario(), getPromedio(), getCantidad(), getObservaciones(), getIdArticuloPromedio(), getIdEmpresa(), getIdArticulo(), getImporte(), getRegistro()
     };
     return regresar;
   }

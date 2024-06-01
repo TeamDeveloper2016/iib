@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -60,6 +61,10 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.attrs.put("mayoreo", (Constantes.PORCENTAJE_MAYOREO- 1D)* 100D);				
 			this.attrs.put("especial", (Constantes.PORCENTAJE_ESPECIAL- 1D)* 100D);				
 			this.attrs.put("auxiliarExpress", "");				
+			this.attrs.put("idArticuloTipo", 1L);
+      IBaseAttribute params= (IBaseAttribute)JsfBase.getViewAttribute("manticInventariosEntradasAccion");
+      if(!Objects.equals(params, null) && params.getAttrs().containsKey("idArticuloTipo"))
+        this.attrs.put("idArticuloTipo", params.getAttrs().get("idArticuloTipo"));
       this.doLoad();
       this.loadProveedores();
       this.loadCategorias();
@@ -78,7 +83,7 @@ public class Express extends IBaseAttribute implements Serializable {
 		try {
 			this.attrs.put("idArticulo", idArticulo);
 			this.attrs.put("accion", EAccion.MODIFICAR);
-			doLoad();
+			this.doLoad();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -94,6 +99,8 @@ public class Express extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:
           this.registroArticulo = new RegistroArticulo();
+          this.registroArticulo.setIdTipoArticulo((Long)this.attrs.get("idArticuloTipo"));
+          this.registroArticulo.getArticulo().setIva(0D);
           break;
         case MODIFICAR:
         case CONSULTAR:
@@ -153,10 +160,14 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida(1L);
 			this.registroArticulo.getArticulo().setIdRedondear(this.attrs.get("redondearExpress")!= null && (boolean)this.attrs.get("redondearExpress")? 1L: 2L);
 			this.registroArticulo.setRedondear(this.attrs.get("redondearExpress")!= null && (boolean)this.attrs.get("redondearExpress"));
-			this.registroArticulo.getArticulo().setLimiteMayoreo(20D);
-			this.registroArticulo.getArticulo().setLimiteMedioMayoreo(10D);			
+      this.registroArticulo.getArticulo().setIva(0D);
+			this.registroArticulo.getArticulo().setLimiteMayoreo(499D);
+			this.registroArticulo.getArticulo().setLimiteMedioMayoreo(24D);			
 			this.registroArticulo.getArticulo().setIdVigente(1L);		
       this.registroArticulo.getArticulo().setIdArticuloImpuesto(2L);
+      this.registroArticulo.getArticulo().setMinimo(100000D);
+      this.registroArticulo.getArticulo().setMaximo(200000D);
+      this.registroArticulo.setIdTipoArticulo((Long)this.attrs.get("idArticuloTipo"));
       if(Cadena.isVacio(this.registroArticulo.getArticulo().getSat()))
         this.registroArticulo.getArticulo().setSat(Constantes.CODIGO_SAT);
 		} // try
@@ -192,10 +203,9 @@ public class Express extends IBaseAttribute implements Serializable {
 
   public void doLoadUnidadesMedidas() {
     List<UISelectItem> unidadesMedidas= null;
-    Map<String, Object> params        = null;
+    Map<String, Object> params        = new HashMap<>();
     EAccion eaccion                   = null;
     try {
-      params = new HashMap<>();
       params.put("idEmpaque", this.registroArticulo.getIdEmpaque());
       eaccion = (EAccion) this.attrs.get("accion");
       unidadesMedidas = UISelect.build("VistaEmpaqueUnidadMedidaDto", "empaqueUnidadMedida", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
@@ -213,10 +223,9 @@ public class Express extends IBaseAttribute implements Serializable {
 
   private void loadCategorias() {
     List<UISelectItem> categorias= null;
-    Map<String, Object> params   = null;
+    Map<String, Object> params   = new HashMap<>();
     EAccion eaccion              = null;
     try {
-      params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_empresa=" + JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       categorias = UISelect.build("TcManticCategoriasDto", "row", params, "traza", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("categorias", categorias);
@@ -355,11 +364,9 @@ public class Express extends IBaseAttribute implements Serializable {
 	}	
 
 	public List<UISelectEntity> doCompleteCodigo(String query) {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= !Cadena.isVacio(query)? query.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim(): "WXYZ";
@@ -367,7 +374,9 @@ public class Express extends IBaseAttribute implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
   		params.put("codigo", search);			
-      this.attrs.put("codigosExpress", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+  		params.put("idArticuloTipo", this.attrs.get("idArticuloTipo"));	
+			params.put("precioCliente", "menudeo");
+      this.attrs.put("codigosExpress", (List<UISelectEntity>) UIEntity.build("VistaPrecioClienteDto", "porCodigo", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -382,9 +391,8 @@ public class Express extends IBaseAttribute implements Serializable {
 
 	public void doAsignaCodigo(SelectEvent event) {
 		UISelectEntity seleccion    = null;
-		List<UISelectEntity> codigos= null;
+		List<UISelectEntity> codigos= (List<UISelectEntity>) this.attrs.get("codigosExpress");
 		try {
-			codigos= (List<UISelectEntity>) this.attrs.get("codigosExpress");
 			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
 			this.attrs.put("codigoExpressSeleccion", seleccion);	
 			this.doLookForCodigo();
@@ -396,11 +404,9 @@ public class Express extends IBaseAttribute implements Serializable {
 	} // doAsignaCodigo		
 	
 	public List<UISelectEntity> doCompleteNombre(String query) {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			boolean	buscaPorCodigo= query.startsWith(".");
@@ -411,10 +417,12 @@ public class Express extends IBaseAttribute implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
   		params.put("codigo", search);		
+  		params.put("idArticuloTipo", this.attrs.get("idArticuloTipo"));	
+			params.put("precioCliente", "menudeo");
 			if(buscaPorCodigo) 
-        this.attrs.put("nombresExpress", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porLikeNombre", params, columns, 20L));
+        this.attrs.put("nombresExpress", (List<UISelectEntity>) UIEntity.build("VistaPrecioClienteDto", "porLikeNombre", params, columns, 20L));
 			else
-        this.attrs.put("nombresExpress", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
+        this.attrs.put("nombresExpress", (List<UISelectEntity>) UIEntity.build("VistaPrecioClienteDto", "porNombre", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -429,9 +437,8 @@ public class Express extends IBaseAttribute implements Serializable {
 
 	public void doAsignaNombre(SelectEvent event) {
 		UISelectEntity seleccion    = null;
-		List<UISelectEntity> nombres= null;
+		List<UISelectEntity> nombres= (List<UISelectEntity>) this.attrs.get("nombresExpress");
 		try {
-			nombres= (List<UISelectEntity>) this.attrs.get("nombresExpress");
 			seleccion= nombres.get(nombres.indexOf((UISelectEntity)event.getObject()));
 			this.attrs.put("nombreExpressSeleccion", seleccion);			
 			this.getRegistroArticulo().getArticulo().setNombre(seleccion.toString("nombre"));
@@ -453,10 +460,9 @@ public class Express extends IBaseAttribute implements Serializable {
 	} // doAsignaNombre
 
   public void doLookForCodigo() {
-	  Map<String, Object> params=null;
-		String codigo= JsfBase.getParametro("codigoDialog_input");
+	  Map<String, Object> params= new HashMap<>();
+		String codigo             = JsfBase.getParametro("codigoDialog_input");
 		try {
-			params=new HashMap<>();
 			if(!Cadena.isVacio(codigo)) {
 			  params.put("codigo", codigo.toUpperCase());
 				params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);

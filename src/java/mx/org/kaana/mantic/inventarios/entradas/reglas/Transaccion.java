@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.inventarios.entradas.reglas;
 
 import java.io.File;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -26,6 +28,7 @@ import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosPromediosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
@@ -34,6 +37,7 @@ import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import mx.org.kaana.mantic.inventarios.entradas.beans.Costo;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import org.apache.log4j.Logger;
@@ -49,7 +53,7 @@ import org.apache.log4j.Logger;
 public class Transaccion extends Inventarios implements Serializable {
 
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
-	private static final long serialVersionUID=-6069204157451117549L;
+	private static final long serialVersionUID= -6069204157451117549L;
  
 	protected NotaEntrada orden;	
 	private List<Articulo> articulos;
@@ -97,11 +101,10 @@ public class Transaccion extends Inventarios implements Serializable {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar                     = false;
 		TcManticNotasBitacoraDto bitacoraNota= null;
-		Map<String, Object> params           = null;
+		Map<String, Object> params           = new HashMap<>();
 		Siguiente consecutivo                = null;
 		try {
 			if(this.orden!= null) {
-				params= new HashMap<>();
 				params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			} // if
@@ -125,6 +128,7 @@ public class Transaccion extends Inventarios implements Serializable {
        	    this.toUpdateDeleteXml(sesion);	
 					} // else	
 					this.toFillArticulos(sesion);
+          this.toFillCostos(sesion);
       		for (Articulo articulo: this.articulos) 
 						articulo.setModificado(false);
 					break;
@@ -152,6 +156,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					this.toFillArticulos(sesion);
+          this.toFillCostos(sesion);
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
 					break;
@@ -167,13 +172,17 @@ public class Transaccion extends Inventarios implements Serializable {
 						this.orden.setIdNotaEstatus(3L);
   					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 	  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+            this.toCheckPromedios(sesion, this.orden.getIdEmpresa(), 1L);
 					} // if	
           this.checkConsecutivo(sesion);
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					this.toRemoveOrdenDetalle(sesion);
 					this.toFillArticulos(sesion);
+          this.toFillCostos(sesion);
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
+  				if(Objects.equals(this.orden.getIdNotaEstatus(), 3L))
+            this.toCheckPromedios(sesion, this.orden.getIdEmpresa(), 1L);
 					break;				
 				case ELIMINAR:
 					regresar= this.toNotExistsArticulosBitacora(sesion);
@@ -190,21 +199,29 @@ public class Transaccion extends Inventarios implements Serializable {
        	    // this.toDeleteXmlPdf();	
 					} // if
 					else
-       			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos.";
+       			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos";
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden.setIdNotaEstatus(this.bitacora.getIdNotaEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.bitacora.getIdNotaEstatus().equals(2L)) {
-							this.toRemoveOrdenDetalle(sesion);
-							regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
-							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
-							this.orden.setIdNotaEstatus(2L);
-							bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
-							regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-              this.toCheckOrden(sesion);
-						} // if	
+            switch(this.bitacora.getIdNotaEstatus().intValue()) {
+              case 2: // ELIMINADA
+                this.toRemoveOrdenDetalle(sesion);
+                regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
+                regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
+                this.orden.setIdNotaEstatus(2L);
+                bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
+                regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+                this.toCheckOrden(sesion);
+                break;
+              case 3: // TERMINADA
+                this.toCheckPromedios(sesion, this.orden.getIdEmpresa(), 1L);
+                break;
+              case 4: // CANCELADA
+                // FALTA EL PROCESO PARA CANCELAR LAS CUENTAS POR PAGAR
+                break;
+            } // switch
 					} // if
 					break;
 			} // switch
@@ -253,6 +270,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, params);
 				} // if
 			} // for
+      sesion.flush();
 		} // try
 		finally {
 			Methods.clean(todos);
@@ -343,9 +361,8 @@ public class Transaccion extends Inventarios implements Serializable {
 	}
 	
 	private void toApplyNotaEntrada(Session sesion) throws Exception {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			for (Articulo articulo: this.articulos) {
 				TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 				item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
@@ -355,7 +372,9 @@ public class Transaccion extends Inventarios implements Serializable {
 			} // for
 			this.orden.setIdNotaEstatus(3L);
 			DaoFactory.getInstance().update(sesion, this.orden);
-
+      // RECALCULAR LOS COSTOS PROMEDIOS 
+      this.toCheckPromedios(sesion, this.orden.getIdEmpresa(), 1L);
+      
 			// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
 			TcManticEmpresasDeudasDto deuda= null;
 			if(this.orden.getDiasPlazo()> 1) 
@@ -370,6 +389,10 @@ public class Transaccion extends Inventarios implements Serializable {
 				registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 				DaoFactory.getInstance().insert(sesion, registro);
 			} // if
+      
+      // FALTA AGREGAR LAS CUENTAS POR COBRAR DE LOS COSTOS 
+      this.toAddCuentaPagar(sesion);
+      
 			if(!this.orden.getIdNotaTipo().equals(3L))
 				this.toCommonNotaEntrada(sesion, this.orden.getIdNotaEntrada(), this.orden.toMap());
 		} // try
@@ -393,10 +416,9 @@ public class Transaccion extends Inventarios implements Serializable {
 	}
 	
 	private List<Nombres> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {
-		List<Nombres> regresar= null;
-		Map<String, Object> params=null;
+		List<Nombres> regresar    = null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params  = new HashMap<>();
 			params.put("idTipoArchivo", idTipoArchivo);
 			params.put("ruta", tmp.getRuta());
 			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticNotasArchivosDto", "listado", params);
@@ -532,6 +554,143 @@ public class Transaccion extends Inventarios implements Serializable {
     catch (Exception e) {
       throw e;      
     } // catch	
+  }
+  
+	private Boolean toFillCostos(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {      
+      Double total= 0D;
+      for (Costo item: this.orden.getCostos()) {
+        item.setIdUsuario(JsfBase.getIdUsuario());
+        item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        switch(item.getSql()) {
+          case SELECT:
+            total+= item.getImporte();
+            break;
+          case UPDATE:
+            total+= item.getImporte();
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+            break;
+          case INSERT:
+            total+= item.getImporte();
+            item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+        } // switch    
+      } // for
+      regresar= this.toCheckCostos(sesion, total);
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    return regresar;
+  }
+  
+	private Boolean toCheckCostos(Session sesion, Double total) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      // ESTE PROCESO RECALCULA EL PRECIO PROMEDIO DE LA NOTA DE ENTRADA
+      params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
+      Double ajuste= total/ (this.articulos.size()<= 0? 1: this.articulos.size());
+      List<TcManticNotasDetallesDto> items= (List<TcManticNotasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticNotasDetallesDto.class, "TcManticNotasDetallesDto", "igual", params);
+      for (TcManticNotasDetallesDto item: items) {
+        item.setPromedio((item.getImporte()+ ajuste)/ (item.getCantidad()<= 0? 1: item.getCantidad()));
+        DaoFactory.getInstance().update(sesion, item);
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+	private Boolean toCheckPromedios(Session sesion, Long idEmpresa, Long idTipoMovimiento) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      // ESTE PROCESO RECALCULA EL PRECIO PROMEDIO DE LO QUE SE TIENE EN LA SUCURSAL
+      List<TcManticNotasDetallesDto> items= (List<TcManticNotasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticNotasDetallesDto.class, "TcManticNotasDetallesDto", "igual", params);
+      for (TcManticNotasDetallesDto item: items) {
+        TcManticArticulosPromediosDto promedio= new TcManticArticulosPromediosDto(
+          idTipoMovimiento, // Long idTipoMovimiento, ENTRADA
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          item.getPromedio(), //Double promedio, 
+          item.getCantidad(), // Double cantidad, 
+          null, // String observaciones, 
+          -1L, // Long idArticuloPromedio, 
+          idEmpresa, // Long idEmpresa, 
+          item.getIdArticulo(), // Long idArticulo, 
+          item.getImporte()// Double importe
+        );
+        params.put("idEmpresa", idEmpresa);
+        params.put("idArticulo", item.getIdArticulo());
+        Entity costo= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosPromediosDto", "ultimo", params);
+        if(!Objects.equals(costo, null) || !costo.isEmpty()) {
+          promedio.setCantidad(promedio.getCantidad()+ item.getCantidad());
+          promedio.setImporte(promedio.getImporte()+ item.getImporte());
+          promedio.setPromedio(promedio.getImporte()/ (promedio.getCantidad()<= 0? 1D: promedio.getCantidad()));
+        } // if
+        DaoFactory.getInstance().insert(sesion, promedio);
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private Boolean toAddCuentaPagar(Session sesion) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    Long dias                 = 15L;
+    try {      
+      for (Costo item: this.orden.getCostos()) {
+        if(!Objects.equals(item.getIdProveedor(), null) && Objects.equals(item.getIdGenerar(), 1L)) {
+          params.put("idProveedor", item.getIdProveedor());
+          Entity fecha= (Entity)DaoFactory.getInstance().toEntity(sesion, "TrManticProveedorPagoDto", "dias", params);
+          if(!Objects.equals(fecha, null) && !fecha.isEmpty())
+            dias= fecha.toLong("plazo");
+          TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(
+            1L, // Long idEmpresaEstatus, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            -1L, // Long idEmpresaDeuda, 
+            "PAGO DEL GASTO  ".concat(item.getNombre()), // String observaciones, 
+            this.orden.getIdEmpresa(), // Long idEmpresa, 
+            item.getImporte(), // Double saldo, 
+            this.orden.getIdNotaEntrada(), // Long idNotaEntrada, 
+            Fecha.toFecha(dias.intValue()), // Date limite, 
+            item.getImporte(), // Double importe, 
+            item.getImporte(), // Double pagar, 
+            2L, // Long idRevisado, 
+            2L, // Long idCompleto, 
+            null, // Date fechaRecepcion, 
+            null, // Long idRecibio, 
+            null // Long idProveedorPago      
+          );
+          DaoFactory.getInstance().insert(sesion, deuda);
+        } // if  
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
   }
   
 } 

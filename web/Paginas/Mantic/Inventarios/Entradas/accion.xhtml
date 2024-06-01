@@ -28,7 +28,7 @@
 				'contenedorGrupos\\:fechaRecepcion' : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaFactura"})|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general', individual: true},
 				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:fechaPago'      : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaRecepcion"})|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general', individual: true},
-				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', individual: true, grupo: 'general'},			
+				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedorPago': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
@@ -37,13 +37,16 @@
 				'contenedorGrupos\\:tipoDeCambio'   : {validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'articulo'},			
 				'contenedorGrupos\\:descuento'      : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
 				'contenedorGrupos\\:extra'          : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
-				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'codigos'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'sat'                               : {multiple: '$', validaciones: 'entero|igual-caracteres({"cuantos": 8})', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'codigo', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},				
-				'precios'                           : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true},				
-				'cantidades'                        : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true}				
+				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'codigos'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'sat'                               : {multiple: '$', validaciones: 'entero|igual-caracteres({"cuantos": 8})', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'codigo', formatos: 'cambiar-mayusculas', grupo: 'general'},				
+				'precios'                           : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},				
+				'cantidades'                        : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idTipoCosto'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'},
+				'contenedorGrupos\\:importe'        : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'costo'},
+				'contenedorGrupos\\:idContratista'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'}
 			};
 			
     	$(document).ready(function() {
@@ -58,7 +61,7 @@
 				jsArticulos.cursor.index= jsArticulos.cursor.top;
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
-				var ok= janal.execute();
+				var ok= janal.partial("general");
 				if(ok) {
 					var deuda= parseFloat($('#contenedorGrupos\\:deuda').val(), 10);
 					var total= parseFloat($('#contenedorGrupos\\:total').val(), 10);
@@ -276,8 +279,8 @@
 									<div class="ui-grid-col-12">
                     <p:panelGrid id="datosArticulos" columns="4" styleClass="janal-wid-100" columnClasses="janal-fix-20, janal-fix-40, janal-fix-30, janal-fix-5">
                       <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-column-left">
-                        <p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" oncomplete="janal.bloquear(); recover(jsArticulos.cursor.index);" style="float:right;"/>
-                        <p:commandButton process="@form" icon="fa fa-save" title="Guardar nota de entrada" actionListener="#{manticInventariosEntradasAccion.doAutoSaveOrden()}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" style="float:right;" update="@(.recalculo)"/>
+                        <p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" oncomplete="janal.bloquear(); recover(jsArticulos.cursor.index);"/>
+                        <p:commandButton process="@form" icon="fa fa-save" title="Guardar nota de entrada" actionListener="#{manticInventariosEntradasAccion.doAutoSaveOrden()}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" update="@(.recalculo)"/>
                       </p:panelGrid>   
                       <p:commandButton type="button" icon="fa fa-file-pdf-o" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento [#{manticInventariosEntradasAccion.pdf.name}]" style="#{(empty manticInventariosEntradasAccion.pdf)? 'display: none': ''}"/>
                       <p:outputLabel value="Segmentar partidas: " escape="false" styleClass="filas" style="float: right; display:#{manticInventariosEntradasAccion.adminOrden.totales.articulos gt Constantes.REGISTROS_LOTE_TOPE? 'none': ''}"/>
@@ -311,7 +314,7 @@
 													</f:facet>
 													<div class="ui-grid-row janal-grid-row">
                             <div style="display: flex;">                            
-                              <div class="ui-grid-col-12" style="padding-right: 14px; flex: 0 0 40% !important">
+                              <div class="ui-grid-col-12" style="padding-right: 14px; flex: 0 0 60% !important">
                                 <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                                 <p:inputText id="locks" value="#{row['idOrdenDetalle']}" style="display:none"/>
                                 <p:inputText id="origins" value="#{row['origen']}" style="display:none"/>
@@ -338,13 +341,13 @@
                               </div>	
                               <div style="flex: 1;">  
                                 <p:commandButton type="button" icon="fa fa-sort-numeric-asc" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_ASTERISK);" styleClass="rounded-button ui-button-secondary"/>
-                                <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary janal-display-none"/>
+                                <p:commandButton type="button" icon="fa fa-dollar" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_PLUS);" styleClass="rounded-button ui-button-secondary"/>
                                 <p:commandButton type="button" icon="fa fa-trash" onclick="triggerLocalEvent(#{index}, jsArticulos.VK_REST);" styleClass="rounded-button ui-button-secondary"/>
                               </div>  
   													</div>	
 													</div>	
 												</p:column>
-												<p:column class="MarAuto Responsive janal-wid-col-90">
+												<p:column class="MarAuto Responsive janal-wid-col-90" rendered="false">
 													<f:facet name="header">
 														<h:outputText value="Código SAT"/>
 													</f:facet>
@@ -484,7 +487,49 @@
               </p:panelGrid>
 						</p:tab>
 						<p:tab title="Costos">
-              
+              <p:panelGrid id="datosCostos" layout="grid" columns="3" columnClasses="janal-wid-33, janal-wid-33, janal-wid-34">
+                <p:panelGrid layout="grid" columns="1">
+									<p:outputLabel for="idTipoCosto" value="Costo:"/>
+      					  <p:selectOneMenu id="idTipoCosto" value="#{manticInventariosEntradasAccion.costo.idTipoCosto}" converter="javax.faces.Long" styleClass="janal-wid-100-txt costos" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+    								<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doPrepare}" process="@this" update="contenedorGrupos:idContratista"/>
+                    <f:selectItems value="#{manticInventariosEntradasAccion.attrs.costos}"/>
+                  </p:selectOneMenu>
+                </p:panelGrid>  
+                <p:panelGrid layout="grid" columns="1">
+									<p:outputLabel for="idContratista" value="Proveedor:"/>
+                  <p:selectOneMenu id="idContratista" value="#{manticInventariosEntradasAccion.costo.idProveedor}" converter="javax.faces.Long" styleClass="janal-wid-100-txt costos involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" widgetVar="contratista">
+                    <f:selectItems value="#{manticInventariosEntradasAccion.attrs.contratistas}"/>
+                  </p:selectOneMenu>
+                </p:panelGrid>  
+                <p:panelGrid layout="grid" columns="1">
+									<p:outputLabel for="importe" value="Importe:"/>
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-95, janal-fix-5 janal-column-right" style="margin-top: -2px">
+                    <p:inputNumber id="importe" value="#{manticInventariosEntradasAccion.costo.importe}" styleClass="janal-wid-100-txt costos" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" thousandSeparator=","/>
+                    <p:commandButton action="#{manticInventariosEntradasAccion.doAdd()}" icon="fa fa-plus" title="Agregar" process="@this contenedorGrupos:datosCostos" update="@(.costos)" onstart="return janal.partial('costo')" oncomplete="janal.desbloquear()"/>
+                  </p:panelGrid>  
+                </p:panelGrid>  
+              </p:panelGrid>  
+              <p:dataTable id="costos" var="row" value="#{manticInventariosEntradasAccion.costos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idTipoCosto}" styleClass="costos" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-8" headerText="Clave">
+									<h:outputText value="#{row.clave}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Proveedor">
+									<h:outputText value="#{row.proveedor}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-right" headerText="Importe">
+									<h:outputText value="#{row.importe}"/>
+								</p:column>   
+								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="costos @(.costos)" actionListener="#{manticInventariosEntradasAccion.doDelete(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.sql ne 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="costos" actionListener="#{manticInventariosEntradasAccion.doRecover(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.sql eq 'DELETE'}"/>
+								</p:column>
+							</p:dataTable>
 						</p:tab>
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.observaciones}"/>
@@ -492,159 +537,89 @@
 						<p:tab title="Importar">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{manticInventariosEntradasAccion.diferente? '': 'none'}">
 								<p:outputLabel value="El RFC del proveedor [#{manticInventariosEntradasAccion.proveedor.rfc}] #{manticInventariosEntradasAccion.proveedor.razonSocial} no coincide con el de la factura [#{manticInventariosEntradasAccion.emisor.rfc}]" styleClass="janal-color-orange" style="cursor: pointer;"/>
-								<p:spacer height="5px"/>
 							</p:panelGrid>	
-							<p:outputLabel for="idTipoComparacion" value="Tipo de comparación:" styleClass="janal-wid-100-txt" style="display:#{manticInventariosEntradasAccion.consultar};"/><br style="display:#{manticInventariosEntradasAccion.consultar};"/>
-							<p:selectOneMenu id="idTipoComparacion" value="#{manticInventariosEntradasAccion.attrs.idTipoComparacion}" converter="javax.faces.Integer" styleClass="janal-wid-100-txt documento" style="display:#{manticInventariosEntradasAccion.consultar};">									
-								<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doPrepareDisponibles}" process="@this" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)"/>
-								<f:selectItem itemLabel="COMPRAR SOLO EL CODIGO" itemValue="1"/>
-								<f:selectItem itemLabel="COMPRAR CODIGO O NOMBRE" itemValue="2"/>
-								<f:selectItem itemLabel="COMPRAR SOLO EL NOMBRE" itemValue="3"/>
-								<f:selectItem itemLabel="NO COMPARA POR NINGUNO" itemValue="4"/>
-							</p:selectOneMenu>								
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt documento" style="display:#{manticInventariosEntradasAccion.consultar};"/><br style="display:#{manticInventariosEntradasAccion.consultar};"/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.observaciones}" style="display:#{manticInventariosEntradasAccion.consultar};">
 								<p:ajax event="blur" process="@this"/>
 							</p:inputTextarea>	
-							<p:spacer height="5px"/>
 							<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}" 
-								mode="advanced" process="@this contenedorGrupos:comentarios contenedorGrupos:idTipoComparacion" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								mode="advanced" process="@this contenedorGrupos:comentarios" update="@(.importado) @(.involucrados) @(.filas) @(.recalculo) @(.proveedor)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
 							<p:commandLink value="XML importado: #{manticInventariosEntradasAccion.xml.ruta}#{manticInventariosEntradasAccion.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticInventariosEntradasAccion.xml)? 'display: none': ''}"/>
 							<br/>
 							<p:commandLink value="PDF importado: #{manticInventariosEntradasAccion.pdf.ruta}#{manticInventariosEntradasAccion.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticInventariosEntradasAccion.pdf)? 'display: none': ''}"/>
-							<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100">
-								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-									<p:dataTable id="faltante" var="row" styleClass="importado janal-wid-99" value="#{manticInventariosEntradasAccion.attrs.faltantes}" selection="#{manticInventariosEntradasAccion.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom">
-										<f:facet name="header">
-											<div style="display: flow-root;">
-												<p:outputLabel value="Articulos cargados del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
-												<div style="float:right;">
-													<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="janal.bloquear(); PF('dlgArtExpress').show();" style="float:right;">
-														<f:setPropertyActionListener target="#{manticInventariosEntradasAccion.attrs.seleccionado}" value="#{null}"/>
-													</p:commandButton> 
-													<p:commandButton title="Refrescar articulos" icon="fa fa-refresh" process="@this" update="@(.importado)" action="#{manticInventariosEntradasAccion.doLoadXmlFile()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
-    											<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-exchange" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>
-												</div>
-											</div>	
-  									</f:facet>
-										<p:column selectionMode="single" style="width:16px;text-align:center"/>
-										<p:column class="MarAuto Responsive janal-wid-12">
-											<f:facet name="header">
-												<h:outputText value="SAT"/>
-											</f:facet>
-											<h:outputText value="#{row['sat']}"/>
-										</p:column>		
-										<p:column  class="MarAuto Responsive janal-wid-13">
-											<f:facet name="header">
-												<h:outputText value="Código"/>
-											</f:facet>
-											<h:outputText value="#{row['codigo']}"/>
-										</p:column>		
-										<p:column  class="MarAuto Responsive">
-											<f:facet name="header">
-												<h:outputText value="Articulo"/>
-											</f:facet>
-											<h:outputText value="#{row['nombre']}"/>
-										</p:column>		
-										<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
-											<f:facet name="header">
-												<h:outputText value="Cantidad"/>
-											</f:facet>
-											<h:outputText value="#{row['cantidad']}"/>	
-										</p:column>		
-										<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
-											<f:facet name="header">
-												<h:outputText value="Costo"/>
-											</f:facet>
-											<h:outputText value="#{row['costo']}"/>
-										</p:column>		
-										<p:column class="janal-column-right MarAuto Responsive janal-wid-12">
-											<f:facet name="header">
-												<h:outputText value="Descuento"/>
-											</f:facet>
-											<h:outputText value="#{row['descuento']}"/>
-										</p:column>		
-										<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
-											<f:facet name="header">
-												<h:outputText value="IVA"/>
-											</f:facet>
-											<h:outputText value="#{row['iva']}"/>
-										</p:column>		
-										<p:column styleClass="janal-column-icon">
-											<p:outputLabel id="descripcion" value="#{row.nombre}" style="display:none"/>
-											<p:commandButton process="@this" icon="fa fa-plus" title="#{row['nombre']}" onstart="clean(); return true;" oncomplete="$('#auxiliar').val(''); janal.bloquear(); PF('buscador').show();">
-    										<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasAccion.attrs.faltante}" />
-		    							</p:commandButton>
-										</p:column>
-										<f:facet name="footer">
-											<div style="display:flow-root;">
-												<p:outputLabel value="Se relacionaron &lt;strong class='importado janal-color-blue'&gt;[#{manticInventariosEntradasAccion.attrs.relacionados}]&lt;/strong&gt; articulos del archivo XML con respecto a la orden de compra" style="float: left;" escape="false" styleClass="importado"/>
-												<div style="float:right;">
-											    <p:outputLabel value="Total articulos: #{manticInventariosEntradasAccion.attrs.faltantes.size()},   Facturado: #{manticInventariosEntradasAccion.adminOrden.orden.original}" styleClass="importado janal-color-orange"/>
-												</div>
-											</div>
-										</f:facet>
-									</p:dataTable>
-								</p:panelGrid>
-								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" style="margin-top:-7px;">
-									<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-50 janal-column-right">
-										<p:dataTable id="disponible" var="row" styleClass="importado janal-wid-99" value="#{manticInventariosEntradasAccion.attrs.disponibles}" selection="#{manticInventariosEntradasAccion.attrs.disponible}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom">
-											<f:facet name="header">
-												<div style="display: flow-root;">
-  											  <p:outputLabel value="Articulos disponibles en la orden de compra" style="font-weight: normal;" styleClass="janal-text-white"/>
-													<div style="float:right;">
-														<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="janal.bloquear(); PF('dlgArtExpress').show();" style="float:right;">
-															<f:setPropertyActionListener target="#{manticInventariosEntradasAccion.attrs.seleccionado}" value="#{null}"/>
-														</p:commandButton> 
-														<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-exchange" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>
-													</div>
-												</div>
-  										</f:facet>
-											<p:column selectionMode="single" style="width:16px;text-align:center"/>
-											<p:column class="MarAuto Responsive janal-wid-10">
-												<f:facet name="header">
-													<h:outputText value="SAT"/>
-												</f:facet>
-												<h:outputText value="#{row['sat']}"/>
-											</p:column>		
-											<p:column  class="MarAuto Responsive janal-wid-13">
-												<f:facet name="header">
-													<h:outputText value="Código"/>
-												</f:facet>
-												<h:outputText value="#{row['codigo']}"/>
-											</p:column>		
-											<p:column  class="MarAuto Responsive janal-wid-13">
-												<f:facet name="header">
-													<h:outputText value="Interno"/>
-												</f:facet>
-												<h:outputText value="#{row['propio']}"/>
-											</p:column>		
-											<p:column  class="MarAuto Responsive">
-												<f:facet name="header">
-													<h:outputText value="Articulo"/>
-												</f:facet>
-												<h:outputText value="#{row['nombre']}"/>
-											</p:column>		
-											<p:column  class="MarAuto Responsive janal-wid-10">
-												<f:facet name="header">
-													<h:outputText value="Unidad medida"/>
-												</f:facet>
-												<h:outputText value="#{row['unidadMedida']}"/>
-											</p:column>		
-											<f:facet name="footer">
-											<div style="display:flow-root;">
-												<p:outputLabel value="Se relacionaron &lt;strong class='importado janal-color-blue'&gt;[#{manticInventariosEntradasAccion.attrs.relacionados}]&lt;/strong&gt; articulos del archivo XML con respecto a la orden de compra" style="float: left;" escape="false" styleClass="importado"/>
-												<div style="float:right;">
-												  <p:outputLabel value="Total articulos: #{manticInventariosEntradasAccion.attrs.disponibles.size()}" styleClass="importado janal-color-orange"/>
-												</div>
-											</div>	
-											</f:facet>
-										</p:dataTable>
-									</p:panelGrid>
-								</p:panelGrid>	
-							</p:panelGrid>	
+              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                <p:dataTable id="faltante" var="row" styleClass="importado janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.faltantes}" selection="#{manticInventariosEntradasAccion.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true" paginatorPosition="bottom">
+                  <f:facet name="header">
+                    <div style="display: flow-root;">
+                      <p:outputLabel value="Articulos cargados del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
+                      <div style="float:right;">
+                        <p:commandButton title="Agregar un articulo" process="@this" actionListener="#{manticInventariosEntradasAccion.doParamExpress()}" icon="fa fa-sort-alpha-desc" update="dialogoArtExpress" oncomplete="janal.bloquear(); PF('dlgArtExpress').show();" style="float:right;">
+                          <f:setPropertyActionListener target="#{manticInventariosEntradasAccion.attrs.seleccionado}" value="#{null}"/>
+                        </p:commandButton> 
+                        <p:commandButton title="Refrescar articulos" icon="fa fa-refresh" process="@this" update="@(.importado)" action="#{manticInventariosEntradasAccion.doLoadXmlFile()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+                      </div>
+                    </div>	
+                  </f:facet>
+                  <p:column selectionMode="single" style="width:16px;text-align:center"/>
+                  <p:column class="MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="SAT"/>
+                    </f:facet>
+                    <h:outputText value="#{row['sat']}"/>
+                  </p:column>		
+                  <p:column  class="MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="Código"/>
+                    </f:facet>
+                    <h:outputText value="#{row['codigo']}"/>
+                  </p:column>		
+                  <p:column  class="MarAuto Responsive">
+                    <f:facet name="header">
+                      <h:outputText value="Articulo"/>
+                    </f:facet>
+                    <h:outputText value="#{row['nombre']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="Cantidad"/>
+                    </f:facet>
+                    <h:outputText value="#{row['cantidad']}"/>	
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="Costo"/>
+                    </f:facet>
+                    <h:outputText value="#{row['costo']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                    <f:facet name="header">
+                      <h:outputText value="Descuento"/>
+                    </f:facet>
+                    <h:outputText value="#{row['descuento']}"/>
+                  </p:column>		
+                  <p:column class="janal-column-right MarAuto Responsive janal-wid-5">
+                    <f:facet name="header">
+                      <h:outputText value="IVA"/>
+                    </f:facet>
+                    <h:outputText value="#{row['iva']}"/>
+                  </p:column>		
+                  <p:column styleClass="janal-column-icon">
+                    <p:outputLabel id="descripcion" value="#{row.nombre}" style="display:none"/>
+                    <p:commandButton process="@this" icon="fa fa-plus" title="#{row['nombre']}" onstart="clean(); return true;" oncomplete="$('#auxiliar').val(''); janal.bloquear(); PF('buscador').show();">
+                      <f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasAccion.attrs.faltante}" />
+                    </p:commandButton>
+                  </p:column>
+                  <f:facet name="footer">
+                    <div style="display:flow-root;">
+                      <div style="float:right;">
+                        <p:outputLabel value="Total articulos: #{manticInventariosEntradasAccion.attrs.faltantes.size()},   Facturado: #{manticInventariosEntradasAccion.adminOrden.orden.original}" styleClass="importado janal-color-orange"/>
+                      </div>
+                    </div>
+                  </f:facet>
+                </p:dataTable>
+  						</p:panelGrid>
 							<p:panel header="Emisor" styleClass="involucrados" style="display: #{empty manticInventariosEntradasAccion.emisor? 'none': ''};margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelEmisor">
 								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								  <p:outputLabel value="Nombre:"/>
@@ -779,6 +754,7 @@
 		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
 			<ui:param name="dialogo" value="articulos"/>
 			<ui:param name="seleccionado" value="#{null}"/>
+			<ui:param name="idArticuloTipo" value="4"/>
 		</ui:include>
 		<h:form prependId="true">
 			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" styleClass="viewPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">

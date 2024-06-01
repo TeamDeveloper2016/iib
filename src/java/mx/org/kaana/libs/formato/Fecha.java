@@ -299,6 +299,12 @@ public class Fecha {
     dia.add(Calendar.DATE, dias);
     return formatear(patron, formatear("yyyyMMddHHmmssS", dia.getTime()));
   } // formatear
+  
+  public static java.sql.Date toFecha(int dias) {
+    Calendar dia= Calendar.getInstance();
+    dia.add(Calendar.DATE, dias);
+    return new java.sql.Date(dia.getTimeInMillis());
+  } // toFecha
 
   public static String getHoy(int dias) {
     return temporal(FECHA_CORTA, dias);

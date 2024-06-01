@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -19,6 +21,7 @@ import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
+import mx.org.kaana.mantic.inventarios.entradas.beans.Costo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -45,37 +48,55 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
   	  this.orden.setConsecutivo(this.toConsecutivo("0"));
 		  this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 		  this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.orden.setCostos(new ArrayList<>());
 		} // if
 	}
 
 	public AdminNotas(NotaEntrada orden, EOrdenes tipoOrden) throws Exception {
-		this.orden= orden;
-		if(this.orden.isValid()) {
-			if(this.orden.getIdNotaTipo().equals(1L))
-  	    this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap(), -1L));
-			else	
-  	    this.setArticulos(this.toLoadOrdenDetalle());
-      this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
-      this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
-      this.orden.setIdEmpresaBack(this.orden.getIdEmpresa());
-		}	// if
-		else {
-  		this.orden.setIdNotaTipo(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
-			if(this.orden.getIdNotaTipo().equals(1L)) {
-		    this.setArticulos(new ArrayList<>());
-				this.orden.setDiasPlazo(1L);
-			} // if	
-			else
-			  this.setArticulos(this.toDefaultOrdenDetalle());
-			this.orden.setConsecutivo(this.toConsecutivo("0"));
-			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
-			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-		} // else	
-		for (Articulo articulo: this.getArticulos()) {
-			if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()<= 0)
-				articulo.setIdOrdenDetalle(null);
-		} // for
-		this.toStartCalculate();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      this.orden= orden;
+      params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
+      if(this.orden.isValid()) {
+        if(this.orden.getIdNotaTipo().equals(1L))
+          this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", params, -1L));
+        else	
+          this.setArticulos(this.toLoadOrdenDetalle());
+        this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
+        this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
+        this.orden.setIdEmpresaBack(this.orden.getIdEmpresa());
+        // FALTA HACER LA CONSULTA PARA RECUPERAR LOS COSTOS
+        this.orden.setCostos((List<Costo>)DaoFactory.getInstance().toEntitySet(Costo.class, "VistaNotasEntradasDto", "costos", params, -1L));
+        if(Objects.equals(this.orden.getCostos(), null))
+          this.orden.setCostos(new ArrayList<>());
+      }	// if
+      else {
+        this.orden.setIdNotaTipo(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
+        if(this.orden.getIdNotaTipo().equals(1L)) {
+          this.setArticulos(new ArrayList<>());
+          this.orden.setDiasPlazo(1L);
+        } // if	
+        else
+          this.setArticulos(this.toDefaultOrdenDetalle());
+        this.orden.setConsecutivo(this.toConsecutivo("0"));
+        this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+        this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+        this.orden.setCostos(new ArrayList<>());
+      } // else	
+      for (Articulo articulo: this.getArticulos()) {
+        if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()<= 0)
+          articulo.setIdOrdenDetalle(null);
+      } // for
+      for (Costo item: this.orden.getCostos()) 
+        item.setSql(ESql.SELECT);
+      this.toStartCalculate();
+    } // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
 	}
 
 	@Override
