@@ -25,7 +25,7 @@ public final class Constantes {
   public static final Long VENTA_AL_PUBLICO_GENERAL_ID_KEY= 1L;
   public static final String VENTA_AL_PUBLICO_GENERAL_CLAVE = "VENTA";
 
-	public static final String CODIGO_SAT= "40141700";
+	public static final String CODIGO_SAT= "50401800";
 	public static final String CLEAN_ART= "[^a-zA-Z0-9 Ò—\"\\.\\(\\)\\#\\+*-_$;]+";
 	public static final String CLEAN_SQL= "([(,),',*,!,|,<,>,?,ø,%,$,#,;,{,},\\[,\\],~,\"])";
 	public static final String CLEAN_STR= "([-,_, ,(,),',*,!,|,<,>,?,ø,&,%,$,#,;,{,},\\[,\\],~,\"])";
@@ -172,6 +172,7 @@ public final class Constantes {
 	public static double PORCENTAJE_MEDIO_MAYOREO= 1.4;
 	public static double PORCENTAJE_MAYOREO= 1.3;
 	public static double PORCENTAJE_IVA= 0.16;
+	public static double PORCENTAJE_IVA_ALIMENTOS= 0D;
 	public static double PORCENTAJE_IEPS= 0.09;
 	public static final Long ANTICIPO= 10L;
 	public static final Long PERIL_CONSULTA_CLIENTE= 5L;

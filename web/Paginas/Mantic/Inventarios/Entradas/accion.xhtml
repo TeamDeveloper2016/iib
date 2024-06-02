@@ -300,7 +300,7 @@
 													<h:graphicImage library="janal" name="icon/semaforos/#{row.facturado? 'circulo-azul.png': 'circulo-rojo.png'}" rendered="#{row.disponible}"/>
 													<h:outputText value="#{index+ 1}.-"/>
 												</p:column>		
-												<p:column styleClass="MarAuto Responsive janal-wid-12">
+												<p:column styleClass="MarAuto Responsive janal-wid-20">
 													<f:facet name="header">
 														<p:selectBooleanCheckbox value="#{manticInventariosEntradasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 															<p:ajax event="change" process="@this" update="@this"/>
@@ -315,9 +315,9 @@
 													<div class="ui-grid-row janal-grid-row">
                             <div style="display: flex;">                            
                               <div class="ui-grid-col-12" style="padding-right: 14px; flex: 0 0 60% !important">
-                                <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
-                                <p:inputText id="locks" value="#{row['idOrdenDetalle']}" style="display:none"/>
-                                <p:inputText id="origins" value="#{row['origen']}" style="display:none"/>
+                                <p:inputText id="keys" value="#{row['idArticulo']}" styleClass="janal-display-none "/>
+                                <p:inputText id="locks" value="#{row['idOrdenDetalle']}" styleClass="janal-display-none "/>
+                                <p:inputText id="origins" value="#{row['origen']}" styleClass="janal-display-none "/>
                                 <p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticInventariosEntradasAccion.attrs.articulo}" completeMethod="#{manticInventariosEntradasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
                                   <p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
                                   <f:facet name="itemtip">
@@ -353,13 +353,7 @@
 													</f:facet>
 													<p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-before key-event-sat fila"/>
 												</p:column>		
-                        <p:column styleClass="MarAuto Responsive janal-wid-col-90" rendered="false">
-													<f:facet name="header">
-														<h:outputText value="Código proveedor"/>
-													</f:facet>
-													<p:inputText id="auxiliares" value="#{row['codigo']}" styleClass="janal-wid-100-txt key-event-before key-event-sat fila"/>
-												</p:column>		
-												<p:column  class="MarAuto Responsive">
+												<p:column styleClass="MarAuto Responsive">
 													<f:facet name="header">
 														<h:outputText value="Articulo"/>
 														<p:inputText id="filterName" value="#{manticInventariosEntradasAccion.attrs.filterName}" styleClass="janal-wid-100-txt key-filter-event janal-display-none"/>
@@ -370,59 +364,19 @@
 													<f:facet name="header">
 														<h:outputText value="Cantidad"/>
 													</f:facet>
-													<div class="ui-grid-row janal-grid-row">
-														<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-															<p:outputLabel value="#{manticInventariosEntradasAccion.doNumericoSat(row['cantidad'])}" styleClass="filas"/>
-															<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
-														</div>
-														<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
-															<h:outputText value="#{row['cantidadMayorMenor']}" escape="false"/>
-														 </div>
-													</div>
+                          <p:outputLabel value="#{manticInventariosEntradasAccion.doNumericoSat(row['cantidad'])}" styleClass="filas"/>
+                          <p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-display-none janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));"/>
 												</p:column>		
-												<p:column styleClass="costos janal-column-right MarAuto Responsive janal-wid-5" rendered="false">
+												<p:column styleClass="precios janal-column-right MarAuto Responsive janal-wid-8">
 													<f:facet name="header">
 														<h:outputText value="Costo"/>
 													</f:facet>
-													<p:outputLabel value="#{manticInventariosEntradasAccion.doDecimalSat(row['costo'])}" styleClass="filas"/>
-												</p:column>	
-												<p:column styleClass="costos janal-column-right MarAuto Responsive janal-wid-7" rendered="false">
-													<f:facet name="header">
-														<h:outputText value="Costo real"/>
-													</f:facet>
-													<p:outputLabel value="#{manticInventariosEntradasAccion.doDecimalSat(row['real'])}" styleClass="filas"/>
-												</p:column>	
-												<p:column styleClass="precios janal-column-right MarAuto Responsive janal-wid-13">
-													<f:facet name="header">
-														<h:outputText value="Costo"/>
-													</f:facet>
-													<div class="ui-grid-row janal-grid-row">
-														<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-															<p:outputLabel value="#{row['diferencia']}" escape="false" styleClass="filas"/>
-															<p:outputLabel value="#{manticInventariosEntradasAccion.doDecimalSat(row['calculado'])}" styleClass="filas"/>
-															<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
-															<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'));" style="display:none"/>
-														</div>	 
-														<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
-															<h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
-														</div>
-													</div>	
+                          <p:outputLabel value="#{row['diferencia']}" escape="false" styleClass="janal-display-none filas"/>
+                          <p:outputLabel value="#{manticInventariosEntradasAccion.doDecimalSat(row['calculado'])}" styleClass="filas"/>
+                          <p:inputText id="values" value="#{row['valor']}" styleClass="janal-display-none "/>
+                          <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-display-none janal-wid-100-txt key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'));"/>
 												</p:column>		
-												<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" rendered="false">
-													<f:facet name="header">
-														<h:outputText value="% Descuento"/>
-													</f:facet>
-													<p:outputLabel value="#{row['descuento']}" styleClass="filas"/>
-													<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
-												</p:column>		
-												<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6" rendered="false">
-													<f:facet name="header">
-														<h:outputText value="% Extra"/>
-													</f:facet>
-													<p:outputLabel value="#{row['extras']}" styleClass="filas"/>
-													<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'));" style="display: none"/>
-												</p:column>		
-												<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-col-50" rendered="false">
+												<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-col-50">
 													<f:facet name="header">
 														<h:outputText value="IVA"/>
 													</f:facet>
@@ -453,12 +407,12 @@
 	  											<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticInventariosEntradasAccion.adminOrden.totales.reales}"/>
                         </p:panelGrid>  
                         <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-column-left">
-    											<p:outputLabel value="IVA:"/>
-	  											<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticInventariosEntradasAccion.adminOrden.totales.iva$}"/>
-                        </p:panelGrid>  
-                        <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-column-left">
   											  <p:outputLabel value="Subtotal:"/>
 											    <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticInventariosEntradasAccion.adminOrden.totales.subTotal$}"/>
+                        </p:panelGrid>  
+                        <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-column-left">
+    											<p:outputLabel value="IVA:"/>
+	  											<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticInventariosEntradasAccion.adminOrden.totales.iva$}"/>
                         </p:panelGrid>  
                         <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-column-right, janal-column-left">
     											<p:outputLabel for="total" value="Total:"/>

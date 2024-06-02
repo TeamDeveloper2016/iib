@@ -82,7 +82,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public Articulo(Long key, boolean costoLibre) {
-		this(false, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1D, -1L, key, 0D, -1L, false, false, 0L, 0D, "", "");
+		this(false, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", Constantes.PORCENTAJE_IVA_ALIMENTOS, 0D, 0D, 0D, -1L, key, 0D, -1L, false, false, 0L, 0D, Constantes.CODIGO_SAT, "");
 		this.costoLibre  = costoLibre;
 	}
 

@@ -1100,7 +1100,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // finally
   }  
 
-  private void toNewCosto() {
+  protected void toNewCosto() {
     List<UISelectItem> costos      = (List<UISelectItem>)this.attrs.get("costos");
     List<UISelectItem> contratistas= (List<UISelectItem>)this.attrs.get("contratistas");
     try {      

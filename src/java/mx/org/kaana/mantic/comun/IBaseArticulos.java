@@ -57,7 +57,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	
   private IAdminArticulos adminOrden;
 	private StreamedContent detailImage;
-	private String precio;
+	protected String precio;
 	protected String pathImage;
 
 	public IBaseArticulos() {
@@ -98,6 +98,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 	
   protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+    this.toMoveData(articulo, index, Boolean.FALSE);
+  }
+  
+  protected void toMoveData(UISelectEntity articulo, Integer index, Boolean zeros) throws Exception {
 		Articulo temporal= this.adminOrden.getArticulos().get(index);
 		Map<String, Object> params= new HashMap<>();
 		try {
@@ -157,8 +161,11 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				  temporal.setCantidad(articulo.toDouble("cantidad"));
 				  temporal.setSolicitados(articulo.toDouble("cantidad"));
 				} // if	
-				if(temporal.getCantidad()< 1D)					
-					temporal.setCantidad(1D);
+        if(zeros)
+					temporal.setCantidad(0D);
+        else          
+				  if(temporal.getCantidad()< 1D)					
+					  temporal.setCantidad(1D);
 				temporal.setCuantos(0D);
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
@@ -186,8 +193,6 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				this.adminOrden.toCalculate(index);
 				if(this.attrs.get("paginator")== null || !(boolean)this.attrs.get("paginator"))
 				  this.attrs.put("paginator", this.adminOrden.getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);
-				//if(this instanceof IBaseStorage)
- 				//	((IBaseStorage)this).toSaveRecord();
 			} // if	
 			else
 				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
@@ -723,7 +728,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 
 	public void toAddArticulo(UISelectEntity seleccionado) throws Exception {
-		Long idOrdenDetalle= new Long((int)(Math.random()* Constantes.REGISTROS_MAX_TABLA));
+		Long idOrdenDetalle       = new Long((int)(Math.random()* Constantes.REGISTROS_MAX_TABLA));
   	this.doSearchArticulo(seleccionado.toLong("idArticulo"), 0);
 		Map<String, Object> params= new HashMap<>();
 		Value stock               = null;
@@ -789,10 +794,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	public void toAddFaltante(Articulo seleccionado) throws Exception {
 		Long idOrdenDetalle= new Long((int)(Math.random()* Constantes.REGISTROS_MAX_TABLA));
   	this.doSearchArticulo(seleccionado.getIdArticulo(), 0);
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		Value stock               = null;
 		try {
-			params=new HashMap<>();
 			params.put("idArticulo", seleccionado.getIdArticulo());
 			params.put("idProveedor", this.attrs.get("idProveedor"));
 			params.put("idAlmacen", this.attrs.get("idAlmacen"));
@@ -897,7 +901,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 	
 	public void doLoadPerdidas(Long idSucursal) {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
 			this.attrs.put("idSucursal", idSucursal);
       if(Cadena.isVacio(this.attrs.get("lookForPerdidos")))
@@ -906,7 +910,6 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				String nombre= ((String)this.attrs.get("lookForPerdidos")).replaceAll(Constantes.CLEAN_SQL, "").trim();
 				this.attrs.put("codigoPerdido", nombre.toUpperCase());
 			} // else			
-			columns= new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
@@ -966,14 +969,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}
 
 	public void doDetailArticulo(Long idArticulo, Integer index) {
-		Map<String, Object>params= null;
-		List<Columna>columns     = null;
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
 		try {
 			if(idArticulo!= null) {
-				params= new HashMap<>();
 				params.put("idArticulo", idArticulo);
 				params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());				
-				columns= new ArrayList<>();
 				this.attrs.put("detailArticulo", DaoFactory.getInstance().toEntity("VistaArticulosDto", "informativo", params));
 				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("valor", EFormatoDinamicos.MAYUSCULAS));
@@ -1061,15 +1062,13 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	} // doRecoveryArticulo	
 	
   private void toLoadExistencias(Long idArticulo) {
-		List<Columna> columns     = null;
-		Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
 		try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("ubicacion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-			params=new HashMap<>();
 			params.put("idArticulo", idArticulo);
 			this.attrs.put("existencias", UIEntity.build("VistaKardexDto", "localizado", params, columns));
 		} // try

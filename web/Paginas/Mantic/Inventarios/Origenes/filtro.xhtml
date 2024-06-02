@@ -112,7 +112,7 @@
               <f:facet name="header" >
                 <div class="lg-pantalla">
                   <p:menuButton value="Opciones">
-                    <p:menuitem value="Agregar" action="#{manticInventariosOrigenesFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Nota de entrada" onstart="return janal.bloquear()"/>
+                    <p:menuitem value="Agregar" action="#{manticInventariosOrigenesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Nota de entrada" onstart="return janal.bloquear()"/>
                     <p:separator/>
                     <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                     <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -121,7 +121,7 @@
                   </p:menuButton>
                 </div>  
                 <div class="xs-pantalla">              
-                  <p:commandButton icon="fa fa-plus" title="Nota de entrada" action="#{manticInventariosOrigenesFiltro.doAccion('COMPLETO')}" onstart="return janal.bloquear()"/>
+                  <p:commandButton icon="fa fa-plus" title="Nota de entrada" action="#{manticInventariosOrigenesFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>
                   <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosOrigenesFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar"/>

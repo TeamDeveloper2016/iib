@@ -65,7 +65,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
         this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
         this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
         this.orden.setIdEmpresaBack(this.orden.getIdEmpresa());
-        // FALTA HACER LA CONSULTA PARA RECUPERAR LOS COSTOS
+        // RECUPERAR LOS GASTOS DE LOS COSTOS DE LA NOTA DE ENTRADA
         this.orden.setCostos((List<Costo>)DaoFactory.getInstance().toEntitySet(Costo.class, "VistaNotasEntradasDto", "costos", params, -1L));
         if(Objects.equals(this.orden.getCostos(), null))
           this.orden.setCostos(new ArrayList<>());
@@ -152,9 +152,8 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
 		ArrayList<Articulo> regresar= null;
 		ArrayList<Articulo> loaded  = null;
-		Map<String, Object> params  = null;
+		Map<String, Object> params  = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 			params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			params.put("idProveedor", this.orden.getIdProveedor());
@@ -187,9 +186,8 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 	
 	private ArrayList<Articulo> toDefaultOrdenDetalle() throws Exception {
 		ArrayList<Articulo> regresar= null;
-		Map<String, Object> params  = null;
+		Map<String, Object> params  = new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			params.put("idProveedor", this.orden.getIdProveedor());
 			params.put("idAlmacen", this.orden.getIdAlmacen());
