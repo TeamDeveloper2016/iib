@@ -78,10 +78,11 @@ public final class Cifrar {
 
   public static void main(String ... args) throws Exception {
 		System.out.println(Cifrar.cifrar("2366")); // zOyOxDwIvGuCt
-		System.out.println(Cifrar.cifrar("CODIGO")); // zOyOxDwIvGuCt
-		System.out.println(Cifrar.cifrar("NORMAL")); // zLyOxRwMvAuNt
-		System.out.println(Cifrar.cifrar("ALMACEN")); // zNyLxMwAvCuEtAs
-		System.out.println(Cifrar.cifrar("PROVEEDOR")); // zRyRxOwVvEuEtDsOrPq
+		System.out.println("CODIGO: "+ Cifrar.cifrar("CODIGO")); // zOyOxDwIvGuCt
+		System.out.println("NORMAL: "+ Cifrar.cifrar("NORMAL")); // zLyOxRwMvAuNt
+		System.out.println("ALMACEN: "+ Cifrar.cifrar("ALMACEN")); // zNyLxMwAvCuEtAs
+		System.out.println("PROVEEDOR: "+ Cifrar.cifrar("PROVEEDOR")); // zRyRxOwVvEuEtDsOrPq
+		System.out.println("ESPECIAL: "+ Cifrar.cifrar("ESPECIAL")); // zLySxPwEvCuItAsEr
 	}	
 
 }

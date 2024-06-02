@@ -43,19 +43,12 @@
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
 				var ok= janal.partial("general");
-				if(ok) {
-					var deuda= parseFloat($('#contenedorGrupos\\:deuda').val(), 10);
-					var total= parseFloat($('#contenedorGrupos\\:total').val(), 10);
-					var diferencia= (deuda* 100/ total)- 100;
-					if(!((diferencia&gt;= -5.0) &amp;&amp; (diferencia&lt;= 5.0))) 
-						ok= confirm('\u00BF La diferencia del total de la nota de entrada con respecto a la deuda capturada es del '+ diferencia.toFixed(4)+ '% desea continuar con el registro ?');
-				} // if	
-				else {
+				if(!ok) {
 					jsArticulos.cursor.index= index;
   				$(jsArticulos.amount()).removeClass('ignore');
 	  			$(jsArticulos.price()).removeClass('ignore');
 					janal.desbloquear();
-				} // else	
+				} // if	
 				return ok;
 			}
 			
@@ -174,9 +167,20 @@
             <p:ajax event="tabChange" listener="#{manticInventariosOrigenesAccion.doTabChange}" process="@this idAlmacen idProveedor" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
-								<p:outputLabel for="consecutivo" value="No. nota:" style="display: #{manticInventariosOrigenesAccion.agregar}"/>
+								<p:outputLabel for="consecutivo" value="No. nota entrada:" style="display: #{manticInventariosOrigenesAccion.agregar}"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosOrigenesAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticInventariosOrigenesAccion.agregar}"/>
 								<p:separator style="display: #{manticInventariosOrigenesAccion.agregar}"/>
+                <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+                <p:selectOneMenu id="idEmpresa" value="#{manticInventariosOrigenesAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticInventariosOrigenesAccion.doUpdateAlmacenes}" update="idAlmacen" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{manticInventariosOrigenesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticInventariosOrigenesAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosOrigenesAccion.isDirecta}">
 									<p:ajax event="change" listener="#{manticInventariosOrigenesAccion.doUpdateProveedor}" update="idProveedorPago diasPlazo fechaPago datosArticulos tabla @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -243,7 +247,7 @@
 								<p:separator/>
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticInventariosOrigenesAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticInventariosOrigenesAccion.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
+									<p:ajax event="change" listener="#{manticInventariosOrigenesAccion.doChangeAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
 									<f:selectItems value="#{manticInventariosOrigenesAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -381,14 +385,15 @@
 	  										  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticInventariosOrigenesAccion.adminOrden.totales.total$}"/>
                         </p:panelGrid>   
                       </p:panelGrid>   
-  										<p:inputText id="articulos" value="#{manticInventariosOrigenesAccion.adminOrden.totales.articulos}" styleClass="janal-display-none recalculo"/>
+  										<p:inputText id="articulos" value="#{manticInventariosOrigenesAccion.adminOrden.totales.reales}" styleClass="janal-display-none recalculo"/>
 											<p:inputText id="total" value="#{manticInventariosOrigenesAccion.adminOrden.totales.total}" styleClass="janal-display-none recalculo"/>
+                      <p:inputText id="gastos" value="#{manticInventariosOrigenesAccion.adminOrden.totales.gastos}" styleClass="janal-display-none recalculo"/>
 										</div>	
 									</div>									
 								</div>
 							</div>
 						</p:tab>
-            <p:tab title="Costos" rendered="false">
+            <p:tab title="Gastos" rendered="false">
               <p:panelGrid id="datosCostos" layout="grid" columns="3" columnClasses="janal-wid-33, janal-wid-33, janal-wid-34">
                 <p:panelGrid layout="grid" columns="1">
 									<p:outputLabel for="idTipoCosto" value="Costo:"/>
@@ -407,7 +412,7 @@
 									<p:outputLabel for="importe" value="Importe:"/>
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-95, janal-fix-5 janal-column-right" style="margin-top: -2px">
                     <p:inputNumber id="importe" value="#{manticInventariosOrigenesAccion.costo.importe}" styleClass="janal-wid-100-txt costos" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" thousandSeparator=","/>
-                    <p:commandButton action="#{manticInventariosOrigenesAccion.doAdd()}" icon="fa fa-plus" title="Agregar" process="@this contenedorGrupos:datosCostos" update="@(.costos)" onstart="return janal.partial('costo')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton action="#{manticInventariosOrigenesAccion.doAdd()}" icon="fa fa-plus" title="Agregar" process="@this contenedorGrupos:datosCostos" update="@(.costos) @(.recalculo)" onstart="return janal.partial('costo')" oncomplete="janal.desbloquear()"/>
                   </p:panelGrid>  
                 </p:panelGrid>  
               </p:panelGrid>  
@@ -415,7 +420,7 @@
 								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-8" headerText="Clave">
+								<p:column styleClass="MarAuto Responsive janal-wid-8 gastos" headerText="Gasto">
 									<h:outputText value="#{row.clave}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive" headerText="Nombre">
@@ -428,8 +433,8 @@
 									<h:outputText value="#{row.importe}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
-                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="costos @(.costos)" actionListener="#{manticInventariosOrigenesAccion.doDelete(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.sql ne 'DELETE'}"/>
-                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="costos" actionListener="#{manticInventariosOrigenesAccion.doRecover(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.sql eq 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="costos @(.costos) @(.recalculo)" actionListener="#{manticInventariosOrigenesAccion.doDelete(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.sql ne 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="costos @(.recalculo)" actionListener="#{manticInventariosOrigenesAccion.doRecover(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.sql eq 'DELETE'}"/>
 								</p:column>
 							</p:dataTable>
 						</p:tab>

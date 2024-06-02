@@ -121,7 +121,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					  this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					  this.orden.setOrden(consecutivo.getOrden());
 					  this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					  if(this.orden.getIdNotaTipo().equals(1L))
+					  if(Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L))
 						  this.orden.setIdOrdenCompra(null);
 					  regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					  bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
@@ -151,7 +151,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					if(this.orden.getIdNotaTipo().equals(1L))
+					if(Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L))
 						this.orden.setIdOrdenCompra(null);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
@@ -256,7 +256,8 @@ public class Transaccion extends Inventarios implements Serializable {
 				item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
 				if(item.getDiferencia()!= 0)
 					error.append("[").append(item.getNombre()!= null && item.getNombre().length()> 20? item.getNombre().substring(0, 20): item.getNombre()).append(" - ").append(item.getDiferencia()).append("]</br> ");
-				if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && (articulo.getCantidad()> 0D || articulo.getCosto()> 0D)) {
+        TcManticNotasDetallesDto detalle= (TcManticNotasDetallesDto)DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap());
+				if((Objects.equals(detalle, null) && (Objects.equals(this.orden.getIdNotaTipo(), 4L) || articulo.getCantidad()> 0D || articulo.getCosto()> 0D))) {
 					this.toAffectOrdenDetalle(sesion, articulo);
 					if(!item.isValid()) 
 						DaoFactory.getInstance().insert(sesion, item);
@@ -345,7 +346,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				DaoFactory.getInstance().insert(sesion, estatus);
 			} // if
 			else
-			  if(this.orden.getIdNotaTipo().equals(1L) && this.aplicar) 
+			  if((Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L)) && this.aplicar) 
 					this.toApplyNotaEntrada(sesion);
 		} // try
 		catch (Exception e) {

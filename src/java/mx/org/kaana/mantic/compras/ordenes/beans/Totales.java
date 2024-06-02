@@ -19,6 +19,7 @@ public final class Totales implements Serializable {
 	private static final long serialVersionUID=-724230632673749688L;
 
 	private int articulos;
+	private int gastos;
 	private double importe;
 	private double iva;
 	private double sinIva;
@@ -31,10 +32,10 @@ public final class Totales implements Serializable {
 	private double cantidad;
 
 	public Totales() {
-		this(0, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D);
+		this(0, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0);
 	}
 
-	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double utilidad, double global, double cantidad) {
+	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double utilidad, double global, double cantidad, int gastos) {
 		this.articulos= articulos;
 		this.importe  = importe; 
 		this.iva      = iva;
@@ -45,18 +46,22 @@ public final class Totales implements Serializable {
 		this.utilidad = utilidad;
 		this.global   = global;
 		this.cantidad = cantidad;
+		this.gastos   = gastos;
 	}
 
 	public int getArticulos() {
 		return articulos;
 	}
 
+	public void setArticulos(int articulos) {
+		this.articulos=articulos;
+	}
+
 	public int getReales() {
 		return articulos- 1;
 	}
 
-	public void setArticulos(int articulos) {
-		this.articulos=articulos;
+	public void setReales(int reales) {
 	}
 
 	public double getImporte() {
@@ -134,6 +139,14 @@ public final class Totales implements Serializable {
 	public double getDescuentos() {
 		return Numero.toRedondearSat(this.descuento+ this.extra);
 	}
+
+  public int getGastos() {
+    return gastos;
+  }
+
+  public void setGastos(int gastos) {
+    this.gastos = gastos;
+  }
 
   public void addArticulo(Long idArticulo, double cantidad) {
 		this.articulos+= idArticulo> 0? 1: 0;

@@ -81,15 +81,15 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private Costo costo;
 
 	public String getValidacion() {
-		return this.tipoOrden.equals(EOrdenes.NORMAL)? "libre": "requerido";
+		return Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL)? "libre": "requerido";
 	}
 	
 	public String getTitulo() {
-		return this.tipoOrden.equals(EOrdenes.NORMAL)? "(DIRECTA)": "";
+		return Objects.equals(this.tipoOrden, EOrdenes.NORMAL)? "(DIRECTA)": Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL)? "(ESPCIAL)":"";
 	}
 
 	public Boolean getIsDirecta() {
-		return this.tipoOrden.equals(EOrdenes.NORMAL);
+		return Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL);
 	}
 
 	public Boolean getIsAplicar() {
@@ -142,18 +142,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     try {
 			this.attrs.put("idTipoComparacion", 1);
       this.attrs.put("idArticuloTipo", 4L);      
-			this.aplicar  =  false;
+			this.aplicar= Boolean.FALSE;
 			this.attrs.put("xcodigo", JsfBase.getFlashAttribute("xcodigo"));	
 			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
+			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
-      this.attrs.put("isPesos", false);
-			this.attrs.put("sinIva", false);
-			this.attrs.put("buscaPorCodigo", false);
+      this.attrs.put("isPesos", Boolean.FALSE);
+			this.attrs.put("sinIva", Boolean.FALSE);
+			this.attrs.put("buscaPorCodigo", Boolean.FALSE);
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
       this.attrs.put("intercambiar", Boolean.FALSE);
 			this.fechaEstimada= Calendar.getInstance();
@@ -173,7 +173,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         case AGREGAR:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
           TcManticOrdenesComprasDto ordenCompra= this.attrs.get("idOrdenCompra").equals(-1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)this.attrs.get("idOrdenCompra"));
-					if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
+					if(Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL)) {
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
 					} // if
@@ -188,7 +188,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         case MODIFICAR:					
         case CONSULTAR:					
 					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
-					this.tipoOrden         = notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.NORMAL: EOrdenes.PROVEEDOR;
+					this.tipoOrden         = Objects.equals(notaEntrada.getIdNotaTipo(), 1L)? EOrdenes.NORMAL: Objects.equals(notaEntrada.getIdNotaTipo(), 4L)? EOrdenes.ESPECIAL: EOrdenes.PROVEEDOR;
           this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					
@@ -225,13 +225,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			this.getAdminOrden().toAdjustArticulos();
 			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
-				if(Objects.equals(this.accion, EAccion.AGREGAR) || this.aplicar) {
+				if(Objects.equals(this.accion, EAccion.AGREGAR) || this.aplicar) 
   				regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-					if(this.accion.equals(EAccion.AGREGAR))
-    			  UIBackingUtilities.execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					else
-   			    UIBackingUtilities.execute("jsArticulos.back('aplic\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-				} // if	
 				else
 					this.getAdminOrden().toStartCalculate();
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
@@ -277,26 +272,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.toLoadEmpresas();
+      
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      if(JsfBase.isAdminEncuestaOrAdmin())
-			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      else
-			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
-      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "origen", params, columns));
- 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
-			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
-				if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen()== null)
-				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
-				else {
-					int index= almacenes.indexOf(new UISelectEntity(((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen()));
-					if(index>= 0)
-					  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(index));
-					else
-  				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
-				} // else	
-      columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 		  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
@@ -412,13 +390,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     }// finally
 	}
 
-	public void doUpdateAlmacen() {
+	public void doChangeAlmacen() {
 		List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 		int index= almacenes.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkAlmacen());
-		if(index>= 0) {
+		if(index>= 0) 
 	  	((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(index));
-  		((NotaEntrada)this.getAdminOrden().getOrden()).setIdEmpresa(((NotaEntrada)this.getAdminOrden().getOrden()).getIkAlmacen().toLong("idEmpresa"));
-		} // if
 		if(this.tipoOrden.equals(EOrdenes.ALMACEN)) {
   		this.getAdminOrden().getArticulos().clear();
 			this.getAdminOrden().toCalculate();
@@ -434,7 +410,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				UIBackingUtilities.update("contenedorGrupos:paginator");
 			} // if
       else
-    		if(event.getTab().getTitle().equals("Costos")) {
+    		if(event.getTab().getTitle().equals("Gastos")) {
           this.doPrepare();
         } // if
 	}
@@ -447,7 +423,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
 				((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
-				if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
+				if(Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL)) {
 					int count= 0;
 					while(count< this.getAdminOrden().getArticulos().size() && this.getAdminOrden().getArticulos().size()> 1) {
 //						if(this.getAdminOrden().getArticulos().get(count).getIdOrdenDetalle()== null)
@@ -945,10 +921,9 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
   private void toMoveSelectedProveedor() {
 		UISelectEntity temporal   = (UISelectEntity)this.attrs.get("proveedor");
-	  Map<String, Object> params= null;
+	  Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
-			if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
+			if(Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL)) {
 			  this.getAdminOrden().toCalculate();
 				if(temporal== null || !this.getEmisor().getRfc().equals(temporal.toString("rfc"))) {
 					params.put("rfc", this.getEmisor().getRfc());
@@ -1060,6 +1035,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       else
         this.costo.setIdGenerar(1L);
       ((NotaEntrada)this.getAdminOrden().getOrden()).add(costo);   
+      this.getAdminOrden().getTotales().setGastos(((NotaEntrada)this.getAdminOrden().getOrden()).getCostos().size());
       this.toNewCosto();
     } // try
     catch (Exception e) {
@@ -1124,6 +1100,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.costo.setIdTipoCosto(costo.getIdTipoCosto());
       this.costo.setIdProveedor(costo.getIdProveedor());
       this.costo.setImporte(costo.getImporte());
+      this.getAdminOrden().getTotales().setGastos(((NotaEntrada)this.getAdminOrden().getOrden()).getCostos().size());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1134,6 +1111,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   public void doRecover(Costo costo) {
     try {   
       ((NotaEntrada)this.getAdminOrden().getOrden()).recover(costo);
+      this.getAdminOrden().getTotales().setGastos(((NotaEntrada)this.getAdminOrden().getOrden()).getCostos().size());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1145,6 +1123,71 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     
   }
           
+  private void toLoadEmpresas() {
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      if(JsfBase.isAdminEncuestaOrAdmin())
+			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      else
+			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.attrs.put("empresas", UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+ 			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
+			if(!empresas.isEmpty() && Objects.equals(this.accion, EAccion.AGREGAR)) 
+				if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdEmpresa()== null)
+				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
+				else {
+					int index= empresas.indexOf(new UISelectEntity(((NotaEntrada)this.getAdminOrden().getOrden()).getIdEmpresa()));
+					if(index>= 0)
+					  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(index));
+					else
+  				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
+				} // else	
+      this.doUpdateAlmacenes();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+  
+  public void doUpdateAlmacenes() {
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+  	  params.put("sucursales", ((NotaEntrada)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "origen", params, columns));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
+				if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen()== null)
+				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+				else {
+					int index= almacenes.indexOf(new UISelectEntity(((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen()));
+					if(index>= 0)
+					  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(index));
+					else
+  				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+				} // else	
+      this.doChangeAlmacen();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+ 
 	@Override
 	protected void finalize() throws Throwable {
 		try {

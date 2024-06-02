@@ -62,6 +62,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
           this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", params, -1L));
         else	
           this.setArticulos(this.toLoadOrdenDetalle());
+        this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
         this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
         this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
         this.orden.setIdEmpresaBack(this.orden.getIdEmpresa());
@@ -71,8 +72,9 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
           this.orden.setCostos(new ArrayList<>());
       }	// if
       else {
-        this.orden.setIdNotaTipo(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
-        if(this.orden.getIdNotaTipo().equals(1L)) {
+        // this.orden.setIdNotaTipo(Objects.equals(tipoOrden, EOrdenes.NORMAL)? 1L: Objects.equals(tipoOrden, EOrdenes.ESPECIAL)? 4L: 2L);
+        this.orden.setIdNotaTipo(tipoOrden.getIdNotaTipo());
+        if(Objects.equals(tipoOrden, EOrdenes.NORMAL) || Objects.equals(tipoOrden, EOrdenes.ESPECIAL)) {
           this.setArticulos(new ArrayList<>());
           this.orden.setDiasPlazo(1L);
         } // if	
@@ -217,5 +219,23 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
   public Long getIdCliente() {
     return Constantes.VENTA_AL_PUBLICO_GENERAL_ID_KEY;
   }
-  
+
+  @Override
+	public void toAdjustArticulos() {
+		int count= 0;
+		while(count< this.getArticulos().size()) {
+			if(!this.getArticulos().get(count).isValid() || (!Objects.equals(this.orden.getIdNotaTipo(), 4L) && this.getArticulos().get(count).getCantidad()<= 0))
+				this.getArticulos().remove(count);
+			else
+				if(count> 0 && this.getArticulos().get(count- 1).getKey().equals(this.getArticulos().get(count).getKey())) {
+					this.getArticulos().get(count- 1).setCantidad(this.getArticulos().get(count- 1).getCantidad()+ this.getArticulos().get(count).getCantidad());
+					this.getArticulos().remove(count);
+				} // if
+				else
+				  count++;
+		} // while
+    if(!this.getArticulos().isEmpty())
+		  this.toRefreshCalculate();
+	}
+
 }

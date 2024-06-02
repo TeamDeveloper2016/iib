@@ -26,7 +26,7 @@ public class Filtro extends mx.org.kaana.mantic.inventarios.entradas.backing.Fil
   
   @Override
   public String doAccion(String accion) {
-		String regresar= "/Paginas/Mantic/Inventarios/Origenes/accion?zOyOxDwIvGuCt=zLyOxRwMvAuNt";
+		String regresar   = "/Paginas/Mantic/Inventarios/Origenes/accion?zOyOxDwIvGuCt=zLyOxRwMvAuNt";
     EAccion eaccion   = null;
 		Long idNotaEntrada= -1L;
 		try {

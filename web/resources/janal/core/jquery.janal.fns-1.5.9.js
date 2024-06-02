@@ -205,7 +205,7 @@ $.mask.masks = $.extend($.mask.masks, {
 					$(element).val(parseFloat(value, 10).toFixed(janal.decimals)); 
       return true;
 		}, function(params, element) {
-      return 'No se logro verificar el valor del porcentaje.';
+      return 'No se logro verificar el valor del porcentaje';
     });
     
   $.validator.addMethod('cantidad', function(value, element, params) {
@@ -222,7 +222,7 @@ $.mask.masks = $.extend($.mask.masks, {
 					$(element).val(parseInt(value, 10)); 
       return true;
     }, function(params, element) {
-      return 'No se logro verificar el número de la cantidad.';
+      return 'No se logro verificar el número de la cantidad';
     });
     
   $.validator.addMethod('descuentos', function(value, element, params) {
@@ -247,7 +247,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			} // else	
       return true;
     }, function(params, element) {
-      return 'No se logro verificar los valores de los descuentos.';
+      return 'No se logro verificar los valores de los descuentos';
     });
     
   $.validator.addMethod('consecutivo', function(value, element, params) {
@@ -275,7 +275,7 @@ $.mask.masks = $.extend($.mask.masks, {
 					} // if
       return true;
     }, function(params, element) {
-      return 'No se logro generar el valor del consecutivo.';
+      return 'No se logro generar el valor del consecutivo';
     });
     
   $.validator.addMethod('cambiar-mayusculas', function(value, element, params) {
@@ -291,7 +291,7 @@ $.mask.masks = $.extend($.mask.masks, {
         $(element).val(janal.specialCharacters($(element).val()).toUpperCase()); 
       return true;
     }, function(params, element) {
-      return 'No se logro convertir a mayusculas el texto.';
+      return 'No se logro convertir a mayusculas el texto';
     });
 
   $.validator.addMethod('sat', function(value, element, params) {
@@ -299,7 +299,7 @@ $.mask.masks = $.extend($.mask.masks, {
         $(element).val(parseFloat($(element).val(), 10).toFixed(4)); 
       return true;
     }, function(params, element) {
-      return 'No se logro convertir a n\u00FAmero y por lo tanto no se ajustar\u00F3n los decimales.';
+      return 'No se logro convertir a n\u00FAmero y por lo tanto no se ajustar\u00F3n los decimales';
     });
 		    
   $.validator.addMethod('cambiar-minusculas', function(value, element, params) {
@@ -307,7 +307,7 @@ $.mask.masks = $.extend($.mask.masks, {
         $(element).val($(element).val().toLowerCase()); 
       return true;
     }, function(params, element) {
-      return 'No se logro convertir a minusculas el texto.';
+      return 'No se logro convertir a minusculas el texto';
     });
 
   $.validator.addMethod('rellenar-caracter', function(value, element, params) {
@@ -330,7 +330,7 @@ $.mask.masks = $.extend($.mask.masks, {
           return true;
         } // else   
     }, function(params, element) {
-      return 'No se definio el parametro de cuantos caracteres.';
+      return 'No se definio el parametro de cuantos caracteres';
     });
 	
 	$.validator.addMethod('porcentaje', function(value, element, params) {
@@ -357,7 +357,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			} // else	
       return params.suma<= 100;
     }, function(params, element) {
-      return janal.parser(element)+ ' el porcentaje ('+ params.suma+ ') no puede ser mayor al 100%.';
+      return janal.parser(element)+ ' el porcentaje ('+ params.suma+ ') no puede ser mayor al 100%';
     });
     
 	$.validator.addMethod('max-caracteres', function(value, element, params) {
@@ -369,7 +369,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
          return $.trim(value).length<= params.cuantos;
     }, function(params, element) {
-      return 'N\u00FAmero de caracteres '+ $(element).val().length+ ' es mayor al permitido, el m\u00E1ximo es '+ params.cuantos+ '.';
+      return 'N\u00FAmero de caracteres '+ $(element).val().length+ ' es mayor al m\u00E1ximo de '+ params.cuantos;
     });
     
   $.validator.addMethod('min-caracteres', function(value, element, params) {
@@ -383,7 +383,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return $.trim(value).length>= params.cuantos;
     }, function(params, element) {
-      return 'N\u00FAmero de caracteres '+ $(element).val().length+ ' es menor al permitido, el m\u00EDnimo es '+ params.cuantos+ '.';
+      return 'N\u00FAmero de caracteres '+ $(element).val().length+ ' es menor al m\u00EDnimo de '+ params.cuantos+ '.';
     });
 
   $.validator.addMethod('igual-caracteres', function(value, element, params) {
@@ -397,7 +397,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return $.trim(value).length=== params.cuantos;
     }, function(params, element) {
-      return 'N\u00FAmero de caracteres '+ $(element).val().length+ ' no es igual al permitido, el n\u00FAmero de caracteres debe ser '+ params.cuantos+ '.';
+      return 'N\u00FAmero de caracteres '+ $(element).val().length+ ' es diferente a '+ params.cuantos+ '.';
     });
 
   $.validator.addMethod('mayor', function(value, element, params) {
@@ -411,7 +411,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
          return parseFloat(janal.cleanToken(value), 10)> params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor tiene que ser mayor '+ params.cuanto+ '.';
+      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser mayor a '+ params.cuanto;
     });
 		
   $.validator.addMethod('mayor-igual', function(value, element, params) {
@@ -425,7 +425,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
          return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor tiene que ser mayor o igual '+ params.cuanto+ '.';
+      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser mayor o igual a '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('max-valor', function(value, element, params) {
@@ -439,7 +439,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
          return parseFloat(janal.cleanToken(value), 10)<= params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser mayor al permitido, el valor m\u00E1ximo es '+ params.cuanto+ '.';
+      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser mayor al m\u00E1ximo de '+ params.cuanto+ '.';
     });
 
   $.validator.addMethod('menor', function(value, element, params) {
@@ -453,7 +453,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return parseFloat(janal.cleanToken(value), 10)< params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser menor al permitido, el valor tiene que ser menor '+ params.cuanto+ '.';
+      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser menor a '+ params.cuanto;
     });
 		
   $.validator.addMethod('menor-igual', function(value, element, params) {
@@ -467,7 +467,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return parseFloat(janal.cleanToken(value), 10)<= params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser menor al permitido, el valor tiene que ser menor o igual '+ params.cuanto+ '.';
+      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser menor o igual a '+ params.cuanto;
     });
 		
   $.validator.addMethod('min-valor', function(value, element, params) {
@@ -481,7 +481,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
           return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
     }, function(params, element) {
-      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') debe ser menor al permitido, el valor m\u00EDnimo es '+ params.cuanto+ '.';
+      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') debe ser menor a '+ params.cuanto;
     });
 
   $.validator.addMethod('requerido', function(value, element, params) {
@@ -509,10 +509,10 @@ $.mask.masks = $.extend($.mask.masks, {
       var msg= 'El dato es obligatorio.';
       switch(element.nodeName.toLowerCase()) {
         case 'select':
-          msg= 'Se requiere al menos un elemento seleccionado.';
+          msg= 'Se requiere al menos un elemento seleccionado';
         case 'input':
           if(element.type=== 'hidden')
-            msg= 'Se requiere al menos un elemento seleccionado.';
+            msg= 'Se requiere al menos un elemento seleccionado';
       } // switch
       return janal.parser(element)+ ' '+ msg;
     });
@@ -529,7 +529,7 @@ $.mask.masks = $.extend($.mask.masks, {
         return true;
       else
         return /^[-|+]*([0-9])*$/.test(janal.cleanToken(value));
-    }, 'Solo acepta n\u00FAmeros enteros.');
+    }, 'Solo acepta n\u00FAmeros enteros');
 
   $.validator.addMethod('valor-simple', function(value, element, params) {
       if (janal.empty(value) || $(element).hasClass('ignore'))
@@ -546,7 +546,7 @@ $.mask.masks = $.extend($.mask.masks, {
         value= janal.remove(value, ['\\\ ', '\\\,', '\\\$', '\\\(', '\\\)', '\\\-']);
 				return (value.length=== 7 || value.length=== 10);
       } // else
-		}, 'No es v\u00E1lido el n\u00FAmero de tel\u00E9fono.');
+		}, 'No es v\u00E1lido el n\u00FAmero de tel\u00E9fono');
 
 	$.validator.addMethod('contiene-a', function(value, element, params) {
 		  if (janal.empty(value) || $(element).hasClass('ignore'))
@@ -559,7 +559,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
 			    return params.valores.indexOf(value)>= 0;
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' no se encuentra en '+ params.valores+ '.';
+      return 'El valor '+ janal.value($(element).attr('id'))+ ' no se encuentra en '+ params.valores;
     });
 
 	$.validator.addMethod('igual-a', function(value, element, params) {
@@ -573,7 +573,21 @@ $.mask.masks = $.extend($.mask.masks, {
         else
   			  return value=== janal.value(janal.cross($(element).attr('id'), params.cual));
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser igual a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
+      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser igual a '+ janal.value(janal.cross($(element).attr('id'), params.cual));
+    });
+
+  $.validator.addMethod('igual', function(value, element, params) {
+      if (janal.empty(value) || $(element).hasClass('ignore'))
+        return true;
+      else
+        if(typeof(params.cuanto)=== 'undefined') {
+					janal.programmer([{summary: 'Funci\u00F3n: igual', detail: 'falta el parametro {cuanto}'}]);
+          return false;
+				} // if	
+        else
+         return parseFloat(janal.cleanToken(value), 10)=== params.cuanto;
+    }, function(params, element) {
+      return janal.parser(element)+ ' el valor ('+ $(element).val()+ ') tiene que ser igual a '+ params.cuanto;
     });
 
 	$.validator.addMethod('menor-a', function(value, element, params) {
@@ -589,7 +603,7 @@ $.mask.masks = $.extend($.mask.masks, {
   			  return janal.double(janal.cleanToken(value), 0)<= janal.double(janal.cleanToken(janal.value(janal.cross($(element).attr('id'), params.cual))), 0);
 				} // else
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser menor o igual '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
+      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser menor o igual '+ janal.value(janal.cross($(element).attr('id'), params.cual));
     });
 
 	$.validator.addMethod('mayor-a', function(value, element, params) {
@@ -603,16 +617,16 @@ $.mask.masks = $.extend($.mask.masks, {
         else 
   			  return janal.double(janal.cleanToken(value), 0)>= janal.double(janal.cleanToken(janal.value(janal.cross($(element).attr('id'), params.cual))), 0);
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser mayor o igual '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
+      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser mayor o igual '+ janal.value(janal.cross($(element).attr('id'), params.cual));
     });
 
 	$.validator.addMethod('asterisco', function(value, element, params) {
 			return !/[*|''']+/.test(value);
-		}, 'El caracter * (asterisco) no es permitido.');
+		}, 'El caracter * (asterisco) no es permitido');
 
 	$.validator.addMethod('moneda', function(value, element, params) {
 			return /^(\d{1,3}[ ,]?)*$/.test(value);
-		}, 'No es v\u00E1lido, debe ser cantidad monetaria.');
+		}, 'No es v\u00E1lido, debe ser cantidad monetaria');
 
 	$.validator.addMethod('moneda-decimal', function(value, element, params){
 			return /^(\d{1,3}[ ,]?)*(\.\d{0,2})$/.test(value);
@@ -632,13 +646,12 @@ $.mask.masks = $.extend($.mask.masks, {
 			  return /^[-|+]*([1-9])+[\.]{0,1}\d*$/.test(janal.cleanToken(value));
 		}, 'Solo acepta n\u00FAmeros flotantes con signo');
 
-	$.validator.addMethod(
-		'mayusculas', function(value, element, params) {
+	$.validator.addMethod('mayusculas', function(value, element, params) {
 			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
 				return /^[A-Z]|[\s]+$/.test(value);
-		}, 'Solo acepta texto en may\u00FAsculas.');
+		}, 'Solo acepta texto en may\u00FAsculas');
 	
 	$.validator.addMethod('minusculas', function(value, element, params) {
 			if (janal.empty(value) || $(element).hasClass('ignore'))
@@ -660,7 +673,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			else
 				return (parseInt(value, 10)>= params.min && parseInt(value,10)<= params.max);	
 		}, function(params) {
-      return 'El valor no se encuentra en el rango permitido, el rango es '+ params.min+ ' al '+ params.max+ '.';
+      return 'El valor tiene que estar entre '+ params.min+ ' al '+ params.max;
     });
 
 	$.validator.addMethod('secuencia-palabra', function(value, element, params) {
@@ -682,7 +695,7 @@ $.mask.masks = $.extend($.mask.masks, {
 				} // for
 				return true;
 			} // else
-		}, 'El valor no se encuentra en el rango permitido.');
+		}, 'El valor no se encuentra en el rango permitido');
 
 	$.validator.addMethod('longitud', function(value, element, params) {
 			if (janal.empty(value) || $(element).hasClass('ignore'))
@@ -695,7 +708,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
   				return (value.length>= params.min && value.length<= params.max);	
 		}, function(params) {
-      return 'La longitud de caracteres no se encuentra en el rango permitido, el rango es '+ params.min+ ' al '+ params.max+ '.';
+      return 'La longitud de caracteres debe de estar entre '+ params.min+ ' al '+ params.max;
     });
 		
 	$.validator.addMethod('letras', function(value, element, params) {
@@ -703,32 +716,30 @@ $.mask.masks = $.extend($.mask.masks, {
 				 return true;
 		   else
 				 return /^([a-zA-Z])+$/.test(value);
-		}, 'Solo se permiten caracteres alfab\u00E9ticos.');
+		}, 'Solo se permiten caracteres alfab\u00E9ticos');
 
 	$.validator.addMethod('marca', function(value, element, params) {
 		   if (janal.empty(value) || $(element).hasClass('ignore'))
 				 return true;
 		   else
 				 return /^([a-zA-Z0-9]|\u007C|\u00C1|\u00E1|\u00C9|\u00E9|\u00CD|\u00ED|\u00D3|\u00F3|\u00DA|\u00FA|\u00F1|\u00D1|-| |_|\.|"|\*|\|)+$/.test(value);
-		}, 'Solo se permiten caracteres alfab\u00E9ticos.');
+		}, 'Solo se permiten caracteres alfab\u00E9ticos');
 
 	$.validator.addMethod('alfanumerico', function(value, element, params) {
 		   if (janal.empty(value) || $(element).hasClass('ignore'))
 				 return true;
 		   else
 				 return /^([0-9]|[A-Z]|[a-z]|\u00C1|\u00E1|\u00C9|\u00E9|\u00CD|\u00ED|\u00D3|\u00F3|\u00DA|\u00FA|\u00F1|\u00D1|-|_|\.)+$/.test(value);
-		}, 'Solo se permiten caracteres alfab\u00E9ticos.');
+		}, 'Solo se permiten caracteres alfab\u00E9ticos');
 
-	$.validator.addMethod(
-		'texto', function(value, element, params) {
+	$.validator.addMethod('texto', function(value, element, params) {
   		 if (janal.empty(value) || $(element).hasClass('ignore'))
 	  			return true;
 		   else
 			   return /^([0-9]|[A-Z]|[a-z]|\u00C1|\u00E1|\u00C9|\u00E9|\u00CD|\u00ED|\u00D3|\u00F3|\u00DA|\u00FA|\u00F1|\u00D1|\||\ |,|\.|;|:|\/|)+$/.test(value);
 		}, 'No se permite caracteres alfanum\u00E9ricos y algunos caracteres, ejemplo: ,;:.');
 
-  $.validator.addMethod(
-		'libre', function(value, element, params) {
+  $.validator.addMethod('libre', function(value, element, params) {
   		 if (janal.empty(value) || $(element).hasClass('ignore'))
   			return true;
 		   else 
@@ -740,7 +751,7 @@ $.mask.masks = $.extend($.mask.masks, {
 				return true;
 		  else
 			  return /^([A-Za-z]{4})([\d]{6})([Hh|Mm])([A-Za-z]{5})([A|0-9]{1})([0-9]{1})$/.test(value);
-		}, 'Formato de la CURP no es v\u00E1lido.');
+		}, 'Formato de la CURP no es v\u00E1lido');
 
 	$.validator.addMethod('rfc', function(value, element, params) {
 			if (janal.empty(value) || $(element).hasClass('ignore'))
@@ -768,7 +779,7 @@ $.mask.masks = $.extend($.mask.masks, {
 		 		return true;
 		  else
 			  return /^([Ss|Nn])$/.test(value);
-		}, 'Solo se permiten los caracteres S,s o N,n.');
+		}, 'Solo se permiten los caracteres S,s o N,n');
 
 	$.validator.addMethod('fecha', function(value, element, params) {
 			if (janal.empty(value) || $(element).hasClass('ignore'))
@@ -776,7 +787,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			else
 			  return janal.isCustomDate(value);
 		}, function(params, element) {
-      'Formato de la fecha '+ janal.value($(element).attr('id'))+ ' es inv\u00E1lida, el formato es [dd/mm/yyyy].';
+      'Formato de la fecha '+ janal.value($(element).attr('id'))+ ' es inv\u00E1lida, el formato es [dd/mm/yyyy]';
     });	
 
 	$.validator.addMethod('fecha-menor', function(value, element, params) {
@@ -801,7 +812,7 @@ $.mask.masks = $.extend($.mask.masks, {
       var before= $(element).val();
       var msg   = 'La fecha '+ $(element).val()+ ' con la que se compara es mayor a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
       if(!janal.isCustomDate(before))
-        msg= 'Formato de la fecha '+ $(element).val()+ ' es inv\u00E1lida, el formato es [dd/mm/yyyy].';
+        msg= 'Formato de la fecha '+ $(element).val()+ ' es inv\u00E1lida, el formato es [dd/mm/yyyy]';
       return msg;
     });	
 
@@ -827,7 +838,7 @@ $.mask.masks = $.extend($.mask.masks, {
       var before= $(element).val();
       var msg   = 'La fecha '+ $(element).val()+ ' con la que se compara es menor a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
       if(!janal.isCustomDate(before))
-        msg= 'Formato de la fecha '+ $(element).val()+ ' es inv\u00E1lida, el formato es [dd/mm/yyyy].';
+        msg= 'Formato de la fecha '+ $(element).val()+ ' es inv\u00E1lida, el formato es [dd/mm/yyyy]';
       return msg;
     });	
 
@@ -841,7 +852,7 @@ $.mask.masks = $.extend($.mask.masks, {
 				} // if
 				else
 					return false;
-		}, 'Formato de la fecha y hora es inv\u00E1lida, el formato es [dd/mm/yyyy HH:MM:SS].');
+		}, 'Formato de la fecha y hora es inv\u00E1lida, el formato es [dd/mm/yyyy HH:MM:SS]');
     
 	$.validator.addMethod('registro-menor', function(value, element, params) {
       var okOne= false;
@@ -883,7 +894,7 @@ $.mask.masks = $.extend($.mask.masks, {
       } // else
 		}, function(params, element) {
       var before= $(element).val();
-      return 'La fecha y hora '+ before+ ' con la que se compara es mayor a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
+      return 'La fecha y hora '+ before+ ' con la que se compara es mayor a '+ janal.value(janal.cross($(element).attr('id'), params.cual));
     });
 
 	$.validator.addMethod('registro-mayor', function(value, element, params) {
@@ -941,7 +952,7 @@ $.mask.masks = $.extend($.mask.masks, {
 				return true;
 			else
 				return /^(0[0-9]|1\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(value);
-		}, 'Formato de la hora es incorrecta, el formato es 24 hrs [HH:MM:SS].');
+		}, 'Formato de la hora es incorrecta, el formato es 24 hrs [HH:MM:SS]');
 
 	$.validator.addMethod('hora-menor', function(value, element, params) {
 			if (janal.empty(value) || $(element).hasClass('ignore'))
@@ -973,7 +984,7 @@ $.mask.masks = $.extend($.mask.masks, {
       if(typeof(before)!== 'undefined' && before.length=== 5)
         zeros= zeros+ ':00';
       if(!/^(0[0-9]|1\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(before+ zeros))
-        msg= 'Formato de la hora '+ before+ ' es inv\u00E1lida, el formato es de 24 hrs [23:59].';
+        msg= 'Formato de la hora '+ before+ ' es inv\u00E1lida, el formato es de 24 hrs [23:59]';
       return msg;
     });	
 
@@ -1007,7 +1018,7 @@ $.mask.masks = $.extend($.mask.masks, {
       if(typeof(before)!== 'undefined' && before.length=== 5)
         zeros= zeros+ ':00';
       if(!/^(0[0-9]|1\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(before+ zeros))
-        msg= 'Formato de la hora '+ before+ ' es inv\u00E1lida, el formato es de 24 hrs [23:59].';
+        msg= 'Formato de la hora '+ before+ ' es inv\u00E1lida, el formato es de 24 hrs [23:59]';
       return msg;
     });	
 
@@ -1021,7 +1032,7 @@ $.mask.masks = $.extend($.mask.masks, {
 				} // if	
         else
 				  return eval('/^'+ params.expresion+ '$/').test(value);	
-		}, 'Uno de los caracter no se encuentra en la cadena especificada.');
+		}, 'Uno de los caracter no se encuentra en la cadena especificada');
 
 	$.validator.addMethod('no-permitir', function(value, element, params) {
 		  if (janal.empty(value) || $(element).hasClass('ignore'))
@@ -1034,7 +1045,7 @@ $.mask.masks = $.extend($.mask.masks, {
         else
 				  return parseInt(params.valor, 10)!== parseInt(value, 10);	
 		}, function(params, element) {
-      return 'Valor '+ $(element).val()+ ' no es permitido porque es diferente a '+ params.valor + '.';
+      return 'Valor '+ $(element).val()+ ' no es permitido porque es diferente a '+ params.valor;
     });
 
   $.validator.addMethod('ipv4', function(value, element) {
@@ -1067,7 +1078,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			    return ok;
         } // else
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' no se encuentra en '+ params.valores+ '.';
+      return 'El valor '+ janal.value($(element).attr('id'))+ ' no se encuentra en '+ params.valores;
     });
 	
 	$.validator.addMethod('correo', function(value, element) {				
@@ -1112,6 +1123,6 @@ $.mask.masks = $.extend($.mask.masks, {
           return ok;
         } // else
 		}, function(params, element) {
-      return 'El dato es obligatorio. ';
+      return 'El dato es obligatorio';
     });        
 }());

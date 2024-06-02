@@ -12,7 +12,6 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
-import org.bouncycastle.asn1.esf.ESFAttributes;
 
 /**
  *@company KAANA
@@ -26,6 +25,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 
 	private static final long serialVersionUID=3088884892456452488L;
 	
+	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikAlmacen;
 	private UISelectEntity ikProveedor;
   private UISelectEntity ikProveedorPago;
@@ -41,15 +41,26 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 		super(0D, null, "0.00", idOrdenCompra, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0.00", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 0D, "", 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L, 0D, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, -1L, 0D);
 		if(!Cadena.isVacio(idOrdenCompra) && idOrdenCompra> 0L) {
 		  TcManticOrdenesComprasDto compra= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, idOrdenCompra);
+			super.setIdEmpresa(compra.getIdEmpresa());
+			super.setIdAlmacen(compra.getIdAlmacen());
 		  super.setIdProveedor(compra.getIdProveedor());
 			super.setIdProveedorPago(compra.getIdProveedorPago());
-			super.setIdAlmacen(compra.getIdAlmacen());
 		} // if
 	}
 
 	public NotaEntrada(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idProveedorPago) {
 		super(descuentos, idProveedor, descuento, idOrdenCompra, idDirecta, fechaRecepcion, extras, idNotaEntrada, fechaFactura, idNotaEstatus, ejercicio, consecutivo, total, factura, idUsuario, idAlmacen, subTotal, impuestos, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, idProveedorPago, 0D);
 	}
+
+  public UISelectEntity getIkEmpresa() {
+    return ikEmpresa;
+  }
+
+  public void setIkEmpresa(UISelectEntity ikEmpresa) {
+    this.ikEmpresa = ikEmpresa;
+		if(this.ikEmpresa!= null)
+		  this.setIdEmpresa(this.ikEmpresa.getKey());
+  }
 
 	public UISelectEntity getIkAlmacen() {
 		return ikAlmacen;

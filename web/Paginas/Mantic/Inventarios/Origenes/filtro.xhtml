@@ -144,18 +144,6 @@
                 </f:facet>
                 <h:outputText value="#{row['consecutivo']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center" sortBy="#{row.factura}">
-                <f:facet name="header">
-                  <h:outputText value="Factura"/>
-                </f:facet>
-                <h:outputText value="#{row['factura']}"/>
-              </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-6" sortBy="#{row.directa}">
-                <f:facet name="header">
-                  <h:outputText value="Tipo"/>
-                </f:facet>
-                <h:outputText value="#{row['directa']}"/>
-              </p:column>		
               <p:column styleClass="MarAuto Responsive" sortBy="#{row.razonSocial}">
                 <f:facet name="header">
                   <h:outputText value="Proveeedor"/>
@@ -185,6 +173,18 @@
                   <h:outputText value="Importe"/>
                 </f:facet>
                 <h:outputText value="#{row['total']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-display-none janal-wid-8 janal-column-center" sortBy="#{row.factura}">
+                <f:facet name="header">
+                  <h:outputText value="Factura"/>
+                </f:facet>
+                <h:outputText value="#{row['factura']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-wid-6" sortBy="#{row.directa}">
+                <f:facet name="header">
+                  <h:outputText value="Tipo"/>
+                </f:facet>
+                <h:outputText value="#{row['directa']}"/>
               </p:column>		
               <p:column styleClass="MarAuto Responsive janal-wid-8 janal-display-none janal-column-center" sortBy="#{row.registro}">
                 <f:facet name="header">

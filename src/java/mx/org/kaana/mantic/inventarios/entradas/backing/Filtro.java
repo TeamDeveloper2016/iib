@@ -82,8 +82,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(this.attrs.get("idNotaEntrada")!= null || this.attrs.get("ordenCompra")!= null) {
 			  this.doLoad();
         this.attrs.put("ordenCompra", null);
-			} // if	
-      this.attrs.put("general", this.toEmptyTotales());
+			} // if
+      else
+        this.attrs.put("general", this.toEmptyTotales());
       this.attrs.put("particular", this.toEmptyTotales());
     } // try
     catch (Exception e) {
@@ -106,9 +107,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaNotasEntradasDto", params, columns);
       UIBackingUtilities.resetDataTable();
+      this.attrs.put("general", this.toTotales("VistaNotasEntradasDto", "general", params));
 			this.attrs.put("idNotaEntrada", null);
       this.lazyDetalle= null;
-      this.attrs.put("general", this.toTotales("VistaNotasEntradasDto", "general", params));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -138,21 +139,26 @@ public class Filtro extends IBaseFilter implements Serializable {
 				JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: EAccion.CONSULTAR);
 			} // if	
 			else 
-        if(Objects.equals(eaccion, EAccion.ACTIVAR)) {
-	  			regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-  				JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);
-        } // if
-        else {
-          if(Objects.equals(eaccion, EAccion.COMPLETO)) 
-            JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
-          else 
-            JsfBase.setFlashAttribute("accion", eaccion);		
-          if(!Objects.equals(eaccion, EAccion.COMPLETO) || ((Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR)) && Objects.equals(idNotaTipo, 2L))) 
-            regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
-          else
-            regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-          JsfBase.setFlashAttribute("idOrdenCompra", (Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR) || Objects.equals(idNotaTipo, 2L)) && idOrdenCompra!= null? idOrdenCompra: -1L);
-        } // else	
+        if(Objects.equals(idNotaTipo, 4L)) {
+          regresar= "/Paginas/Mantic/Inventarios/Entradas/especial".concat("?zOyOxDwIvGuCt=zLySxPwEvCuItAsEr");
+          JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.COMPLETO)? EAccion.AGREGAR: eaccion);
+        } // if	
+        else 
+          if(Objects.equals(eaccion, EAccion.ACTIVAR)) {
+            regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+            JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);
+          } // if
+          else {
+            if(Objects.equals(eaccion, EAccion.COMPLETO)) 
+              JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+            else 
+              JsfBase.setFlashAttribute("accion", eaccion);		
+            if(!Objects.equals(eaccion, EAccion.COMPLETO) || ((Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR)) && Objects.equals(idNotaTipo, 2L))) 
+              regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
+            else
+              regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+            JsfBase.setFlashAttribute("idOrdenCompra", (Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR) || Objects.equals(idNotaTipo, 2L)) && idOrdenCompra!= null? idOrdenCompra: -1L);
+          } // else	
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR)? idNotaEntrada: -1L);
 		} // try
@@ -162,6 +168,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch
 		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
   } // doAccion  
+	
+  public String doEspecial() {
+		String regresar= "/Paginas/Mantic/Inventarios/Entradas/especial?zOyOxDwIvGuCt=zLySxPwEvCuItAsEr";
+		try {
+      JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
+			JsfBase.setFlashAttribute("idNotaEntrada", -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
+  } 
 	
   public void doEliminar() {
 		Transaccion transaccion = null;
@@ -183,31 +203,41 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idNotaEntrada")) && !this.attrs.get("idNotaEntrada").toString().equals("-1"))
-  		sb.append("(tc_mantic_notas_entradas.id_nota_entrada=").append(this.attrs.get("idNotaEntrada")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("ordenCompra")))
-  		sb.append("(tc_mantic_ordenes_compras.id_orden_compra= ").append(this.attrs.get("ordenCompra")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_notas_entradas.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
-		if(!Cadena.isVacio(this.attrs.get("factura")))
-  		sb.append("(tc_mantic_notas_entradas.factura like '%").append(this.attrs.get("factura")).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
-  		sb.append("(tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idNotaEstatus")) && !this.attrs.get("idNotaEstatus").toString().equals("-1"))
-  		sb.append("(tc_mantic_notas_entradas.id_nota_estatus= ").append(this.attrs.get("idNotaEstatus")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    StringBuilder sb            = new StringBuilder();
+    try {
+      // ESTO ES UN PARCHE PARA MOSTRAR SOLO LOS REGISTROS DEL VENDEDOR 31/01/2024
+      if(!JsfBase.isEncargado())
+        sb.append("(tc_mantic_notas_entradas.id_usuario= ").append(JsfBase.getIdUsuario()).append(") and ");
+      
+      if(!Cadena.isVacio(this.attrs.get("idNotaEntrada")) && !this.attrs.get("idNotaEntrada").toString().equals("-1"))
+        sb.append("(tc_mantic_notas_entradas.id_nota_entrada=").append(this.attrs.get("idNotaEntrada")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("ordenCompra")))
+        sb.append("(tc_mantic_ordenes_compras.id_orden_compra= ").append(this.attrs.get("ordenCompra")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+        sb.append("(tc_mantic_notas_entradas.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
+      if(!Cadena.isVacio(this.attrs.get("factura")))
+        sb.append("(tc_mantic_notas_entradas.factura like '%").append(this.attrs.get("factura")).append("%') and ");
+      if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+        sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+      if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+        sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+      if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
+        sb.append("(tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idNotaEstatus")) && !this.attrs.get("idNotaEstatus").toString().equals("-1"))
+        sb.append("(tc_mantic_notas_entradas.id_nota_estatus= ").append(this.attrs.get("idNotaEstatus")).append(") and ");
+      if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+        regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+      else
+        regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(sb.length()== 0)
+        regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      else	
+        regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+    } // try 
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch
 		return regresar;
 	}
 	

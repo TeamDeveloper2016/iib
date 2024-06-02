@@ -9,7 +9,7 @@ package mx.org.kaana.mantic.compras.ordenes.enums;
  */
 public enum EOrdenes {
    
-	NORMAL("normal"), ALMACEN("del almacen"), PROVEEDOR("por proveedor"), MANUAL("manual");
+	NORMAL("normal"), PROVEEDOR("por proveedor"), MANUAL("manual"), ESPECIAL("especial"), ALMACEN("del almacen");
 	
 	private String titulo;
 	
@@ -21,4 +21,8 @@ public enum EOrdenes {
 		return titulo;
 	}
 
+  public Long getIdNotaTipo() {
+    return new Long(this.ordinal()+ 1);
+  }
+  
 }
