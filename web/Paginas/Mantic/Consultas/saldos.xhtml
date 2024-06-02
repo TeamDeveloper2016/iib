@@ -92,49 +92,49 @@
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</div>  
 						</f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.razonSocial}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.razonSocial}">
 							<f:facet name="header">
 								<h:outputText value="Cliente"/>
 							</f:facet>
 							<h:outputText value="#{filtro['razonSocial']}"/>
 						</p:column>					
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+						<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
 							<h:outputText value="#{filtro['estatus']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.deuda}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.deuda}">
 							<f:facet name="header">
 								<h:outputText value="Deuda total"/>
 							</f:facet>
 							<h:outputText value="#{filtro['deuda']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.pagado}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.pagado}">
 							<f:facet name="header">
 								<h:outputText value="Pagos"/>
 							</f:facet>
 							<h:outputText value="#{filtro['pagado']}"/>
 						</p:column>						
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.saldo}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
 							<h:outputText value="#{filtro['saldo']}"/>
 						</p:column>						
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.vencido}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.vencido}">
 							<f:facet name="header">
 								<h:outputText value="Saldo vencido"/>
 							</f:facet>
 							<h:outputText value="#{filtro['vencido']}"/>
 						</p:column>						
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.dias}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.dias}">
 							<f:facet name="header">
 								<h:outputText value="Días atraso" title="Días de atraso"/>
 							</f:facet>
 							<h:outputText value="#{filtro['dias']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.limiteCredito}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.limiteCredito}">
 							<f:facet name="header">
 								<h:outputText value="Limite crédito" title="Limite de crédito otorgado"/>
 							</f:facet>

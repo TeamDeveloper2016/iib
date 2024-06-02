@@ -55,13 +55,13 @@
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</div>	
 						</f:facet>						
-						<p:column class="janal-column-left janal-wid-30 MarAuto Responsive" sortBy="#{filtro.nombre}">
+						<p:column styleClass="janal-column-left janal-wid-30 MarAuto Responsive" sortBy="#{filtro.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>
 							</f:facet>
 							<h:outputText value="#{filtro['traza']}"/>
 						</p:column>
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.descripcion}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.descripcion}">
 							<f:facet name="header">
 								<h:outputText value="Descripcion"/>
 							</f:facet>

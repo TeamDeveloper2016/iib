@@ -24,6 +24,12 @@ from
 where      
   id_nota_entrada = {idNotaEntrada} and id_tipo_costo = {idTipoCosto}
       </select>
+      <delete id="row">
+delete from 
+  tc_mantic_notas_costos 
+where 
+  id_nota_entrada = {idNotaEntrada}
+      </delete>
     </unit>    
     <unit id="TcManticTiposCostosDto">
       <select id="row">
@@ -2962,10 +2968,10 @@ where
           and id_tipo_documento= {idTipoDocumento}
 			</update>
 			<delete id="rows">
-				delete from 
-          tc_mantic_notas_archivos 
-        where 
-          id_nota_entrada = {idNotaEntrada}
+delete from 
+  tc_mantic_notas_archivos 
+where 
+  id_nota_entrada = {idNotaEntrada}
 			</delete>
    </unit>		
    <unit id="TcManticCreditosArchivosDto">
@@ -6007,6 +6013,18 @@ from
   tc_mantic_notas_detalles
 where      
   id_nota_entrada= {idNotaEntrada}
+			</select>
+			<select id="particular">
+select
+  tc_mantic_notas_detalles.id_nota_detalle as id_key,
+  sum(tc_mantic_notas_detalles.cantidad) as cantidad,
+  sum(tc_mantic_notas_detalles.importe) as importe
+from
+  tc_mantic_notas_detalles
+where      
+  id_nota_entrada= {idNotaEntrada}
+group by
+  id_nota_entrada
 			</select>
 			<select id="errores">
 				select

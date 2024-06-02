@@ -247,7 +247,7 @@
 					<p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" style="height:380px !important;" columnClasses="janal-wid-80, janal-wid-20">					
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >					
 							<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCotizacionesAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
-								<p:column class="MarAuto Responsive janal-wid-3">
+								<p:column styleClass="MarAuto Responsive janal-wid-3">
 									<f:facet name="header">
 										<h:outputText value="No."/>
 									</f:facet>
@@ -290,21 +290,21 @@
 										</div>	
 									</div>	
 								</p:column>
-								<p:column class="MarAuto Responsive nombres">
+								<p:column styleClass="MarAuto Responsive nombres">
 									<f:facet name="header">
 										<h:outputText value="Articulo"/>
 									</f:facet>
                   <p:inputText id="nombres" value="#{row['nombre']}" styleClass="janal-wid-100-txt key-event-sat filas" title="Código: #{row['propio']}, SAT: #{row['sat']}"/>
                   <p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila" style="display: none;"/>
 								</p:column>										
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Cantidad"/>
 									</f:facet>
 									<p:outputLabel value="#{row['cantidad']}" title="Existencias: #{row['stock']}"/>
 									<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Precio"/>
 									</f:facet>
@@ -312,26 +312,26 @@
 									<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 									<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
 								</p:column>				
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
 									<f:facet name="header">
 										<h:outputText value="Descuento"/>
 									</f:facet>
 									<p:outputLabel value="#{row['descuentoDescripcion']}" title="Código: #{row['propio']}, SAT: #{row['sat']}"/>
 									<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 								</p:column>		
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-6">
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Unidad"/>
 									</f:facet>
 									<p:outputLabel value="#{row['unidadMedida']}" title="Código: #{row['propio']}, SAT: #{row['sat']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Impuesto"/>
 									</f:facet>
 									<p:outputLabel value="#{row['impuestos$']}" title="Código: #{row['propio']}, SAT: #{row['sat']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Importe"/>
 									</f:facet>
@@ -410,13 +410,13 @@
 				</p:tab>
 				<p:tab title="Especificaciones">
 					<p:dataTable lazy="true" id="lazyEspecificaciones" var="row" value="#{manticCotizacionesAccion.attrs.lazyEspecificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCotizacionesAccion.attrs.lazyEspecificaciones.rowCount gt manticCotizacionesAccion.attrs.lazyEspecificaciones.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
-            <p:column class="MarAuto Responsive">
+            <p:column styleClass="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive">
+            <p:column styleClass="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Valor"/>
               </f:facet>
@@ -429,25 +429,25 @@
 				</p:tab>
 				<p:tab title="Descuentos">
 					<p:dataTable lazy="true" id="lazyDescuentos" var="row" value="#{manticCotizacionesAccion.attrs.lazyDescuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticCotizacionesAccion.attrs.lazyDescuentos.rowCount gt manticCotizacionesAccion.attrs.lazyDescuentos.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">            
-            <p:column class="MarAuto Responsive janal-column-right janal-wid-20">
+            <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-20">
               <f:facet name="header">
                 <h:outputText value="Porcentaje"/>
               </f:facet>
               <h:outputText value="#{row['porcentaje']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-20">
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-20">
               <f:facet name="header">
                 <h:outputText value="Vigencia inicial"/>
               </f:facet>
               <h:outputText value="#{row['vigenciaInicial']}"/>
             </p:column>		          
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-20">
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-20">
               <f:facet name="header">
                 <h:outputText value="Vigencia final"/>
               </f:facet>
               <h:outputText value="#{row['vigenciaFinal']}"/>
             </p:column>		          
-            <p:column class="MarAuto Responsive">
+            <p:column styleClass="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Observaciones"/>
               </f:facet>

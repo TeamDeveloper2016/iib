@@ -112,49 +112,49 @@
                 <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresAmbos.doReporte('ABONOS_RETIROS')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-col-40">
+            <p:column styleClass="MarAuto Responsive janal-wid-col-40">
               <f:facet name="header">
                 <h:outputText value="No."/>
               </f:facet>
               <h:outputText value="#{index+ 1}.-"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Consecutivo"/>
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.usuario}">
               <f:facet name="header">
                 <h:outputText value="Usuario"/>
               </f:facet>
               <h:outputText value="#{row['usuario']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.observaciones}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.observaciones}">
               <f:facet name="header">
                 <h:outputText value="Concepto"/>
               </f:facet>
               <h:outputText value="#{row['concepto']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
               <f:facet name="header">
                 <h:outputText value="Tipo"/>
               </f:facet>
               <h:outputText value="#{row['tipo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.autorizo}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.autorizo}">
               <f:facet name="header">
                 <h:outputText value="Autorizo"/>
               </f:facet>
               <h:outputText value="#{row['autorizo']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>

@@ -87,37 +87,37 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
               <h:outputText value="#{row['clave']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{row.rfc}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{row.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
               <h:outputText value="#{row['rfc']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.razonSocial}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.razonSocial}">
               <f:facet name="header">
                 <h:outputText value="Razón social"/>
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
             </p:column>	      
-						<p:column class="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.telefono}">
+						<p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.telefono}">
               <f:facet name="header">
                 <h:outputText value="Contacto" title="Telefono/Celular"/>
               </f:facet>
               <h:outputText value="#{row['telefono']}"/>
             </p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.agente}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.agente}">
               <f:facet name="header">
                 <h:outputText value="Agente"/>
               </f:facet>
               <h:outputText value="#{row['agente']}"/>
             </p:column>	      
-						<p:column class="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.celular}">
+						<p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.celular}">
               <f:facet name="header">
                 <h:outputText value="Contacto" title="Telefono/Celular"/>
               </f:facet>

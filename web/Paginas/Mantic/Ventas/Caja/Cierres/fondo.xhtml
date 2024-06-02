@@ -103,31 +103,31 @@
 														<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()"/>
 													</div>  
 												</f:facet>	 
-												<p:column class="MarAuto Responsive janal-wid-col-40">
+												<p:column styleClass="MarAuto Responsive janal-wid-col-40">
 													<f:facet name="header">
 														<h:outputText value="No."/>
 													</f:facet>
 													<h:outputText value="#{index+ 1}.-"/>
 												</p:column>		
-												<p:column class="MarAuto Responsive">
+												<p:column styleClass="MarAuto Responsive">
 													<f:facet name="header">
 														<h:outputText value="Denominación"/>
 													</f:facet>
 													<h:outputText value="#{row['nombre']}"/>
 												</p:column>		
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
+												<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15">
 													<f:facet name="header">
 														<h:outputText value="Valor"/>
 													</f:facet>
 													<h:outputText value="#{manticVentasCajaCierresFondo.doMonedaSat(row['denominacion'])}"/>
 												</p:column>		
-												<p:column class="cantidad janal-column-right MarAuto Responsive janal-wid-15">
+												<p:column styleClass="cantidad janal-column-right MarAuto Responsive janal-wid-15">
 													<f:facet name="header">
 														<p:outputLabel for="cantidad" value="Cantidad"/>
 													</f:facet>
 													<p:inputText id="cantidad" value="#{row['cantidad']}" styleClass="recalculo janal-column-right janal-wid-100-txt janal-color-blue key-down-event" onblur="jsCierres.cantidad('#contenedorGrupos\\:moneda\\:#{index}\\:cantidad');"/>
 												</p:column>		
-												<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
+												<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15">
 													<f:facet name="header">
 														<h:outputText value="Importe"/>
 													</f:facet>

@@ -469,14 +469,14 @@ public class Conteos extends IBaseFilter implements Serializable {
 	}
 	
 	public void doCleanArticulos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		try {
-			columns= new ArrayList<>();
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			params.put("codigo", "WXYZ");
+  		params.put("idArticuloTipo", "1, 2");	
       this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porLikeNombre", params, columns));
 		} // try
 	  catch (Exception e) {
@@ -528,6 +528,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			else
 				codigo= "WXYZ";
 			params.put("codigo", codigo.toUpperCase());
+      params.put("idArticuloTipo", "1, 2");	
 			if(buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
 			else

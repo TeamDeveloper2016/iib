@@ -137,50 +137,50 @@
                 <p:commandButton id="facturasPdfIcon" icon="fa fa-file-pdf-o" title="Facturama pdf" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFacturasFiltro.doReporteFacturas('FACTURAS_RESUMEN')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.nombreEmpresa}">
+            <p:column styleClass="MarAuto Responsive janal-wid-13" sortBy="#{row.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
               <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.cliente}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.cliente}">
               <f:facet name="header">
                 <h:outputText value="Cliente"/>
               </f:facet>
               <h:outputText value="#{row['cliente']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="No. factura"/>
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.folio}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.folio}">
               <f:facet name="header">
                 <h:outputText value="Folio"/>
               </f:facet>
               <h:outputText value="#{row['folio']}"/>
             </p:column>		            
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.total}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['total']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-130" sortBy="#{row.timbrado}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-130" sortBy="#{row.timbrado}">
               <f:facet name="header">
                 <h:outputText value="Timbrado"/>
               </f:facet>
               <h:outputText value="#{row['timbrado']}"/><br style="display: #{row['idFacturaEstatus'] eq '3'? '': 'none'}"/>
               <h:outputText value="( #{row['cancelada']} )" title="Fecha de cancelación" styleClass="janal-color-red janal-text-small" style="display: #{row['idFacturaEstatus'] eq '3'? '': 'none'}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-130" sortBy="#{row.registro}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-130" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>

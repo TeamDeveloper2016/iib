@@ -107,44 +107,44 @@
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 							<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>	  						
-						<p:column class="MarAuto Responsive janal-wid-8">
+						<p:column styleClass="MarAuto Responsive janal-wid-8">
               <f:facet name="header">
                 <h:outputText value="Empresa"/>
               </f:facet>
               <h:outputText value="#{row['empresa']}"/>
             </p:column>		
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-7">
+						<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-7">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
               <h:outputText value="#{row['clave']}"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" rendered="false">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-13" rendered="false">
               <f:facet name="header">
                 <h:outputText value="CURP"/>
               </f:facet>
               <h:outputText value="#{row['curp']}"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-20">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-20">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>																			
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" rendered="false">
+						<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Departamento"/>
               </f:facet>
               <h:outputText value="#{row['departamento']}"/>
             </p:column>
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10">
               <f:facet name="header">
                 <h:outputText value="Puesto"/>
               </f:facet>
               <h:outputText value="#{row['puesto']}"/>
               <i class="fa fa-fw fa-lastfm janal-align-left janal-color-orange" title="Departamento: #{row['departamento']}"></i>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-8 sueldo" >
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-8 sueldo" >
               <f:facet name="header">
                 <p:outputLabel value="Sueldo"/>
               </f:facet>
@@ -152,13 +152,13 @@
                 <p:ajax event="change" process="@this" update="@(.totales)" listener="#{manticCatalogosEmpleadosSueldo.doMakeNothing}"/>
               </p:inputText>  
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-8 sueldo janal-display-none">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-8 sueldo janal-display-none">
               <f:facet name="header">
                 <h:outputText value="Sueldo"/>
               </f:facet>
               <p:outputLabel value="#{row['sueldoSemanal']}" styleClass="janal-wid-90 janal-column-right"/>
             </p:column>		
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-8 sobre">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8 sobre">
               <f:facet name="header">
                 <h:outputText value="Extra"/>
               </f:facet>
@@ -166,19 +166,19 @@
                 <p:ajax event="change" process="@this" update="@(.totales)" listener="#{manticCatalogosEmpleadosSueldo.doMakeNothing}"/>
               </p:inputText>  
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-8 sobre janal-display-none">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-8 sobre janal-display-none">
               <f:facet name="header">
                 <h:outputText value="Extra"/>
               </f:facet>
               <p:outputLabel value="#{row['sobreSueldo']}" styleClass="janal-wid-90 janal-column-right"/>
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-4" exportable="false">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-4" exportable="false">
               <f:facet name="header">
                 <h:outputText value="Limpiar"/>
               </f:facet>
               <p:selectBooleanCheckbox value="#{row['limpiar']}" styleClass="janal-wid-90 janal-column-right" title="Clic para limpiar el sobre sueldo al corte de la nómina"/>
             </p:column>
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-3" exportable="false">							
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-3" exportable="false">							
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idActivo eq 2? 'circulo-rojo' : (row.idActivo eq 1 and row.idNomina eq 2 and row.idSeguro eq 2? 'circulo-amarillo': (row.idActivo eq 1 and row.idNomina eq 2? 'circulo-azul': 'circulo-verde'))}.png" title="Empleado #{row.idActivo eq 1? '': 'NO '}activo"/>
 						</p:column>												
             <f:facet name="footer">

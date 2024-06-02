@@ -60,31 +60,31 @@
 								<p:commandButton id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</div>	
 						</f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.proveedor}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.proveedor}">
 							<f:facet name="header">
 								<h:outputText value="Proveedor"/>
 							</f:facet>
 							<h:outputText value="#{row['proveedor']}" title="Código auxiliar: #{row.auxiliar}"/>
 						</p:column>	
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+						<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
 							<f:facet name="header">
 								<h:outputText value="Código"/>
 							</f:facet>
 							<h:outputText value="#{row['codigo']}" title="Código auxiliar: #{row.auxiliar}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.descripcion}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.descripcion}">
 							<f:facet name="header">
 								<h:outputText value="Descripción"/>
 							</f:facet>
 							<h:outputText value="#{row['descripcion']}" title="Código auxiliar: #{row.auxiliar}"/>
 						</p:column>														
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.costo}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.costo}">
 							<f:facet name="header">
 								<h:outputText value="Costo s/iva"/>
 							</f:facet>
 							<h:outputText value="#{manticCatalogosListaPreciosArticulos.doMonedaSat(row['costo'])}"/>
 						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.precio}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.precio}">
 							<f:facet name="header">
 								<h:outputText value="Precio neto"/>
 							</f:facet>

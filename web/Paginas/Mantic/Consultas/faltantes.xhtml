@@ -95,13 +95,13 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>
-            <p:column class="MarAuto Responsive janal-wid-col-20">
+            <p:column styleClass="MarAuto Responsive janal-wid-col-20">
               <f:facet name="header">
                 <h:outputText value="No."/>
               </f:facet>
               <h:outputText value="#{index+ 1}.-"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10">
+            <p:column styleClass="MarAuto Responsive janal-wid-10">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
@@ -113,31 +113,31 @@
               </f:facet>
               <h:outputText value="#{row['nombre']}" title="#{row['codigo']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
               <f:facet name="header">
                 <h:outputText value="Stock"/>
               </f:facet>
               <h:outputText value="#{row['stock']}"/>	
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6">
               <f:facet name="header">
                 <h:outputText value="Minimo"/>
               </f:facet>
               <h:outputText value="#{row['minimo']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6">
               <f:facet name="header">
                 <h:outputText value="Máximo"/>
               </f:facet>
               <h:outputText value="#{row['maximo']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-6">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-6">
               <f:facet name="header">
                 <h:outputText value="Solicitar"/>
               </f:facet>
               <h:outputText value="#{row['cantidad']}"/>	
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>

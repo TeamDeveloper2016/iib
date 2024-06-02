@@ -158,37 +158,37 @@
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar catalogo" onstart="return janal.bloquear();" action="#{manticInventariosAlmacenesFiltro.doExportarXls}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
 								</div>	
 							</f:facet>												
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ejercicio}">
+							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.ejercicio}">
 								<f:facet name="header">
 									<h:outputText value="Ejercicio"/>
 								</f:facet>
 								<h:outputText value="#{row['ejercicio']}"/>
 							</p:column>					
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.propio}">
+							<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.propio}">
 								<f:facet name="header">
 									<h:outputText value="Código"/>
 								</f:facet>
 								<h:outputText value="#{row['codigo']}"/>
 							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+							<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
 								<f:facet name="header">
 									<h:outputText value="Nombre"/>
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
 							</p:column>														
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
+							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.fecha}">
 								<f:facet name="header">
 									<h:outputText value="Fecha"/>
 								</f:facet>
 								<h:outputText value="#{row['fecha']}"/>
 							</p:column>					
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.hora}">
+							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.hora}">
 								<f:facet name="header">
 									<h:outputText value="Hora"/>
 								</f:facet>
 								<h:outputText value="#{row['hora']}"/>
 							</p:column>											
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.stock}">
+							<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.stock}">
 								<f:facet name="header">
 									<h:outputText value="Stock"/>
 								</f:facet>

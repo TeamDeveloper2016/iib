@@ -186,37 +186,37 @@
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar catalogo" onstart="return janal.bloquear();" action="#{manticCatalogosArticulosFiltro.doExportarXls}" process="@this panelBusqueda" oncomplete="janal.desbloquear()"/>
 								</div>	
 							</f:facet>												
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.propio}">
+							<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-12" sortBy="#{row.propio}">
 								<f:facet name="header">
 									<h:outputText value="Código"/>
 								</f:facet>
 								<h:outputText value="#{row['propio']}"/>
 							</p:column>														
-							<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
+							<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
 								<f:facet name="header">
 									<h:outputText value="Nombre"/>
 								</f:facet>
 								<h:outputText value="#{row['nombre']}"/>
 							</p:column>														
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
+							<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
 								<f:facet name="header">
 									<h:outputText value="Menudeo"/>
 								</f:facet>
 								<h:outputText value="#{row['menudeo']}"/>
 							</p:column>					
-              <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.medioMayoreo}" rendered="false">
+              <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.medioMayoreo}" rendered="false">
 								<f:facet name="header">
 									<h:outputText value="Medio mayoreo"/>
 								</f:facet>
 								<h:outputText value="#{row['medioMayoreo']}"/>
 							</p:column>					
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.mayoreo}" rendered="false">
+							<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.mayoreo}" rendered="false">
 								<f:facet name="header">
 									<h:outputText value="Mayoreo"/>
 								</f:facet>
 								<h:outputText value="#{row['mayoreo']}"/>
 							</p:column>											
-							<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.stock}">
+							<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.stock}">
 								<f:facet name="header">
 									<h:outputText value="Stock"/>
 								</f:facet>
@@ -230,7 +230,7 @@
 							<p:column headerText="Vigente" class="janal-column-center MarAuto Responsive janal-wid-col-38" rendered="false">
 								<h:graphicImage library="janal" name="icon/semaforos/#{row.idVigente eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Articulo #{row.idVigente eq '1' ? 'vigente': 'deshabilitado'}"/>
 							</p:column>
-							<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+							<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38">
 								<h:graphicImage library="janal" name="icon/semaforos/#{row.idFacturama eq '-1' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Articulo #{row.idFacturama eq '-1' ? 'NO': ''} registrado en facturama"/>
 							</p:column>
 							<f:facet name="footer">

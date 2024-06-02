@@ -18,11 +18,13 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -47,11 +49,28 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID=1368701967796774746L;
   private Reporte reporte;
+  private FormatLazyModel lazyDetalle;
+
+	public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}		
 	
 	public Reporte getReporte() {
 		return reporte;
 	}	// getReporte
 	
+  public String getGeneral() {
+    String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("cantidad"));
+    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("importe"));
+    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+  }
+  
+  public String getParticular() {
+    String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("cantidad"));
+    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("importe"));
+    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -59,11 +78,13 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada"));
       this.attrs.put("ordenCompra", JsfBase.getFlashAttribute("ordenCompra"));
-			this.toLoadCatalog();
+			this.toLoadCatalogos();
       if(this.attrs.get("idNotaEntrada")!= null || this.attrs.get("ordenCompra")!= null) {
 			  this.doLoad();
         this.attrs.put("ordenCompra", null);
 			} // if	
+      this.attrs.put("general", this.toEmptyTotales());
+      this.attrs.put("particular", this.toEmptyTotales());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -80,11 +101,14 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaNotasEntradasDto", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idNotaEntrada", null);
+      this.lazyDetalle= null;
+      this.attrs.put("general", this.toTotales("VistaNotasEntradasDto", "general", params));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -187,7 +211,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	}
 	
-	private void toLoadCatalog() {
+	private void toLoadCatalogos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -363,5 +387,58 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("accion", EAccion.ASIGNAR);
 		return "/Paginas/Mantic/Catalogos/Articulos/asociar".concat(Constantes.REDIRECIONAR);
 	}
-	
+
+  public void doConsultar() {
+    this.doDetalle((Entity)this.attrs.get("seleccionado"));
+  }
+  
+  public void doDetalle(Entity row) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+		try {
+			if(row!= null && !row.isEmpty()) {
+        this.attrs.put("seleccionado", row);
+        params.put("idNotaEntrada", row.toLong("idNotaEntrada"));
+        params.put("sortOrder", "order by tc_mantic_notas_detalles.registro");
+        columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("promedio", EFormatoDinamicos.MILES_CON_DECIMALES));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+				this.lazyDetalle= new FormatLazyModel("TcManticNotasDetallesDto", "igual", params, columns);
+				UIBackingUtilities.resetDataTable("tablaDetalle");
+        this.attrs.put("particular", this.toTotales("TcManticNotasDetallesDto", "particular", params));
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
+
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+  
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.put("cantidad", new Value("cantidad", 0D));
+    regresar.put("importe", new Value("importe", 0D));
+    return regresar;
+  }
+  
 }

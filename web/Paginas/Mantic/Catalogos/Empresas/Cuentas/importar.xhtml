@@ -203,7 +203,7 @@
 								<p:outputLabel value="Articulos XML:"/>
 								<p:selectOneMenu value="#{manticCatalogosEmpresasCuentasImportar.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticCatalogosEmpresasCuentasImportar.attrs.faltantes}"  var="element" itemValue="#{element}" itemLabel="[#{element.sat}] [#{element.codigo}] #{element.nombre}  [#{element.cantidad}] $#{element.costo}"/>
-									<p:column class="MarAuto Responsive janal-wid-10">
+									<p:column styleClass="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Código SAT"/>
 										</f:facet>
@@ -221,19 +221,19 @@
 										</f:facet>
 										<h:outputText value="#{row['nombre']}"/>
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Cantidad"/>
 										</f:facet>
 										<h:outputText value="#{row['cantidad']}"/>	
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Costo"/>
 										</f:facet>
 										<h:outputText value="#{row['costo']}"/>
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="IVA"/>
 										</f:facet>

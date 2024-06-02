@@ -76,31 +76,31 @@
 								<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</div>	
 						</f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.empaque}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.empaque}">
 							<f:facet name="header">
 								<h:outputText value="Empaque"/>
 							</f:facet>
 							<h:outputText value="#{row['empaque']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.claveEmpaque}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.claveEmpaque}">
 							<f:facet name="header">
 								<h:outputText value="Clave empaque"/>
 							</f:facet>
 							<h:outputText value="#{row['claveEmpaque']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.unidad}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.unidad}">
 							<f:facet name="header">
 								<h:outputText value="Unidad"/>
 							</f:facet>
 							<h:outputText value="#{row['unidad']}"/>
 						</p:column>					
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.claveUnidad}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.claveUnidad}">
 							<f:facet name="header">
 								<h:outputText value="Clave unidad"/>
 							</f:facet>
 							<h:outputText value="#{row['claveUnidad']}"/>
 						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive" sortBy="#{row.proporcion}">
+						<p:column styleClass="janal-column-right MarAuto Responsive" sortBy="#{row.proporcion}">
 							<f:facet name="header">
 								<h:outputText value="Proporción"/>
 							</f:facet>

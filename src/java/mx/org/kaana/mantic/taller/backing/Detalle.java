@@ -275,11 +275,10 @@ public class Detalle extends IBaseVenta implements Serializable {
 
 	@Override
 	public void doUpdateDialogArticulos(String codigo) {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));

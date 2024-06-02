@@ -67,43 +67,43 @@
                 <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-             <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.curp}">
+             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.curp}">
               <f:facet name="header">
                 <h:outputText value="CURP"/>
               </f:facet>
               <h:outputText value="#{filtro['curp']}"/>
             </p:column>		
-             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.rfc}">
+             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
               <h:outputText value="#{filtro['rfc']}"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.nombres}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.nombres}">
               <f:facet name="header">
                 <h:outputText value="Nombres"/>
               </f:facet>
               <h:outputText value="#{filtro['nombres']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{filtro.paterno}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{filtro.paterno}">
               <f:facet name="header">
                 <h:outputText value="Apellido paterno"/>
               </f:facet>
               <h:outputText value="#{filtro['paterno']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.materno}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.materno}">
               <f:facet name="header">
                 <h:outputText value="Apellido materno"/>
               </f:facet>
               <h:outputText value="#{filtro['materno']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.sexo}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.sexo}">
               <f:facet name="header">
                 <h:outputText value="Sexo"/>
               </f:facet>
               <h:outputText value="#{filtro['sexo']}"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.cuenta}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.cuenta}">
               <f:facet name="header">
                 <h:outputText value="Cuenta"/>
               </f:facet>

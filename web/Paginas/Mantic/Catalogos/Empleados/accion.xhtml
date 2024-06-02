@@ -439,19 +439,19 @@
               <p:panelGrid id="panelTablaBitacora" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:outputLabel value="Bitacora de movimientos anteriores"/>
 								<p:dataTable lazy="true" id="tablaBitacora" widgetVar="kajoolTableBitacora" var="filtro" value="#{manticCatalogosPersonasAccion.lazyModelBitacora}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosPersonasAccion.lazyModelBitacora.rowCount gt manticCatalogosPersonasAccion.lazyModelBitacora.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">										            
-									 <p:column class="janal-column-center MarAuto Responsive">
+									 <p:column styleClass="janal-column-center MarAuto Responsive">
 										<f:facet name="header">
 											<h:outputText value="Estatus"/>
 										</f:facet>
 										<h:outputText value="#{filtro.antes eq '1' ? 'Activo' : 'Inactivo'}"/>
 									</p:column>		
-									 <p:column class="janal-column-center MarAuto Responsive">
+									 <p:column styleClass="janal-column-center MarAuto Responsive">
 										<f:facet name="header">
 											<h:outputText value="Registro"/>
 										</f:facet>
 										<h:outputText value="#{filtro.registro}"/>
 									</p:column>	
-									<p:column class="janal-column-center MarAuto Responsive janal-wid-col-50" headerText="Estatus">
+									<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-50" headerText="Estatus">
 										<h:graphicImage library="janal" name="icon/semaforos/#{filtro.antes eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Empleado #{filtro.idActivo eq '1' ? '': 'NO '}activo"/>
 									</p:column>										
 									<f:facet name="footer">

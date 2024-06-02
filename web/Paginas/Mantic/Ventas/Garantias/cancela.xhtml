@@ -105,31 +105,31 @@
             <p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" style="height:250px !important;" columnClasses="janal-wid-80, janal-wid-20">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">
                 <p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCancela.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
-                  <p:column class="MarAuto Responsive janal-wid-3">
+                  <p:column styleClass="MarAuto Responsive janal-wid-3">
                     <f:facet name="header">
                       <h:outputText value="No."/>
                     </f:facet>
                     <h:outputText value="#{index+ 1}.-"/>
                   </p:column>		
-                  <p:column class="MarAuto Responsive janal-wid-10">
+                  <p:column styleClass="MarAuto Responsive janal-wid-10">
                     <f:facet name="header">
                       <h:outputText value="Código"/>
                     </f:facet>
                     <h:outputText value="#{row['propio']}"/>
                   </p:column>
-                  <p:column class="MarAuto Responsive">
+                  <p:column styleClass="MarAuto Responsive">
                     <f:facet name="header">
                       <h:outputText value="Articulo"/>
                     </f:facet>
                     <h:outputText id="nombres" value="[#{row['stock']}] [#{row['propio']}] #{row['nombre']}" title="Código: #{row['propio']}, Fabricante: #{row['fabricante']}, Existencias almacen: #{row['stock']}" escape="false" styleClass="#{row['idAutomatico'] eq 1? 'janal-color-red': 'janal-color-green'}"/>
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
                     <f:facet name="header">
                       <h:outputText value="Cantidad"/>
                     </f:facet>
                     <p:outputLabel value="#{row['cantidad']}"/>
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
                     <f:facet name="header">
                       <h:outputText value="Precio"/>
                     </f:facet>
@@ -142,19 +142,19 @@
                        </div>
                     </div>									
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
                     <f:facet name="header">
                       <h:outputText value="Descuento %"/>
                     </f:facet>
                     <p:outputLabel value="#{row['descuentoDescripcion']}" title="#{row['descuentoDescripcion']}"/>
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
                     <f:facet name="header">
                       <h:outputText value="Unidad medida"/>
                     </f:facet>
                     <p:outputLabel value="#{row['unidadMedida']}"/>
                   </p:column>		
-                  <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                  <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
                     <f:facet name="header">
                       <h:outputText value="Importe"/>
                     </f:facet>

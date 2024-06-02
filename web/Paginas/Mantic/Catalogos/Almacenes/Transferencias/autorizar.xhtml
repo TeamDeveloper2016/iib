@@ -99,7 +99,7 @@
                   <p:column>
 										<h:outputText value="#{index+ 1}.-"/>
 									</p:column>													
-									<p:column class="janal-column-center">
+									<p:column styleClass="janal-column-center">
 										<p:commandLink action="#{manticCatalogosAlmacenesTransferenciasAutorizar.doConfronta}">
 											<f:setPropertyActionListener target="#{manticCatalogosAlmacenesTransferenciasAutorizar.attrs.idConfronta}" value="#{row.idProveedor}"/>
   										<h:outputText value="#{row['origen']}"/>
@@ -112,27 +112,27 @@
 									<p:column sortBy="#{row.nombre}">
 										<h:outputText value="#{row['nombre']}"/>
 									</p:column>		
-                  <p:column class="costos janal-column-right MarAuto Responsive janal-wid-12">
+                  <p:column styleClass="costos janal-column-right MarAuto Responsive janal-wid-12">
 										<h:outputText value="#{row['solicitados']}"/>
                     <p:inputText id="total" value="#{row['solicitados']}" style="display: none"/>
                     <!-- Solicitaron -->
                   </p:column>	
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
+									<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
 										<h:outputText value="#{row['cantidad']}"/>
                     <!-- Recibieron -->
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
+									<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
                     <span class="janal-icons-header janal-color-blue">(#{row['stock']})</span>
                     <p:spinner id="cuantos" value="#{row['cuantos']}" styleClass="janal-wid-60 filas" size="12" stepFactor="1.0" min="#{row['solicitados']* -1.0}" max="#{row['solicitados']}"/>
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
+									<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10 janal-font-bold">
 										<span class="janal-icons-header janal-color-orange">(#{row['valor']})</span>
                     <p:spinner id="cantidad" value="#{row['descuentos']}" styleClass="janal-wid-60 filas" size="12" stepFactor="1.0" min="#{row['solicitados']* -1.0}" max="#{row['solicitados']}"/>
 									</p:column>		
-									<p:column class="janal-column-center MarAuto Responsive janal-wid-10 janal-font-bold">
+									<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10 janal-font-bold">
 										<p:spinner id="factor" value="#{row['excedentes']}" styleClass="janal-wid-80 filas" size="12" stepFactor="1.0" min="0" max="#{row['solicitados']}"/>
 									</p:column>		
-									<p:column class="janal-column-center MarAuto Responsive janal-wid-12 janal-font-bold">
+									<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-12 janal-font-bold">
                     <p:inputText id="observaciones" value="#{row['sat']}" styleClass="janal-wid-100-txt"/>
                     <p:inputText id="idAplicar" value="#{row.ikAplicar}" converter="janal.convertidor.Entity" style="display:none"/>
 									</p:column>		

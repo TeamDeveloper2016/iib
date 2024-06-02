@@ -65,25 +65,25 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.codigo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
               <h:outputText value="#{filtro['codigo']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-35" sortBy="#{filtro.nombre}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-35" sortBy="#{filtro.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{filtro['nombre']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-25" sortBy="#{filtro.descripcion}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-25" sortBy="#{filtro.descripcion}">
               <f:facet name="header">
                 <h:outputText value="Descripción"/>
               </f:facet>
               <h:outputText value="#{filtro['descripcion']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.precio}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.precio}">
               <f:facet name="header">
                 <h:outputText value="Precio"/>
               </f:facet>

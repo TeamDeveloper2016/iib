@@ -24,43 +24,43 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.archivo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.archivo}">
               <f:facet name="header">
                 <h:outputText value="Archivo"/>
               </f:facet>
               <h:outputText value="#{row['archivo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.jusitificacion}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.jusitificacion}">
               <f:facet name="header">
                 <h:outputText value="Jusitificación"/>
               </f:facet>
               <h:outputText value="#{row['justificacion']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.nombre}">
+            <p:column styleClass="MarAuto Responsive janal-wid-20" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Usuario"/>
               </f:facet>
               <h:outputText value="&lt;i class='fa fa-fw fa-user'&gt;&lt;/i&gt; #{row['nombre']}" escape="false"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.tuplas}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.tuplas}">
               <f:facet name="header">
                 <h:outputText value="Filas"/>
               </f:facet>
               <h:outputText value="#{row['tuplas']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.procesados}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.procesados}">
               <f:facet name="header">
                 <h:outputText value="Procesados"/>
               </f:facet>
               <h:outputText value="#{row['procesados']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>

@@ -79,7 +79,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("idCierreAnterior", JsfBase.getFlashAttribute("idCierreAnterior"));
-			this.toLoadCatalog();
+			this.toLoadCatalogos();
       if(this.attrs.get("idCierreAnterior")!= null && this.attrs.get("idCierre")!= null) 
 			  this.doPrintCorte();
       if(this.attrs.get("idCierre")!= null) 
@@ -165,7 +165,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;		
 	}
 	
-	private void toLoadCatalog() {
+	private void toLoadCatalogos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {

@@ -112,61 +112,61 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	  
-            <p:column class="MarAuto Responsive janal-wid-18" sortBy="#{row.nombreEmpresa}" rendered="false">
+            <p:column styleClass="MarAuto Responsive janal-wid-18" sortBy="#{row.nombreEmpresa}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
               <h:outputText value="#{row['nombreEmpresa']}"/>
             </p:column>																
-            <p:column class="MarAuto Responsive janal-wid-18" sortBy="#{row.almacen}" rendered="false">
+            <p:column styleClass="MarAuto Responsive janal-wid-18" sortBy="#{row.almacen}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Almacen"/>
               </f:facet>
               <h:outputText value="#{row['almacen']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.codigo}">
+            <p:column styleClass="MarAuto Responsive janal-wid-13" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
               <h:outputText value="#{row['codigo']}" title="Sucursal: #{row['nombreEmpresa']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Articulo"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}" title="Almacen: #{row['almacen']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.conteo}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.conteo}">
               <f:facet name="header">
                 <h:outputText value="Conteo"/>
               </f:facet>
               <h:outputText value="#{row['conteo']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
               <f:facet name="header">
                 <h:outputText value="Conteo previo"/>
               </f:facet>
               <h:outputText value="#{row['conteoPrevio']}"/>
             </p:column>		
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10">
               <f:facet name="header">
                 <h:outputText value="Fecha previa"/>
               </f:facet>
               <h:outputText value="#{row['fechaPrevia']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.minimo}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.minimo}">
               <f:facet name="header">
                 <h:outputText value="Mínimo"/>
               </f:facet>
               <h:outputText value="#{row['minimo']}"/>
             </p:column>		            
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.maximo}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.maximo}">
               <f:facet name="header">
                 <h:outputText value="Máximo"/>
               </f:facet>

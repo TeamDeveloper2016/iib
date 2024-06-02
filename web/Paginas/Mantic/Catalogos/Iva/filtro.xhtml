@@ -50,19 +50,19 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.usuario}">
               <f:facet name="header">
                 <h:outputText value="Usuario"/>
               </f:facet>
               <h:outputText value="#{row['usuario']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-20" sortBy="#{row.registro}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-20" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>

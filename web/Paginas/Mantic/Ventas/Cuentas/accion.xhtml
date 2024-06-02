@@ -122,7 +122,7 @@
 					<p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" style="height:350px !important;" columnClasses="janal-wid-80, janal-wid-20">					
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">					
 							<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCuentasAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
-								<p:column class="MarAuto Responsive janal-wid-3">
+								<p:column styleClass="MarAuto Responsive janal-wid-3">
 									<f:facet name="header">
 										<h:outputText value="No."/>
 									</f:facet>
@@ -170,14 +170,14 @@
 									</f:facet>
 									<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" title="Código: #{row['codigo']} , Existencias almacen: #{row['stock']}" escape="false"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
 									<f:facet name="header">
 										<h:outputText value="Cantidad"/>
 									</f:facet>
 									<p:outputLabel value="#{row['cantidad']}"/>
 									<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 								</p:column>		
-								<p:column class="MarAuto Responsive janal-wid-10">
+								<p:column styleClass="MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
 										<h:outputText value="Precio"/>
 									</f:facet>
@@ -192,20 +192,20 @@
 										 </div>
 									</div>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
 										<h:outputText value="% Descuento"/>
 									</f:facet>
 									<p:outputLabel value="#{row['descuentoDescripcion']}"/>
 									<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-5">
 									<f:facet name="header">
 										<h:outputText value="Unidad medida"/>
 									</f:facet>
 									<p:outputLabel value="#{row['unidadMedida']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
 									<f:facet name="header">
 										<h:outputText value="$ Importe"/>
 									</f:facet>

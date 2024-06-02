@@ -115,25 +115,25 @@
                 <p:commandButton icon="fa fa-download" title="Descargar XML/PDF" onstart="return janal.bloquear()" process="@this" action="facturas?faces-redirect=true" oncomplete="janal.desbloquear();" immediate="true"/>
               </div>
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
               <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.consecutivo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Nota crédito"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.nombre}">
+            <p:column styleClass="MarAuto Responsive janal-wid-13" sortBy="#{filtro.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{filtro['nombre']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13">
               <f:facet name="header">
                 <h:outputText value="Consecutivo"/>
               </f:facet>
@@ -147,25 +147,25 @@
 							</p:commandLink>	
 							<h:outputText value="#{filtro['proveedor']}" rendered="#{filtro.idTipoCreditoNota eq '3'}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-13" sortBy="#{filtro.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{filtro['estatus']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.folio}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{filtro.folio}">
               <f:facet name="header">
                 <h:outputText value="Folio"/>
               </f:facet>
               <h:outputText value="#{filtro['folio']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13 janal-column-right" sortBy="#{filtro.total}">
+            <p:column styleClass="MarAuto Responsive janal-wid-13 janal-column-right" sortBy="#{filtro.total}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{filtro['importe']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13 janal-column-center" sortBy="#{filtro.registro}">
+            <p:column styleClass="MarAuto Responsive janal-wid-13 janal-column-center" sortBy="#{filtro.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>

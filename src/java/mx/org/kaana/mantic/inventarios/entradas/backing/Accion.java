@@ -150,7 +150,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Inventarios/Entradas/filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
@@ -1044,45 +1044,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // finally
 		return (List<UISelectEntity>)this.attrs.get("articulos");
 	}	
- 
-  @Override
-	public void doUpdateDialogArticulos(String codigo) {
-		List<Columna> columns     = new ArrayList<>();
-    Map<String, Object> params= new HashMap<>();
-		boolean buscaPorCodigo    = Boolean.FALSE;
-    try {
-      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-			params.put("precioCliente", "menudeo");
-			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
-  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			params.put("idCliente", this.getAdminOrden().getIdCliente());
-			if(!Cadena.isVacio(codigo)) {
-				buscaPorCodigo= codigo.startsWith(".");
-				if(buscaPorCodigo)
-					codigo= codigo.trim().substring(1);
-			} // if	
-			else
-				codigo= "WXYZ";
-			params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*"));
-  		params.put("idArticuloTipo", this.attrs.get("idArticuloTipo"));	
-			if(buscaPorCodigo)
-        this.attrs.put("lazyModel", new FormatCustomLazy("VistaPrecioClienteDto", "porCodigo", params, columns));
-			else
-        this.attrs.put("lazyModel", new FormatCustomLazy("VistaPrecioClienteDto", "porNombre", params, columns));
-		} // try
-	  catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    } // finally
-	}
-  
+
   public void doAdd() {
     List<UISelectItem> contratistas= (List<UISelectItem>)this.attrs.get("contratistas");
     try {

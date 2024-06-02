@@ -78,37 +78,37 @@
                 <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosConsulta.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-15">
+            <p:column styleClass="MarAuto Responsive janal-wid-15">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
               <h:outputText value="#{row['empresa']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive">
+            <p:column styleClass="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Clasificación"/>
               </f:facet>
               <h:outputText value="#{row['clasificacion']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8 janal-column-right">
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">
               <f:facet name="header">
                 <h:outputText value="Mes actual"/>
               </f:facet>
               <h:outputText value="#{row['actual']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-5" exportable="false">
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5" exportable="false">
               <f:facet name="header">
                 <h:outputText value="..."/>
               </f:facet>
               <p:commandButton icon="fa fa-search" process="@this" update="detalle" actionListener="#{kalanGastosConsulta.doView(row, row.fechaActual)}" title="Ver detalle" rendered="#{row.idKey.toLong() ne 997 and row.idKey.toLong() ne 999}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8 janal-column-right">
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">
               <f:facet name="header">
                 <h:outputText value="Mes anterior"/>
               </f:facet>
               <h:outputText value="#{row['anterior']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-5" exportable="false">
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5" exportable="false">
               <f:facet name="header">
                 <h:outputText value="..."/>
               </f:facet>
@@ -133,31 +133,31 @@
                 <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-column-center janal-wid-8" sortBy="#{row.fechaAplicacion}">
+            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8" sortBy="#{row.fechaAplicacion}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{row['fechaAplicacion']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.clasificacion}">
+            <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.clasificacion}">
               <f:facet name="header">
                 <h:outputText value="Clasificación"/>
               </f:facet>
               <h:outputText value="#{row['clasificacion']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.subclasificacion}">
+            <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.subclasificacion}">
               <f:facet name="header">
                 <h:outputText value="Sub clasificación"/>
               </f:facet>
               <h:outputText value="#{row['subclasificacion']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.observaciones}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.observaciones}">
               <f:facet name="header">
                 <h:outputText value="Observaciones"/>
               </f:facet>
               <h:outputText value="#{row['observaciones']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">
               <f:facet name="header">
                 <h:outputText value="Total"/>
               </f:facet>

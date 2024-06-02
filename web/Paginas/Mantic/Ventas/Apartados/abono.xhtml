@@ -85,31 +85,31 @@
                 <p:commandButton id="ticket" icon="fa fa-file-text-o" title="Ticket" onstart="return janal.bloquear()" process="@this" actionListener="#{manticVentasApartadosAbono.doBeforeTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();"/>
 							</div>  
 						</f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.tipoPago}">
+						<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.tipoPago}">
 							<f:facet name="header">
 								<h:outputText value="Tipo pago"/>
 							</f:facet>
 							<h:outputText value="#{filtro['tipoPago']}"/>
 						</p:column>			
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
 							<f:facet name="header">
 								<h:outputText value="Abonos"/>
 							</f:facet>
 							<h:outputText value="#{filtro['pago']}"/>
 						</p:column>				
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
 							<f:facet name="header">
 								<h:outputText value="Usuario"/>
 							</f:facet>
 							<h:outputText value="#{filtro['persona']}"/>
 						</p:column>																							
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
 							<f:facet name="header">
 								<h:outputText value="Observaciones"/>
 							</f:facet>
 							<h:outputText value="#{filtro['observaciones']}"/>
 						</p:column>																							
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>

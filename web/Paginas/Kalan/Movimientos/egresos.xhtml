@@ -121,45 +121,45 @@
                 <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Consecutivo"/>
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.empresa}">
+            <p:column styleClass="MarAuto Responsive janal-wid-13" sortBy="#{row.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
               <h:outputText value="#{row['empresa']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.cuenta}">
+            <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.cuenta}">
               <f:facet name="header">
                 <h:outputText value="Cuenta"/>
               </f:facet>
               <h:outputText value="#{row['cuenta']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{row.concepto}">
+            <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.concepto}">
               <f:facet name="header">
                 <h:outputText value="Concepto"/>
               </f:facet>
               <h:outputText value="#{row['concepto']}"/>
               <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}"></i>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fechaAplicacion}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fechaAplicacion}">
               <f:facet name="header">
                 <h:outputText value="Fecha aplicación"/>
               </f:facet>
               <h:outputText value="#{row['fechaAplicacion']}"/>
               <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Justificación: #{row['justificacion']}"></i>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">
               <f:facet name="header">
                 <h:outputText value="Total"/>
               </f:facet>
               <h:outputText value="#{row['total']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>

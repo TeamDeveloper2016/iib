@@ -225,31 +225,31 @@
 			<p:dataTable lazy="true" id="verificadorTabla" widgetVar="widgetVerificador" var="row" styleClass="janal-row-verificador janal-wid-100" value="#{kajoolEncabezado.lazyModel}" selection="#{kajoolEncabezado.attrs.selected}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
 				<p:ajax event="rowSelect" process="@this" update="verificadorPrecio" listener="#{kajoolEncabezado.doRowDblSelectEvent}" />
 				<p:ajax event="rowDblselect" process="@this" update="verificadorPrecio" listener="#{kajoolEncabezado.doRowDblSelectEvent}" oncomplete="jsPrecios.show();"/>
-				<p:column class="MarAuto Responsive janal-wid-col-30">
+				<p:column styleClass="MarAuto Responsive janal-wid-col-30">
 					<f:facet name="header">
 						<h:outputText value="No."/>
 					</f:facet>
 					<h:outputText value="#{index+ 1}.-"/>
 				</p:column>		
-				<p:column class="MarAuto Responsive janal-wid-20">
+				<p:column styleClass="MarAuto Responsive janal-wid-20">
 					<f:facet name="header">
 						<h:outputText value="C&oacute;digo"/>
 					</f:facet>
 					<h:outputText value="#{row['propio']}"/>
 				</p:column>		
-				<p:column class="MarAuto Responsive">
+				<p:column styleClass="MarAuto Responsive">
 					<f:facet name="header">
 						<h:outputText value="Nombre"/>
 					</f:facet>
 					<h:outputText value="#{row['nombre']}"/>
 				</p:column>		
-				<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
+				<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15">
 					<f:facet name="header">
 						<h:outputText value="Importe"/>
 					</f:facet>
 					<h:outputText value="#{row['menudeo']}"/>
 				</p:column>		
-				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+				<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Stock"/>
 					</f:facet>
@@ -334,37 +334,37 @@
 						<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsFaltantes', 'faltantesTabla')" oncomplete="janal.desbloquear()"/>
 					</div>  
 				</f:facet>	            
-				<p:column class="MarAuto Responsive janal-wid-col-15">
+				<p:column styleClass="MarAuto Responsive janal-wid-col-15">
 					<f:facet name="header">
 						<h:outputText value="No."/>
 					</f:facet>
 					<h:outputText value="#{index+ 1}.-"/>
 				</p:column>		
-				<p:column class="MarAuto Responsive janal-wid-13">
+				<p:column styleClass="MarAuto Responsive janal-wid-13">
 					<f:facet name="header">
 						<h:outputText value="C&oacute;digo"/>
 					</f:facet>
 					<h:outputText value="#{row['codigo']}"/>
 				</p:column>		
-				<p:column class="MarAuto Responsive">
+				<p:column styleClass="MarAuto Responsive">
 					<f:facet name="header">
 						<h:outputText value="Nombre"/>
 					</f:facet>
 					<h:outputText value="#{row['nombre']}"/>
 				</p:column>		
-				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+				<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Cantidad"/>
 					</f:facet>
 					<h:outputText value="#{row['cantidad']}"/>
 				</p:column>		
-				<p:column class="MarAuto Responsive">
+				<p:column styleClass="MarAuto Responsive">
 					<f:facet name="header">
 						<h:outputText value="Usuario"/>
 					</f:facet>
 					<h:outputText value="#{row['usuario']}"/>
 				</p:column>		
-				<p:column class="janal-column-center MarAuto Responsive janal-wid-15">
+				<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15">
 					<f:facet name="header">
 						<h:outputText value="Registro"/>
 					</f:facet>
@@ -482,37 +482,37 @@
 				</p:panelGrid>	
 			</p:panelGrid>
 			<p:dataTable lazy="true" id="listaPreciosTabla" widgetVar="widgetListaPrecios" var="row" styleClass="janal-row-lista janal-wid-100" value="#{kajoolEncabezado.lazyListaPrecios}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
-				<p:column class="MarAuto Responsive janal-wid-col-30">
+				<p:column styleClass="MarAuto Responsive janal-wid-col-30">
 					<f:facet name="header">
 						<h:outputText value="No."/>
 					</f:facet>
 					<h:outputText value="#{index+ 1}.-"/>
 				</p:column>		
-				<p:column class="MarAuto Responsive janal-wid-10">
+				<p:column styleClass="MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="C&oacute;digo"/>
 					</f:facet>
 					<h:outputText value="#{row['codigo']}"/>
 				</p:column>		
-				<p:column class="MarAuto Responsive janal-wid-10">
+				<p:column styleClass="MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Auxiliar"/>
 					</f:facet>
 					<h:outputText value="#{row['auxiliar']}"/>
 				</p:column>		
-				<p:column class="MarAuto Responsive">
+				<p:column styleClass="MarAuto Responsive">
 					<f:facet name="header">
 						<h:outputText value="Nombre"/>
 					</f:facet>
 					<h:outputText value="#{row['descripcion']}"/>
 				</p:column>		
-				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+				<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Costo"/>
 					</f:facet>
 					<h:outputText value="#{row['costo']}"/>
 				</p:column>		
-				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+				<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Precio"/>
 					</f:facet>

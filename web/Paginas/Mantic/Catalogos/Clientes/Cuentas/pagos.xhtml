@@ -85,37 +85,37 @@
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</div>  
 						</f:facet>												
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="Ticket"/>
 							</f:facet>
 							<h:outputText value="#{filtro['consecutivo']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
 							<f:facet name="header">
 								<h:outputText value="Recibio pago"/>
 							</f:facet>
 							<h:outputText value="#{filtro['persona']}"/>
 						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
 							<h:outputText value="#{filtro['importe']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
 							<h:outputText value="#{filtro['saldo']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.pago}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.pago}">
 							<f:facet name="header">
 								<h:outputText value="Pago"/>
 							</f:facet>
 							<h:outputText value="#{filtro['pago']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>

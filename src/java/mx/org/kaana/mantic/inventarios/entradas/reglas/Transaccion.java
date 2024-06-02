@@ -33,6 +33,7 @@ import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasCostosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
@@ -188,15 +189,15 @@ public class Transaccion extends Inventarios implements Serializable {
 					regresar= this.toNotExistsArticulosBitacora(sesion);
 					if(regresar) {
 						this.toRemoveOrdenDetalle(sesion);
-						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasArchivosDto.class, params)>= 1L;
-						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
+						DaoFactory.getInstance().deleteAll(sesion, TcManticNotasCostosDto.class, params);
+						DaoFactory.getInstance().deleteAll(sesion, TcManticNotasArchivosDto.class, params);
+						DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params);
 						regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
             this.orden.setIdNotaEstatus(2L);
 						bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 						this.toCheckOrden(sesion);
             this.toCheckDeleteFile(sesion);
-       	    // this.toDeleteXmlPdf();	
 					} // if
 					else
        			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos";

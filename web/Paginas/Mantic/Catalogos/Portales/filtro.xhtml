@@ -86,26 +86,26 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.herramienta}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.herramienta}">
               <f:facet name="header">
                 <h:outputText value="Herramienta"/>
               </f:facet>
               <i class="fa fa-fw #{(index % 2) eq 0? 'fa-legal': 'fa-wrench'}"/><p:spacer width="5px"/>
               <h:outputText value="#{row['herramienta']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.marca}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.marca}">
               <f:facet name="header">
                 <h:outputText value="Marca"/>
               </f:facet>
               <h:outputText value="#{row['marca']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.modelo}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.modelo}">
               <f:facet name="header">
                 <h:outputText value="Modelo"/>
               </f:facet>
               <h:outputText value="#{row['modelo']}"/>
             </p:column>
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.url}">
+            <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.url}">
               <f:facet name="header">
                 <h:outputText value="Portal"/>
               </f:facet>

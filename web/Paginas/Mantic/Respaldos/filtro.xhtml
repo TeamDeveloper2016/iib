@@ -77,31 +77,31 @@
                 <p:commandButton icon="fa fa-database" value="Respaldar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dlgObs').show();" update="dialogoObservacion"/>
 							</div>  
 						</f:facet>												
-						<p:column class="MarAuto Responsive janal-wid-25" sortBy="#{filtro.nombre}">
+						<p:column styleClass="MarAuto Responsive janal-wid-25" sortBy="#{filtro.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Respaldo"/>
 							</f:facet>
 							<h:outputText value="#{filtro['nombre']}" title="#{filtro['nombre']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-25" sortBy="#{filtro.persona}">
+						<p:column styleClass="MarAuto Responsive janal-wid-25" sortBy="#{filtro.persona}">
 							<f:facet name="header">
 								<h:outputText value="Realizó el respaldo"/>
 							</f:facet>
 							<h:outputText value="#{filtro['persona']}"/>
 						</p:column>					
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
 							<f:facet name="header">
 								<h:outputText value="Observaciones"/>
 							</f:facet>
 							<h:outputText value="#{filtro['observaciones']}"/>
 						</p:column>					
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>
 							<h:outputText value="#{filtro['registro']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.eliminado}">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.eliminado}">
 							<f:facet name="header">
 								<h:outputText value="Eliminado"/>
 							</f:facet>

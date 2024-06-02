@@ -101,39 +101,39 @@
 										<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</div>  
 								</f:facet>												
-								<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.tipoPago}">
+								<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.tipoPago}">
 									<f:facet name="header">
 										<h:outputText value="Tipo pago"/>
 									</f:facet>
 									<h:outputText value="#{filtro['tipoPago']}"/>
 								</p:column>			
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.pago}">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.pago}">
 									<f:facet name="header">
 										<h:outputText value="Pago"/>
 									</f:facet>
                   <i class="fa fa-fw fa-calendar janal-color-blue janal-icons-header" title="Fecha pago: #{filtro['fechaPago']}"></i>
 									<h:outputText value="#{filtro['pago']}"/>
 								</p:column>				
-								<p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.persona}">
+								<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.persona}">
 									<f:facet name="header">
 										<h:outputText value="Usuario"/>
 									</f:facet>
 									<h:outputText value="#{filtro['persona']}"/>
 								</p:column>																							
-                <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}" rendered="false">
+                <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}" rendered="false">
 									<f:facet name="header">
 										<h:outputText value="Observaciones"/>
 									</f:facet>
 									<h:outputText value="#{filtro['observaciones']}"/>
 								</p:column>																							
-								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.comentarios}">
+								<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.comentarios}">
 									<f:facet name="header">
 										<h:outputText value="Historial"/>
 									</f:facet>
                   <i class="fa fa-fw fa-comments janal-color-blue janal-icons-header" title="Observaciones: #{filtro['observaciones']}"></i>
 									<h:outputText value="#{filtro['comentarios']}"/>
 								</p:column>																							
-                <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}" rendered="false">
+                <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}" rendered="false">
 									<f:facet name="header">
 										<h:outputText value="Fecha"/>
 									</f:facet>

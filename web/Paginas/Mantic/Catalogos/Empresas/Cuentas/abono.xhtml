@@ -104,31 +104,31 @@
 										<p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</div>  
 								</f:facet>												
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
+								<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
 									<f:facet name="header">
 										<h:outputText value="Pago"/>
 									</f:facet>
 									<h:outputText value="#{filtro['pago']}"/>
 								</p:column>														
-								<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombre}">
+								<p:column styleClass="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombre}">
 									<f:facet name="header">
 										<h:outputText value="Forma de pago"/>
 									</f:facet>
 									<h:outputText value="#{filtro['nombre']}"/>
 								</p:column>														
-								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+								<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
 									<f:facet name="header">
 										<h:outputText value="Usuario"/>
 									</f:facet>
 									<h:outputText value="#{filtro['persona']}"/>
 								</p:column>																							
-								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
+								<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
 									<f:facet name="header">
 										<h:outputText value="Observaciones"/>
 									</f:facet>
 									<h:outputText value="#{filtro['observaciones']}"/>
 								</p:column>																							
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
 									<f:facet name="header">
 										<h:outputText value="Fecha"/>
 									</f:facet>
@@ -139,7 +139,7 @@
 										<f:setPropertyActionListener value="#{filtro}" target="#{manticCatalogosEmpresasCuentasAbono.attrs.pagoEgreso}" />
 									</p:commandButton>
 								</p:column>
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+								<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-38">
 									<h:graphicImage library="janal" name="icon/semaforos/#{filtro.idEgreso eq '0' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Pago #{filtro.idEgreso eq '0' ? 'NO': ''} asociado a un egreso."/>
 								</p:column>
 								<f:facet name="footer">
@@ -301,25 +301,25 @@
 					<p:outputLabel for="tablaCreditos" value="Notas de credito"/>
 					<p:dataTable lazy="true" id="tablaNotas" var="filtro" value="#{manticCatalogosEmpresasCuentasAbono.notasEntradaFavor}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="4" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="4" selection="#{manticCatalogosEmpresasCuentasAbono.seleccionadosNotas}" paginator="#{manticCatalogosEmpresasCuentasAbono.notasEntradaFavor.rowCount gt manticCatalogosEmpresasCuentasAbono.notasEntradaFavor.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
 						<p:column selectionMode="multiple" style="width:30px;text-align:center"/>							
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="No."/>
 							</f:facet>
 							<h:outputText value="#{filtro['consecutivo']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
 							<f:facet name="header">
 								<h:outputText value="Proveedor"/>
 							</f:facet>
 							<h:outputText value="#{filtro['persona']}"/>
 						</p:column>											
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.importe}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
 							<h:outputText value="#{filtro['importe']}"/>
 						</p:column>						
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.saldo}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo a favor"/>
 							</f:facet>
@@ -331,25 +331,25 @@
 					</p:dataTable>																			
 					<p:dataTable lazy="true" id="tablaCreditos" var="filtro" value="#{manticCatalogosEmpresasCuentasAbono.notasCreditoFavor}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="4" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="4" selection="#{manticCatalogosEmpresasCuentasAbono.seleccionadosCredito}" paginator="#{manticCatalogosEmpresasCuentasAbono.notasCreditoFavor.rowCount gt manticCatalogosEmpresasCuentasAbono.notasCreditoFavor.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">												
 						<p:column selectionMode="multiple" style="width:30px;text-align:center"/>							
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="No."/>
 							</f:facet>
 							<h:outputText value="#{filtro['consecutivo']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
 							<f:facet name="header">
 								<h:outputText value="Proveedor"/>
 							</f:facet>
 							<h:outputText value="#{filtro['persona']}"/>
 						</p:column>											
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.importe}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
 							<h:outputText value="#{filtro['importe']}"/>
 						</p:column>						
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.saldo}">
+						<p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>

@@ -75,13 +75,13 @@
               </div>  
             </f:facet>	            
             <p:column headerText="Fila" selectionMode="single" style="width:38px; text-align:center"/>
-						<p:column class="MarAuto Responsive janal-wid-3">
+						<p:column styleClass="MarAuto Responsive janal-wid-3">
 							<f:facet name="header">
 								<h:outputText value="No."/>
 							</f:facet>
 							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Orden compra"/>
               </f:facet>
@@ -90,19 +90,19 @@
                 <h:outputText value="#{row['consecutivo']}"/>
 							</p:commandLink>	
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
               <h:outputText value="#{row['codigo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}" title="Código propio: #{row['propio']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.costo}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.costo}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
@@ -119,25 +119,25 @@
 								 </div>
 							</div>	
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidad}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidad}">
               <f:facet name="header">
                 <h:outputText value="Cantidad"/>
               </f:facet>
               <h:outputText value="#{row['cantidad']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidades}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidades}">
               <f:facet name="header">
                 <h:outputText value="Faltantes [+/-]"/>
               </f:facet>
               <h:outputText value="#{row['cantidades']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importes}" rendered="#{manticComprasOrdenesDiferencias.attrs.tipoDiferencia ne 4}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importes}" rendered="#{manticComprasOrdenesDiferencias.attrs.tipoDiferencia ne 4}">
               <f:facet name="header">
                 <h:outputText value="Importe [+/-]"/>
               </f:facet>
@@ -178,13 +178,13 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-3">
+            <p:column styleClass="MarAuto Responsive janal-wid-3">
 							<f:facet name="header">
 								<h:outputText value="No."/>
 							</f:facet>
 							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Nota entrada"/>
               </f:facet>
@@ -193,19 +193,19 @@
                 <h:outputText value="#{row['consecutivo']}"/>
 							</p:commandLink>	
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
               <h:outputText value="#{row['codigo']}" title="Código SAT: #{row['sat']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}" title="Código propio: #{row['propio']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.costoCalculado}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.costoCalculado}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
@@ -219,31 +219,31 @@
 								 </div>
 							</div>	
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
               <f:facet name="header">
                 <h:outputText value="Cantidad"/>
               </f:facet>
               <h:outputText value="#{row['cantidad']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.diferencia}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.diferencia}">
               <f:facet name="header">
                 <h:outputText value="Cantidad [+/-]"/>
               </f:facet>
               <h:outputText value="#{row['diferencia']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-50">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-col-50">
 							<f:facet name="header">
 								<h:outputText value="Afectar" title="Ajustar el costo en caso de ser menor al que se tiene registrado"/>
 							</f:facet>

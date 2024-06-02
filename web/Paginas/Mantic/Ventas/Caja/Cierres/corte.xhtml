@@ -43,43 +43,43 @@
 							<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 						</div>  
 					</f:facet>	            
-					<p:column class="MarAuto Responsive janal-wid-col-40">
+					<p:column styleClass="MarAuto Responsive janal-wid-col-40">
 						<f:facet name="header">
 							<h:outputText value="No."/>
 						</f:facet>
 						<h:outputText value="#{index+ 1}.-"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive janal-wid-10">
+					<p:column styleClass="MarAuto Responsive janal-wid-10">
 						<f:facet name="header">
 							<h:outputText value="Ticket"/>
 						</f:facet>
 						<h:outputText value="#{row['ticket']}"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive">
+					<p:column styleClass="MarAuto Responsive">
 						<f:facet name="header">
 							<h:outputText value="Vendedor"/>
 						</f:facet>
 						<h:outputText value="#{row['vendedor']}"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive janal-wid-10">
+					<p:column styleClass="MarAuto Responsive janal-wid-10">
 						<f:facet name="header">
 							<h:outputText value="Estatus"/>
 						</f:facet>
 						<h:outputText value="#{row['estatus']}"/>
 					</p:column>		
-					<p:column class="MarAuto janal-column-right Responsive janal-wid-13">
+					<p:column styleClass="MarAuto janal-column-right Responsive janal-wid-13">
 						<f:facet name="header">
 							<h:outputText value="Importe ($)"/>
 						</f:facet>
 						<h:outputText value="#{row['importe']}"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive janal-wid-10">
+					<p:column styleClass="MarAuto Responsive janal-wid-10">
 						<f:facet name="header">
 							<h:outputText value="Medio pago"/>
 						</f:facet>
 						<h:outputText value="#{row['medioPago']}"/>
 					</p:column>		
-					<p:column class="janal-column-center MarAuto Responsive janal-wid-13">
+					<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13">
 						<f:facet name="header">
 							<h:outputText value="Fecha"/>
 						</f:facet>
@@ -104,43 +104,43 @@
 							<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'retiros')" oncomplete="janal.desbloquear()"/>
 						</div>  
 					</f:facet>	            
-					<p:column class="MarAuto Responsive janal-wid-col-40">
+					<p:column styleClass="MarAuto Responsive janal-wid-col-40">
 						<f:facet name="header">
 							<h:outputText value="No."/>
 						</f:facet>
 						<h:outputText value="#{index+ 1}.-"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive janal-wid-10">
+					<p:column styleClass="MarAuto Responsive janal-wid-10">
 						<f:facet name="header">
 							<h:outputText value="Consecutivo"/>
 						</f:facet>
 						<h:outputText value="#{row['consecutivo']}"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive">
+					<p:column styleClass="MarAuto Responsive">
 						<f:facet name="header">
 							<h:outputText value="Cajero"/>
 						</f:facet>
 						<h:outputText value="#{row['nombre']}"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive">
+					<p:column styleClass="MarAuto Responsive">
 						<f:facet name="header">
 							<h:outputText value="Concepto"/>
 						</f:facet>
 						<h:outputText value="#{row['concepto']}"/>
 					</p:column>		
-					<p:column class="MarAuto janal-column-right Responsive janal-wid-13">
+					<p:column styleClass="MarAuto janal-column-right Responsive janal-wid-13">
 						<f:facet name="header">
 							<h:outputText value="Importe ($)"/>
 						</f:facet>
 						<h:outputText value="#{row['importe']}"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive janal-wid-10">
+					<p:column styleClass="MarAuto Responsive janal-wid-10">
 						<f:facet name="header">
 							<h:outputText value="Tipo"/>
 						</f:facet>
 						<h:outputText value="#{row['tipo']}"/>
 					</p:column>		
-					<p:column class="janal-column-center MarAuto Responsive janal-wid-13">
+					<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13">
 						<f:facet name="header">
 							<h:outputText value="Fecha"/>
 						</f:facet>
@@ -165,37 +165,37 @@
 							<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'devoluciones')" oncomplete="janal.desbloquear()"/>
 						</div>  
 					</f:facet>	            
-					<p:column class="MarAuto Responsive janal-wid-col-40">
+					<p:column styleClass="MarAuto Responsive janal-wid-col-40">
 						<f:facet name="header">
 							<h:outputText value="No."/>
 						</f:facet>
 						<h:outputText value="#{index+ 1}.-"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive janal-wid-10">
+					<p:column styleClass="MarAuto Responsive janal-wid-10">
 						<f:facet name="header">
 							<h:outputText value="Consecutivo"/>
 						</f:facet>
 						<h:outputText value="#{row['consecutivo']}"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive">
+					<p:column styleClass="MarAuto Responsive">
 						<f:facet name="header">
 							<h:outputText value="Cajero"/>
 						</f:facet>
 						<h:outputText value="#{row['nombre']}"/>
 					</p:column>		
-					<p:column class="MarAuto janal-column-right Responsive janal-wid-13">
+					<p:column styleClass="MarAuto janal-column-right Responsive janal-wid-13">
 						<f:facet name="header">
 							<h:outputText value="Importe ($)"/>
 						</f:facet>
 						<h:outputText value="#{row['importe']}"/>
 					</p:column>		
-					<p:column class="MarAuto Responsive janal-wid-10">
+					<p:column styleClass="MarAuto Responsive janal-wid-10">
 						<f:facet name="header">
 							<h:outputText value="Estatus"/>
 						</f:facet>
 						<h:outputText value="#{row['estatus']}"/>
 					</p:column>		
-					<p:column class="janal-column-center MarAuto Responsive janal-wid-13">
+					<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-13">
 						<f:facet name="header">
 							<h:outputText value="Fecha"/>
 						</f:facet>

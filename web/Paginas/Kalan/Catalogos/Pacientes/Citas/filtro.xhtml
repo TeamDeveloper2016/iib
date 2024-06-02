@@ -59,25 +59,25 @@
 								<p:commandButton title="Exportar XLS" icon="fa fa-file-excel-o" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
+            <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.cliente}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
               <h:outputText value="#{row['cliente']}"/>
             </p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.inicio}">
+						<p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.inicio}">
 							<f:facet name="header">
 								<h:outputText value="Horario"/>
 							</f:facet>
 							<h:outputText value="#{row['inicio']}"/>
 						</p:column>
-						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.motivo}">
+						<p:column styleClass="MarAuto Responsive janal-wid-20" sortBy="#{row.motivo}">
 							<f:facet name="header">
 								<h:outputText value="Motivo"/>
 							</f:facet>
 							<h:outputText value="#{row['motivo']}"/>
 						</p:column>
-						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.estatus}">
+						<p:column styleClass="MarAuto Responsive janal-wid-20" sortBy="#{row.estatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>

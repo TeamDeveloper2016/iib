@@ -180,7 +180,7 @@
                     <p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100-txt" style="height:380px !important;" columnClasses="janal-wid-80, janal-wid-20">
                       <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100" >					                    
                         <p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticTallerDetalle.adminOrden.articulos}" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas" paginator="#{manticTallerDetalle.attrs.paginator}" rows="#{manticTallerDetalle.rows}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_LOTE}">
-                          <p:column class="MarAuto Responsive janal-wid-3">
+                          <p:column styleClass="MarAuto Responsive janal-wid-3">
                             <f:facet name="header">
                               <h:outputText value="No."/>
                             </f:facet>
@@ -223,27 +223,27 @@
                               </div>	
                             </div>	
                           </p:column>		
-                          <p:column class="MarAuto Responsive">
+                          <p:column styleClass="MarAuto Responsive">
                             <f:facet name="header">
                               <h:outputText value="Articulo"/>
                             </f:facet>
                             <i class="janal-color-black janal-font-bold fa #{row.idComodin eq '1'? 'fa-cart-arrow-down':  row.idComodin eq '2'? 'fa-bitbucket': empty row.propio? 'fa-skyatlas': 'fa-bug'}" title="#{row.idComodin eq '1'? 'Articulo':  row.idComodin eq '2'? 'Refacción': empty row.propio? 'No definido': 'Servicio'}"></i><p:spacer width="3px"/>
                             <p:inputText id="nombres" value="#{row['nombre']}" styleClass="janal-wid-95 key-event-sat filas #{row.idAutomatico eq 1? row.stock le 1? 'janal-color-orange': 'janal-color-green': 'janal-color-red'}"/>
                           </p:column>		
-                          <p:column class="MarAuto Responsive janal-wid-8">
+                          <p:column styleClass="MarAuto Responsive janal-wid-8">
                             <f:facet name="header">
                               <h:outputText value="Propio"/>
                             </f:facet>
                             <p:outputLabel value="#{row['propio']}" title="Existencias almacen: #{row['stock']}" styleClass="#{row.idAutomatico eq 1? row.stock le 1? 'janal-color-orange': 'janal-color-green': 'janal-color-red'}"/>
                           </p:column>		
-                          <p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-8">
+                          <p:column styleClass="cantidades janal-column-right MarAuto Responsive janal-wid-8">
                             <f:facet name="header">
                               <h:outputText value="Cantidad"/>
                             </f:facet>
                             <p:outputLabel value="#{row['cantidad']}"/>
                             <p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
                           </p:column>		
-                          <p:column class="precios janal-column-right MarAuto Responsive janal-wid-8">
+                          <p:column styleClass="precios janal-column-right MarAuto Responsive janal-wid-8">
                             <f:facet name="header">
                               <h:outputText value="Precio"/>
                             </f:facet>
@@ -255,27 +255,27 @@
                               </div>	 
                             </div>	
                           </p:column>		
-                          <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                          <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
                             <f:facet name="header">
                               <h:outputText value="Descuento(%)"/>
                             </f:facet>
                             <p:outputLabel value="#{row['descuento']}"/>
                             <p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
                           </p:column>		
-                          <p:column class="janal-column-right MarAuto Responsive janal-wid-5">
+                          <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-5">
                             <f:facet name="header">
                               <h:outputText value="IVA"/>
                             </f:facet>
                             <p:outputLabel value="#{row['iva']}"/>
                             <h:outputText id="ivas" value="#{row['iva']}" styleClass="janal-wid-100-txt janal-column-right" style="display: none"/>
                           </p:column>		
-                          <p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+                          <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8">
                             <f:facet name="header">
                               <h:outputText value="$ Importe"/>
                             </f:facet>
                             <p:outputLabel value="#{row['importe$']}"/>
                           </p:column>		
-                          <p:column class="janal-column-right MarAuto Responsive janal-wid-col-38" rendered="false">
+                          <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-col-38" rendered="false">
                             <h:graphicImage library="janal" name="icon/semaforos/circulo-#{row.idComodin eq '1'? 'magenta':  row.idComodin eq '2'? 'naranja': empty row.propio? 'beige': 'cafe'}.png" title="#{row.idComodin eq '1'? 'Articulo':  row.idComodin eq '2'? 'Refacción': empty row.propio? 'No definido': 'Servicio'}"/>
                           </p:column>		
                         </p:dataTable>

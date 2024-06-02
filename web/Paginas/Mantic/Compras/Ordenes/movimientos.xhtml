@@ -24,43 +24,43 @@
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Consecutivo"/>
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-20" rendered="#{manticComprasOrdenesMovimientos.transporto}">
+            <p:column styleClass="MarAuto Responsive janal-wid-20" rendered="#{manticComprasOrdenesMovimientos.transporto}">
               <f:facet name="header">
                 <h:outputText value="Transportó"/>
               </f:facet>
               <h:outputText value="&lt;i class='fa fa-fw fa-user'&gt;&lt;/i&gt; #{manticComprasOrdenesMovimientos.doTransporto(row)}" escape="false"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.jusitificacion}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.jusitificacion}">
               <f:facet name="header">
                 <h:outputText value="Jusitificación"/>
               </f:facet>
               <h:outputText value="#{row['justificacion']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-20" sortBy="#{row.nombre}">
+            <p:column styleClass="MarAuto Responsive janal-wid-20" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Usuario"/>
               </f:facet>
               <h:outputText value="&lt;i class='fa fa-fw fa-user'&gt;&lt;/i&gt; #{row['nombre']}" escape="false"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}" rendered="#{manticComprasOrdenesMovimientos.importe}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}" rendered="#{manticComprasOrdenesMovimientos.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>

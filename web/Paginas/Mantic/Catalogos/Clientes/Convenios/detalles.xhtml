@@ -20,31 +20,31 @@
 						<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 						<p:commandButton styleClass="xs-pantalla" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
             </f:facet>	            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.archivo}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.archivo}">
               <f:facet name="header">
                 <h:outputText value="Archivo"/>
               </f:facet>
               <h:outputText value="#{row['archivo']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.tuplas}">
+            <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.tuplas}">
               <f:facet name="header">
                 <h:outputText value="Filas"/>
               </f:facet>
               <h:outputText value="#{row['tuplas']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
               <h:outputText value="#{row['codigo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{row.observaciones}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.observaciones}">
               <f:facet name="header">
                 <h:outputText value="Observaciones"/>
               </f:facet>
               <h:outputText value="#{row['observaciones']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+            <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>
