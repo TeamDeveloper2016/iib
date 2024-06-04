@@ -63,7 +63,7 @@ public class Filtro extends Comun implements Serializable {
     try {
     	this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("codigo", "");
-      this.attrs.put("idTipoArticulo", 1L);
+      this.attrs.put("idArticuloTipo", 1L);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
 			this.attrs.put("isGerente", JsfBase.isAdminEncuestaOrAdmin());
@@ -129,7 +129,7 @@ public class Filtro extends Comun implements Serializable {
 		Map<String, Object> regresar= new HashMap<>();
 		StringBuilder sb            = null;
 		try {
-			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idTipoArticulo")).append(" and ");			
+			sb= new StringBuilder("tc_mantic_articulos.id_articulo_tipo=").append(this.attrs.get("idArticuloTipo")).append(" and ");			
       if(!Cadena.isVacio(this.attrs.get("idArticuloProcess")) && !this.attrs.get("idArticuloProcess").toString().equals("-1")) 
         sb.append("tc_mantic_articulos.id_articulo=").append(this.attrs.get("idArticuloProcess")).append(" and ");
 			if(!Cadena.isVacio(JsfBase.getParametro("codigo_input")))
@@ -152,16 +152,6 @@ public class Filtro extends Comun implements Serializable {
 				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 			if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 				sb.append("(date_format(tc_mantic_articulos.actualizado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-			if(!Cadena.isVacio(this.attrs.get("idPerdida")) && !this.attrs.get("idPerdida").toString().equals("-1"))
-  			if(this.attrs.get("idPerdida").toString().equals("1"))
-    		  sb.append("(tc_mantic_articulos.precio>= tc_mantic_articulos.menudeo or tc_mantic_articulos.precio>= tc_mantic_articulos.mayoreo or tc_mantic_articulos.precio>= tc_mantic_articulos.medio_mayoreo) and ");
-			  else
-    		  sb.append("(tc_mantic_articulos.precio< tc_mantic_articulos.menudeo and tc_mantic_articulos.precio< tc_mantic_articulos.mayoreo and tc_mantic_articulos.precio< tc_mantic_articulos.medio_mayoreo) and ");
-			if(!Cadena.isVacio(this.attrs.get("idMenor10")) && !this.attrs.get("idMenor10").toString().equals("-1"))
-  			if(this.attrs.get("idMenor10").toString().equals("1"))
-    		  sb.append("(tc_mantic_articulos.menudeo< 10 and tc_mantic_articulos.id_redondear= 1) and ");
-			  else
-    		  sb.append("(tc_mantic_articulos.menudeo>= 10 and tc_mantic_articulos.id_redondear= 2) and ");
 			if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
   		  regresar.put("almacen", " and (tc_mantic_almacenes_articulos.id_almacen= "+ ((UISelectEntity)this.attrs.get("idAlmacen")).getKey()+ ")");
 			else

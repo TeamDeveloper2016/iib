@@ -136,11 +136,10 @@ public class Saldos extends IBaseImportar implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 	  Map<String, Object> params= null;	
     try {
   	  params = this.toPrepare();	
-      columns= new ArrayList<>();
       columns.add(new Columna("pagar", EFormatoDinamicos.MILES_CON_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));    
@@ -211,10 +210,9 @@ public class Saldos extends IBaseImportar implements Serializable {
 	}
   
  	protected void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       List<UISelectEntity> estatus= (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasEstatusDto", "row", params, columns, "nombre");
@@ -242,12 +240,10 @@ public class Saldos extends IBaseImportar implements Serializable {
 	
 	private void loadSucursales() {
 		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
+		List<Columna> columns          = new ArrayList<>();
+		Map<String, Object>params      = new HashMap<>();
 		String allEmpresa              = "";
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -283,13 +279,13 @@ public class Saldos extends IBaseImportar implements Serializable {
 	} // doPago	
   
   public void doReporte(String nombre) throws Exception{
-    Parametros comunes = null;
+    Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
 		try{		
-      params= toPrepare();
+      params= this.toPrepare();
       params.put("empresa", this.attrs.get("empresa"));
 			params.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
 			params.put("almacen", this.attrs.get("almacen"));			
@@ -347,6 +343,7 @@ public class Saldos extends IBaseImportar implements Serializable {
 		String regresar= null;
 		try {
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos");		
+			JsfBase.setFlashAttribute("idNotaEntrada",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
 			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
 			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionadoDetalle")).toString("idEmpresa"));
 			regresar= "prorroga".concat(Constantes.REDIRECIONAR);
@@ -363,8 +360,8 @@ public class Saldos extends IBaseImportar implements Serializable {
 		try {
 		  JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);		
 			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionadoDetalle")).getKey());
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", -1L);
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -406,11 +403,10 @@ public class Saldos extends IBaseImportar implements Serializable {
 	} // doEstructura
 	
 	public List<UISelectEntity> doCompleteProveedor(String codigo) {
- 		List<Columna> columns     = null;
+ 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -462,7 +458,7 @@ public class Saldos extends IBaseImportar implements Serializable {
 	}
 
   public void doLoadDetalle() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 	  Map<String, Object> params= null;	
     try {
   	  params = this.toPrepare();
@@ -470,7 +466,6 @@ public class Saldos extends IBaseImportar implements Serializable {
 			params.put("sortOrder", "order by consecutivo desc");
 			params.put("idProveedor", entity.toLong("idProveedor"));
 			this.attrs.put("idProveedor", entity.toLong("idProveedor"));
-      columns= new ArrayList<>();
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));    
@@ -515,14 +510,12 @@ public class Saldos extends IBaseImportar implements Serializable {
 	} // doRowTogglePagosRealizados
   
   public void doLoadDetallePagosRealizados() {
-    List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+    List<Columna> columns     = new ArrayList<>();
+	  Map<String, Object> params= new HashMap<>();	
     try {
-      params = new HashMap<>();      
 			Entity entity= (Entity)this.attrs.get("pagoRealizado");
 			params.put("sortOrder", "order by tc_mantic_empresas_pagos.registro desc");
 			params.put("idEmpresaPagoControl", entity.toLong("idEmpresaPagoControl"));
-      columns= new ArrayList<>();
       columns.add(new Columna("venta", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));      
 			this.lazyPagosRealizados= new FormatCustomLazy("VistaEmpresasDto", "detallePagosRealizados", params, columns);
@@ -539,16 +532,14 @@ public class Saldos extends IBaseImportar implements Serializable {
   }  
   
   public void doLoadPagosRealizados(Entity row) {
-    List<Columna> columns     = null;    
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
     try {      
       this.attrs.put("seleccionado", row);
-      params = new HashMap<>();      
       params.put("idProveedor", row.toLong("idProveedor"));      
       Periodo periodo= new Periodo();
       periodo.addMeses(-12);
       params.put("inicio", periodo.toString());      
-      columns = new ArrayList<>();
       columns.add(new Columna("pago", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       this.pagosRealizados = (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEmpresasDto", "pagosRealizados", params);

@@ -1,18 +1,9 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

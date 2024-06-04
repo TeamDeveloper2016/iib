@@ -26,7 +26,7 @@
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|igual({"cuanto": 1})', mascara: 'no-aplica', grupo: 'general'},			
+				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:total'          : {validaciones: 'requerido|igual({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:gastos'         : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'codigos'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
@@ -186,6 +186,18 @@
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
                 </p:selectOneMenu>
+                <p:outputLabel for="idAlmacen" value="Almacen:"/>
+								<p:selectOneMenu id="idAlmacen" value="#{manticInventariosEntradasEspecial.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticInventariosEntradasEspecial.doChangeAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
+									<f:selectItems value="#{manticInventariosEntradasEspecial.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasEspecial.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasEspecial.isDirecta}">
 									<p:ajax event="change" listener="#{manticInventariosEntradasEspecial.doUpdateProveedor}" update="idProveedorPago diasPlazo fechaPago datosArticulos tabla @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -249,18 +261,6 @@
                     </p:calendar>
                   </p:panelGrid>  
                 </p:panelGrid>  
-								<p:separator/>
-                <p:outputLabel for="idAlmacen" value="Almacen:"/>
-								<p:selectOneMenu id="idAlmacen" value="#{manticInventariosEntradasEspecial.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticInventariosEntradasEspecial.doChangeAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
-									<f:selectItems value="#{manticInventariosEntradasEspecial.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
-									</p:column>   
-								</p:selectOneMenu>
               </p:panelGrid>  
 						</p:tab>						            						            																																																
 						<p:tab title="Articulos">

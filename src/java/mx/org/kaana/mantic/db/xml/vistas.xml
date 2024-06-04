@@ -4,6 +4,80 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaPreciosPromediosDto">
+      <select id="lazy">
+select 
+  tc_mantic_articulos_promedios.id_articulo_promedio as id_key,
+  tc_mantic_articulos_promedios.id_empresa,
+  tc_mantic_empresas.nombre as empresa,
+  tc_mantic_tipos_movimientos.nombre as concepto,
+  tc_mantic_articulos_promedios.id_articulo,
+  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+	tc_mantic_articulos.nombre,
+  tc_mantic_articulos_promedios.cantidad,
+  tc_mantic_articulos_promedios.importe,
+  tc_mantic_articulos_promedios.promedio,
+  tc_mantic_articulos_promedios.id_usuario,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+  tc_mantic_articulos_promedios.registro
+from
+  tc_mantic_articulos_promedios
+inner join (
+  select
+    max(tc_mantic_articulos_promedios.id_articulo_promedio) as id_articulo_promedio
+  from
+    tc_mantic_articulos_promedios
+  group by  
+    tc_mantic_articulos_promedios.id_articulo
+) as tt_mantic_articulos_promedios on tc_mantic_articulos_promedios.id_articulo_promedio= tt_mantic_articulos_promedios.id_articulo_promedio
+inner join
+  tc_mantic_articulos on tc_mantic_articulos_promedios.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_empresas on tc_mantic_articulos_promedios.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+	tc_mantic_tipos_movimientos on tc_mantic_articulos_promedios.id_tipo_movimiento= tc_mantic_tipos_movimientos.id_tipo_movimiento
+inner join
+	tc_janal_usuarios on tc_mantic_articulos_promedios.id_usuario = tc_janal_usuarios.id_usuario
+inner join
+	tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+where
+  tc_mantic_articulos_promedios.id_empresa in ({idEmpresa})
+  and {condicion}	
+{sortOrder}        
+      </select>  
+      <select id="detalle">
+select 
+  tc_mantic_articulos_promedios.id_articulo_promedio as id_key,
+  tc_mantic_articulos_promedios.id_empresa,
+  tc_mantic_empresas.nombre as empresa,
+  tc_mantic_tipos_movimientos.nombre as concepto,
+  tc_mantic_articulos_promedios.id_articulo,
+  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+	tc_mantic_articulos.nombre,
+  tc_mantic_articulos_promedios.cantidad,
+  tc_mantic_articulos_promedios.importe,
+  tc_mantic_articulos_promedios.promedio,
+  tc_mantic_articulos_promedios.id_usuario,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+  tc_mantic_articulos_promedios.registro
+from
+  tc_mantic_articulos_promedios
+inner join
+  tc_mantic_articulos on tc_mantic_articulos_promedios.id_articulo= tc_mantic_articulos.id_articulo
+inner join
+  tc_mantic_empresas on tc_mantic_articulos_promedios.id_empresa= tc_mantic_empresas.id_empresa
+inner join 
+	tc_mantic_tipos_movimientos on tc_mantic_articulos_promedios.id_tipo_movimiento= tc_mantic_tipos_movimientos.id_tipo_movimiento
+inner join
+	tc_janal_usuarios on tc_mantic_articulos_promedios.id_usuario = tc_janal_usuarios.id_usuario
+inner join
+	tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+where
+  tc_mantic_articulos_promedios.id_articulo= {idArticulo}
+order by
+	tc_mantic_articulos_promedios.registro desc
+      </select>  
+    </unit>  
 		<unit id="VistaTransferenciasMultiplesDto">
       <select id="lazy">
         select 

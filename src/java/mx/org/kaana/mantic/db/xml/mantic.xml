@@ -6372,7 +6372,7 @@ group by
         from      
           tc_mantic_notas_entradas
         where 
-          id_orden_compra = {idOrdenCompra}
+          id_orden_compra= {idOrdenCompra}
 			</select>
 			<select id="folio">
 				select

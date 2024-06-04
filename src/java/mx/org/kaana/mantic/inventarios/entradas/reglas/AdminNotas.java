@@ -92,6 +92,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
       for (Costo item: this.orden.getCostos()) 
         item.setSql(ESql.SELECT);
       this.toStartCalculate();
+      this.getTotales().setGastos(this.orden.getCostos().size());
     } // try
     catch(Exception e) {
       throw e;

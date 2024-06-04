@@ -73,7 +73,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private static final Log LOG              = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
 	
-	private EAccion accion;	
+	protected EAccion accion;	
 	private EOrdenes tipoOrden;
 	private boolean aplicar;
 	private TcManticProveedoresDto proveedor;
@@ -230,7 +230,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				else
 					this.getAdminOrden().toStartCalculate();
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
+  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": "modificó").concat(" la nota de entrada"), ETipoMensaje.INFORMACION);
  			  JsfBase.setFlashAttribute("retorno", this.attrs.get("retorno"));
   			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
         // ESTO ES PARA IRSE A LA PAGINA PARA CALENDARIZAR EL PAGO
@@ -273,7 +273,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     Map<String, Object> params= new HashMap<>();
     try {
       this.toLoadEmpresas();
-      
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 		  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -975,7 +974,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("precioCliente", "menudeo");
 			params.put("idAlmacen", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen());
-  		params.put("sucursales", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdEmpresa());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			params.put("idCliente", -1L);
 			String search= query; 

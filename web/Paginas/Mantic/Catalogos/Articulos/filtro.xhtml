@@ -100,11 +100,10 @@
 									</h:panelGrid>
 								</f:facet>
 							</p:autoComplete>	
-							<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
-							<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosFiltro.attrs.idTipoArticulo}" styleClass="janal-wid-100-txt">									
+							<p:outputLabel for="idArticuloTipo" value="Tipo articulo:"/>
+							<p:selectOneMenu id="idArticuloTipo" value="#{manticCatalogosArticulosFiltro.attrs.idArticuloTipo}" styleClass="janal-wid-100-txt">									
 								<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
-								<f:selectItem itemLabel="REFACCIÓN" itemValue="2"/>
-								<f:selectItem itemLabel="SERVICIO" itemValue="3"/>
+								<f:selectItem itemLabel="INSUMOS" itemValue="4"/>
 							</p:selectOneMenu>								
 							<p:outputLabel for="idVigente" value="Vigentes:"/>
 							<p:selectOneMenu id="idVigente" value="#{manticCatalogosArticulosFiltro.attrs.idVigente}" styleClass="janal-wid-100-txt">									
@@ -117,23 +116,11 @@
 								<f:selectItem itemLabel="SI" itemValue="1"/>
 								<f:selectItem itemLabel="NO" itemValue="2"/>
 							</p:selectOneMenu>								
-              <p:outputLabel for="fechaInicio" value="Actualizado fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosArticulosFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="fechaTermino" value="Actualizado fecha término:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosArticulosFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
-							<p:outputLabel for="idPerdida" value="Precio venta erroneo:"/>
-							<p:selectOneMenu id="idPerdida" value="#{manticCatalogosArticulosFiltro.attrs.idPerdida}" styleClass="janal-wid-100-txt">									
-								<f:selectItem itemLabel="TODOS" itemValue="-1"/>
-								<f:selectItem itemLabel="SI" itemValue="1"/>
-								<f:selectItem itemLabel="NO" itemValue="2"/>
-							</p:selectOneMenu>								
-							<p:outputLabel for="idMenor10" value="Precio&lt; $10 redondeado:" title="El precio es menor a $10 y se redondea"/>
-							<p:selectOneMenu id="idMenor10" value="#{manticCatalogosArticulosFiltro.attrs.idMenor10}" styleClass="janal-wid-100-txt">									
-								<f:selectItem itemLabel="TODOS" itemValue="-1"/>
-								<f:selectItem itemLabel="SI" itemValue="1"/>
-								<f:selectItem itemLabel="NO" itemValue="2"/>
-							</p:selectOneMenu>								
-							<p:separator/>
+              <p:outputLabel for="fechaInicio" value="Actualizado inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticCatalogosArticulosFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Actualizado término:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticCatalogosArticulosFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+              <p:separator/>
 						</p:panelGrid>
 						<div class="janal-align-right">
 							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>

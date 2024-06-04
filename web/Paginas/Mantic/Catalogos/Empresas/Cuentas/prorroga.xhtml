@@ -59,36 +59,34 @@
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticCatalogosEmpresasCuentasProrroga.doTabChange}" process="@this" update="importados" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
             <p:tab title="General">
-							<p:panelGrid id="tabla" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">
+              <p:panelGrid id="tabla" columns="1" styleClass="janal-wid-100">
 								<p:outputLabel value="Ticket:"/>						
                 <p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>
-								<p:spacer/><p:separator/>
+								<p:separator/>
+								<p:outputLabel value="Sucursal:"/>			
+								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>		
+								<p:outputLabel value="Almacen:"/>						
+								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.almacen}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Proveedor:"/>												
-								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.proveedor}" styleClass="janal-wid-100-txt" readonly="true"/>												
-								<p:outputLabel for="idProveedorPago" value="CondiciÃ³n de pago:"/>
-								<p:selectOneMenu id="idProveedorPago" value="#{manticCatalogosEmpresasCuentasProrroga.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticCatalogosEmpresasCuentasProrroga.doUpdatePlazo}" update="@(.condiciones)" process="@this"/>
-									<f:selectItems value="#{manticCatalogosEmpresasCuentasProrroga.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.nombre} | #{element.descuento}%"/>
+								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.proveedor}" styleClass="janal-wid-100-txt" readonly="true"/>
+								<p:outputLabel for="idProveedorPago" value="Condición de pago:"/>
+								<p:selectOneMenu id="idProveedorPago" value="#{manticCatalogosEmpresasCuentasProrroga.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticCatalogosEmpresasCuentasProrroga.doUpdatePlazo}" process="@this" update="@(.condiciones)"/>
+									<f:selectItems value="#{manticCatalogosEmpresasCuentasProrroga.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave} | #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
-									<p:column styleClass="janal-column-right" headerText="Descuento otorgado">
-										<h:outputText value="#{item.descuento}"/>
-									</p:column>   
-									<p:column styleClass="janal-column-right" headerText="Plazo en dÃ­a para pagar">
+									<p:column styleClass="janal-column-right" headerText="Plazo">
 										<h:outputText value="#{item.plazo}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:outputLabel value="Sucursal:"/>			
-								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>		
-								<p:outputLabel value="Almacen:"/>						
-								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.almacen}" styleClass="janal-wid-100-txt" readonly="true"/>						
-								<p:spacer/><p:separator/>
+                <p:outputLabel value="Comentarios:" styleClass="janal-color-blue"/>												
+                <p:inputTextarea id="comentarios" styleClass="janal-wid-100-txt janal-color-blue" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.comentarios}" readonly="true" rows="1"/>
                 <p:outputLabel for="idRecibio" value="Recibio:"/>
-                <p:selectOneMenu id="idRecibio" value="#{manticCatalogosEmpresasCuentasProrroga.ikRecibio}" styleClass="janal-wid-100-txt refrescar" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idRecibio" value="#{manticCatalogosEmpresasCuentasProrroga.ikRecibio}" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{manticCatalogosEmpresasCuentasProrroga.attrs.personas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>					
                   <p:column>
                     <h:outputText value="#{item.nombres}"/>
@@ -100,22 +98,22 @@
                     <h:outputText value="#{item.materno}"/>
                   </p:column>                
                 </p:selectOneMenu>
-								<p:outputLabel for="fechaRecepcion" value="Fecha recepcion:"/>																		
+								<p:outputLabel for="fechaRecepcion" value="Recepción:"/>																		
 								<p:calendar id="fechaRecepcion" value="#{manticCatalogosEmpresasCuentasProrroga.fechaRecepcion}" locale="mx" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="importe" value="Importe:"/>						
                 <p:inputNumber id="importe" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.importe}" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="2"/>
 								<p:outputLabel value="Saldo:"/>																								
 								<p:inputNumber value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.saldo}" inputStyleClass="janal-wid-100-txt janal-column-right" disabled="true" decimalPlaces="2"/>
-                <p:outputLabel for="fecha" value="Fecha limite:" styleClass="janal-color-blue"/>
+                <p:outputLabel for="fecha" value="Limite:" styleClass="janal-color-blue"/>
                 <p:calendar id="fecha" value="#{manticCatalogosEmpresasCuentasProrroga.prorroga}" locale="mx" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt condiciones janal-column-right" inputStyleClass="janal-color-blue" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="idRevisado" value="Documento revisado:"/>																		
                 <p:selectOneMenu id="idRevisado" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.idRevisado}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">									
                   <f:selectItem itemLabel="SI" itemValue="1"/>
                   <f:selectItem itemLabel="NO" itemValue="2"/>
                 </p:selectOneMenu>	
+  							<p:outputLabel for="observaciones" value="Observaciones:" styleClass="janal-wid-100-txt" />
+                <p:inputTextarea id="observaciones" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.observaciones}" styleClass="janal-wid-100-txt" rows="2"/>
 							</p:panelGrid>					
-							<p:outputLabel for="observaciones" value="Observaciones:" styleClass="janal-wid-100-txt" />
-              <p:inputTextarea id="observaciones" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.observaciones}" styleClass="janal-wid-100-txt" rows="2"/>
 						</p:tab>
             <p:tab title="Archivos">
 							<p:dataTable id="importados" var="row" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">

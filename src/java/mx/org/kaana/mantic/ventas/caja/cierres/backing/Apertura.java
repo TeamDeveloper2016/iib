@@ -27,7 +27,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
-import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA
@@ -116,9 +115,8 @@ public class Apertura extends IBaseAttribute implements Serializable {
   } 
 	
 	private void toLoadEmpresas() {
-		List<Columna> columns = null;
+		List<Columna> columns = new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			List<UISelectEntity> sucursales= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", this.attrs, columns);
@@ -135,11 +133,9 @@ public class Apertura extends IBaseAttribute implements Serializable {
 	}
 	
 	public void doLoadCajas() {
-		List<Columna> columns     = null;
-		Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= new HashMap<>();
     try {
-			params = new HashMap<>();
-			columns= new ArrayList<>();
 			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -159,7 +155,7 @@ public class Apertura extends IBaseAttribute implements Serializable {
 	}
 
 	public void doCalculate() {
-		Double sum  = 0D;
+		Double sum= 0D;
 		for (Denominacion fondo: this.fondos) {
 			fondo.setImporte(Numero.toRedondearSat(fondo.getDenominacion()* fondo.getCantidad()));
 			sum+= fondo.getImporte();

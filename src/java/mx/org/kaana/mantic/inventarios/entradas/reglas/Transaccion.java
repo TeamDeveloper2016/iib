@@ -109,7 +109,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			} // if
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada.");
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada");
 			switch(accion) {
 				case MOVIMIENTOS:
 					if(this.orden.isValid()) {
@@ -173,34 +173,17 @@ public class Transaccion extends Inventarios implements Serializable {
 						this.orden.setIdNotaEstatus(3L);
   					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 	  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-            this.toCheckPromedios(sesion, this.orden.getIdEmpresa(), 1L);
 					} // if	
           this.checkConsecutivo(sesion);
-					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					this.toRemoveOrdenDetalle(sesion);
 					this.toFillArticulos(sesion);
           this.toFillCostos(sesion);
 					this.toCheckOrden(sesion);
      	    this.toUpdateDeleteXml(sesion);	
-  				if(Objects.equals(this.orden.getIdNotaEstatus(), 3L))
-            this.toCheckPromedios(sesion, this.orden.getIdEmpresa(), 1L);
-					break;				
+          regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;					
+          break;				
 				case ELIMINAR:
-					regresar= this.toNotExistsArticulosBitacora(sesion);
-					if(regresar) {
-						this.toRemoveOrdenDetalle(sesion);
-						DaoFactory.getInstance().deleteAll(sesion, TcManticNotasCostosDto.class, params);
-						DaoFactory.getInstance().deleteAll(sesion, TcManticNotasArchivosDto.class, params);
-						DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params);
-						regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
-            this.orden.setIdNotaEstatus(2L);
-						bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
-						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-						this.toCheckOrden(sesion);
-            this.toCheckDeleteFile(sesion);
-					} // if
-					else
-       			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos";
+          regresar= this.toDeleteNota(sesion);
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -208,16 +191,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
             switch(this.bitacora.getIdNotaEstatus().intValue()) {
               case 2: // ELIMINADA
-                this.toRemoveOrdenDetalle(sesion);
-                regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
-                regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
-                this.orden.setIdNotaEstatus(2L);
-                bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
-                regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-                this.toCheckOrden(sesion);
-                break;
-              case 3: // TERMINADA
-                this.toCheckPromedios(sesion, this.orden.getIdEmpresa(), 1L);
+                regresar= this.toDeleteNota(sesion);
                 break;
               case 4: // CANCELADA
                 // FALTA EL PROCESO PARA CANCELAR LAS CUENTAS POR PAGAR
@@ -241,6 +215,37 @@ public class Transaccion extends Inventarios implements Serializable {
 		return regresar;
 	}	// ejecutar
 
+  private Boolean toDeleteNota(Session sesion) throws Exception {
+    Boolean regresar                     = Boolean.FALSE;
+		TcManticNotasBitacoraDto bitacoraNota= null;
+		Map<String, Object> params           = new HashMap<>();
+		try {
+  		params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
+      regresar= this.toNotExistsArticulosBitacora(sesion);
+      if(regresar) {
+        this.toRemoveOrdenDetalle(sesion);
+        DaoFactory.getInstance().deleteAll(sesion, TcManticNotasCostosDto.class, params);
+        DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params);
+        DaoFactory.getInstance().delete(sesion, this.orden);
+        this.orden.setIdNotaEstatus(2L);
+        bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
+        DaoFactory.getInstance().insert(sesion, bitacoraNota);
+        this.toCheckOrden(sesion);
+        this.toCheckDeleteFile(sesion);
+      } // if
+      else
+        this.messageError= "No se puede eliminar la nota de entrada";
+      regresar= Boolean.TRUE;
+		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+    return regresar;
+  }
+          
 	private void toFillArticulos(Session sesion) throws Exception {
 	  StringBuilder error = new StringBuilder();
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap());
@@ -274,6 +279,9 @@ public class Transaccion extends Inventarios implements Serializable {
 			} // for
       sesion.flush();
 		} // try
+    catch(Exception e) {
+      throw e;
+    } // catch
 		finally {
 			Methods.clean(todos);
 			Methods.clean(params);
@@ -304,10 +312,9 @@ public class Transaccion extends Inventarios implements Serializable {
 	}
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
-		Siguiente regresar= null;
-		Map<String, Object> params=null;
+		Siguiente regresar        = null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -530,7 +537,6 @@ public class Transaccion extends Inventarios implements Serializable {
 						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
         this.toCheckDeleteFile(sesion, this.jpg.getName());
-				// this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.jpg.getRuta()), ".".concat(this.jpg.getFormat().name()), this.toListFile(sesion, this.jpg, 17L));
 			} // if	
   	} // if	
 	}
@@ -619,6 +625,7 @@ public class Transaccion extends Inventarios implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {      
       // ESTE PROCESO RECALCULA EL PRECIO PROMEDIO DE LO QUE SE TIENE EN LA SUCURSAL
+      params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
       List<TcManticNotasDetallesDto> items= (List<TcManticNotasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticNotasDetallesDto.class, "TcManticNotasDetallesDto", "igual", params);
       for (TcManticNotasDetallesDto item: items) {
         TcManticArticulosPromediosDto promedio= new TcManticArticulosPromediosDto(
@@ -635,9 +642,10 @@ public class Transaccion extends Inventarios implements Serializable {
         params.put("idEmpresa", idEmpresa);
         params.put("idArticulo", item.getIdArticulo());
         Entity costo= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosPromediosDto", "ultimo", params);
-        if(!Objects.equals(costo, null) || !costo.isEmpty()) {
-          promedio.setCantidad(promedio.getCantidad()+ item.getCantidad());
-          promedio.setImporte(promedio.getImporte()+ item.getImporte());
+        if(!Objects.equals(costo, null) && !costo.isEmpty()) {
+          Double importe= (Objects.equals(this.orden.getIdNotaTipo(), 4L)? item.getPromedio(): item.getImporte());
+          promedio.setCantidad(costo.toDouble("cantidad")+ item.getCantidad());
+          promedio.setImporte(costo.toDouble("importe")+ importe);
           promedio.setPromedio(promedio.getImporte()/ (promedio.getCantidad()<= 0? 1D: promedio.getCantidad()));
         } // if
         DaoFactory.getInstance().insert(sesion, promedio);
@@ -668,7 +676,7 @@ public class Transaccion extends Inventarios implements Serializable {
             1L, // Long idEmpresaEstatus, 
             JsfBase.getIdUsuario(), // Long idUsuario, 
             -1L, // Long idEmpresaDeuda, 
-            "PAGO DEL GASTO  ".concat(item.getNombre()), // String observaciones, 
+            "CUENTA DEL GASTO ".concat(item.getNombre()), // String observaciones, 
             this.orden.getIdEmpresa(), // Long idEmpresa, 
             item.getImporte(), // Double saldo, 
             this.orden.getIdNotaEntrada(), // Long idNotaEntrada, 
