@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -29,6 +30,7 @@ import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosPromediosDto;
+import mx.org.kaana.mantic.db.dto.TcManticEmpresasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
@@ -124,7 +126,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					  if(Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L))
 						  this.orden.setIdOrdenCompra(null);
 					  regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					  bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
+					  bitacoraNota= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 					  regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
        	    this.toUpdateDeleteXml(sesion);	
 					} // else	
@@ -140,7 +142,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 					this.orden.setIdOrdenCompra(null);					
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
+					bitacoraNota= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
   				if(this.aplicar) 
 						this.toApplyNotaEntrada(sesion);
@@ -154,7 +156,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					if(Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L))
 						this.orden.setIdOrdenCompra(null);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
+					bitacoraNota= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					this.toFillArticulos(sesion);
           this.toFillCostos(sesion);
@@ -171,7 +173,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				case MODIFICAR:
   				if(this.aplicar) {
 						this.orden.setIdNotaEstatus(3L);
-  					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
+  					bitacoraNota= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 	  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					} // if	
           this.checkConsecutivo(sesion);
@@ -194,7 +196,8 @@ public class Transaccion extends Inventarios implements Serializable {
                 regresar= this.toDeleteNota(sesion);
                 break;
               case 4: // CANCELADA
-                // FALTA EL PROCESO PARA CANCELAR LAS CUENTAS POR PAGAR
+                // FALTA EL PROCESO PARA CANCELAR LAS CUENTAS POR PAGAR Y RECALCULAR LOS PRECIOS PROMEDIOS
+                regresar= this.toCancelDeudas(sesion, this.orden.getIdEmpresa(), this.orden.getIdNotaEntrada());
                 break;
             } // switch
 					} // if
@@ -228,7 +231,7 @@ public class Transaccion extends Inventarios implements Serializable {
         DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params);
         DaoFactory.getInstance().delete(sesion, this.orden);
         this.orden.setIdNotaEstatus(2L);
-        bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
+        bitacoraNota= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
         DaoFactory.getInstance().insert(sesion, bitacoraNota);
         this.toCheckOrden(sesion);
         this.toCheckDeleteFile(sesion);
@@ -387,17 +390,20 @@ public class Transaccion extends Inventarios implements Serializable {
 			// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
 			TcManticEmpresasDeudasDto deuda= null;
 			if(this.orden.getDiasPlazo()> 1) 
-				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, null);
+				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", this.orden.getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, null);
 			else
-				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, null);
+				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", this.orden.getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, null);
 			DaoFactory.getInstance().insert(sesion, deuda);
-			params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
-			params.put("idNotaEstatus", this.orden.getIdNotaEstatus());
-			TcManticNotasBitacoraDto registro= (TcManticNotasBitacoraDto)DaoFactory.getInstance().findFirst(TcManticNotasBitacoraDto.class, "igual", params);
-			if(registro== null) {
-				registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
-				DaoFactory.getInstance().insert(sesion, registro);
-			} // if
+      TcManticEmpresasBitacoraDto bitacora= new TcManticEmpresasBitacoraDto(
+        "SE REGISTRO LA DEUDA", // String justificacion, 
+        deuda.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        deuda.getIdEmpresaDeuda(), // Long idEmpresaDeuda
+        -1L // Long idEmpresaBitacora, 
+      );
+      DaoFactory.getInstance().insert(sesion, bitacora);
+   		TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
+  		DaoFactory.getInstance().insert(sesion, registro);
       
       // FALTA AGREGAR LAS CUENTAS POR COBRAR DE LOS COSTOS 
       this.toAddCuentaPagar(sesion);
@@ -621,6 +627,10 @@ public class Transaccion extends Inventarios implements Serializable {
   }
   
 	private Boolean toCheckPromedios(Session sesion, Long idEmpresa, Long idTipoMovimiento) throws Exception {
+    return this.toCheckPromedios(sesion, idEmpresa, idTipoMovimiento, 1D);
+  }
+  
+	private Boolean toCheckPromedios(Session sesion, Long idEmpresa, Long idTipoMovimiento, Double factor) throws Exception {
     Boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= new HashMap<>();
     try {      
@@ -633,18 +643,19 @@ public class Transaccion extends Inventarios implements Serializable {
           JsfBase.getIdUsuario(), // Long idUsuario, 
           item.getPromedio(), //Double promedio, 
           item.getCantidad(), // Double cantidad, 
-          null, // String observaciones, 
+          (Objects.equals(factor, 1D)? "SE REGISTRO": "SE CANCELO").concat(" LA NOTA DE ENTRADA ").concat(this.orden.getConsecutivo()), // String observaciones, 
           -1L, // Long idArticuloPromedio, 
           idEmpresa, // Long idEmpresa, 
           item.getIdArticulo(), // Long idArticulo, 
-          item.getImporte()// Double importe
+          (Objects.equals(this.orden.getIdNotaTipo(), 4L)? item.getPromedio(): item.getImporte()) // Double importe
         );
         params.put("idEmpresa", idEmpresa);
         params.put("idArticulo", item.getIdArticulo());
         Entity costo= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosPromediosDto", "ultimo", params);
         if(!Objects.equals(costo, null) && !costo.isEmpty()) {
-          Double importe= (Objects.equals(this.orden.getIdNotaTipo(), 4L)? item.getPromedio(): item.getImporte());
-          promedio.setCantidad(costo.toDouble("cantidad")+ item.getCantidad());
+          Double cantidad= item.getCantidad()* factor;
+          Double importe = item.getImporte()* factor;
+          promedio.setCantidad(costo.toDouble("cantidad")+ cantidad);
           promedio.setImporte(costo.toDouble("importe")+ importe);
           promedio.setPromedio(promedio.getImporte()/ (promedio.getCantidad()<= 0? 1D: promedio.getCantidad()));
         } // if
@@ -676,7 +687,7 @@ public class Transaccion extends Inventarios implements Serializable {
             1L, // Long idEmpresaEstatus, 
             JsfBase.getIdUsuario(), // Long idUsuario, 
             -1L, // Long idEmpresaDeuda, 
-            "CUENTA DEL GASTO ".concat(item.getNombre()), // String observaciones, 
+            "GASTO ".concat(item.getNombre()), // String observaciones, 
             this.orden.getIdEmpresa(), // Long idEmpresa, 
             item.getImporte(), // Double saldo, 
             this.orden.getIdNotaEntrada(), // Long idNotaEntrada, 
@@ -687,11 +698,63 @@ public class Transaccion extends Inventarios implements Serializable {
             2L, // Long idCompleto, 
             null, // Date fechaRecepcion, 
             null, // Long idRecibio, 
-            null // Long idProveedorPago      
+            Objects.equals(fecha, null) && !fecha.isEmpty()? fecha.toLong("idProveedorPago"): null // Long idProveedorPago      
           );
           DaoFactory.getInstance().insert(sesion, deuda);
+          TcManticEmpresasBitacoraDto registro= new TcManticEmpresasBitacoraDto(
+            "SE REGISTRO LA DEUDA", // String justificacion, 
+            deuda.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            deuda.getIdEmpresaDeuda(), // Long idEmpresaDeuda
+            -1L // Long idEmpresaBitacora, 
+          );
+          DaoFactory.getInstance().insert(sesion, registro);
         } // if  
       } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private Boolean toCancelDeudas(Session sesion, Long idEmpresa, Long idNotaEntrada) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    StringBuilder sb          = new StringBuilder();
+    try {      
+      params.put("idNotaEntrada", idNotaEntrada);
+      List<Entity> deudas= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "cancela", params);
+      for (Entity item: deudas) {
+        if(!Objects.equals(item.toLong("idEmpresaEstatus"), 1L)) {
+          sb.append("[").append(item.toString("consecutivo")).append(Constantes.SEPARADOR).append(Numero.formatear(Numero.MILES_CON_DECIMALES, item.toDouble("importe"))).append(Constantes.SEPARADOR).append(item.toString("proveedor")).append("], ");
+        } // if
+        else {
+          TcManticEmpresasDeudasDto deuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, idProveedor);
+          deuda.setIdEmpresaEstatus(5L);
+          DaoFactory.getInstance().update(sesion, deuda);
+          TcManticEmpresasBitacoraDto registro= new TcManticEmpresasBitacoraDto(
+            "SE CANCELO LA NOTA DE ENTRADA ".concat(item.toString("consecutivo")), // String justificacion, 
+            deuda.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            deuda.getIdEmpresaDeuda(), // Long idEmpresaDeuda
+            -1L // Long idEmpresaBitacora, 
+          );
+          DaoFactory.getInstance().insert(sesion, registro);
+        } // if
+      } // for
+      if(sb.length()> 0) {
+        sb.delete(sb.length()- 2, sb.length());
+        sb.insert(0, "Las CxP ").append(" no fueron canceladas porque tienen un pago registrado !");
+        this.messageError= sb.toString();
+        throw new RuntimeException(this.messageError);
+      } // if 
+      else 
+        this.toCheckPromedios(sesion, idEmpresa, 1L, -1D);
       regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {

@@ -202,7 +202,7 @@
             </p:dataTable>
             <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
               <p:menuitem icon="fa fa-search" action="#{manticInventariosOrigenesFiltro.doAccion('CONSULTAR')}" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-              <p:separator/>
+              <p:separator rendered="#{fn:contains('|1|7|', manticInventariosOrigenesFiltro.attrs.seleccionado.idNotaEstatus)}"/>
               <p:menuitem icon="fa fa-edit" value="Modificar" action="#{manticInventariosOrigenesFiltro.doAccion('MODIFICAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticInventariosOrigenesFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>
               <p:menuitem icon="fa fa-trash" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticInventariosOrigenesFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>
               <p:separator/>

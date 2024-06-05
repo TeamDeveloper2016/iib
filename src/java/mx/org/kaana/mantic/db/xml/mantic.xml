@@ -3079,7 +3079,7 @@ where
         from      
           tc_mantic_empresas_deudas
         where      
-          id_empresa = {idEmpresa} and id_nota_entrada = {idNotaEntrada} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+          id_empresa_deuda = {idEmpresaDeuda}
       </select>
 			<select id="deuda">
 				select

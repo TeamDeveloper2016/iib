@@ -212,8 +212,8 @@
 										<h:outputText value="#{item.diasEntrega}"/>
 									</p:column>   
 								</p:selectOneMenu>
-                <p:outputLabel for="idProveedorPago" value="Condición de pago:" styleClass="janal-display-none"/>
-								<p:selectOneMenu id="idProveedorPago" value="#{manticInventariosEntradasEspecial.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt janal-display-none proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:outputLabel for="idProveedorPago" value="Condición de pago:"/>
+								<p:selectOneMenu id="idProveedorPago" value="#{manticInventariosEntradasEspecial.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticInventariosEntradasEspecial.doUpdatePlazo}" update="datosArticulos diasPlazo fechaPago tabla @(.recalculo)" process="@this"/>
 									<f:selectItems value="#{manticInventariosEntradasEspecial.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">

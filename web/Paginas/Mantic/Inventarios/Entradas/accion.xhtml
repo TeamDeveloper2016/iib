@@ -195,7 +195,7 @@
 								<p:separator style="display: #{manticInventariosEntradasAccion.agregar}"/>
                 <p:outputLabel for="idEmpresa" value="Sucursal:"/>
                 <p:selectOneMenu id="idEmpresa" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateAlmacenes}" update="idAlmacen" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateAlmacenes}" update="idAlmacen" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                   <f:selectItems value="#{manticInventariosEntradasAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>
