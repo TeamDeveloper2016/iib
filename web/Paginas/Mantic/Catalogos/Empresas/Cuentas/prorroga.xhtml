@@ -115,11 +115,11 @@
                   </p:panelGrid>  
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="fechaRecepcion" value="Recepción:"/>																		
-                    <p:calendar id="fechaRecepcion" value="#{manticCatalogosEmpresasCuentasProrroga.fechaRecepcion}" locale="mx" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right" converter="janal.convertidor.Calendario"/>
+                    <p:calendar id="fechaRecepcion" value="#{manticCatalogosEmpresasCuentasProrroga.fechaRecepcion}" locale="mx" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right" inputStyleClass="janal-column-center" converter="janal.convertidor.Calendario"/>
                   </p:panelGrid>  
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="fecha" value="Limite:" styleClass="janal-color-blue"/>
-                    <p:calendar id="fecha" value="#{manticCatalogosEmpresasCuentasProrroga.prorroga}" locale="mx" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt condiciones janal-column-right" inputStyleClass="janal-color-blue" converter="janal.convertidor.Calendario"/>
+                    <p:calendar id="fecha" value="#{manticCatalogosEmpresasCuentasProrroga.prorroga}" locale="mx" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt condiciones janal-column-right" inputStyleClass="janal-column-center janal-color-blue" converter="janal.convertidor.Calendario"/>
                   </p:panelGrid>  
                 </p:panelGrid>  
 								<p:outputLabel for="idRevisado" value="Documento revisado:"/>																		

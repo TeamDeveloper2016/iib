@@ -647,14 +647,14 @@ public class Transaccion extends Inventarios implements Serializable {
           -1L, // Long idArticuloPromedio, 
           idEmpresa, // Long idEmpresa, 
           item.getIdArticulo(), // Long idArticulo, 
-          (Objects.equals(this.orden.getIdNotaTipo(), 4L)? item.getPromedio(): item.getImporte()) // Double importe
+          (item.getCantidad()<= 0D? 1D: item.getCantidad())* item.getPromedio()// Double importe
         );
         params.put("idEmpresa", idEmpresa);
         params.put("idArticulo", item.getIdArticulo());
         Entity costo= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosPromediosDto", "ultimo", params);
         if(!Objects.equals(costo, null) && !costo.isEmpty()) {
           Double cantidad= item.getCantidad()* factor;
-          Double importe = item.getImporte()* factor;
+          Double importe = promedio.getImporte()* factor;
           promedio.setCantidad(costo.toDouble("cantidad")+ cantidad);
           promedio.setImporte(costo.toDouble("importe")+ importe);
           promedio.setPromedio(promedio.getImporte()/ (promedio.getCantidad()<= 0? 1D: promedio.getCantidad()));

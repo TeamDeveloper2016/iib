@@ -223,7 +223,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			((NotaEntrada)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			this.getAdminOrden().toAdjustArticulos();
-			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar, this.getXml(), this.getPdf());
+			transaccion = new Transaccion((NotaEntrada)this.getAdminOrden().getOrden(), this.getAdminOrden().getArticulos(), this.aplicar, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
 				if(Objects.equals(this.accion, EAccion.AGREGAR) || this.aplicar) 
   				regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
