@@ -613,6 +613,7 @@ public class Transaccion extends Inventarios implements Serializable {
       List<TcManticNotasDetallesDto> items= (List<TcManticNotasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticNotasDetallesDto.class, "TcManticNotasDetallesDto", "igual", params);
       for (TcManticNotasDetallesDto item: items) {
         item.setPromedio((item.getImporte()+ ajuste)/ (item.getCantidad()<= 0? 1: item.getCantidad()));
+        item.setGastos(ajuste);
         DaoFactory.getInstance().update(sesion, item);
       } // for
       regresar= Boolean.TRUE;
@@ -647,7 +648,7 @@ public class Transaccion extends Inventarios implements Serializable {
           -1L, // Long idArticuloPromedio, 
           idEmpresa, // Long idEmpresa, 
           item.getIdArticulo(), // Long idArticulo, 
-          (item.getCantidad()<= 0D? 1D: item.getCantidad())* item.getPromedio()// Double importe
+          item.getImporte()+ item.getGastos()// Double importe
         );
         params.put("idEmpresa", idEmpresa);
         params.put("idArticulo", item.getIdArticulo());

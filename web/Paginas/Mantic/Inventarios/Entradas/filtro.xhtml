@@ -284,6 +284,12 @@
 								</f:facet>
 								<h:outputText value="#{row['promedio']}"/>
 							</p:column>					
+							<p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8" sortBy="#{row.gastos}">
+								<f:facet name="header">
+									<h:outputText value="Gasto"/>
+								</f:facet>
+								<h:outputText value="#{row['gastos']}"/>
+							</p:column>					
               <f:facet name="footer">
                 <p:outputLabel styleClass="detalle" style="float: left;" value="#{manticInventariosEntradasFiltro.particular}" escape="false"/>
                 <p:outputLabel value="Total [#{manticInventariosEntradasFiltro.lazyDetalle== null? 0: manticInventariosEntradasFiltro.lazyDetalle.rowCount}] registros"/>

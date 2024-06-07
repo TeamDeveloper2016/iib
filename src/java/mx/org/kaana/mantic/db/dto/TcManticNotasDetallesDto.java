@@ -90,17 +90,19 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   private String origen;
   @Column (name="promedio")
   private Double promedio;
+  @Column (name="gastos")
+  private Double gastos;
 
   public TcManticNotasDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticNotasDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, 2L, 0D, 0D, 0D, 0D, "", 0D);
+    this(null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, 2L, 0D, 0D, 0D, 0D, "", 0D, 0D);
     setKey(key);
   }
 
-  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Double cantidad, Long idArticulo, Double descuentos, Double impuestos, Long idOrdenDetalle, Double cantidades, Double excedentes, Long idAplicar, Double declarados, Double diferencia, Double costoReal, Double costoCalculado, String origen, Double promedio) {
+  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Double cantidad, Long idArticulo, Double descuentos, Double impuestos, Long idOrdenDetalle, Double cantidades, Double excedentes, Long idAplicar, Double declarados, Double diferencia, Double costoReal, Double costoCalculado, String origen, Double promedio, Double gastos) {
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
     setCosto(costo);
@@ -128,6 +130,7 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		this.costoCalculado= costoCalculado;
 		this.origen= origen;
     this.promedio= promedio;
+    this.gastos= gastos;
   }
 	
   public void setCodigo(String codigo) {
@@ -345,6 +348,14 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   public void setPromedio(Double promedio) {
     this.promedio = promedio;
   }
+
+  public Double getGastos() {
+    return gastos;
+  }
+
+  public void setGastos(Double gastos) {
+    this.gastos = gastos;
+  }
 	
   @Transient
   @Override
@@ -414,6 +425,8 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getOrigen());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPromedio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getGastos());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -448,6 +461,7 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("costoCalculado", getCostoCalculado());
 		regresar.put("origen", getOrigen());
 		regresar.put("promedio", getPromedio());
+		regresar.put("gastos", getGastos());
   	return regresar;
   }
 
