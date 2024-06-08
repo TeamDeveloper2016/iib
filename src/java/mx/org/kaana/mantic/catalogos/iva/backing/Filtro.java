@@ -42,13 +42,12 @@ public class Filtro extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> campos = null;
+    List<Columna> columns= new ArrayList<>();
     try {
-      campos = new ArrayList<>();
-      campos.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));      
-      campos.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));      
-      this.lazyModel = new FormatCustomLazy("VistaHistorialIvaDto", "importe", this.attrs, campos);
+      columns.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));      
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));      
+      this.lazyModel = new FormatCustomLazy("VistaHistorialIvaDto", "importe", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -56,7 +55,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally		
   } // doLoad
 
@@ -82,9 +81,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion(new TcManticHistorialIvaDto(seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "El IVA se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "El IVA se eliminó correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el registro del IVA.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el IVA", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.iva.backing;
+package mx.org.kaana.mantic.catalogos.gastos.backing;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
@@ -13,23 +13,23 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.mantic.catalogos.iva.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticHistorialIvaDto;
+import mx.org.kaana.mantic.catalogos.gastos.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticTiposCostosDto;
 
 
-@Named(value = "manticCatalogosIvaAccion")
+@Named(value = "manticCatalogosGastosAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-	private TcManticHistorialIvaDto iva;
+	private TcManticTiposCostosDto costo;
 
-	public TcManticHistorialIvaDto getIva() {
-		return this.iva;
+	public TcManticTiposCostosDto getCosto() {
+		return this.costo;
 	}
 
-	public void setIva(TcManticHistorialIvaDto iva) {
-		this.iva = iva;
+	public void setCosto(TcManticTiposCostosDto costo) {
+		this.costo = costo;
 	}	
 
 	@PostConstruct
@@ -38,9 +38,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       if(JsfBase.getFlashAttribute("accion")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.attrs.put("aplicar", false);
+      this.attrs.put("idTipoCosto", JsfBase.getFlashAttribute("idTipoCosto"));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idHistorialIva", JsfBase.getFlashAttribute("idHistorialIva"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.doLoad();
     } // try
@@ -51,19 +50,24 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // init
 
   public void doLoad() {
-    EAccion eaccion    = null;
-    Long idHistorialIva= -1L;
+    EAccion eaccion= null;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
-          this.iva= new TcManticHistorialIvaDto(JsfBase.getIdUsuario(), -1L, null, JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 16D);
+          this.costo= new TcManticTiposCostosDto(
+            null, // String descripcion, 
+            null, // String clave, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            1L, // Long idCuenta, 
+            -1L, // Long idTipoCosto
+            null // String observaciones
+          );
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-          idHistorialIva= (Long)this.attrs.get("idHistorialIva");
-          this.iva= (TcManticHistorialIvaDto)DaoFactory.getInstance().findById(TcManticHistorialIvaDto.class, idHistorialIva);
+          this.costo= (TcManticTiposCostosDto)DaoFactory.getInstance().findById(TcManticTiposCostosDto.class, (Long)this.attrs.get("idTipoCosto"));
           break;
       } // switch
     } // try
@@ -79,13 +83,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
-			transaccion = new Transaccion(this.iva, (Boolean)this.attrs.get("aplicar"));
+			transaccion = new Transaccion(this.costo);
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.doCancelar();
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro del IVA de forma correcta"), ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR)? "agregó": "modificó").concat(" el costo !"), ETipoMensaje.INFORMACION);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el IVA", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el costo", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -95,7 +99,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-    JsfBase.setFlashAttribute("idHistorialIva", this.iva.getIdHistorialIva());
+    JsfBase.setFlashAttribute("idTipoCosto", this.costo.getIdTipoCosto());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	

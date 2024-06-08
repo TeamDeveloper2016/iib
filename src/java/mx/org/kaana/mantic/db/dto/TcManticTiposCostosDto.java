@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -46,6 +40,8 @@ public class TcManticTiposCostosDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_tipo_costo")
   private Long idTipoCosto;
+  @Column (name="observaciones")
+  private String observaciones;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -54,16 +50,17 @@ public class TcManticTiposCostosDto implements IBaseDto, Serializable {
   }
 
   public TcManticTiposCostosDto(Long key) {
-    this(null, null, null, null, new Long(-1L));
+    this(null, null, null, null, new Long(-1L), null);
     setKey(key);
   }
 
-  public TcManticTiposCostosDto(String descripcion, String clave, Long idUsuario, Long idCuenta, Long idTipoCosto) {
+  public TcManticTiposCostosDto(String descripcion, String clave, Long idUsuario, Long idCuenta, Long idTipoCosto, String observaciones) {
     setDescripcion(descripcion);
     setClave(clave);
     setIdUsuario(idUsuario);
     setIdCuenta(idCuenta);
     setIdTipoCosto(idTipoCosto);
+    setObservaciones(observaciones);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -115,6 +112,14 @@ public class TcManticTiposCostosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public String getObservaciones() {
+    return observaciones;
+  }
+
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -140,6 +145,8 @@ public class TcManticTiposCostosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoCosto());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getObservaciones());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -153,14 +160,15 @@ public class TcManticTiposCostosDto implements IBaseDto, Serializable {
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idCuenta", getIdCuenta());
 		regresar.put("idTipoCosto", getIdTipoCosto());
+		regresar.put("observaciones", getObservaciones());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getDescripcion(), getClave(), getIdUsuario(), getIdCuenta(), getIdTipoCosto(), getRegistro()
+    Object[] regresar = new Object[] {
+      getDescripcion(), getClave(), getIdUsuario(), getIdCuenta(), getIdTipoCosto(), getObservaciones(), getRegistro()
     };
     return regresar;
   }

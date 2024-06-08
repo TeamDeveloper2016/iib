@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticCatalogosGastosAccion.attrs.nombreAccion} al catálogo de costos" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				clave        : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+				descripcion  : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+				idCuenta     : {validaciones: 'requerido', mascara: 'libre'},
+				observaciones: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
+			};						
+			
+			$(document).ready(function(){janal.readingMode('#{manticCatalogosGastosAccion.attrs.nombreAccion}');});
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+          <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">		
+            <p:outputLabel for="clave" value="Clave:"/>
+            <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosGastosAccion.costo.clave}"/>
+            <p:outputLabel for="descripcion" value="Descripcion:"/>
+            <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosGastosAccion.costo.descripcion}"/>
+            <p:outputLabel for="idCuenta" value="Solicitar proveedor:"/>
+            <p:selectOneMenu id="idCuenta" styleClass="janal-wid-100-txt contacto" value="#{manticCatalogosGastosAccion.costo.idCuenta}" converter="javax.faces.Long">
+              <f:selectItem itemLabel="SI" itemValue="1"/>
+              <f:selectItem itemLabel="NO" itemValue="2"/>								
+            </p:selectOneMenu>
+            <p:separator/>
+            <p:outputLabel for="observaciones" value="Observaciones:"/>
+  					<p:inputTextarea id="observaciones" rows="2" styleClass="janal-wid-100-txt" value="#{manticCatalogosGastosAccion.costo.observaciones}"/>  
+          </p:panelGrid>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosGastosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosGastosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosGastosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosGastosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>

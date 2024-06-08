@@ -144,7 +144,7 @@ public class Filtro extends Comun implements Serializable {
 			throw e;
 		} // catch		
 		return regresar;
-	} // toCondicion
+	} 
 
 	public void doUpdateArticulos() {
 		List<Columna> columns         = new ArrayList<>();

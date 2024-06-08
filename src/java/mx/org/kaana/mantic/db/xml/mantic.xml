@@ -32,6 +32,16 @@ where
       </delete>
     </unit>    
     <unit id="TcManticTiposCostosDto">
+      <select id="lazy">
+select      
+  tc_mantic_tipos_costos.id_tipo_costo as id_key,
+  tc_mantic_tipos_costos.*
+from      
+  tc_mantic_tipos_costos
+where 
+  {condicion} 
+{sortOrder}        
+      </select>
       <select id="row">
 select      
   tc_mantic_tipos_costos.id_tipo_costo as id_key,
@@ -6458,7 +6468,7 @@ group by
         where 
           {condicion} 
 				order by 
-				  id_nota_estatus
+				  nombre 
       </select>
       <select id="identically">
         select      
