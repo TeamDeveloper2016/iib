@@ -150,7 +150,7 @@ public class Filtro extends Comun implements Serializable {
 		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
-		boolean buscaPorCodigo        = false;
+		boolean buscaPorCodigo        = Boolean.FALSE;
     try {
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));

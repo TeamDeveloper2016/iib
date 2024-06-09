@@ -283,7 +283,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				consulta= consulta.trim().substring(1);
 			consulta= consulta.toUpperCase().replaceAll("(,| |\\t)+", ".*");
 			params.put("codigo", consulta);
-  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": (Long)this.attrs.get("idArticuloTipo"));	
+  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": this.attrs.get("idArticuloTipo"));	
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         articulos= (List<UISelectEntity>) UIEntity.build("VistaPrecioClienteDto", "porCodigo", params, columns, 20L);
 			else
@@ -501,7 +501,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			else
 				search= "WXYZ";
   		params.put("codigo", search);	
-  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": (Long)this.attrs.get("idArticuloTipo"));	
+  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": this.attrs.get("idArticuloTipo"));	
 			switch(buscarCodigoPor) {      
 				case 0: 
 					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaPrecioClienteDto", "porCodigoIgual", params, columns, 20L));
@@ -554,7 +554,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			else
 				search= "WXYZ";
   		params.put("codigo", search);	
-  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": (Long)this.attrs.get("idArticuloTipo"));	
+  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": this.attrs.get("idArticuloTipo"));	
 			switch(buscarCodigoPor) {      
 				case 0: 
 					this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaPrecioClienteDto", "porCodigoIgual", params, columns, 20L));
@@ -598,7 +598,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			else
 				codigo= "WXYZ";
 			params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*"));
-  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": (Long)this.attrs.get("idArticuloTipo"));	
+  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": this.attrs.get("idArticuloTipo"));	
 			if(buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaPrecioClienteDto", "porCodigo", params, columns));
 			else
@@ -622,7 +622,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   		params.put("idProveedor", this.adminOrden.getIdProveedor());
 			params.put("idAlmacen", this.adminOrden.getIdAlmacen());
 			params.put("codigo", "WXYZ");
-  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": (Long)this.attrs.get("idArticuloTipo"));	
+  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": this.attrs.get("idArticuloTipo"));	
       this.attrs.put("lazyModel", new FormatCustomLazy("VistaPrecioClienteDto", "porLikeNombre", params, columns));
 		} // try
 	  catch (Exception e) {
@@ -660,7 +660,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			else
 				consulta= "WXYZ";
 			params.put("codigo", consulta.toUpperCase());
-  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": (Long)this.attrs.get("idArticuloTipo"));	
+  		params.put("idArticuloTipo", Objects.equals(this.attrs.get("idArticuloTipo"), null)? "1, 2": this.attrs.get("idArticuloTipo"));	
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaPrecioClienteDto", "porCodigo", params, columns));
 			else

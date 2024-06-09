@@ -63,8 +63,16 @@ public class Express extends IBaseAttribute implements Serializable {
 			this.attrs.put("auxiliarExpress", "");				
 			this.attrs.put("idArticuloTipo", 1L);
       IBaseAttribute params= (IBaseAttribute)JsfBase.getViewAttribute("manticInventariosEntradasAccion");
-      if(!Objects.equals(params, null) && params.getAttrs().containsKey("idArticuloTipo"))
-        this.attrs.put("idArticuloTipo", params.getAttrs().get("idArticuloTipo"));
+      if(!Objects.equals(params, null) && params.getAttrs().containsKey("idArticuloTipo")) {
+        if(params.getAttrs().get("idArticuloTipo") instanceof String) {
+          String idArticuloTipo= (String)params.getAttrs().get("idArticuloTipo");
+          if(!Objects.equals(idArticuloTipo, null) && idArticuloTipo.indexOf(",")> 0)
+            idArticuloTipo= idArticuloTipo.substring(0, idArticuloTipo.indexOf(","));
+          this.attrs.put("idArticuloTipo", new Long(idArticuloTipo));
+        } // if
+        else
+          this.attrs.put("idArticuloTipo", params.getAttrs().get("idArticuloTipo"));
+      } // if  
       this.doLoad();
       this.loadProveedores();
       this.loadCategorias();
