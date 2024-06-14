@@ -61,19 +61,23 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
   private Date fechaRecepcion;
   @Column (name="id_recibio")
   private Long idRecibio;
+  @Column (name="id_proveedor")
+  private Long idProveedor;
   @Column (name="id_proveedor_pago")
   private Long idProveedorPago;
+  @Column (name="id_nota_costo")
+  private Long idNotaCosto;
 
   public TcManticEmpresasDeudasDto() {
     this(new Long(-1L));
   }
 
   public TcManticEmpresasDeudasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 2L, 1L, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
+    this(null, null, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 2L, 1L, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticEmpresasDeudasDto(Long idEmpresaEstatus, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresa, Double saldo, Long idNotaEntrada, Date limite, Double importe, Double pagar, Long idRevisado, Long idCompleto, Date fechaRecepcion, Long idRecibio, Long idProveedorPago) {
+  public TcManticEmpresasDeudasDto(Long idEmpresaEstatus, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresa, Double saldo, Long idNotaEntrada, Date limite, Double importe, Double pagar, Long idRevisado, Long idCompleto, Date fechaRecepcion, Long idRecibio, Long idProveedorPago, Long idNotaCosto, Long idProveedor) {
     setIdEmpresaEstatus(idEmpresaEstatus);
     setIdUsuario(idUsuario);
     setIdEmpresaDeuda(idEmpresaDeuda);
@@ -89,7 +93,9 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
     this.idCompleto= idCompleto;
     this.fechaRecepcion= fechaRecepcion;
     this.idRecibio= idRecibio;
+    this.idProveedor= idProveedor;
     this.idProveedorPago= idProveedorPago;
+    this.idNotaCosto= idNotaCosto;
   }
 	
   public void setIdEmpresaEstatus(Long idEmpresaEstatus) {
@@ -212,12 +218,28 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
     this.idRecibio = idRecibio;
   }
 
+  public Long getIdProveedor() {
+    return idProveedor;
+  }
+
+  public void setIdProveedor(Long idProveedor) {
+    this.idProveedor = idProveedor;
+  }
+
   public Long getIdProveedorPago() {
     return idProveedorPago;
   }
 
   public void setIdProveedorPago(Long idProveedorPago) {
     this.idProveedorPago = idProveedorPago;
+  }
+
+  public Long getIdNotaCosto() {
+    return idNotaCosto;
+  }
+
+  public void setIdNotaCosto(Long idNotaCosto) {
+    this.idNotaCosto = idNotaCosto;
   }
 
   @Transient
@@ -263,7 +285,11 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRecibio());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdProveedor());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProveedorPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdNotaCosto());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -287,15 +313,17 @@ public class TcManticEmpresasDeudasDto implements IBaseDto, Serializable {
 		regresar.put("idCompleto", getIdCompleto());
 		regresar.put("fechaRecepcion", getFechaRecepcion());
 		regresar.put("idRecibio", getIdRecibio());
+		regresar.put("idProveedor", getIdProveedor());
 		regresar.put("idProveedorPago", getIdProveedorPago());
+		regresar.put("idNotaCosto", getIdNotaCosto());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-      getIdEmpresaEstatus(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresa(), getSaldo(), getIdNotaEntrada(), getLimite(), getImporte(), getPagar(), getIdRevisado(), getIdCompleto(), getFechaRecepcion(), getIdRecibio(), getIdProveedorPago(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdEmpresaEstatus(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresa(), getSaldo(), getIdNotaEntrada(), getLimite(), getImporte(), getPagar(), getIdRevisado(), getIdCompleto(), getFechaRecepcion(), getIdRecibio(), getIdProveedor(), getIdProveedorPago(), getIdNotaCosto(), getRegistro()
     };
     return regresar;
   }

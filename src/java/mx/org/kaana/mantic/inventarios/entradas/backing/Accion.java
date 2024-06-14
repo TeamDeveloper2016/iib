@@ -240,7 +240,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         // ESTO ES PARA IRSE A LA PAGINA PARA CALENDARIZAR EL PAGO
         if(this.aplicar) {
           Long idEmpresaDeuda= this.toCheckCuentaPagar(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
-          if(!Objects.equals(idEmpresaDeuda, -1L)) {
+          if(!Objects.equals(idEmpresaDeuda, -1L) && !Objects.equals(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaTipo(), 4L)) {
   			    regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/prorroga".concat(Constantes.REDIRECIONAR);
     			  JsfBase.setFlashAttribute("idEmpresaDeuda", idEmpresaDeuda);
           } // if

@@ -30,7 +30,8 @@
 				'contenedorGrupos\\:total'          : {validaciones: 'requerido|igual({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:gastos'         : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'codigos'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'cantidades'                        : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'cantidades'                        : {multiple: '$', validaciones: 'igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'precios'                           : {multiple: '$', validaciones: 'igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idTipoCosto'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'},
 				'contenedorGrupos\\:importe'        : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'costo'},
 				'contenedorGrupos\\:idContratista'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'}

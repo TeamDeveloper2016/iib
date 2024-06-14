@@ -388,21 +388,23 @@ public class Transaccion extends Inventarios implements Serializable {
       // RECALCULAR LOS COSTOS PROMEDIOS 
       this.toCheckPromedios(sesion, this.orden.getIdEmpresa(), 1L);
       
-			// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
+			// Una vez que la nota de entrada es cambiada a terminada se registra la cuenta por cobrar
 			TcManticEmpresasDeudasDto deuda= null;
-			if(this.orden.getDiasPlazo()> 1) 
-				deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", this.orden.getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, null);
-			else
-				deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", this.orden.getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, null);
-			DaoFactory.getInstance().insert(sesion, deuda);
-      TcManticEmpresasBitacoraDto bitacora= new TcManticEmpresasBitacoraDto(
-        "SE REGISTRO LA DEUDA", // String justificacion, 
-        deuda.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
-        JsfBase.getIdUsuario(), // Long idUsuario, 
-        deuda.getIdEmpresaDeuda(), // Long idEmpresaDeuda
-        -1L // Long idEmpresaBitacora, 
-      );
-      DaoFactory.getInstance().insert(sesion, bitacora);
+      if(!Objects.equals(this.orden.getIdProveedor(), null)) {
+        if(this.orden.getDiasPlazo()> 1) 
+          deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", this.orden.getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, this.orden.getIdProveedorPago(), null, this.orden.getIdProveedor());
+        else
+          deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", this.orden.getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, this.orden.getIdProveedorPago(), null, this.orden.getIdProveedor());
+        DaoFactory.getInstance().insert(sesion, deuda);
+        TcManticEmpresasBitacoraDto registro= new TcManticEmpresasBitacoraDto(
+          "SE REGISTRO LA DEUDA", // String justificacion, 
+          deuda.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
+          JsfBase.getIdUsuario(), // Long idUsuario, 
+          deuda.getIdEmpresaDeuda(), // Long idEmpresaDeuda
+          -1L // Long idEmpresaBitacora, 
+        );
+        DaoFactory.getInstance().insert(sesion, registro);
+      } // if  
    		TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
   		DaoFactory.getInstance().insert(sesion, registro);
       
@@ -712,7 +714,9 @@ public class Transaccion extends Inventarios implements Serializable {
             2L, // Long idCompleto, 
             null, // Date fechaRecepcion, 
             null, // Long idRecibio, 
-            Objects.equals(fecha, null) && !fecha.isEmpty()? fecha.toLong("idProveedorPago"): null // Long idProveedorPago      
+            Objects.equals(fecha, null) && !fecha.isEmpty()? fecha.toLong("idProveedorPago"): null, // Long idProveedorPago
+            item.getIdNotaCosto(), // Long idNotaCosto
+            item.getIdProveedor() // Long idProveedor
           );
           DaoFactory.getInstance().insert(sesion, deuda);
           TcManticEmpresasBitacoraDto registro= new TcManticEmpresasBitacoraDto(

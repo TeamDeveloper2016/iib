@@ -64,7 +64,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
           this.setArticulos(this.toLoadOrdenDetalle());
         this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
         this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
-        this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
+        this.orden.setIkProveedor(new UISelectEntity(new Entity(Objects.equals(this.orden.getIdProveedor(), null)? -1L: this.orden.getIdProveedor())));
         this.orden.setIdEmpresaBack(this.orden.getIdEmpresa());
         // RECUPERAR LOS GASTOS DE LOS COSTOS DE LA NOTA DE ENTRADA
         this.orden.setCostos((List<Costo>)DaoFactory.getInstance().toEntitySet(Costo.class, "VistaNotasEntradasDto", "costos", params, -1L));

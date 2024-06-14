@@ -132,7 +132,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
         this.costos.get(index).setSql(ESql.UPDATE);
       } // if
       else 
-        JsfBase.addMessage("Costo", "El costo ya existe en la lista !");
+        JsfBase.addMessage("Costo", "El gasto con cargo al costo ya existe en la lista !");
     } // if  
     else 
       this.costos.add(costo);
@@ -145,10 +145,10 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
         this.costos.get(index).setSql(ESql.DELETE);
       else
         this.costos.remove(index);
-      JsfBase.addMessage("Costo", "El costo fue eliminado de la lista !");
+      JsfBase.addMessage("Costo", "El gasto con cargo al costo fue eliminado de la lista !");
     } // if
     else
-      JsfBase.addMessage("Costo", "El costo NO existe en la lista !");
+      JsfBase.addMessage("Costo", "El gasto con cargo al costo NO existe en la lista !");
   }
   
   public void recover(Costo costo) {
@@ -158,7 +158,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
         this.costos.get(index).setSql(ESql.UPDATE);
     } // if
     else
-      JsfBase.addMessage("Costo", "El costo NO existe en la lista !");
+      JsfBase.addMessage("Costo", "El gasto con cargo al costo NO existe en la lista !");
   }
   
 	@Override

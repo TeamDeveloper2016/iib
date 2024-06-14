@@ -6012,39 +6012,39 @@ group by
         {sortOrder}        
       </select>  
 			<select id="pagosRealizados">
-        select 
-          tc_mantic_clientes_pagos_controles.id_cliente_pago_control as id_key,
-          tc_mantic_clientes_pagos_controles.id_cliente_pago_control,
-          tc_mantic_clientes_deudas.id_cliente,
-          tc_mantic_clientes_pagos.consecutivo,
-          tc_mantic_clientes_pagos_controles.tipo,
-          if(tc_mantic_clientes_pagos_controles.id_activo= 1, 'ACTIVO', 'CANCELADO') as estatus,
-          tc_mantic_clientes_pagos_controles.pago,
-          concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
-          tc_mantic_clientes_pagos_controles.observaciones,
-          tc_mantic_clientes_pagos_controles.registro,
-          count(*) as pagos,
-          tc_mantic_clientes.razon_social,
-          0 as eliminar
-        from
-          tc_mantic_clientes_pagos_controles
-        inner join
-          tc_mantic_clientes_pagos on tc_mantic_clientes_pagos_controles.id_cliente_pago_control= tc_mantic_clientes_pagos.id_cliente_pago_control
-        inner join
-          tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
-        inner join
-          tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente= tc_mantic_clientes.id_cliente
-        inner join
-          tc_janal_usuarios on tc_mantic_clientes_pagos_controles.id_usuario= tc_janal_usuarios.id_usuario
-        inner join
-          tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona 
-        where
-          tc_mantic_clientes_deudas.id_cliente= {idCliente}	
-          and date_format(tc_mantic_clientes_pagos_controles.registro, '%Y%m%d')&gt;= '{inicio}'
-        group by
-          tc_mantic_clientes_pagos_controles.id_cliente_pago_control
-        order by
-          tc_mantic_clientes_pagos.registro desc
+select 
+  tc_mantic_clientes_pagos_controles.id_cliente_pago_control as id_key,
+  tc_mantic_clientes_pagos_controles.id_cliente_pago_control,
+  tc_mantic_clientes_deudas.id_cliente,
+  tc_mantic_clientes_pagos.consecutivo,
+  tc_mantic_clientes_pagos_controles.tipo,
+  if(tc_mantic_clientes_pagos_controles.id_activo= 1, 'ACTIVO', 'CANCELADO') as estatus,
+  tc_mantic_clientes_pagos_controles.pago,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
+  tc_mantic_clientes_pagos_controles.observaciones,
+  tc_mantic_clientes_pagos_controles.registro,
+  count(*) as pagos,
+  tc_mantic_clientes.razon_social,
+  0 as eliminar
+from
+  tc_mantic_clientes_pagos_controles
+inner join
+  tc_mantic_clientes_pagos on tc_mantic_clientes_pagos_controles.id_cliente_pago_control= tc_mantic_clientes_pagos.id_cliente_pago_control
+inner join
+  tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
+inner join
+  tc_mantic_clientes on tc_mantic_clientes_deudas.id_cliente= tc_mantic_clientes.id_cliente
+inner join
+  tc_janal_usuarios on tc_mantic_clientes_pagos_controles.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona 
+where
+  tc_mantic_clientes_deudas.id_cliente= {idCliente}	
+  and date_format(tc_mantic_clientes_pagos_controles.registro, '%Y%m%d')&gt;= '{inicio}'
+group by
+  tc_mantic_clientes_pagos_controles.id_cliente_pago_control
+order by
+  tc_mantic_clientes_pagos.registro desc
       </select>  
 			<select id="row">
 				select 
@@ -7771,9 +7771,9 @@ inner join
 inner join
   tc_mantic_empresas on tc_mantic_notas_entradas.id_empresa= tc_mantic_empresas.id_empresa         
 inner join
-  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor         
-inner join
   tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus      
+left join
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor         
 left join
   tc_mantic_ordenes_compras on tc_mantic_notas_entradas.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra     
 left join
@@ -9664,7 +9664,7 @@ from
 inner join
   tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada         
 inner join
-  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+  tc_mantic_proveedores on tc_mantic_empresas_deudas.id_proveedor= tc_mantic_proveedores.id_proveedor
 where
   tc_mantic_empresas_deudas.id_nota_entrada= {idNotaEntrada}
 order by 
@@ -9819,8 +9819,8 @@ inner join
 inner join
   tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona 
 where
-  tc_mantic_notas_entradas.id_proveedor= {idProveedor}	
-  and date_format(tc_mantic_empresas_pagos_controles.registro, '%Y%m%d')&gt;= '{inicio}'
+  date_format(tc_mantic_empresas_pagos_controles.registro, '%Y%m%d')&gt;= '{inicio}'
+  and {condicion}
 group by
   tc_mantic_empresas_pagos_controles.id_empresa_pago_control
 order by
@@ -9853,7 +9853,7 @@ from
 inner join
   tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada				
 inner join 
-  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
+  tc_mantic_proveedores on tc_mantic_empresas_deudas.id_proveedor = tc_mantic_proveedores.id_proveedor
 inner join 
   tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
 inner join 
@@ -9892,36 +9892,33 @@ where
 			</select>
 			<select id="proveedores">
 select
-  tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
-  tc_mantic_empresas.clave,
-  tc_mantic_empresas.nombre,
-  tc_mantic_proveedores.id_proveedor,
-  tc_mantic_proveedores.clave as clave_proveedor,
-  tc_mantic_proveedores.razon_social,
-  count(*) as cuentas,
-  sum(tc_mantic_empresas_deudas.importe) as importe,
-  sum(tc_mantic_empresas_deudas.pagar) as pagar,
-  abs(sum(tc_mantic_empresas_deudas.saldo)) as saldo,
-  sum(tc_mantic_empresas_deudas.pagar- tc_mantic_empresas_deudas.saldo) as abonado,
-  tc_mantic_empresas_deudas.id_nota_entrada
+	tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
+	tc_mantic_proveedores.id_proveedor,
+	tc_mantic_proveedores.clave as clave_proveedor,
+	tc_mantic_proveedores.razon_social,
+	count(*) as cuentas,
+	sum(tc_mantic_empresas_deudas.importe) as importe,
+	sum(tc_mantic_empresas_deudas.pagar) as pagar,
+	abs(sum(tc_mantic_empresas_deudas.saldo)) as saldo,
+	sum(tc_mantic_empresas_deudas.pagar- tc_mantic_empresas_deudas.saldo) as abonado
 from
-  tc_mantic_empresas_deudas
+	tc_mantic_empresas_deudas
 inner join
-  tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada				
+	tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada	
 inner join 
-  tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
+	tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
 inner join 
-  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
+	tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
 inner join 
-  tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
+	tc_mantic_empresas on tc_mantic_empresas_deudas.id_empresa = tc_mantic_empresas.id_empresa
 inner join 
-  tc_mantic_empresas on tc_mantic_empresas_deudas.id_empresa = tc_mantic_empresas.id_empresa
+	tc_mantic_proveedores on tc_mantic_empresas_deudas.id_proveedor = tc_mantic_proveedores.id_proveedor
 where
-  tc_mantic_empresas_deudas.id_empresa in (1, 2)
-  and {condicion}
+	tc_mantic_empresas_deudas.id_empresa in (1,2,3,4,5)
+	and {condicion}
 group by	
-  tc_mantic_proveedores.id_proveedor
-{sortOrder}					        
+	tc_mantic_proveedores.id_proveedor
+{sortOrder}
       </select>  
 			<select id="detalle">
 select 
@@ -9948,11 +9945,11 @@ from (
     (datediff(tc_mantic_empresas_deudas.limite, now())* -1) as dias,
     tc_mantic_empresas.nombre,
     tc_mantic_empresas.clave,
-    tc_mantic_proveedores.clave clave_proveedor,
-    tc_mantic_proveedores.razon_social as proveedor,
+    ifnull(tc_mantic_proveedores.id_proveedor, 0) as id_proveedor,
+    ifnull(tc_mantic_proveedores.clave, 'ESPECIAL') as  clave_proveedor,
+    ifnull(tc_mantic_proveedores.razon_social, 'NOTAS ESPECIALES') as proveedor,
     tc_mantic_almacenes.nombre as almacen,
     tc_mantic_almacenes.id_almacen,
-    tc_mantic_proveedores.id_proveedor,
     tc_mantic_notas_entradas.id_nota_tipo,
     tc_mantic_notas_tipos.nombre as directa,
     tc_mantic_empresas_estatus.id_empresa_estatus,
@@ -9965,8 +9962,6 @@ from (
   inner join 
     tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
   inner join 
-    tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
-  inner join 
     tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
   inner join 
     tc_mantic_empresas on tc_mantic_empresas_deudas.id_empresa = tc_mantic_empresas.id_empresa
@@ -9976,9 +9971,11 @@ from (
     tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona				
   inner join
     tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
+  inner join 
+    tc_mantic_proveedores on tc_mantic_empresas_deudas.id_proveedor = tc_mantic_proveedores.id_proveedor
   where
     tc_mantic_empresas_deudas.id_empresa in ({idEmpresa})
-    and tc_mantic_notas_entradas.id_proveedor= {idProveedor}
+    and tc_mantic_proveedores.id_proveedor= {idProveedor}
     and {condicion}
   ) principal 
 {sortOrder}					
@@ -10044,7 +10041,7 @@ from (
     inner join 
       tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
     inner join 
-      tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
+      tc_mantic_proveedores on tc_mantic_empresas_deudas.id_proveedor = tc_mantic_proveedores.id_proveedor
     inner join
       tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
     left join
@@ -10177,7 +10174,7 @@ from (
   inner join 
     tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
   inner join 
-    tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
+    tc_mantic_proveedores on tc_mantic_empresas_deudas.id_proveedor = tc_mantic_proveedores.id_proveedor
   inner join 
     tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
   inner join 
@@ -10228,7 +10225,7 @@ inner join
 inner join 
   tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
 inner join 
-  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
+  tc_mantic_proveedores on tc_mantic_empresas_deudas.id_proveedor = tc_mantic_proveedores.id_proveedor
 inner join 
   tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
 inner join 
@@ -10265,7 +10262,7 @@ inner join
 inner join 
   tc_mantic_empresas_estatus on tc_mantic_empresas_deudas.id_empresa_estatus = tc_mantic_empresas_estatus.id_empresa_estatus
 inner join 
-  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
+  tc_mantic_proveedores on tc_mantic_empresas_deudas.id_proveedor = tc_mantic_proveedores.id_proveedor
 inner join 
   tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
 inner join 
@@ -10333,7 +10330,7 @@ inner join
 inner join
   tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
 inner join 
-  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor = tc_mantic_proveedores.id_proveedor
+  tc_mantic_proveedores on tc_mantic_empresas_deudas.id_proveedor = tc_mantic_proveedores.id_proveedor
 inner join 
   tc_mantic_almacenes on tc_mantic_notas_entradas.id_almacen = tc_mantic_almacenes.id_almacen
 inner join 
@@ -10406,19 +10403,18 @@ order by
 select
   tc_mantic_proveedores.id_proveedor as id_key,
   tc_mantic_proveedores.razon_social,															
-  sum(tc_mantic_empresas_deudas.importe) as importe,
-  sum(tc_mantic_empresas_deudas.saldo) as debe,
-  sum(tc_mantic_empresas_deudas.saldo) as saldo
+  ifnull(sum(tc_mantic_empresas_deudas.importe), 0) as importe,
+  ifnull(sum(tc_mantic_empresas_deudas.saldo), 0) as debe,
+  ifnull(sum(tc_mantic_empresas_deudas.saldo), 0) as saldo
 from
-  tc_mantic_proveedores
-inner join
-  tc_mantic_notas_entradas on tc_mantic_proveedores.id_proveedor = tc_mantic_notas_entradas.id_proveedor
+  tc_mantic_empresas_deudas
 left join
-  tc_mantic_empresas_deudas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada and tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3)
+  tc_mantic_proveedores on tc_mantic_empresas_deudas.id_proveedor= tc_mantic_notas_entradas.id_proveedor
 where
-  tc_mantic_proveedores.id_proveedor= {idProveedor}
+  tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3)
+  and tc_mantic_proveedores.id_proveedor= {idProveedor}
 group by 
-  tc_mantic_proveedores.id_proveedor
+  tc_mantic_empresas_deudas.id_proveedor
 			</select>	
 		</unit>
 		<unit id="VistaTallerServiciosDto">

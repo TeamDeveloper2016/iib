@@ -40,7 +40,7 @@ public class Pagos extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
 			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")== null ? JsfBase.getAutentifica().getEmpresa().getIdEmpresa() : Long.valueOf(JsfBase.getFlashAttribute("idEmpresa").toString()));
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-				loadSucursales();
+				this.loadSucursales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -51,14 +51,13 @@ public class Pagos extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
 	  Map<String, Object> params= null;	
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
     try {			
-  	  params = toPrepare();	
+  	  params = this.toPrepare();	
 			params.put("empresa", this.attrs.get("empresa"));
 			params.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
 			params.put("almacen", this.attrs.get("almacen"));			
 			params.put("proveedor", this.attrs.get("proveedor"));			
-      columns = new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
       columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
@@ -104,12 +103,10 @@ public class Pagos extends IBaseFilter implements Serializable {
 	
 	private void loadSucursales(){
 		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
 		String allEmpresa              = "";
 		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -126,4 +123,5 @@ public class Pagos extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // loadSucursales
+  
 }

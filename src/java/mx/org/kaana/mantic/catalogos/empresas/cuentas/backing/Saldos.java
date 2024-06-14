@@ -201,7 +201,7 @@ public class Saldos extends IBaseImportar implements Serializable {
       else
         if(!Objects.equals(-1L, estatus.getKey()))
           sb.append("(tc_mantic_empresas_deudas.id_empresa_estatus= ").append(estatus.getKey()).append(") and ");
-    regresar.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
+    regresar.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1")? this.attrs.get("allEmpresa"): this.attrs.get("idEmpresa"));			
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -295,11 +295,11 @@ public class Saldos extends IBaseImportar implements Serializable {
       if(reporteSeleccion.equals(EReportes.CUENTA_PAGAR_DETALLE)) {
         params.put("idEmpresaDeuda", seleccionado.toLong("idKey"));
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idProveedor"), -1L);
-      }
-      else{
+      } // if
+      else {
         params.put("sortOrder", "order by	almacen,proveedor,registro desc");
         comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      }
+      } // else
       this.reporte= JsfBase.toReporte();	
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
@@ -464,7 +464,7 @@ public class Saldos extends IBaseImportar implements Serializable {
   	  params = this.toPrepare();
 			Entity entity= (Entity)this.attrs.get("seleccionado");
 			params.put("sortOrder", "order by consecutivo desc");
-			params.put("idProveedor", entity.toLong("idProveedor"));
+  	  params.put("idProveedor", entity.toLong("idProveedor"));
 			this.attrs.put("idProveedor", entity.toLong("idProveedor"));
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));    
       columns.add(new Columna("abonado", EFormatoDinamicos.MILES_CON_DECIMALES));    
@@ -536,7 +536,10 @@ public class Saldos extends IBaseImportar implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {      
       this.attrs.put("seleccionado", row);
-      params.put("idProveedor", row.toLong("idProveedor"));      
+      if(Objects.equals(row.toLong("idProveedor"), 0L))
+        params.put(Constantes.SQL_CONDICION, "tc_mantic_notas_entradas.id_proveedor is null");      
+      else
+        params.put(Constantes.SQL_CONDICION, "tc_mantic_notas_entradas.id_proveedor= "+ row.toLong("idProveedor"));      
       Periodo periodo= new Periodo();
       periodo.addMeses(-12);
       params.put("inicio", periodo.toString());      

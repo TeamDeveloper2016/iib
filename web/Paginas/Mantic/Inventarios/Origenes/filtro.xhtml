@@ -168,9 +168,15 @@
                 </f:facet>
                 <h:outputText value="#{row['cantidad']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">
+              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.importe}">
                 <f:facet name="header">
                   <h:outputText value="Importe"/>
+                </f:facet>
+                <h:outputText value="#{row['importe']}"/>
+              </p:column>		
+              <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">
+                <f:facet name="header">
+                  <h:outputText value="Total"/>
                 </f:facet>
                 <h:outputText value="#{row['total']}"/>
               </p:column>		
@@ -192,7 +198,7 @@
                 </f:facet>
                 <h:outputText value="#{row['registro']}"/>
               </p:column>		
-              <p:column styleClass="MarAuto Responsive janal-fix-3 janal-column-center" exportable="false">
+              <p:column styleClass="MarAuto Responsive janal-fix-4 janal-column-center" exportable="false">
                 <p:commandButton icon="fa fa-search" title="Detalle ventas" actionListener="#{manticInventariosOrigenesFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
               </p:column>
               <f:facet name="footer">
