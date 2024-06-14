@@ -92,17 +92,19 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   private Double promedio;
   @Column (name="gastos")
   private Double gastos;
+  @Column (name="costales")
+  private Double costales;
 
   public TcManticNotasDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticNotasDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, 2L, 0D, 0D, 0D, 0D, "", 0D, 0D);
+    this(null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, 2L, 0D, 0D, 0D, 0D, "", 0D, 0D, 1D);
     setKey(key);
   }
 
-  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Double cantidad, Long idArticulo, Double descuentos, Double impuestos, Long idOrdenDetalle, Double cantidades, Double excedentes, Long idAplicar, Double declarados, Double diferencia, Double costoReal, Double costoCalculado, String origen, Double promedio, Double gastos) {
+  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Double cantidad, Long idArticulo, Double descuentos, Double impuestos, Long idOrdenDetalle, Double cantidades, Double excedentes, Long idAplicar, Double declarados, Double diferencia, Double costoReal, Double costoCalculado, String origen, Double promedio, Double gastos, Double costales) {
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
     setCosto(costo);
@@ -131,6 +133,7 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		this.origen= origen;
     this.promedio= promedio;
     this.gastos= gastos;
+    this.costales= costales;
   }
 	
   public void setCodigo(String codigo) {
@@ -356,6 +359,14 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   public void setGastos(Double gastos) {
     this.gastos = gastos;
   }
+
+  public Double getCostales() {
+    return costales;
+  }
+
+  public void setCostales(Double costales) {
+    this.costales = costales;
+  }
 	
   @Transient
   @Override
@@ -427,6 +438,8 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getPromedio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getGastos());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCostales());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -462,13 +475,14 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("origen", getOrigen());
 		regresar.put("promedio", getPromedio());
 		regresar.put("gastos", getGastos());
+		regresar.put("costales", getCostales());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-      getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getIdNotaEntrada(), getNombre(), getImporte(), getRegistro(), getIva(), getIdNotaDetalle(), getSubTotal(), getCantidad(), getIdArticulo(), getDescuentos(), getImpuestos(), getIdOrdenDetalle(), getCantidades(), getExcedentes(), getIdAplicar(), getDeclarados(), getDiferencia(), getCostoReal(), getCostoCalculado(), getOrigen(), getPromedio()
+    Object[] regresar = new Object[] {
+      getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getIdNotaEntrada(), getNombre(), getImporte(), getRegistro(), getIva(), getIdNotaDetalle(), getSubTotal(), getCantidad(), getIdArticulo(), getDescuentos(), getImpuestos(), getIdOrdenDetalle(), getCantidades(), getExcedentes(), getIdAplicar(), getDeclarados(), getDiferencia(), getCostoReal(), getCostoCalculado(), getOrigen(), getPromedio(), getGastos(), getCostales()
     };
     return regresar;
   }

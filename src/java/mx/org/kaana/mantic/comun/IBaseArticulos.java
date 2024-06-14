@@ -146,10 +146,13 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 					temporal.setPorcentajes(articulo.toString("porcentajes"));
 				} // if	
 				// SI VIENE DE IMPORTAR EL ARTICULO DE UN XML ENTONCES CONSIDERAR EL COSTO DE LA FACTURA CON RESPECTO AL DEL CATALOGOD E ARTICULOS
-				if(articulo.containsKey("costo")) 
-  				temporal.setCosto(articulo.toDouble("costo"));
-			  else
-				  temporal.setCosto(articulo.toDouble(this.precio));
+        if(zeros)
+					temporal.setCosto(0D);
+        else
+  				if(articulo.containsKey("costo")) 
+    				temporal.setCosto(articulo.toDouble("costo"));
+		  	  else
+			  	  temporal.setCosto(articulo.toDouble(this.precio));
 				temporal.setIva(articulo.toDouble("iva"));				
 				temporal.setSat(articulo.get("sat").getData()!= null ? articulo.toString("sat") : "");				
 				temporal.setDescuento(this.adminOrden.getDescuento());
@@ -170,7 +173,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
-				temporal.setPrecio(articulo.toDouble("precio"));				
+			  temporal.setPrecio(articulo.toDouble("precio"));				
 				temporal.setPesoEstimado(articulo.toDouble("pesoEstimado"));				
 				
 				// RECUPERA EL STOCK DEL ALMACEN MAS SABER SI YA FUE HUBO UN CONTEO O NO

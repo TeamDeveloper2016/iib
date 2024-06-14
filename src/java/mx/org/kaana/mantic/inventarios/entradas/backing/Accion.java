@@ -217,6 +217,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
+      if(Objects.equals(((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedor(), -1L))
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setIdProveedor(null);
+      if(Objects.equals(((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedorPago(), -1L))
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setIdProveedorPago(null);
 			((NotaEntrada)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
@@ -243,7 +247,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         } // if
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada", ETipoMensaje.ERROR);      			
+      if(Objects.equals(((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedor(), null))
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setIdProveedor(-1L);
+      if(Objects.equals(((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedorPago(), null))
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setIdProveedorPago(-1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -308,6 +316,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.attrs.put("costos", costos);
       List<UISelectItem> contratistas= UISelect.build("VistaOrdenesComprasDto", "moneda", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("contratistas", contratistas);
+      
+      List<UISelectItem> productos= new ArrayList<>();
+      productos.add(new UISelectItem(new Long("-1"), "SELECCIONE"));
+      if(!Objects.equals(this.accion, EAccion.AGREGAR)) {
+        for (Articulo articulo: this.getAdminOrden().getArticulos()) { 
+          productos.add(new UISelectItem(articulo.getIdArticulo(), articulo.getCodigo().concat(" | ").concat(articulo.getNombre())));
+        } // for
+        if(productos.size()> 0)
+          productos.remove(productos.size()- 1);
+      } // if
+      this.attrs.put("productos", productos);
+      
       this.toNewCosto();
     } // try
     catch (Exception e) {
@@ -675,14 +695,45 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	
 	@Override
 	public void doDeleteArticulo(Integer index) {
-		super.doDeleteArticulo(index);
-    this.doFilterRows();
+    try {
+      // QUITA DE LA LISTA EL PRODUCTO SELECCIONADO ANTES DE ELIMINARLO
+      List<UISelectItem> productos= (List<UISelectItem>)this.attrs.get("productos");
+      if(index< this.getAdminOrden().getArticulos().size()) {
+        Articulo articulo= this.getAdminOrden().getArticulos().get(index);
+        int x= 0;
+        while(x< productos.size()) {
+          UISelectItem item= productos.get(x);
+          if(Objects.equals((Long)item.getValue(), articulo.getIdArticulo()))
+            productos.remove(x);
+          else
+            x++;
+        } // for
+      } // if  
+		  super.doDeleteArticulo(index);
+      this.doFilterRows();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
 	}
 
 	@Override
   public void doFindArticulo(Integer index) {
-		super.doFindArticulo(index);
-		this.doFilterRows();
+    try {
+		  super.doFindArticulo(index);
+		  this.doFilterRows();
+      // AGREGAR A LA LISTA EL PRODUCTO SELECCIONADO DESPUES DE AGREGARLO
+      List<UISelectItem> productos= (List<UISelectItem>)this.attrs.get("productos");
+      if(index< this.getAdminOrden().getArticulos().size()) {
+        Articulo articulo= this.getAdminOrden().getArticulos().get(index);
+        productos.add(new UISelectItem(articulo.getIdArticulo(), articulo.getPropio().concat(" | ").concat(articulo.getNombre())));
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
 	}
 
 	public void doUpdateRfc() {
@@ -1029,10 +1080,26 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       if(Objects.equals(costo.getIdCuenta(), 2L)) {
         this.costo.setIdProveedor(null);
         this.costo.setProveedor(null);
+        this.costo.setIdArticulo(null);
+        this.costo.setArticulo(null);
         this.costo.setIdGenerar(2L);
       } // if 
-      else
+      else 
         this.costo.setIdGenerar(1L);
+      if(Objects.equals(costo.getIdArticulo(), -1L)) {
+        costo.setIdArticulo(null);
+        costo.setArticulo(null);
+      } // if
+      else {
+        List<UISelectItem> productos= (List<UISelectItem>)this.attrs.get("productos");
+        int x= 0;
+        while(x< productos.size()) {
+          UISelectItem item= productos.get(x);
+          if(Objects.equals((Long)item.getValue(), costo.getIdArticulo()))
+            costo.setArticulo(item.getLabel());
+          x++;
+        } // while
+      } // if  
       ((NotaEntrada)this.getAdminOrden().getOrden()).add(costo);   
       this.getAdminOrden().getTotales().setGastos(((NotaEntrada)this.getAdminOrden().getOrden()).getCostos().size());
       this.toNewCosto();
@@ -1077,6 +1144,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 
   protected void toNewCosto() {
     List<UISelectItem> costos      = (List<UISelectItem>)this.attrs.get("costos");
+    List<UISelectItem> productos   = (List<UISelectItem>)this.attrs.get("productos");
     List<UISelectItem> contratistas= (List<UISelectItem>)this.attrs.get("contratistas");
     try {      
       this.costo= new Costo(-1L);
@@ -1086,6 +1154,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       } // if  
       if(!Objects.equals(contratistas, null)) 
         this.costo.setProveedor((String)contratistas.get(0).getLabel());
+      this.costo.setIdArticulo((Long)productos.get(0).getValue());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1099,6 +1168,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       this.costo.setIdTipoCosto(costo.getIdTipoCosto());
       this.costo.setIdProveedor(costo.getIdProveedor());
       this.costo.setImporte(costo.getImporte());
+      this.costo.setIdArticulo(costo.getIdArticulo());
       this.getAdminOrden().getTotales().setGastos(((NotaEntrada)this.getAdminOrden().getOrden()).getCostos().size());
     } // try
     catch (Exception e) {

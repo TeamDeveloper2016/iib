@@ -60,15 +60,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}	// getReporte
 	
   public String getGeneral() {
-    String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("cantidad"));
-    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("importe"));
-    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+    String kilos  = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("cantidad"));
+    String importe= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("importe"));
+    String total  = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
+    return "Suma de kilos: <strong>"+ kilos+ "</strong> | importe: <strong>"+ importe+ "</strong> | total:<strong>"+ total+ "</strong>";  
   }
   
   public String getParticular() {
-    String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("cantidad"));
-    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("importe"));
-    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+    String kilos  = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("cantidad"));
+    String importe= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("importe"));
+    String total  = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("total"));
+    return "Suma de kilos: <strong>"+ kilos+ "</strong> | importe: <strong>"+ importe+ "</strong> | total:<strong>"+ total+ "</strong>";  
   }
   
   @PostConstruct
@@ -103,6 +105,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaNotasEntradasDto", params, columns);
@@ -435,6 +438,8 @@ public class Filtro extends IBaseFilter implements Serializable {
         columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
         columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
         columns.add(new Columna("promedio", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("gastos", EFormatoDinamicos.MILES_CON_DECIMALES));
+        columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
 				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 				this.lazyDetalle= new FormatLazyModel("TcManticNotasDetallesDto", "igual", params, columns);
 				UIBackingUtilities.resetDataTable("tablaDetalle");
@@ -469,6 +474,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     Entity regresar= new Entity(-1L);
     regresar.put("cantidad", new Value("cantidad", 0D));
     regresar.put("importe", new Value("importe", 0D));
+    regresar.put("total", new Value("total", 0D));
     return regresar;
   }
   

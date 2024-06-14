@@ -126,7 +126,7 @@ public class Filtro extends IBaseTicket implements Serializable {
   public String getGeneral() {
     String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("kilos"));
     String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
-    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+    return "Suma de kilos: <strong>"+ kilos+ "</strong> | importe: <strong>"+ total+ "</strong>";  
   }
   
   @PostConstruct

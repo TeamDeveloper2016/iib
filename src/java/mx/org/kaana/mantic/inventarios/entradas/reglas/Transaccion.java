@@ -43,6 +43,7 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Costo;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
+import mx.org.kaana.mantic.inventarios.entradas.beans.Promedio;
 import org.apache.log4j.Logger;
 
 /**
@@ -571,31 +572,36 @@ public class Transaccion extends Inventarios implements Serializable {
   }
   
 	private Boolean toFillCostos(Session sesion) throws Exception {
-    Boolean regresar= Boolean.FALSE;
-    try {      
-      Double total= 0D;
+    Boolean regresar        = Boolean.FALSE;
+    List<Promedio> promedios= new ArrayList<>();
+    try {
       for (Costo item: this.orden.getCostos()) {
         item.setIdUsuario(JsfBase.getIdUsuario());
         item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         switch(item.getSql()) {
           case SELECT:
-            total+= item.getImporte();
             break;
           case UPDATE:
-            total+= item.getImporte();
             regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
             break;
           case DELETE:
             regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
             break;
           case INSERT:
-            total+= item.getImporte();
             item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
         } // switch    
+        if(!Objects.equals(item.getIdArticulo(), null)) {
+          int index= promedios.indexOf(new Promedio(item.getIdArticulo()));
+          if(index< 0)
+            promedios.add(new Promedio(item.getIdArticulo(), item.getImporte()));
+          else
+            promedios.get(index).setTotal(promedios.get(index).getTotal()+ item.getImporte()); 
+        } // if  
       } // for
-      regresar= this.toCheckCostos(sesion, total);
+      this.toCheckCostos(sesion, promedios);
+      regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
       throw e;      
@@ -603,17 +609,24 @@ public class Transaccion extends Inventarios implements Serializable {
     return regresar;
   }
   
-	private Boolean toCheckCostos(Session sesion, Double total) throws Exception {
+	private Boolean toCheckCostos(Session sesion, List<Promedio> promedios) throws Exception {
     Boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= new HashMap<>();
     try {      
       // ESTE PROCESO RECALCULA EL PRECIO PROMEDIO DE LA NOTA DE ENTRADA
       params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
-      Double ajuste= total/ (this.articulos.size()<= 0? 1: this.articulos.size());
       List<TcManticNotasDetallesDto> items= (List<TcManticNotasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticNotasDetallesDto.class, "TcManticNotasDetallesDto", "igual", params);
       for (TcManticNotasDetallesDto item: items) {
-        item.setPromedio((item.getImporte()+ ajuste)/ (item.getCantidad()<= 0? 1: item.getCantidad()));
-        item.setGastos(ajuste);
+        int index= promedios.indexOf(new Promedio(item.getIdArticulo()));
+        if(index>= 0) {
+          Promedio promedio= promedios.get(index);
+          item.setPromedio((item.getImporte()+ promedio.getTotal())/ (item.getCantidad()<= 0? 1: item.getCantidad()));
+          item.setGastos(promedio.getTotal());
+        } // if
+        else {
+          item.setPromedio(item.getImporte()/ (item.getCantidad()<= 0? 1: item.getCantidad()));
+          item.setGastos(0D);
+        } // else
         DaoFactory.getInstance().update(sesion, item);
       } // for
       regresar= Boolean.TRUE;

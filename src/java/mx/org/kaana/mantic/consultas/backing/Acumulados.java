@@ -52,13 +52,13 @@ public class Acumulados extends Articulos implements Serializable {
   public String getGeneral() {
     String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("cantidad"));
     String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("importe"));
-    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+    return "Suma de kilos: <strong>"+ kilos+ "</strong> | importe: <strong>"+ total+ "</strong>";  
   }
   
   public String getParticular() {
     String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("cantidad"));
     String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("importe"));
-    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+    return "Suma de kilos: <strong>"+ kilos+ "</strong> | importe: <strong>"+ total+ "</strong>";  
   }
   
   @PostConstruct

@@ -68,7 +68,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String getParticular() {
     String kilos= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("cantidad"));
     String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("importe"));
-    return "Suma de kilos: <strong>"+ kilos+ "</strong>    importe: <strong>"+ total+ "</strong>";  
+    return "Suma de kilos: <strong>"+ kilos+ "</strong> | importe: <strong>"+ total+ "</strong>";  
   }
   
   @PostConstruct

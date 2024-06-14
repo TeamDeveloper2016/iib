@@ -558,7 +558,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.calculado,
 			this.getOrigen(),
       this.getImporte()/ (this.getCantidad()<= 0? 1D: this.getCantidad()), // Double promedio
-      0D // Double gastos
+      0D, // Double gastos
+      this.getPesoEstimado() // Double costales
 		);	
 	}
 

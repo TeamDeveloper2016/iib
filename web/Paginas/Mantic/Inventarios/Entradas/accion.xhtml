@@ -37,10 +37,10 @@
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'codigos'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'sat'                               : {multiple: '$', validaciones: 'entero|igual-caracteres({"cuantos": 8})', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'costales'                          : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'codigo', formatos: 'cambiar-mayusculas', grupo: 'general'},				
-				'precios'                           : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},				
-				'cantidades'                        : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'precios'                           : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},				
+				'cantidades'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idTipoCosto'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'},
 				'contenedorGrupos\\:importe'        : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'costo'},
 				'contenedorGrupos\\:idContratista'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'}
@@ -355,11 +355,11 @@
   													</div>	
 													</div>	
 												</p:column>
-												<p:column styleClass="MarAuto Responsive janal-wid-col-90" rendered="false">
+												<p:column styleClass="MarAuto Responsive janal-wid-col-90">
 													<f:facet name="header">
-														<h:outputText value="Código SAT"/>
+														<h:outputText value="Costales"/>
 													</f:facet>
-													<p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-before key-event-sat fila"/>
+													<p:inputText id="costales" value="#{row['pesoEstimado']}" styleClass="janal-wid-100-txt key-event-before key-event-sat fila"/>
 												</p:column>		
 												<p:column styleClass="MarAuto Responsive">
 													<f:facet name="header">
@@ -450,12 +450,18 @@
               </p:panelGrid>
 						</p:tab>
 						<p:tab title="Gastos">
-              <p:panelGrid id="datosCostos" layout="grid" columns="3" columnClasses="janal-wid-33, janal-wid-33, janal-wid-34">
+              <p:panelGrid id="datosCostos" layout="grid" columns="4" columnClasses="janal-wid-20, janal-wid-30, janal-wid-30, janal-wid-20">
                 <p:panelGrid layout="grid" columns="1">
-									<p:outputLabel for="idTipoCosto" value="Costo:"/>
+									<p:outputLabel for="idTipoCosto" value="Gastos con cargo al costo:"/>
       					  <p:selectOneMenu id="idTipoCosto" value="#{manticInventariosEntradasAccion.costo.idTipoCosto}" converter="javax.faces.Long" styleClass="janal-wid-100-txt costos" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
     								<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doPrepare}" process="@this" update="contenedorGrupos:idContratista"/>
                     <f:selectItems value="#{manticInventariosEntradasAccion.attrs.costos}"/>
+                  </p:selectOneMenu>
+                </p:panelGrid>  
+                <p:panelGrid layout="grid" columns="1">
+									<p:outputLabel for="idProducto" value="Articulo:"/>
+                  <p:selectOneMenu id="idProducto" value="#{manticInventariosEntradasAccion.costo.idArticulo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt filas costos involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <f:selectItems value="#{manticInventariosEntradasAccion.attrs.productos}"/>
                   </p:selectOneMenu>
                 </p:panelGrid>  
                 <p:panelGrid layout="grid" columns="1">
@@ -479,8 +485,11 @@
 								<p:column styleClass="MarAuto Responsive janal-wid-8 gastos" headerText="Gasto">
 									<h:outputText value="#{row.clave}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive" headerText="Nombre">
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Articulo">
+									<h:outputText value="#{row.articulo}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive" headerText="Proveedor">
 									<h:outputText value="#{row.proveedor}"/>

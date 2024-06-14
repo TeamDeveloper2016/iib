@@ -22,6 +22,7 @@ public class Costo extends TcManticNotasCostosDto implements Serializable {
   private String nombre;
   private Long idCuenta;
   private String proveedor;
+  private String articulo;
   private ESql sql;
 
   public Costo() {
@@ -37,7 +38,8 @@ public class Costo extends TcManticNotasCostosDto implements Serializable {
      2L, // Long idGenerar, 
      -1L, // Long idNotaEntrada, 
      0D, // Double importe, 
-     -1L // Long idTipoCosto
+     -1L, // Long idTipoCosto
+     -1L // Long idArticulo      
     );
     this.sql= ESql.INSERT;
   }
@@ -82,10 +84,19 @@ public class Costo extends TcManticNotasCostosDto implements Serializable {
     this.sql = sql;
   }
 
+  public String getArticulo() {
+    return articulo;
+  }
+
+  public void setArticulo(String articulo) {
+    this.articulo = articulo;
+  }
+
   @Override
   public int hashCode() {
     int hash = 3;
-    hash = 43 * hash + Objects.hashCode(this.getIdTipoCosto());
+    hash = 73 * hash + Objects.hashCode(this.getIdTipoCosto());
+    hash = 73 * hash + Objects.hashCode(this.getIdArticulo());
     return hash;
   }
 
@@ -100,8 +111,11 @@ public class Costo extends TcManticNotasCostosDto implements Serializable {
     final Costo other = (Costo) obj;
     if (!Objects.equals(this.getIdTipoCosto(), other.getIdTipoCosto())) 
       return false;
+    if (!Objects.equals(this.getIdArticulo(), other.getIdArticulo())) 
+      return false;
     return true;
   }
+
   
   @Override
   public Class toHbmClass() {

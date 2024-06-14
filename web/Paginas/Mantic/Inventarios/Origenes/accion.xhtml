@@ -28,7 +28,8 @@
 				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'codigos'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'cantidades'                        : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
+				'costales'                          : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'cantidades'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
 			};
 			
     	$(document).ready(function() {
@@ -327,6 +328,12 @@
   													</div>	
 													</div>	
 												</p:column>
+												<p:column styleClass="MarAuto Responsive janal-wid-col-90">
+													<f:facet name="header">
+														<h:outputText value="Costales"/>
+													</f:facet>
+													<p:inputText id="costales" value="#{row['pesoEstimado']}" styleClass="janal-wid-100-txt key-event-before key-event-sat fila"/>
+												</p:column>		
 												<p:column styleClass="MarAuto Responsive">
 													<f:facet name="header">
 														<h:outputText value="Articulo"/>

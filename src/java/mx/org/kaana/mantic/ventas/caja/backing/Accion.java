@@ -391,9 +391,10 @@ public class Accion extends IBaseVenta implements Serializable {
             ticketVenta.setIdRegimenFiscal(this.getIkRegimenFiscal().getKey());
         } // if  
         // ESTE ATRIBUTO SE AGREGO PARA PODER AUTORIZAR VENTAS DESDE EL MÓDULO DE AUTORIZACIONES
-        if(ticketVenta.getIdAcepta()== null)
-          UIBackingUtilities.execute("autorizacion();");
-        else
+        // SE DESACTIVA EL 10/06/2024 PORQUE NO ES NECESARIO VALIDAR SI EL TIPO DE VENTA ES DIFERENTE A MENUDEO
+//        if(ticketVenta.getIdAcepta()== null)
+//          UIBackingUtilities.execute("autorizacion();");
+//        else
           this.doAceptar();
       } // if  
       else

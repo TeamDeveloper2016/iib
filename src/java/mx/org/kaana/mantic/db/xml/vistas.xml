@@ -7751,7 +7751,7 @@ select
   tc_mantic_notas_tipos.nombre as directa,
   tc_mantic_notas_entradas.id_nota_tipo,
   tc_mantic_proveedores.razon_social,
-  tc_mantic_notas_entradas.total,
+  tc_mantic_notas_entradas.total as importe,
   tc_mantic_notas_estatus.id_nota_estatus,
   tc_mantic_notas_estatus.nombre as estatus,
   tc_mantic_notas_estatus.estatus_asociados,
@@ -7759,7 +7759,8 @@ select
   count(*) as articulos,
   sum(if(tc_mantic_articulos.id_imagen is null, 1, 0)) as imagenes,
   tc_mantic_notas_entradas.factura,
-  ifnull(sum(tc_mantic_notas_detalles.cantidad), 0) as cantidad
+  ifnull(sum(tc_mantic_notas_detalles.cantidad), 0) as cantidad,
+  ifnull(sum(tc_mantic_notas_detalles.importe+ tc_mantic_notas_detalles.gastos), 0) as total
 from
   tc_mantic_notas_entradas         
 inner join
@@ -7787,8 +7788,9 @@ group by
 select
   tc_mantic_notas_entradas.id_nota_entrada as id_key,
   count(distinct(tc_mantic_notas_detalles.id_nota_detalle)) as articulos,
-  ifnull(sum(tc_mantic_notas_entradas.total), 0) as importe,
-  ifnull(sum(tc_mantic_notas_detalles.cantidad), 0) as cantidad         
+  ifnull(sum(tc_mantic_notas_detalles.importe), 0) as importe,
+  ifnull(sum(tc_mantic_notas_detalles.cantidad), 0) as cantidad,
+  ifnull(sum(tc_mantic_notas_detalles.importe+ tc_mantic_notas_detalles.gastos), 0) as total
 from
   tc_mantic_notas_entradas         
 inner join
@@ -7952,6 +7954,7 @@ select
   tc_mantic_tipos_costos.descripcion as nombre,
   tc_mantic_tipos_costos.id_cuenta,
   tc_mantic_proveedores.razon_social as proveedor,
+  concat(tc_mantic_articulos_codigos.codigo, ' | ', tc_mantic_articulos.nombre) as articulo,
   tc_mantic_notas_costos.*
 from
   tc_mantic_notas_costos
@@ -7959,6 +7962,10 @@ inner join
   tc_mantic_tipos_costos on tc_mantic_notas_costos.id_tipo_costo= tc_mantic_tipos_costos.id_tipo_costo
 left join  
   tc_mantic_proveedores on tc_mantic_notas_costos.id_proveedor=  tc_mantic_proveedores.id_proveedor
+left join  
+  tc_mantic_articulos on tc_mantic_notas_costos.id_articulo= tc_mantic_articulos.id_articulo
+left join  
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 where
   tc_mantic_notas_costos.id_nota_entrada= {idNotaEntrada}
 order by
@@ -7994,7 +8001,8 @@ select
   tc_mantic_notas_detalles.registro,
   tc_mantic_notas_detalles.cantidad as cuantos,
   tc_mantic_notas_detalles.cantidad as inicial,
-  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_articulos.precio, tc_mantic_ordenes_detalles.costo) as valor
+  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_articulos.precio, tc_mantic_ordenes_detalles.costo) as valor,
+  tc_mantic_notas_detalles.costales as peso_estimado
 from      
   tc_mantic_notas_detalles
 inner join
