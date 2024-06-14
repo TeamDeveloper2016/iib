@@ -496,9 +496,8 @@ public class Transaccion extends IBaseTnx {
 		Double regresar          = 0.0D;
 		Double totalPagos        = 0.0D;
 		List<Entity>pagos        = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idEmpresaDeuda", idEmpresaDeuda);
 			pagos= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "pagosDeuda", params);
 			if(!pagos.isEmpty()) {
@@ -711,9 +710,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private List<Entity> toDeudas(Session sesion) throws Exception {
 		List<Entity> regresar    = null;
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idProveedor", this.idProveedor);
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo> 0 and tc_mantic_empresas_deudas.id_empresa_estatus in (1, 2, 3)");			
 			params.put("sortOrder", "order by tc_mantic_empresas_deudas.registro asc");
@@ -811,9 +809,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.idEmpresa);
 			params.put("operador", this.getCurrentSign());
@@ -999,6 +996,6 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // actualizarSaldoCatalogoProveedor
+	} 
   
 }

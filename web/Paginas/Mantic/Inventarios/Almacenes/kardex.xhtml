@@ -108,8 +108,8 @@
 						</p:autoComplete>		
             <p:selectOneMenu id="idArticuloTipo" value="#{manticInventariosAlmacenesKardex.attrs.idArticuloTipo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt almacen">
               <p:ajax event="change" process="@this"/>
-              <f:selectItem itemLabel="ARTICULOS" itemValue="1"/>
-              <f:selectItem itemLabel="REFACCIONES" itemValue="2"/>
+              <f:selectItem itemLabel="PRODUCTO TERMINADO" itemValue="1"/>
+              <f:selectItem itemLabel="PRODUCTO ORIGEN" itemValue="4"/>
             </p:selectOneMenu>								
 						<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" oncomplete="recover(0)" style="float:right;"/>
           </p:panelGrid>					
@@ -383,19 +383,19 @@
 								<p:column headerText="Costo" styleClass="janal-wid-8 janal-column-right">
 									<p:outputLabel value="#{item.costo}"/>
 								</p:column>   
-								<p:column headerText="Menudeo" styleClass="janal-wid-8 janal-column-right">
+								<p:column headerText="Menudeo" styleClass="janal-wid-8 janal-column-right" rendered="false">
 									<p:outputLabel value="#{item.menudeo}"/>
 								</p:column>   
-								<p:column headerText="Medio mayoreo" styleClass="janal-wid-8 janal-column-right">
+								<p:column headerText="Medio mayoreo" styleClass="janal-wid-8 janal-column-right" rendered="false">
 									<p:outputLabel value="#{item.medioMayoreo}"/>
 								</p:column>   
-								<p:column headerText="Mayoreo" styleClass="janal-wid-8 janal-column-right">
+								<p:column headerText="Mayoreo" styleClass="janal-wid-8 janal-column-right" rendered="false">
 									<p:outputLabel value="#{item.mayoreo}"/>
 								</p:column>   
-								<p:column headerText="% Descuento" styleClass="janal-wid-7 janal-column-right">
+								<p:column headerText="% Descuento" styleClass="janal-wid-7 janal-column-right" rendered="false">
 									<p:outputLabel value="#{item.descuento}"/>
 								</p:column>   
-								<p:column headerText="% Extra" styleClass="janal-wid-7 janal-column-right">
+								<p:column headerText="% Extra" styleClass="janal-wid-7 janal-column-right" rendered="false">
 									<p:outputLabel value="#{item.extras}"/>
 								</p:column>   
 								<p:column headerText="Fecha" styleClass="janal-wid-13 janal-column-center">

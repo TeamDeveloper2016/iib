@@ -131,10 +131,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
     try {
-			if(JsfBase.isCajero())
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			else
+			if(JsfBase.isAdmin())
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));							
@@ -464,10 +464,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("mayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("menudeo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("mayoreo", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("limiteMedioMayoreo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("limiteMayoreo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
