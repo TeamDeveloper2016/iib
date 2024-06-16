@@ -703,7 +703,7 @@ public class Transaccion extends Inventarios implements Serializable {
             1L, // Long idEmpresaEstatus, 
             JsfBase.getIdUsuario(), // Long idUsuario, 
             -1L, // Long idEmpresaDeuda, 
-            "GASTO ".concat(item.getNombre()), // String observaciones, 
+            "GASTO ".concat(item.getNombre()).concat(" | ").concat(item.getArticulo()), // String observaciones, 
             this.orden.getIdEmpresa(), // Long idEmpresa, 
             item.getImporte(), // Double saldo, 
             this.orden.getIdNotaEntrada(), // Long idNotaEntrada, 

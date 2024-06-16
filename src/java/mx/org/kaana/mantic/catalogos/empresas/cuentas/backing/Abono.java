@@ -83,7 +83,7 @@ public class Abono extends IBasePagos implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
-		Map<String, Object> params        = null;
+		Map<String, Object> params        = new HashMap<>();
 		List<UISelectItem> tiposDocumentos= null;
     try {			
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
@@ -97,7 +97,6 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("empresaDeuda", DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, Long.valueOf(this.attrs.get("idEmpresaDeuda").toString())));
 			this.attrs.put("proveedor", DaoFactory.getInstance().findById(TcManticProveedoresDto.class, Long.valueOf(this.attrs.get("idProveedor").toString())));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));  
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			tiposDocumentos= UISelect.build("TcManticTiposComprobantesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("tiposDocumentos", tiposDocumentos);
@@ -126,8 +125,7 @@ public class Abono extends IBasePagos implements Serializable {
 			UIBackingUtilities.toFormatEntity(deuda, columns);
 			
 			this.attrs.put("deuda", deuda);
-			this.attrs.put("saldoPositivo", deuda.toDouble("saldo")* -1);
-			this.attrs.put("pago", deuda.toDouble("saldo")* -1);
+			this.attrs.put("pago", deuda.toDouble("saldo"));
 			this.attrs.put("permitirPago", deuda.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa()));
       if(!deuda.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa())) 
         UIBackingUtilities.execute("janal.bloquear();PF('dlgPago').show();");
@@ -297,7 +295,7 @@ public class Abono extends IBasePagos implements Serializable {
 			this.attrs.put("file", ""); 
 		} // finally
     return regresar;
-	} // doAceptar
+	}
 	
 	public void doFileUpload(FileUploadEvent event) {
 		StringBuilder path= new StringBuilder();  

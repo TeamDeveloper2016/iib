@@ -183,7 +183,7 @@ public class Transaccion extends TransaccionFactura{
             " NUEVO SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.redondearSat(deuda.getSaldo()- this.pago.getPago()))));
 					saldo= deuda.getSaldo()- this.pago.getPago();
 					deuda.setSaldo(saldo);
-					deuda.setIdClienteEstatus(this.saldar? EEstatusClientes.SALDADA.getIdEstatus(): saldo.equals(0D)? EEstatusClientes.FINALIZADA.getIdEstatus(): EEstatusClientes.PARCIALIZADA.getIdEstatus());
+					deuda.setIdClienteEstatus(this.saldar? EEstatusClientes.SALDADA.getIdEstatus(): saldo<= 0D? EEstatusClientes.FINALIZADA.getIdEstatus(): EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
           TcManticClientesBitacoraDto bitacora= new TcManticClientesBitacoraDto(
             -1L, // Long idClienteBitacora, 

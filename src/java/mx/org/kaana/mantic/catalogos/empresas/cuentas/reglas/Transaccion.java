@@ -232,8 +232,8 @@ public class Transaccion extends IBaseTnx {
             "] SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, item .getSaldo())).concat(
             " NUEVO SALDO $").concat(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.redondearSat(item .getSaldo()- this.pago.getPago()))));
 					saldo= item .getSaldo()- this.pago.getPago();
-					item .setSaldo(saldo);
-					item .setIdEmpresaEstatus(saldo>= 0D ? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa() : EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
+					item.setSaldo(saldo);
+					item.setIdEmpresaEstatus(saldo<= 0D? EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa(): EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
 					regresar= DaoFactory.getInstance().update(sesion, item )>= 1L;
           TcManticEmpresasBitacoraDto bitacora= new TcManticEmpresasBitacoraDto(
             "SE REGISTRO UN PAGO [".concat(String.valueOf(this.pago.getPago())).concat("]"), // String justificacion, 

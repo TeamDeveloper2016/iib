@@ -198,6 +198,7 @@
                     <f:setPropertyActionListener target="#{manticCatalogosEmpresasCuentasSaldos.attrs.idNotaEntrada}" value="#{row.idNotaEntrada}"/>
                     <h:outputText value="#{row['consecutivo']}"/>
                   </p:commandLink>	
+                  <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}"></i>
                 </p:column>														
                 <p:column styleClass="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.factura}">
                   <f:facet name="header">

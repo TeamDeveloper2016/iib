@@ -7801,9 +7801,9 @@ inner join
 inner join
   tc_mantic_empresas on tc_mantic_notas_entradas.id_empresa= tc_mantic_empresas.id_empresa         
 inner join
-  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor         
-inner join
   tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus      
+left join
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor         
 left join
   tc_mantic_ordenes_compras on tc_mantic_notas_entradas.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra     
 left join
@@ -9954,7 +9954,8 @@ from (
     tc_mantic_notas_tipos.nombre as directa,
     tc_mantic_empresas_estatus.id_empresa_estatus,
     tc_mantic_empresas_estatus.nombre as estatus,
-    tc_mantic_notas_entradas.original
+    tc_mantic_notas_entradas.original,
+    tc_mantic_empresas_deudas.observaciones
   from
     tc_mantic_empresas_deudas
   inner join
