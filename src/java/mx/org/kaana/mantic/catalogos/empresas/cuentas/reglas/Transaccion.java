@@ -77,7 +77,7 @@ public class Transaccion extends IBaseTnx {
   private Date fechaRecepcion;
   private Long idRecibio;
   private Long proveedorPago;
-
+  
 	public Transaccion(Long idArchivo) {
 		this.idArchivo= idArchivo;
 	} // Transaccion

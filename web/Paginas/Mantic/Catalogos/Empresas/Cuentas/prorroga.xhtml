@@ -63,11 +63,15 @@
 								<p:outputLabel value="Folio:"/>						
                 <p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:separator/>
-								<p:outputLabel value="Sucursal:"/>			
-								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>		
-								<p:outputLabel value="Almacen:"/>						
-								<p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.almacen}" styleClass="janal-wid-100-txt" readonly="true"/>
                 <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center">
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
+                    <p:outputLabel value="Sucursal:"/>			
+                    <p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>		
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
+                    <p:outputLabel value="Almacen:"/>						
+                    <p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.almacen}" styleClass="janal-wid-100-txt" readonly="true"/>
+                  </p:panelGrid>  
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
                     <p:outputLabel value="Proveedor:"/>												
                     <p:inputText value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.proveedor}" styleClass="janal-wid-100-txt" readonly="true"/>
@@ -122,6 +126,8 @@
                     <p:calendar id="fecha" value="#{manticCatalogosEmpresasCuentasProrroga.prorroga}" locale="mx" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt condiciones janal-column-right" inputStyleClass="janal-column-center janal-color-blue" converter="janal.convertidor.Calendario"/>
                   </p:panelGrid>  
                 </p:panelGrid>  
+								<p:outputLabel for="factura" value="Factura:" styleClass="janal-display-none"/>
+                <p:inputText id="factura" styleClass="janal-display-none janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.factura}"/>
 								<p:outputLabel for="idRevisado" value="Documento revisado:"/>																		
                 <p:selectOneMenu id="idRevisado" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.idRevisado}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">									
                   <f:selectItem itemLabel="SI" itemValue="1"/>

@@ -116,6 +116,24 @@ public class Costo extends TcManticNotasCostosDto implements Serializable {
     return true;
   }
 
+  @Override
+  public Costo clone() {
+    Costo regresar= new Costo(-1L); 
+    regresar.setIdNotaEntrada(-1L);
+    regresar.setClave(this.getClave());
+    regresar.setNombre(this.getNombre());
+    regresar.setIdCuenta(this.getIdCuenta());
+    regresar.setIdProveedor(Objects.equals(this.getIdProveedor(), null)? -1L: this.getIdProveedor());
+    regresar.setProveedor(this.getProveedor());
+    regresar.setIdUsuario(this.getIdUsuario());
+    regresar.setObservaciones(this.getObservaciones());
+    regresar.setIdGenerar(this.getIdGenerar());
+    regresar.setImporte(this.getImporte());
+    regresar.setIdTipoCosto(this.getIdTipoCosto());
+    regresar.setIdArticulo(this.getIdArticulo());
+    regresar.setArticulo(this.getArticulo());
+    return regresar;
+  };
   
   @Override
   public Class toHbmClass() {

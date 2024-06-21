@@ -387,14 +387,50 @@ public class Transaccion extends Inventarios implements Serializable {
 			DaoFactory.getInstance().update(sesion, this.orden);
       // RECALCULAR LOS COSTOS PROMEDIOS 
       this.toCheckPromedios(sesion, this.orden.getIdEmpresa(), 1L);
-      
+
 			// Una vez que la nota de entrada es cambiada a terminada se registra la cuenta por cobrar
 			TcManticEmpresasDeudasDto deuda= null;
       if(!Objects.equals(this.orden.getIdProveedor(), null)) {
         if(this.orden.getDiasPlazo()> 1) 
-          deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", this.orden.getIdEmpresa(), this.orden.getDeuda()- this.orden.getExcedentes(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, this.orden.getIdProveedorPago(), null, this.orden.getIdProveedor());
+          deuda= new TcManticEmpresasDeudasDto(
+            1L, // Long idEmpresaEstatus, 
+            JsfBase.getIdUsuario(), // Long idUsuario,
+            -1L, // Long idEmpresaDeuda,
+            null, // String observaciones, 
+            this.orden.getIdEmpresa(), // Long idEmpresa, 
+            this.orden.getDeuda()- this.orden.getExcedentes(), // Double saldo, 
+            this.orden.getIdNotaEntrada(), // Long idNotaEntrada, 
+            this.orden.getFechaPago(), // Date limite, 
+            this.orden.getDeuda(), // Double importe, 
+            this.orden.getDeuda()- this.orden.getExcedentes(), // Double pagar, 
+            2L, // Long idRevisado,
+            Cadena.isVacio(this.orden.getFactura())? 1L: 2L, // Long idCompleto,
+            null, // Date fechaRecepcion, 
+            null, // Long idRecibio, 
+            this.orden.getIdProveedorPago(), // Long idProveedorPago
+            null, // Long idNotaCosto
+            this.orden.getIdProveedor() // Long idProveedor
+          );
         else
-          deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", this.orden.getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes(), 2L, Cadena.isVacio(this.orden.getFactura())? 1L: 2L, null, null, this.orden.getIdProveedorPago(), null, this.orden.getIdProveedor());
+          deuda= new TcManticEmpresasDeudasDto(
+            3L, // Long idEmpresaEstatus, 
+            JsfBase.getIdUsuario(), // Long idUsuario,
+            -1L, // Long idEmpresaDeuda,
+            "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", // String observaciones, 
+            this.orden.getIdEmpresa(),  // Long idEmpresa,
+            0D, // Double saldo, 
+            this.orden.getIdNotaEntrada(), // Long idNotaEntrada, 
+            this.orden.getFechaPago(),  // Date limite, 
+            this.orden.getDeuda(),  // Double importe,
+            this.orden.getDeuda()- this.orden.getExcedentes(), // Double pagar,
+            2L,  // Long idRevisado,
+            Cadena.isVacio(this.orden.getFactura())? 1L: 2L, // Long idCompleto, 
+            null, // Date fechaRecepcion,
+            null, // Long idRecibio, 
+            this.orden.getIdProveedorPago(), // Long idProveedorPago
+            null, // Long idNotaCosto
+            this.orden.getIdProveedor() // Long idProveedor
+          );
         DaoFactory.getInstance().insert(sesion, deuda);
         TcManticEmpresasBitacoraDto registro= new TcManticEmpresasBitacoraDto(
           "SE REGISTRO LA DEUDA", // String justificacion, 

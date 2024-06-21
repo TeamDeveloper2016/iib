@@ -43,7 +43,7 @@
 				'cantidades'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idTipoCosto'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'},
 				'contenedorGrupos\\:importe'        : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'costo'},
-				'contenedorGrupos\\:idContratista'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'}
+				'contenedorGrupos\\:idContratista'  : {validaciones: 'libre', mascara: 'libre', grupo: 'costo'}
 			};
 			
     	$(document).ready(function() {
@@ -474,7 +474,7 @@
 									<p:outputLabel for="importe" value="Importe:"/>
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-95, janal-fix-5 janal-column-right" style="margin-top: -2px">
                     <p:inputNumber id="importe" value="#{manticInventariosEntradasAccion.costo.importe}" styleClass="janal-wid-100-txt costos" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" thousandSeparator=","/>
-                    <p:commandButton action="#{manticInventariosEntradasAccion.doAdd()}" icon="fa fa-plus" title="Agregar" process="@this contenedorGrupos:datosCostos" update="@(.costos) @(.recalculo)" onstart="return janal.partial('costo')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton action="#{manticInventariosEntradasAccion.doAdd()}" icon="fa fa-plus" title="Agregar" process="@this @(.costos)" update="@(.costos) @(.recalculo)" onstart="return janal.partial('costo')" oncomplete="janal.desbloquear()"/>
                   </p:panelGrid>  
                 </p:panelGrid>  
               </p:panelGrid>  

@@ -314,7 +314,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       
       List<UISelectItem> costos= UISelect.build("TcManticTiposCostosDto", params, "descripcion", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("costos", costos);
-      List<UISelectItem> contratistas= UISelect.build("VistaOrdenesComprasDto", "moneda", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS);
+      List<UISelectItem> contratistas= UISelect.seleccione("VistaOrdenesComprasDto", "moneda", params, "idKey|razonSocial", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("contratistas", contratistas);
       
       List<UISelectItem> productos= new ArrayList<>();
@@ -328,7 +328,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       } // if
       this.attrs.put("productos", productos);
       
-      this.toNewCosto();
+      this.toNewCosto(null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1071,17 +1071,20 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}	
 
   public void doAdd() {
-    List<UISelectItem> contratistas= (List<UISelectItem>)this.attrs.get("contratistas");
+    List<UISelectItem> proveedores= (List<UISelectItem>)this.attrs.get("contratistas");
     try {
       this.costo.setIdNotaEntrada(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
-      int index= contratistas.indexOf(new UISelectItem(this.costo.getIdProveedor()));
-      if(index>= 0)
-        this.costo.setProveedor(contratistas.get(index).getLabel());
+      int index= proveedores.indexOf(new UISelectItem(this.costo.getIdProveedor()));
+      if(index== 0) {
+        this.costo.setIdProveedor(null);
+        this.costo.setProveedor(null);
+      } // else  
+      else  
+        if(index> 0)
+          this.costo.setProveedor(proveedores.get(index).getLabel());
       if(Objects.equals(costo.getIdCuenta(), 2L)) {
         this.costo.setIdProveedor(null);
         this.costo.setProveedor(null);
-        this.costo.setIdArticulo(null);
-        this.costo.setArticulo(null);
         this.costo.setIdGenerar(2L);
       } // if 
       else 
@@ -1102,7 +1105,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       } // if  
       ((NotaEntrada)this.getAdminOrden().getOrden()).add(costo);   
       this.getAdminOrden().getTotales().setGastos(((NotaEntrada)this.getAdminOrden().getOrden()).getCostos().size());
-      this.toNewCosto();
+      this.toNewCosto(costo);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1120,7 +1123,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         this.costo.setNombre(item.toString("descripcion"));
         this.costo.setIdCuenta(item.toLong("idCuenta"));
         if(Objects.equals(this.costo.getIdCuenta(), 1L)) {
-          UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratista', {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'});");
+          UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratista', {validaciones: 'libre', mascara: 'libre', grupo: 'costo'});");
           UIBackingUtilities.execute("PF('contratista').enable()");
         } // if
         else {
@@ -1129,7 +1132,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         } // else
       } // if
       else {
-        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratista', {validaciones: 'requerido', mascara: 'libre', grupo: 'costo'});");
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:idContratista', {validaciones: 'libre', mascara: 'libre', grupo: 'costo'});");
         UIBackingUtilities.execute("PF('contratista').enable()");
       } //   
     } // try
@@ -1142,19 +1145,22 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // finally
   }  
 
-  protected void toNewCosto() {
+  protected void toNewCosto(Costo item) {
     List<UISelectItem> costos      = (List<UISelectItem>)this.attrs.get("costos");
     List<UISelectItem> productos   = (List<UISelectItem>)this.attrs.get("productos");
     List<UISelectItem> contratistas= (List<UISelectItem>)this.attrs.get("contratistas");
     try {      
-      this.costo= new Costo(-1L);
-      if(!Objects.equals(costos, null)) {
-        this.costo.setIdTipoCosto((Long)costos.get(0).getValue());
-        this.doPrepare();
-      } // if  
-      if(!Objects.equals(contratistas, null)) 
-        this.costo.setProveedor((String)contratistas.get(0).getLabel());
-      this.costo.setIdArticulo((Long)productos.get(0).getValue());
+      if(Objects.equals(item, null)) {
+        this.costo= new Costo(-1L);
+        if(!Objects.equals(costos, null)) 
+          this.costo.setIdTipoCosto((Long)costos.get(0).getValue());
+        if(!Objects.equals(contratistas, null)) 
+          this.costo.setProveedor((String)contratistas.get(0).getLabel());
+        this.costo.setIdArticulo((Long)productos.get(0).getValue());
+      } // if
+      else
+        this.costo= item.clone();
+      this.doPrepare();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -7,6 +7,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.comun.IBaseStorage;
+import mx.org.kaana.mantic.inventarios.entradas.beans.Costo;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 
 /**
@@ -41,7 +42,7 @@ public class Accion extends mx.org.kaana.mantic.inventarios.entradas.backing.Acc
   } // doLoad
   
   @Override
-  protected void toNewCosto() {
+  protected void toNewCosto(Costo item) {
   }
   
   @Override
