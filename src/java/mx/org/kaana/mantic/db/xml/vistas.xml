@@ -4,6 +4,140 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaLotesDto">
+      <select id="lazy">
+select        
+  tc_mantic_lotes.id_lote as id_key,
+  tc_mantic_lotes.id_lote,
+  tc_mantic_empresas.nombre as empresa,
+  tc_mantic_lotes.consecutivo,
+  tc_mantic_lotes.nombre,
+  tc_mantic_lotes.cantidad,
+  tc_mantic_articulos.nombre as articulo,
+  tc_mantic_lotes.id_lote_estatus,
+  tc_mantic_lotes_estatus.nombre as estatus,
+  tc_mantic_lotes_estatus.estatus_asociados,
+  tc_mantic_lotes_tipos.nombre as tipo,
+  tc_mantic_lotes.registro
+from
+  tc_mantic_lotes
+inner join  
+  tc_mantic_empresas on tc_mantic_lotes.id_empresa= tc_mantic_empresas.id_empresa
+inner join  
+  tc_mantic_lotes_estatus on tc_mantic_lotes.id_lote_estatus= tc_mantic_lotes_estatus.id_lote_estatus
+inner join  
+  tc_mantic_lotes_detalles on tc_mantic_lotes.id_lote= tc_mantic_lotes_detalles.id_lote
+inner join  
+  tc_mantic_articulos on tc_mantic_lotes.id_articulo= tc_mantic_articulos.id_articulo
+inner join  
+  tc_mantic_notas_detalles on tc_mantic_lotes_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
+inner join  
+  tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+inner join  
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+inner join  
+  tc_mantic_lotes_tipos on tc_mantic_lotes.id_lote_tipo= tc_mantic_lotes_tipos.id_lote_tipo
+where                
+  tc_mantic_lotes.id_empresa in ({idEmpresa})
+  and {condicion}
+group by
+  tc_mantic_lotes.id_lote
+{sortOrder}        
+      </select>
+      <select id="general">
+select        
+  tc_mantic_lotes.id_lote as id_key,
+  ifnull(sum(tc_mantic_lotes_detalles.cantidad), 0) as cantidad
+from
+  tc_mantic_lotes
+inner join  
+  tc_mantic_lotes_estatus on tc_mantic_lotes.id_lote_estatus= tc_mantic_lotes_estatus.id_lote_estatus
+inner join  
+  tc_mantic_lotes_detalles on tc_mantic_lotes.id_lote= tc_mantic_lotes_detalles.id_lote
+inner join  
+  tc_mantic_articulos on tc_mantic_lotes.id_articulo= tc_mantic_articulos.id_articulo
+inner join  
+  tc_mantic_notas_detalles on tc_mantic_lotes_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
+inner join  
+  tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+inner join  
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+inner join  
+  tc_mantic_lotes_tipos on tc_mantic_lotes.id_lote_tipo= tc_mantic_lotes_tipos.id_lote_tipo
+where                
+  tc_mantic_lotes.id_empresa in ({idEmpresa})
+  and {condicion}
+      </select>
+      <select id="detalle">
+select        
+  tc_mantic_lotes_detalles.id_lote_detalle as id_key,
+  tc_mantic_lotes_detalles.id_lote_detalle,
+  tc_mantic_notas_entradas.consecutivo,
+  tc_mantic_proveedores.razon_social as proveedor,
+ (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as codigo,
+  tc_mantic_articulos.nombre as articulo,
+  tc_mantic_lotes_detalles.cantidad,
+  tc_mantic_lotes_detalles.saldo,
+  tc_mantic_notas_entradas.registro
+from
+  tc_mantic_lotes_detalles
+inner join  
+  tc_mantic_articulos on tc_mantic_lotes_detalles.id_articulo= tc_mantic_articulos.id_articulo
+inner join  
+  tc_mantic_notas_detalles on tc_mantic_lotes_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
+inner join  
+  tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+inner join  
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+where                
+  tc_mantic_lotes_detalles.id_lote= {idLote}
+group by
+  tc_mantic_lotes_detalles.id_lote_detalle
+{sortOrder}                
+      </select>
+      <select id="particular">
+select        
+  tc_mantic_lotes_detalles.id_lote as id_key,
+  ifnull(sum(tc_mantic_lotes_detalles.cantidad), 0) as cantidad
+from
+  tc_mantic_lotes_detalles
+inner join  
+  tc_mantic_articulos on tc_mantic_lotes_detalles.id_articulo= tc_mantic_articulos.id_articulo
+inner join  
+  tc_mantic_notas_detalles on tc_mantic_lotes_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
+inner join  
+  tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+inner join  
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+where                
+  tc_mantic_lotes_detalles.id_lote= {idLote}
+group by
+  tc_mantic_lotes_detalles.id_lote
+      </select>
+      <select id="proveedores">
+select        
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_proveedores.id_proveedor,
+  tc_mantic_proveedores.clave,
+  tc_mantic_proveedores.razon_social as nombre,
+  tc_mantic_proveedores.dias_entrega
+from
+  tc_mantic_lotes
+inner join  
+  tc_mantic_lotes_detalles on tc_mantic_lotes.id_lote= tc_mantic_lotes_detalles.id_lote
+inner join  
+  tc_mantic_notas_detalles on tc_mantic_lotes_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
+inner join  
+  tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+inner join  
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+where                
+  tc_mantic_lotes.id_empresa in ({sucursales})
+  and {condicion}
+group by
+  tc_mantic_proveedores.id_proveedor
+      </select>
+    </unit>    
 		<unit id="VistaPreciosPromediosDto">
       <select id="lazy">
 select 
@@ -9009,50 +9143,50 @@ order by
 				  nombre					
 			</select>		
 			<select id="porNombreTipoArticulo">
-				select 
-				  tc_mantic_articulos.id_articulo as id_key,
-				  tc_mantic_articulos.id_articulo,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '{codigo}' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as propio,
-				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '{codigo}' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
-				  tc_mantic_articulos.fabricante,  
-				  tc_mantic_articulos.nombre,
-				  '   ' as origen,
-				  tc_mantic_articulos.descripcion,
-				  tc_mantic_articulos.precio,
-				  tc_mantic_articulos.precio as original,
-				  tc_mantic_articulos.menudeo,
-				  tc_mantic_articulos.medio_mayoreo,
-				  tc_mantic_articulos.mayoreo,
-				  tc_mantic_articulos.sat,
-				  tc_mantic_articulos.limite_medio_mayoreo,
-				  tc_mantic_articulos.limite_mayoreo,
-				  tc_mantic_articulos.iva,
-				  tc_mantic_articulos.id_redondear,
-				  tc_mantic_unidades_medidas.nombre unidad_medida,
-				  ifnull(tc_mantic_articulos.extra, '0') as morado,
-				  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,		
-          ifnull(tc_mantic_imagenes.id_imagen, -1) as id_imagen,
-				  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo,
-          tc_mantic_articulos.peso_estimado,
-					tc_mantic_articulos.especial        
-				from 
-					tc_mantic_articulos
-				inner join 
-					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
-				inner join
-					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
-				inner join 
-					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
-				inner join 
-					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
-				left join
-				  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
-				where 
-					tc_mantic_empresas.id_empresa in ({sucursales})
-				  and tc_mantic_articulos.id_articulo_tipo in ({idArticuloTipo})
-				  and (upper(tc_mantic_articulos.nombre) regexp '{codigo}' or tc_mantic_articulos.id_articulo= {idArticulo}) 			
-				order by 
-				  tc_mantic_articulos.nombre				
+select 
+  tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_articulos.id_articulo,
+  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '{codigo}' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as propio,
+  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= {idProveedor} and (upper(tc_mantic_articulos.nombre) regexp '{codigo}' or tc_mantic_articulos.id_articulo= {idArticulo}) limit 0, 1) as codigo,
+  tc_mantic_articulos.fabricante,  
+  tc_mantic_articulos.nombre,
+  '   ' as origen,
+  tc_mantic_articulos.descripcion,
+  tc_mantic_articulos.precio,
+  tc_mantic_articulos.precio as original,
+  tc_mantic_articulos.menudeo,
+  tc_mantic_articulos.medio_mayoreo,
+  tc_mantic_articulos.mayoreo,
+  tc_mantic_articulos.sat,
+  tc_mantic_articulos.limite_medio_mayoreo,
+  tc_mantic_articulos.limite_mayoreo,
+  tc_mantic_articulos.iva,
+  tc_mantic_articulos.id_redondear,
+  tc_mantic_unidades_medidas.nombre unidad_medida,
+  ifnull(tc_mantic_articulos.extra, '0') as morado,
+  concat(ifnull(tc_mantic_articulos.descuento, '0'), ',', ifnull(tc_mantic_articulos.extra, '0')) as porcentajes,		
+  ifnull(tc_mantic_imagenes.id_imagen, -1) as id_imagen,
+  concat(tc_mantic_articulos.id_empresa, '/', ifnull(tc_mantic_imagenes.archivo, 'sin-foto.png')) as archivo,
+  tc_mantic_articulos.peso_estimado,
+  tc_mantic_articulos.especial        
+from 
+  tc_mantic_articulos
+inner join 
+  tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+inner join
+  tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+inner join 
+  tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+inner join 
+  tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+left join
+  tc_mantic_imagenes on tc_mantic_articulos.id_imagen= tc_mantic_imagenes.id_imagen
+where 
+  tc_mantic_empresas.id_empresa in ({sucursales})
+  and tc_mantic_articulos.id_articulo_tipo in ({idArticuloTipo})
+  and (upper(tc_mantic_articulos.nombre) regexp '{codigo}' or tc_mantic_articulos.id_articulo= {idArticulo}) 			
+order by 
+  tc_mantic_articulos.nombre				
 			</select>
 			<select id="porCodigo">
 				select 

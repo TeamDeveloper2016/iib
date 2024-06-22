@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.gastos.backing;
+package mx.org.kaana.mantic.catalogos.limpios.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,24 +22,24 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.gastos.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticTiposCostosDto;
+import mx.org.kaana.mantic.catalogos.limpios.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticNotasLimpiosDto;
 
-@Named(value = "manticCatalogosGastosFiltro")
+@Named(value = "manticCatalogosLimpiosFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428361L;
+  private static final long serialVersionUID = 116617741599428361L;
 
   @PostConstruct
   @Override
   protected void init() {
     try {
-      this.attrs.put("sortOrder", "order by tc_mantic_tipos_costos.registro");
-      this.attrs.put("clave", "");
+      this.attrs.put("sortOrder", "order by tc_mantic_notas_limpios.registro");
+      this.attrs.put("nombre", "");
       this.attrs.put("descripcion", "");
-      this.attrs.put("idTipoCosto", JsfBase.getFlashAttribute("idTipoCosto"));
-      if(!Objects.equals(this.attrs.get("idTipoCosto"), null))
+      this.attrs.put("idNotaLimpio", JsfBase.getFlashAttribute("idNotaLimpio"));
+      if(!Objects.equals(this.attrs.get("idNotaLimpio"), null))
         this.doLoad();
     } // try
     catch (Exception e) {
@@ -54,10 +54,10 @@ public class Filtro extends IBaseFilter implements Serializable {
     Map<String, Object> params= null;
     try {
       params= this.toPrepare();
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));      
-      this.lazyModel = new FormatCustomLazy("TcManticTiposCostosDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("TcManticNotasLimpiosDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -74,12 +74,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object> regresar= new HashMap<>();
 		StringBuilder sb            = new StringBuilder();
 		try {
-      if(!Cadena.isVacio(this.attrs.get("idTipoCosto")) && !this.attrs.get("idTipoCosto").toString().equals("-1")) 
-        sb.append("(tc_mantic_tipos_costos.id_tipo_costo=").append(this.attrs.get("idTipoCosto")).append(") and ");
-    	if(!Cadena.isVacio(this.attrs.get("clave")))
-		    sb.append("(tc_mantic_tipos_costos.clave like '%").append(this.attrs.get("clave")).append("%') and ");
+    	if(!Cadena.isVacio(this.attrs.get("idNotaLimpio")))
+		    sb.append("(tc_mantic_notas_limpios.id_nota_limpio= ").append(this.attrs.get("idNotaLimpio")).append(") and ");
+      this.attrs.put("idNotaLimpio", null);
+    	if(!Cadena.isVacio(this.attrs.get("nombre")))
+		    sb.append("(tc_mantic_notas_limpios.nombre like '%").append(this.attrs.get("clave")).append("%') and ");
     	if(!Cadena.isVacio(this.attrs.get("descripcion")))
-		    sb.append("(tc_mantic_tipos_costos.descripcion like '%").append(this.attrs.get("descripcion")).append("%') and ");
+		    sb.append("(tc_mantic_notas_limpios.descripcion like '%").append(this.attrs.get("descripcion")).append("%') and ");
 			if(Cadena.isVacio(sb.toString()))
 				regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			else
@@ -96,14 +97,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Gastos/filtro");		
-			JsfBase.setFlashAttribute("idTipoCosto", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR))? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Limpios/filtro");		
+			JsfBase.setFlashAttribute("idNotaLimpio", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR))? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Mantic/Catalogos/Gastos/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantic/Catalogos/Limpios/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public void doEliminar() {
@@ -111,11 +112,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado     = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion(new TcManticTiposCostosDto(seleccionado.getKey()));
+			transaccion= new Transaccion(new TcManticNotasLimpiosDto(seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "El costo se eliminó correctamente", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "El registro se eliminó correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el costo", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el registro", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

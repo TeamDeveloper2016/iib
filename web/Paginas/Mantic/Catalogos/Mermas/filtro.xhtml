@@ -5,11 +5,11 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Catálogo de gastos con cargo al costos" />
+  <ui:param name="titulo" value="Catálogo de mermas de origen" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        clave      : {validaciones: 'libre', mascara: 'alfanumerico'},
+        nombre: {validaciones: 'libre', mascara: 'alfanumerico'},
         descripcion: {validaciones: 'libre', mascara: 'alfanumerico'}
       };
     </script>		
@@ -24,59 +24,47 @@
           <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-              <p:outputLabel for="clave" value="Clave:"/>
-              <p:inputText id="clave" value="#{manticCatalogosGastosFiltro.attrs.clave}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="nombre" value="Nombre:"/>
+              <p:inputText id="nombre" value="#{manticCatalogosMermasFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="descripcion" value="Descripcion:"/>
-              <p:inputText id="descripcion" value="#{manticCatalogosGastosFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/> 
+              <p:inputText id="descripcion" value="#{manticCatalogosMermasFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/> 
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@form" actionListener="#{manticCatalogosGastosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@form" actionListener="#{manticCatalogosGastosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@form" actionListener="#{manticCatalogosMermasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@form" actionListener="#{manticCatalogosMermasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 						</div>
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosGastosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosGastosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosGastosFiltro.lazyModel.rowCount gt manticCatalogosGastosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosMermasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosMermasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosMermasFiltro.lazyModel.rowCount gt manticCatalogosMermasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Agregar" action="#{manticCatalogosGastosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Agregar" action="#{manticCatalogosMermasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton action="#{manticCatalogosGastosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:commandButton action="#{manticCatalogosMermasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                 <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
-            </f:facet>	            
-            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.clave}">
+            </f:facet>	
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.nombre}">
               <f:facet name="header">
-                <h:outputText value="Clave"/>
+                <h:outputText value="Nombre"/>
               </f:facet>
-              <h:outputText value="#{row['clave']}"/>
+              <h:outputText value="#{row['nombre']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-30" sortBy="#{row.descripcion}">
+            <p:column styleClass="MarAuto Responsive" sortBy="#{row.descripcion}">
               <f:facet name="header">
                 <h:outputText value="Descripción"/>
               </f:facet>
               <h:outputText value="#{row['descripcion']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive" sortBy="#{row.observaciones}">
-              <f:facet name="header">
-                <h:outputText value="Observaciones"/>
-              </f:facet>
-              <h:outputText value="#{row['observaciones']}"/>
-            </p:column>	
-            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-8" sortBy="#{row.idCuenta}">
-              <f:facet name="header">
-                <h:outputText value="Proveedor"/>
-              </f:facet>
-              <h:outputText value="#{row['idCuenta'].toLong() eq 1? 'SI': 'NO'}"/>
-            </p:column>
             <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-13" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
@@ -84,11 +72,11 @@
               <h:outputText value="#{row['registro']}"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticCatalogosGastosFiltro.lazyModel== null? 0: manticCatalogosGastosFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticCatalogosMermasFiltro.lazyModel== null? 0: manticCatalogosMermasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="modificar" action="#{manticCatalogosGastosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:menuitem id="modificar" action="#{manticCatalogosMermasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
           </p:contextMenu>
         </div>
@@ -96,17 +84,17 @@
     </div>		           				
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el gasto ?" />
-  <ui:param name="accionConfirmacion" value="#{manticCatalogosGastosFiltro}"/>
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar ?" />
+  <ui:param name="accionConfirmacion" value="#{manticCatalogosMermasFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
     <h:panelGrid columns="2">
-      <p:outputLabel value="Clave:"/>
-      <p:outputLabel value="#{manticCatalogosGastosFiltro.attrs.seleccionado.clave}"/>
+      <p:outputLabel value="Nombre:"/>
+      <p:outputLabel value="#{manticCatalogosMermasFiltro.attrs.seleccionado.nombre}"/>
       <p:outputLabel value="Descripción:"/>
-      <p:outputLabel value="#{manticCatalogosGastosFiltro.attrs.seleccionado.descripcion}"/>
+      <p:outputLabel value="#{manticCatalogosMermasFiltro.attrs.seleccionado.descripcion}"/>
     </h:panelGrid>			
   </ui:define>
 </ui:composition>

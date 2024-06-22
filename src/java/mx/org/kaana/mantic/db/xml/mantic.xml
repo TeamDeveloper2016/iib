@@ -7,6 +7,298 @@
   </model>
 
   <dml>
+    <unit id="TcManticTiposClasesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_tipos_clases
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_tipos_clases
+where      
+  clave = '{clave}'
+      </select>
+    </unit>    
+    <unit id="TcManticLotesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_lotes
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_lotes
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+      <select id="igual">
+select      
+  tc_mantic_lotes.id_lote as id_key,
+  tc_mantic_lotes.*
+from      
+  tc_mantic_lotes
+where      
+  id_lote= {idLote}
+      </select>
+    </unit>    
+    <unit id="TcManticLotesDetallesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_lotes_detalles
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_lotes_detalles
+where      
+  id_nota_detalle = {idNotaDetalle} and id_lote = {idLote}
+      </select>
+    </unit>    
+    <unit id="TcManticLotesEspecialesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_lotes_especiales
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_lotes_especiales
+where      
+  id_lote = {idLote} and id_lote_detalle = {idLoteDetalle}
+      </select>
+    </unit>    
+    <unit id="TcManticLotesEstatusDto">
+      <select id="row">
+select      
+  tc_mantic_lotes_estatus.id_lote_estatus as id_key,
+  tc_mantic_lotes_estatus.*
+from      
+  tc_mantic_lotes_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_lotes_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcManticLotesLimpiosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_lotes_limpios
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_lotes_limpios
+where      
+   id_lote = {idLote} and id_nota_limpio = {idNotaLimpio} and id_lote_detalle = {idLoteDetalle} and id_articulo = {idArticulo}
+      </select>
+    </unit>    
+    <unit id="TcManticLotesPromediosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_lotes_promedios
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_lotes_promedios
+where      
+  id_lote = {idLote} and id_lote_detalle = {idLoteDetalle} and id_articulo = {idArticulo} and id_nota_merma = {idNotaMerma}
+      </select>
+    </unit>    
+    <unit id="TcManticLotesTiposDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_lotes_tipos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_lotes_tipos
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcManticNotasPromediosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_notas_promedios
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_notas_promedios
+where      
+  id_nota_detalle= {idNotaDetalle} and id_nota_entrada= {idNotaEntrada}
+      </select>
+    </unit>    
+    <unit id="TcManticLotesBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_lotes_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_lotes_bitacora
+where      
+  id_lote_bitacora = {idLoteBitacora}
+      </select>
+    </unit>    
+    <unit id="TcManticLotesCalidadesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_lotes_calidades
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_lotes_calidades
+where      
+  id_lote = {idLote} and id_nota_calidad = {idNotaCalidad} and id_lote_detalle = {idLoteDetalle} and id_articulo = {idArticulo}
+      </select>
+    </unit>    
+    <unit id="TcManticNotasMermasDto">
+      <select id="lazy">
+select      
+  tc_mantic_notas_mermas.id_nota_merma as id_key,
+  tc_mantic_notas_mermas.*
+from      
+  tc_mantic_notas_mermas
+where 
+  {condicion} 
+{sortOrder}        
+      </select>      
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_notas_mermas
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_notas_mermas
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcManticNotasLimpiosDto">
+      <select id="lazy">
+select      
+  tc_mantic_notas_limpios.id_nota_limpio as id_key,
+  tc_mantic_notas_limpios.*
+from      
+  tc_mantic_notas_limpios
+where 
+  {condicion} 
+{sortOrder}        
+      </select>      
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_notas_limpios
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_notas_limpios
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcManticNotasCalidadesDto">
+      <select id="lazy">
+select      
+  tc_mantic_notas_calidades.id_nota_calidad as id_key,
+  tc_mantic_notas_calidades.*
+from      
+  tc_mantic_notas_calidades
+where 
+  {condicion} 
+{sortOrder}        
+      </select>      
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_notas_calidades
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_notas_calidades
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcManticNotasCostosDto">
       <select id="row">
 select      

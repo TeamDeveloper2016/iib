@@ -492,7 +492,8 @@ public class Filtro extends Comun implements Serializable {
       } // if  
 			else
 				search= "WXYZ";
-  		params.put("codigo", search);			        
+  		params.put("codigo", search);		
+      params.put("idArticuloTipo", this.attrs.get("idArticuloTipo"));
       articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
       this.attrs.put("articulosFiltro", articulos);
 		} // try

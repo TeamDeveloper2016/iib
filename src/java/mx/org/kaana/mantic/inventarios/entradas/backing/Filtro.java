@@ -50,9 +50,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private static final long serialVersionUID=1368701967796774746L;
   private Reporte reporte;
   private FormatLazyModel lazyDetalle;
+  private FormatLazyModel lazyGasto;
 
 	public FormatLazyModel getLazyDetalle() {
 		return lazyDetalle;
+	}		
+	
+	public FormatLazyModel getLazyGasto() {
+		return lazyGasto;
 	}		
 	
 	public Reporte getReporte() {
@@ -113,6 +118,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("general", this.toTotales("VistaNotasEntradasDto", "general", params));
 			this.attrs.put("idNotaEntrada", null);
       this.lazyDetalle= null;
+      this.lazyGasto= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -194,9 +200,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       NotaEntrada orden= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "igual", Variables.toMap("idNotaEntrada~"+ seleccionado.getKey()));
 			transaccion= new Transaccion(orden);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La nota de entrada se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La nota de entrada se ha eliminado correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la nota de entrada.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la nota de entrada", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -444,6 +450,33 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.lazyDetalle= new FormatLazyModel("TcManticNotasDetallesDto", "igual", params, columns);
 				UIBackingUtilities.resetDataTable("tablaDetalle");
         this.attrs.put("particular", this.toTotales("TcManticNotasDetallesDto", "particular", params));
+        this.toGasto(row);
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
+
+  public void toGasto(Entity row) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+		try {
+			if(row!= null && !row.isEmpty()) {
+        this.attrs.put("seleccionado", row);
+        params.put("idNotaEntrada", row.toLong("idNotaEntrada"));
+        params.put("sortOrder", "order by tc_mantic_notas_costos.registro");
+        columns.add(new Columna("articulo", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+				this.lazyGasto= new FormatLazyModel("VistaNotasEntradasDto", "costos", params, columns);
+				UIBackingUtilities.resetDataTable("tablaGasto");
 			} // if
 		} // try
 		catch (Exception e) {
