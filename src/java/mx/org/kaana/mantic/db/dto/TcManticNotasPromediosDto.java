@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -50,8 +44,8 @@ public class TcManticNotasPromediosDto implements IBaseDto, Serializable {
   private Long idNotaEntrada;
   @Column (name="id_articulo")
   private Long idArticulo;
-  @Column (name="id_nota_merma")
-  private Long idNotaMerma;
+  @Column (name="id_nota_calidad")
+  private Long idNotaCalidad;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -64,7 +58,7 @@ public class TcManticNotasPromediosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticNotasPromediosDto(Long idUsuario, Long idNotaDetalle, Long idNotaPromedio, Double cantidad, Double porcentaje, Long idNotaEntrada, Long idArticulo, Long idNotaMerma) {
+  public TcManticNotasPromediosDto(Long idUsuario, Long idNotaDetalle, Long idNotaPromedio, Double cantidad, Double porcentaje, Long idNotaEntrada, Long idArticulo, Long idNotaCalidad) {
     setIdUsuario(idUsuario);
     setIdNotaDetalle(idNotaDetalle);
     setIdNotaPromedio(idNotaPromedio);
@@ -72,7 +66,7 @@ public class TcManticNotasPromediosDto implements IBaseDto, Serializable {
     setPorcentaje(porcentaje);
     setIdNotaEntrada(idNotaEntrada);
     setIdArticulo(idArticulo);
-    setIdNotaMerma(idNotaMerma);
+    setIdNotaCalidad(idNotaCalidad);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -132,13 +126,13 @@ public class TcManticNotasPromediosDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setIdNotaMerma(Long idNotaMerma) {
-    this.idNotaMerma = idNotaMerma;
+  public void setIdNotaCalidad(Long idNotaCalidad) {
+    this.idNotaCalidad = idNotaCalidad;
   }
 
-  public Long getIdNotaMerma() {
-    return idNotaMerma;
-  }
+  public Long getIdNotaCalidad() {
+    return idNotaCalidad;
+  }  
 
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
@@ -177,7 +171,7 @@ public class TcManticNotasPromediosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNotaMerma());
+		regresar.append(getIdNotaCalidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -194,15 +188,15 @@ public class TcManticNotasPromediosDto implements IBaseDto, Serializable {
 		regresar.put("porcentaje", getPorcentaje());
 		regresar.put("idNotaEntrada", getIdNotaEntrada());
 		regresar.put("idArticulo", getIdArticulo());
-		regresar.put("idNotaMerma", getIdNotaMerma());
+		regresar.put("idNotaCalidad", getIdNotaCalidad());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdUsuario(), getIdNotaDetalle(), getIdNotaPromedio(), getCantidad(), getPorcentaje(), getIdNotaEntrada(), getIdArticulo(), getIdNotaMerma(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdUsuario(), getIdNotaDetalle(), getIdNotaPromedio(), getCantidad(), getPorcentaje(), getIdNotaEntrada(), getIdArticulo(), getIdNotaCalidad(), getRegistro()
     };
     return regresar;
   }

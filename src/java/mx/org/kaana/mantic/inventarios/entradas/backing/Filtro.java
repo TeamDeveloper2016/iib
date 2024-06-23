@@ -421,13 +421,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		this.attrs.put("idNotaEntrada", idNotaEntrada);
 	}
 	
-	public String doAssignImage() {
-		JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
-		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
-		JsfBase.setFlashAttribute("accion", EAccion.ASIGNAR);
-		return "/Paginas/Mantic/Catalogos/Articulos/asociar".concat(Constantes.REDIRECIONAR);
-	}
-
   public void doConsultar() {
     this.doDetalle((Entity)this.attrs.get("seleccionado"));
   }
@@ -509,6 +502,20 @@ public class Filtro extends IBaseFilter implements Serializable {
     regresar.put("importe", new Value("importe", 0D));
     regresar.put("total", new Value("total", 0D));
     return regresar;
+  }
+  
+  public String doPorcentajes() {
+		String regresar= "/Paginas/Mantic/Inventarios/Origenesa/calidad";
+		try {
+      JsfBase.setFlashAttribute("accion", EAccion.TRANSFORMACION);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
+			JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("seleccionado")).getKey());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
   }
   
 }

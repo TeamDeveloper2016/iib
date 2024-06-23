@@ -41,10 +41,6 @@
 	  </style>		
   </ui:define>
   <ui:define name="contenido">
-		<pe:remoteCommand name="asociar" process="@this" actionListener="#{manticInventariosEntradasFiltro.doAssignNota}" action="#{manticInventariosEntradasFiltro.doAssignImage}">  
-			<pe:methodSignature parameters="java.lang.Long" />  
-			<pe:methodParam name="idNotaEntrada"/>  
-		</pe:remoteCommand>  
     <div class="janal-align-right xs-pantalla janal-wid-100">
       <p:commandButton icon="fa fa-search" value="Filtrar" iconPos="right" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white janal-wid-100"/>
     </div>			
@@ -229,6 +225,8 @@
               <p:menuitem icon="fa fa-cloud-upload" value="Importar XML" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosEntradasFiltro.doImportar}" rendered="#{fn:contains('|1|3|5|6|7|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>						
               <p:separator/>
               <p:menuitem icon="fa fa-search" value="Detalle" action="#{manticInventariosEntradasFiltro.doConsultar()}" process="@this tabla" update="tablaDetalle @(.detalle) tablaGasto @(.gasto)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+              <p:separator rendered="#{fn:contains('|3|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
+              <p:menuitem icon="fa fa-sort-numeric-asc" value="Porcentajes" action="#{manticInventariosEntradasFiltro.doPorcentajes()}" process="@this" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|3|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
             </p:contextMenu>						
           </div>
 					<div class="ui-grid-row janal-grid-row">

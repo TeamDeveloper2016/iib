@@ -176,7 +176,7 @@ select
 from      
   tc_mantic_notas_promedios
 where      
-  id_nota_detalle= {idNotaDetalle} and id_nota_entrada= {idNotaEntrada}
+  id_nota_detalle= {idNotaDetalle} and id_nota_entrada= {idNotaEntrada} and id_nota_calidad= {idNotaCalidad}
       </select>
     </unit>    
     <unit id="TcManticLotesBitacoraDto">

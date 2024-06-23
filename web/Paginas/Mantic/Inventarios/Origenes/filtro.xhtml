@@ -219,6 +219,8 @@
               <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosOrigenesFiltro.doReporte('NOTA_ENTRADA_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|6|7|', manticInventariosOrigenesFiltro.attrs.seleccionado.idNotaEstatus)}"/>
               <p:separator/>
               <p:menuitem icon="fa fa-search" value="Detalle" action="#{manticInventariosOrigenesFiltro.doConsultar()}" process="@this tabla" update="tablaDetalle @(.detalle)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+              <p:separator rendered="#{fn:contains('|3|', manticInventariosOrigenesFiltro.attrs.seleccionado.idNotaEstatus)}"/>
+              <p:menuitem icon="fa fa-sort-numeric-asc" value="Porcentajes" action="#{manticInventariosOrigenesFiltro.doPorcentajes()}" process="@this" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|3|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
             </p:contextMenu>						
           </div>
 					<div class="ui-grid-row janal-grid-row">

@@ -501,6 +501,9 @@
                   <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="costos @(.costos) @(.recalculo)" actionListener="#{manticInventariosEntradasAccion.doDelete(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.sql ne 'DELETE'}"/>
                   <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="costos @(.recalculo)" actionListener="#{manticInventariosEntradasAccion.doRecover(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.sql eq 'DELETE'}"/>
 								</p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{manticInventariosEntradasAccion.costos.size()}] registros"/>
+                </f:facet>
 							</p:dataTable>
 						</p:tab>
 						<p:tab title="Observaciones">

@@ -42,7 +42,22 @@ public class Filtro extends mx.org.kaana.mantic.inventarios.entradas.backing.Fil
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
+		return regresar.concat(Constantes.REDIRECIONAR);
   } // doAccion  
+
+  @Override
+  public String doPorcentajes() {
+		String regresar= "/Paginas/Mantic/Inventarios/Origenes/calidad";
+		try {
+      JsfBase.setFlashAttribute("accion", EAccion.TRANSFORMACION);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Origenes/filtro");		
+			JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("seleccionado")).getKey());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR);
+  }
   
 }

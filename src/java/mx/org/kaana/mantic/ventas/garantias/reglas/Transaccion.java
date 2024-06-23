@@ -359,9 +359,8 @@ public class Transaccion extends IBaseTnx {
 	
 	private boolean executeAccionCredito(Session sesion) throws Exception {
 		boolean regresar         = false;	
-		Map<String, Object>params= null;
+		Map<String, Object>params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			switch(this.detalleGarantia.getAccionCredito()) {
 				case COMPLETO:
 					regresar= this.caseOneCredito(sesion);

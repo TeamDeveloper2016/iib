@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -44,6 +45,7 @@ import mx.org.kaana.mantic.inventarios.entradas.beans.Costo;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Promedio;
+import mx.org.kaana.mantic.inventarios.origenes.beans.Porcentaje;
 import org.apache.log4j.Logger;
 
 /**
@@ -67,6 +69,7 @@ public class Transaccion extends Inventarios implements Serializable {
 	private Importado jpg;
 	private String messageError;
 	private TcManticNotasBitacoraDto bitacora;
+  private List<Porcentaje> porcentajes;
 
 	public Transaccion(NotaEntrada orden, TcManticNotasBitacoraDto bitacora) {
 		this(orden);
@@ -93,6 +96,11 @@ public class Transaccion extends Inventarios implements Serializable {
     this.jpg      = jpg;
 	} // Transaccion
 
+	public Transaccion(List<Porcentaje> porcentajes) {
+    super(-1L, -1L);
+		this.porcentajes= porcentajes;
+	}
+  
 	protected void setMessageError(String messageError) {
 		this.messageError=messageError;
 	}
@@ -188,6 +196,9 @@ public class Transaccion extends Inventarios implements Serializable {
 				case ELIMINAR:
           regresar= this.toDeleteNota(sesion);
 					break;
+				case TRANSFORMACION:
+          regresar= this.toPromedios(sesion);
+					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden.setIdNotaEstatus(this.bitacora.getIdNotaEstatus());
@@ -215,7 +226,6 @@ public class Transaccion extends Inventarios implements Serializable {
           this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
 			throw new Exception(this.messageError);
 		} // catch		
-		LOG.info("Se genero de forma correcta la nota de entrada: "+ this.orden.getConsecutivo());
 		return regresar;
 	}	// ejecutar
 
@@ -820,4 +830,33 @@ public class Transaccion extends Inventarios implements Serializable {
     return regresar;
   }
   
+  private Boolean toPromedios(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      for (Porcentaje item: this.porcentajes) {
+        item.setIdUsuario(JsfBase.getIdUsuario());
+        item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        switch(item.getSql()) {
+          case SELECT:
+            break;
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+            break;
+          case INSERT:
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+        } // switch    
+        item.setSql(ESql.SELECT);
+      } // for  
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    return regresar;
+  }
+
 } 

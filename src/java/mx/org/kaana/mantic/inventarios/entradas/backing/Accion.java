@@ -206,7 +206,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doLoad
+  } 
 
   public String doAplicar() {  
 		this.aplicar= true;
