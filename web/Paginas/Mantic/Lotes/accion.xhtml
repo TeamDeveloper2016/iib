@@ -166,8 +166,8 @@
 									<h:outputText value="#{row.cantidad}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
-                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="partidas @(.recalculo)" actionListener="#{manticLotesAccion.doDelete(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql ne 'DELETE'}"/>
-                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="partidas @(.recalculo)" actionListener="#{manticLotesAccion.doRecover(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql eq 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="partidas contenedorGrupos:tabla @(.recalculo)" actionListener="#{manticLotesAccion.doDelete(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql ne 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="partidas contenedorGrupos:tabla @(.recalculo)" actionListener="#{manticLotesAccion.doRecover(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql eq 'DELETE'}"/>
 								</p:column>
                 <f:facet name="footer">
                   <p:outputLabel styleClass="general" style="float: left;" value="#{manticLotesAccion.attrs.total}" escape="false"/>

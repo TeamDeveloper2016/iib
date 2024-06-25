@@ -6371,8 +6371,20 @@ group by
 					id_nota_entrada= {idNotaEntrada}
 					and cantidades&gt; 0
 			</select>
+      <update id="rows">
+update tc_mantic_notas_detalles set id_lote= null where id_lote= {idLote}
+      </update>  
+      <update id="agregar">
+update tc_mantic_notas_detalles set id_lote= {idLote} where id_nota_detalle= {idNotaDetalle}
+      </update>  
+      <update id="eliminar">
+update tc_mantic_notas_detalles set id_lote= null where id_nota_detalle= {idNotaDetalle}
+      </update>  
+      <update id="actualizar">
+update tc_mantic_notas_detalles set id_lote= {idLote} where id_nota_detalle= {idNotaDetalle}
+      </update>  
 			<delete id="rows">
-				delete from tc_mantic_notas_detalles where id_nota_entrada= {idNotaEntrada}
+delete from tc_mantic_notas_detalles where id_nota_entrada= {idNotaEntrada}
 			</delete>
     </unit>
     <unit id="TcManticNotasBitacoraDto">

@@ -24,6 +24,7 @@ import mx.org.kaana.mantic.db.dto.TcManticLotesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesEspecialesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesPromediosDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.lotes.beans.Lote;
 import mx.org.kaana.mantic.lotes.beans.Partida;
 import org.apache.log4j.Logger;
@@ -134,6 +135,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idLote", this.orden.getIdLote());
+      DaoFactory.getInstance().updateAll(sesion, TcManticNotasDetallesDto.class, params);
       DaoFactory.getInstance().deleteAll(sesion, TcManticLotesBitacoraDto.class, params);
       DaoFactory.getInstance().deleteAll(sesion, TcManticLotesPromediosDto.class, params);
       DaoFactory.getInstance().deleteAll(sesion, TcManticLotesEspecialesDto.class, params);
@@ -153,19 +155,24 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= new HashMap<>();
     try {      
+      params.put("idLote", this.orden.getIdLote());
       for (Partida item: this.orden.getPartidas()) {
         item.setIdUsuario(JsfBase.getIdUsuario());
         item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        params.put("idNotaDetalle", item.getIdNotaDetalle());
         switch(item.getSql()) {
           case SELECT:
             break;
           case UPDATE:
-            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            // DaoFactory.getInstance().updateAll(sesion, TcManticNotasDetallesDto.class, params, "actualizar");
+            // regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
             break;
           case DELETE:
+            DaoFactory.getInstance().updateAll(sesion, TcManticNotasDetallesDto.class, params, "eliminar");
             regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
             break;
           case INSERT:
+            DaoFactory.getInstance().updateAll(sesion, TcManticNotasDetallesDto.class, params, "agregar");
             item.setIdLote(this.orden.getIdLote());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;

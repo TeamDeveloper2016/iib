@@ -39,13 +39,17 @@ public class Movimientos extends IBaseFilter implements Serializable {
 	public String getTitle() {
 		return this.tipo.getTitle();
 	}
-		
+
+	public boolean getConsecutivo() {
+	  return !ETipoMovimiento.LOTES.equals(this.tipo);
+	}
+  
 	public boolean getTransporto() {
 	  return ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo) || ETipoMovimiento.MULTIPLES.equals(this.tipo);
 	}
 	
 	public boolean getImporte() {
-	  return !ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo) && !ETipoMovimiento.MULTIPLES.equals(this.tipo) && !ETipoMovimiento.GASTOS.equals(this.tipo);
+	  return !ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo) && !ETipoMovimiento.MULTIPLES.equals(this.tipo) && !ETipoMovimiento.GASTOS.equals(this.tipo) && !ETipoMovimiento.LOTES.equals(this.tipo);
 	}
 	
 	public String doTransporto(Entity row) {

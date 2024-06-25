@@ -35,6 +35,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
+import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 
 @Named(value = "manticLotesFiltro")
@@ -109,6 +110,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("idLoteTipo", 1L);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
 			JsfBase.setFlashAttribute("idLote", Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
@@ -117,7 +119,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
+		return regresar.concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public String doEspecial() {
@@ -132,7 +134,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
+		return regresar.concat(Constantes.REDIRECIONAR);
   } 
 	
   public void doEliminar() {
@@ -354,5 +356,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     regresar.put("cantidad", new Value("cantidad", 0D));
     return regresar;
   }
+
+	public String doMovimientos() {
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.LOTES);
+		JsfBase.setFlashAttribute(ETipoMovimiento.LOTES.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Lotes/filtro");
+		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
+	}
   
 }

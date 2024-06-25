@@ -74,10 +74,10 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
   protected void init() {		
     try {
       this.attrs.put("idArticuloTipo", 4L);      
-			// if(JsfBase.getFlashAttribute("accion")== null)
-			//  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? 5L: JsfBase.getFlashAttribute("idLote"));
+			if(JsfBase.getFlashAttribute("accion")== null)
+			  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? -1L: JsfBase.getFlashAttribute("idLote"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.doLoad();
     } // try
@@ -128,7 +128,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
   } // doAccion
 
   public String doCancelar() {   
-  	// JsfBase.setFlashAttribute("idLote", this.orden.getLote().getIdNotaEntrada());
+  	JsfBase.setFlashAttribute("idLote", this.orden.getLote().getIdLote());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 

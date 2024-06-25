@@ -134,7 +134,7 @@
               <f:facet name="header" >
                 <div class="lg-pantalla">
                   <p:menuButton value="Opciones">
-                    <p:menuitem value="Agregar" action="#{manticLotesFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Nota de entrada" onstart="return janal.bloquear()"/>
+                    <p:menuitem value="Agregar" action="#{manticLotesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Nota de entrada" onstart="return janal.bloquear()"/>
                     <p:menuitem value="Especial" action="#{manticLotesFiltro.doEspecial()}" icon="fa fa-plus-square" title="Nota de entrada especial" onstart="return janal.bloquear()"/>
                     <p:separator/>
                     <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
