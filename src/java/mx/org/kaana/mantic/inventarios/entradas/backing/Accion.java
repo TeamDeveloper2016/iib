@@ -1208,8 +1208,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       else
 			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.attrs.put("empresas", UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
- 			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
+ 			List<UISelectEntity> empresas= UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+      this.attrs.put("empresas", empresas);
 			if(!empresas.isEmpty() && Objects.equals(this.accion, EAccion.AGREGAR)) 
 				if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdEmpresa()== null)
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
@@ -1239,8 +1239,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
   	  params.put("sucursales", ((NotaEntrada)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
-      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "origen", params, columns));
- 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+ 			List<UISelectEntity> almacenes= UIEntity.build("TcManticAlmacenesDto", "origen", params, columns);
+      this.attrs.put("almacenes", almacenes);
 			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
 				if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen()== null)
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));

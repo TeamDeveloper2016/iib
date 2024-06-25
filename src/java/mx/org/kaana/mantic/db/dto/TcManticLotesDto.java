@@ -64,17 +64,19 @@ public class TcManticLotesDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="id_articulo")
   private Long idArticulo;
+  @Column (name="id_lote_estatus")
+  private Long idLoteEstatus;
 
   public TcManticLotesDto() {
     this(new Long(-1L));
   }
 
   public TcManticLotesDto(Long key) {
-    this(null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null);
+    this(null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, 1L);
     setKey(key);
   }
 
-  public TcManticLotesDto(Double original, Long idLoteTipo, String nombre, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, Long idLote, String observaciones, Long idEmpresa, Double cantidad, Long orden, Long idArticulo) {
+  public TcManticLotesDto(Double original, Long idLoteTipo, String nombre, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, Long idLote, String observaciones, Long idEmpresa, Double cantidad, Long orden, Long idArticulo, Long idLoteEstatus) {
     setOriginal(original);
     setIdLoteTipo(idLoteTipo);
     setNombre(nombre);
@@ -89,6 +91,7 @@ public class TcManticLotesDto implements IBaseDto, Serializable {
     setCantidad(cantidad);
     setOrden(orden);
     setIdArticulo(idArticulo);
+    setIdLoteEstatus(idLoteEstatus);
   }
 	
   public void setOriginal(Double original) {
@@ -203,6 +206,14 @@ public class TcManticLotesDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
+  public Long getIdLoteEstatus() {
+    return idLoteEstatus;
+  }
+
+  public void setIdLoteEstatus(Long idLoteEstatus) {
+    this.idLoteEstatus = idLoteEstatus;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -245,6 +256,8 @@ public class TcManticLotesDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdLoteEstatus());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -266,13 +279,14 @@ public class TcManticLotesDto implements IBaseDto, Serializable {
 		regresar.put("cantidad", getCantidad());
 		regresar.put("orden", getOrden());
 		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("idLoteEstatus", getIdLoteEstatus());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getOriginal(), getIdLoteTipo(), getNombre(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getIdLote(), getObservaciones(), getIdEmpresa(), getCantidad(), getOrden(), getIdArticulo()
+    Object[] regresar = new Object[] {
+      getOriginal(), getIdLoteTipo(), getNombre(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getIdLote(), getObservaciones(), getIdEmpresa(), getCantidad(), getOrden(), getIdArticulo(), getIdLoteEstatus()
     };
     return regresar;
   }

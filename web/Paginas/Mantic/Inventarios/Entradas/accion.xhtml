@@ -29,6 +29,7 @@
 				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:fechaPago'      : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaRecepcion"})|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general', individual: true},
 				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', grupo: 'general'},			
+				'contenedorGrupos\\:idEmpresa'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedorPago': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},

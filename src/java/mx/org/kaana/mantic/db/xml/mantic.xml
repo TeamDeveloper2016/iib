@@ -51,6 +51,16 @@ from
 where      
   id_lote= {idLote}
       </select>
+      <select id="siguiente">
+select
+  max(orden)+ 1 as siguiente
+from 
+  tc_mantic_lotes
+where
+  ejercicio= {ejercicio} 
+  and id_empresa= {idEmpresa}	
+  and orden{operador} 900000			
+			</select>		      
     </unit>    
     <unit id="TcManticLotesDetallesDto">
       <select id="row">
@@ -69,6 +79,9 @@ from
 where      
   id_nota_detalle = {idNotaDetalle} and id_lote = {idLote}
       </select>
+      <delete id="rows">
+delete from tc_mantic_lotes_detalles where id_lote = {idLote}
+      </delete>
     </unit>    
     <unit id="TcManticLotesEspecialesDto">
       <select id="row">
@@ -87,6 +100,9 @@ from
 where      
   id_lote = {idLote} and id_lote_detalle = {idLoteDetalle}
       </select>
+      <delete id="rows">
+delete from tc_mantic_lotes_especiales where id_lote = {idLote}
+      </delete>
     </unit>    
     <unit id="TcManticLotesEstatusDto">
       <select id="row">
@@ -142,6 +158,10 @@ from
 where      
   id_lote = {idLote} and id_lote_detalle = {idLoteDetalle} and id_articulo = {idArticulo} and id_nota_merma = {idNotaMerma}
       </select>
+      <delete id="rows">
+delete from tc_mantic_lotes_promedios where id_lote= {idLote}        
+      </delete>
+      
     </unit>    
     <unit id="TcManticLotesTiposDto">
       <select id="row">
@@ -196,6 +216,9 @@ from
 where      
   id_lote_bitacora = {idLoteBitacora}
       </select>
+      <delete id="rows">
+delete from tc_mantic_lotes_bitacora where id_lote= {idLote}        
+      </delete>
     </unit>    
     <unit id="TcManticLotesCalidadesDto">
       <select id="row">

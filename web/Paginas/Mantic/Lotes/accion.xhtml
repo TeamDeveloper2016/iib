@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticLotesAccion.attrs.nombreAccion} una lote"/>
+  <ui:param name="janalBackingPage" value="#{manticLotesAccion}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
+	<ui:define name="librerias">
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idEmpresa'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:nombre'         : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'codigos'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'costales'                          : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:productos'      : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'}
+			};
+			
+    	$(document).ready(function() {
+				setTimeout("janal.readingMode('#{manticLotesAccion.attrs.nombreAccion}')", 500);
+				janal.decimals= 4;
+      });
+		</script>   
+		<style>
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticLotesAccion.doTabChange}" process="@this" update="@(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
+            <p:tab title="General">							
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
+								<p:outputLabel for="consecutivo" value="No. nota entrada:" style="display: #{manticLotesAccion.agregar}"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticLotesAccion.orden.lote.consecutivo}" readonly="true" style="display: #{manticLotesAccion.agregar}"/>
+								<p:separator style="display: #{manticLotesAccion.agregar}"/>
+                <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+                <p:selectOneMenu id="idEmpresa" value="#{manticLotesAccion.orden.lote.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticLotesAccion.doUpdateAlmacenes}" update="idAlmacen idArticulo tabla" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{manticLotesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="idAlmacen" value="Almacen:"/>
+								<p:selectOneMenu id="idAlmacen" value="#{manticLotesAccion.orden.lote.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticLotesAccion.doUpdateArticulos}" process="@this" update="idArticulo tabla @(.involucrados)"/>
+									<f:selectItems value="#{manticLotesAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+                <p:outputLabel for="nombre" value="Nombre:"/>
+                <p:inputText id="nombre" value="#{manticLotesAccion.orden.lote.nombre}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="idArticulo" value="Producto(s):"/>
+                <p:selectOneMenu id="idArticulo" value="#{manticLotesAccion.orden.lote.ikArticulo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticLotesAccion.doUpdateProductos}" process="@this" update="idArticulo tabla @(.involucrados)"/>
+                  <f:selectItems value="#{manticLotesAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.nombre or element.articulo eq ''? '': '|'}#{element.articulo}"/>
+                  <p:column headerText="Código">
+                    <h:outputText value="#{item.codigo}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.articulo}"/>
+                  </p:column>   
+                  <p:column styleClass="janal-wid-15, janal-column-right" headerText="Cantidad">
+                    <h:outputText value="#{item.cantidad}"/>
+                  </p:column>   
+                  <p:column styleClass="janal-wid-15, janal-column-center" headerText="Fecha">
+                    <h:outputText value="#{item.registro}"/>
+                  </p:column>   
+                  <p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
+                    <p:commandButton icon="fa fa-plus" title="Agregar" process="@this" update="@(.recalculo)" actionListener="#{manticLotesAccion.doAdd(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  </p:column>
+                </p:selectOneMenu>
+              </p:panelGrid>  
+              <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticLotesAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticLotesAccion.attrs.seleccionado}" selectionMode="single" paginator="#{manticLotesAccion.lazyModel.rowCount gt manticLotesAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" styleClass="involucrados" paginatorPosition="bottom" rowStyleClass="#{manticLotesAccion.toColor(row)}">
+                <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+                <f:facet name="header">
+                  <div style="float: left">
+                    <p:outputLabel value="Productos disponible" styleClass="janal-text-white"/>
+                  </div>  
+                  <div class="lg-pantalla">
+                    <p:menuButton value="Opciones">
+                      <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                      <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                    </p:menuButton>
+                  </div>  
+                  <div class="xs-pantalla">              
+                    <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  </div>  
+                </f:facet>
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nota entrada">
+									<h:outputText value="#{row.consecutivo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Proveedor">
+									<h:outputText value="#{row.proveedor}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-8 gastos" headerText="Código">
+									<h:outputText value="#{row.codigo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Producto">
+									<h:outputText value="#{row.articulo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-right" headerText="Cantidad">
+									<h:outputText value="#{row.kilos}"/>
+								</p:column>   
+								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
+                  <p:commandButton icon="fa fa-plus" title="Agregar" process="@this" update="contenedorGrupos:partidas tabla @(.recalculo)" actionListener="#{manticLotesAccion.doAdd(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+								</p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{manticLotesAccion.lazyModel== null? 0: manticLotesAccion.lazyModel.rowCount}] registros"/>
+                </f:facet>
+							</p:dataTable>              
+              <p:dataTable id="partidas" var="row" value="#{manticLotesAccion.orden.lote.partidas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" styleClass="recalculo" rowIndexVar="index" rowKey="#{row.idLoteDetalle}">
+                <f:facet name="header">
+                  <div style="float: left">
+                    <p:outputLabel value="Productos asignados" styleClass="janal-text-white"/>
+                  </div>  
+                  <div class="lg-pantalla">
+                    <p:menuButton value="Opciones">
+                      <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfPartidas', 'partidas')" oncomplete="janal.desbloquear()"/>
+                      <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsPartidas', 'partidas')" oncomplete="janal.desbloquear()"/>
+                    </p:menuButton>
+                  </div>  
+                  <div class="xs-pantalla">              
+                    <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfPartidas', 'partidas')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsPartidas', 'partidas')" oncomplete="janal.desbloquear()"/>
+                  </div>  
+                </f:facet>
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nota entrada">
+									<h:outputText value="#{row.consecutivo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Proveedor">
+									<h:outputText value="#{row.proveedor}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-8 gastos" headerText="Código">
+									<h:outputText value="#{row.codigo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive productos" headerText="Producto">
+									<h:outputText value="#{row.articulo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-right" headerText="Cantidad">
+									<h:outputText value="#{row.cantidad}"/>
+								</p:column>   
+								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="partidas @(.recalculo)" actionListener="#{manticLotesAccion.doDelete(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql ne 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="partidas @(.recalculo)" actionListener="#{manticLotesAccion.doRecover(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql eq 'DELETE'}"/>
+								</p:column>
+                <f:facet name="footer">
+                  <p:outputLabel styleClass="general" style="float: left;" value="#{manticLotesAccion.attrs.total}" escape="false"/>
+                  <p:outputLabel value="Total [#{manticLotesAccion.orden.lote.partidas.size()}] registros"/>
+                </f:facet>
+							</p:dataTable>         
+              <h:commandLink id="dataPdfPartidas">                    
+                <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="partidas" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="dataXlsPartidas">
+                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="partidas" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+              </h:commandLink>	             
+              <p:inputText id="productos" value="#{manticLotesAccion.attrs.partidas}" styleClass="janal-display-none involucrados"/>
+						</p:tab>						            						            																																																
+						<p:tab title="Observaciones">
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticLotesAccion.orden.lote.observaciones}"/>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>   
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" />
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticLotesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticLotesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+		</div>		
+	</ui:define>
+</ui:composition>
