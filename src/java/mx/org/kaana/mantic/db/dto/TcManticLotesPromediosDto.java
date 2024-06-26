@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -34,8 +28,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticLotesPromediosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="regitro")
-  private Timestamp regitro;
+  @Column (name="registro")
+  private Timestamp registro;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_lote")
@@ -52,20 +46,19 @@ public class TcManticLotesPromediosDto implements IBaseDto, Serializable {
   private Double porcentaje;
   @Column (name="id_articulo")
   private Long idArticulo;
-  @Column (name="id_nota_merma")
-  private Long idNotaMerma;
+  @Column (name="id_nota_calidad")
+  private Long idNotaCalidad;
 
   public TcManticLotesPromediosDto() {
     this(new Long(-1L));
   }
 
   public TcManticLotesPromediosDto(Long key) {
-    this(new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, new Long(-1L), null, null, null, null, null);
+    this(null, null, new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticLotesPromediosDto(Timestamp regitro, Long idUsuario, Long idLote, Long idLotePromedio, Long idLoteDetalle, Double cantidad, Double porcentaje, Long idArticulo, Long idNotaMerma) {
-    setRegitro(regitro);
+  public TcManticLotesPromediosDto(Long idUsuario, Long idLote, Long idLotePromedio, Long idLoteDetalle, Double cantidad, Double porcentaje, Long idArticulo, Long idNotaCalidad) {
     setIdUsuario(idUsuario);
     setIdLote(idLote);
     setIdLotePromedio(idLotePromedio);
@@ -73,15 +66,16 @@ public class TcManticLotesPromediosDto implements IBaseDto, Serializable {
     setCantidad(cantidad);
     setPorcentaje(porcentaje);
     setIdArticulo(idArticulo);
-    setIdNotaMerma(idNotaMerma);
+    setIdNotaCalidad(idNotaCalidad);
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setRegitro(Timestamp regitro) {
-    this.regitro = regitro;
+  public void setRegistro(Timestamp registro) {
+    this.registro = registro;
   }
 
-  public Timestamp getRegitro() {
-    return regitro;
+  public Timestamp getRegistro() {
+    return registro;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -140,12 +134,12 @@ public class TcManticLotesPromediosDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setIdNotaMerma(Long idNotaMerma) {
-    this.idNotaMerma = idNotaMerma;
+  public void setIdNotaCalidad(Long idNotaCalidad) {
+    this.idNotaCalidad = idNotaCalidad;
   }
 
-  public Long getIdNotaMerma() {
-    return idNotaMerma;
+  public Long getIdNotaCalidad() {
+    return idNotaCalidad;
   }
 
   @Transient
@@ -163,7 +157,7 @@ public class TcManticLotesPromediosDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getRegitro());
+		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
@@ -179,7 +173,7 @@ public class TcManticLotesPromediosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNotaMerma());
+		regresar.append(getIdNotaCalidad());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -187,7 +181,7 @@ public class TcManticLotesPromediosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("regitro", getRegitro());
+		regresar.put("registro", getRegistro());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idLote", getIdLote());
 		regresar.put("idLotePromedio", getIdLotePromedio());
@@ -195,14 +189,14 @@ public class TcManticLotesPromediosDto implements IBaseDto, Serializable {
 		regresar.put("cantidad", getCantidad());
 		regresar.put("porcentaje", getPorcentaje());
 		regresar.put("idArticulo", getIdArticulo());
-		regresar.put("idNotaMerma", getIdNotaMerma());
+		regresar.put("idNotaCalidad", getIdNotaCalidad());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getRegitro(), getIdUsuario(), getIdLote(), getIdLotePromedio(), getIdLoteDetalle(), getCantidad(), getPorcentaje(), getIdArticulo(), getIdNotaMerma()
+    Object[] regresar = new Object[] {
+      getRegistro(), getIdUsuario(), getIdLote(), getIdLotePromedio(), getIdLoteDetalle(), getCantidad(), getPorcentaje(), getIdArticulo(), getIdNotaCalidad()
     };
     return regresar;
   }

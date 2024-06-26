@@ -4,8 +4,10 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -25,6 +27,7 @@ import mx.org.kaana.mantic.db.dto.TcManticLotesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesEspecialesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesPromediosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
+import mx.org.kaana.mantic.lotes.beans.Porcentaje;
 import mx.org.kaana.mantic.lotes.beans.Lote;
 import mx.org.kaana.mantic.lotes.beans.Partida;
 import org.apache.log4j.Logger;
@@ -45,9 +48,15 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	protected Lote orden;	
 	private String messageError;
 	private TcManticLotesBitacoraDto bitacora;
+  private List<Porcentaje> porcentajes;
+  
 
 	public Transaccion(Lote orden) {
 		this.orden= orden;
+	}
+  
+	public Transaccion(List<Porcentaje> porcentajes) {
+		this.porcentajes= porcentajes;
 	}
   
 	protected void setMessageError(String messageError) {
@@ -79,6 +88,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
           } // if
 					break;
+				case TRANSFORMACION:
+          regresar= this.toPromedios(sesion);
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -106,6 +118,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.orden.setCantidad(this.toSumPartidas());
       DaoFactory.getInstance().insert(sesion, this.orden);
       this.toAddBitacora(sesion);
+      this.toFillPromedios(sesion);
       regresar= this.toFillPartidas(sesion);
     } // try
     catch (Exception e) {
@@ -121,6 +134,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       this.orden.setCantidad(this.toSumPartidas());
       DaoFactory.getInstance().update(sesion, this.orden);
+      this.toFillPromedios(sesion);
       this.toAddBitacora(sesion);
       regresar= this.toFillPartidas(sesion);
     } // try
@@ -179,6 +193,47 @@ public class Transaccion extends IBaseTnx implements Serializable {
         } // switch    
         item.setSql(ESql.SELECT);
       } // for  
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private Boolean toFillPromedios(Session sesion) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    StringBuilder sb          = new StringBuilder();
+    try {      
+      params.put("idLote", this.orden.getIdLote());
+      for (Partida item: this.orden.getPartidas()) {
+        sb.append(item.getIdNotaDetalle()).append(", ");
+      } // for
+      if(sb.length()> 0) {
+        sb.delete(sb.length()- 2, sb.length());
+        params.put("sortOrder", "order by tc_mantic_notas_promedios.id_nota_calidad");
+        params.put("idNotaDetalle", sb.toString());
+        List<Entity> promedios= DaoFactory.getInstance().toEntitySet(sesion, "VistaLotesDto", "promedios", params);
+        for (Entity item: promedios) {
+          TcManticLotesPromediosDto promedio= new TcManticLotesPromediosDto(
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            this.orden.getIdLote(), // Long idLote, 
+            -1L, // Long idLotePromedio, 
+            null, // Long idLoteDetalle, 
+            item.toDouble("cantidad"), // Double cantidad, 
+            item.toDouble("porcentaje"), // Double porcentaje, 
+            this.orden.getIdArticulo(), // Long idArticulo, 
+            item.toLong("idNotaCalidad") // Long idNotaCalidad
+          );
+          DaoFactory.getInstance().insert(sesion, promedio);
+        } // for
+      } // if
+      else
+        DaoFactory.getInstance().deleteAll(sesion, TcManticLotesPromediosDto.class, params);
       regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
@@ -251,6 +306,35 @@ public class Transaccion extends IBaseTnx implements Serializable {
     } // try
     catch (Exception e) {
       throw e;
+    } // catch	
+    return regresar;
+  }
+  
+  private Boolean toPromedios(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      for (Porcentaje item: this.porcentajes) {
+        item.setIdUsuario(JsfBase.getIdUsuario());
+        item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        switch(item.getSql()) {
+          case SELECT:
+            break;
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+            break;
+          case INSERT:
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+        } // switch    
+        item.setSql(ESql.SELECT);
+      } // for  
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
     } // catch	
     return regresar;
   }

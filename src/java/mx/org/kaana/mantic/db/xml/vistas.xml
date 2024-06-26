@@ -5,6 +5,48 @@
 <process>
 	<dml> 
 		<unit id="VistaLotesDto">
+			<select id="porcentajes">
+select
+  tc_mantic_lotes_promedios.id_nota_calidad as id_key,
+  tc_mantic_lotes_promedios.id_lote_promedio,
+  tc_mantic_lotes_promedios.id_lote,
+  tc_mantic_lotes_promedios.id_lote_detalle,
+  tc_mantic_lotes_promedios.id_articulo,
+  tc_mantic_lotes_promedios.id_nota_calidad,
+  tc_mantic_notas_calidades.nombre,
+  tc_mantic_notas_calidades.nombre as merma,
+  tc_mantic_lotes_promedios.cantidad,
+  tc_mantic_lotes_promedios.porcentaje,
+  tc_mantic_lotes_promedios.id_usuario,
+  tc_mantic_lotes_promedios.registro
+from 
+  tc_mantic_lotes_promedios
+inner join
+  tc_mantic_notas_calidades on tc_mantic_lotes_promedios.id_nota_calidad= tc_mantic_notas_calidades.id_nota_calidad
+where
+  tc_mantic_lotes_promedios.id_lote in ({idLote})
+group by
+  tc_mantic_lotes_promedios.id_nota_calidad  
+{sortOrder}
+      </select>  
+			<select id="promedios">
+select
+  tc_mantic_notas_promedios.id_nota_calidad as id_key,
+  tc_mantic_notas_promedios.id_nota_calidad,
+  tc_mantic_notas_calidades.nombre as nombre,
+  sum(ifnull(tc_mantic_notas_promedios.cantidad, 0)) as cantidad,
+  sum(ifnull(tc_mantic_notas_promedios.porcentaje, 0)) / count(distinct(tc_mantic_notas_promedios.id_nota_detalle)) as porcentaje,
+  now() as registro
+from 
+  tc_mantic_notas_promedios
+inner join
+  tc_mantic_notas_calidades on tc_mantic_notas_promedios.id_nota_calidad= tc_mantic_notas_calidades.id_nota_calidad
+where
+  tc_mantic_notas_promedios.id_nota_detalle in ({idNotaDetalle})
+group by
+  tc_mantic_notas_promedios.id_nota_calidad  
+{sortOrder}
+      </select>  
 			<select id="movimientos">
 select
   tc_mantic_lotes_bitacora.id_lote_bitacora as id_key,
@@ -34,9 +76,11 @@ select
   tc_mantic_lotes.id_lote as id_key,
   tc_mantic_lotes.id_lote,
   tc_mantic_empresas.nombre as empresa,
+  tc_mantic_almacenes.nombre as almacen,
   tc_mantic_lotes.consecutivo,
   tc_mantic_lotes.nombre,
   tc_mantic_lotes.cantidad,
+  tc_mantic_lotes.id_articulo,
   tc_mantic_articulos.nombre as articulo,
   tc_mantic_lotes.id_lote_estatus,
   tc_mantic_lotes_estatus.nombre as estatus,
@@ -47,6 +91,8 @@ from
   tc_mantic_lotes
 inner join  
   tc_mantic_empresas on tc_mantic_lotes.id_empresa= tc_mantic_empresas.id_empresa
+inner join  
+  tc_mantic_almacenes on tc_mantic_lotes.id_almacen= tc_mantic_almacenes.id_almacen
 inner join  
   tc_mantic_lotes_estatus on tc_mantic_lotes.id_lote_estatus= tc_mantic_lotes_estatus.id_lote_estatus
 inner join  
@@ -136,6 +182,7 @@ inner join
   tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 where                
   tc_mantic_notas_entradas.id_almacen= {idAlmacen}
+  and tc_mantic_notas_entradas.id_nota_estatus= 3
   and (tc_mantic_notas_detalles.id_lote is null or tc_mantic_notas_detalles.id_lote= {idLote})
   and {condicion}
 group by
@@ -166,6 +213,7 @@ inner join
   tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
 where                
   tc_mantic_notas_detalles.id_articulo= {idArticulo}
+  and tc_mantic_notas_entradas.id_nota_estatus= 3
   and (tc_mantic_notas_detalles.id_lote is null or tc_mantic_notas_detalles.id_lote= {idLote})
   and {condicion}
 group by

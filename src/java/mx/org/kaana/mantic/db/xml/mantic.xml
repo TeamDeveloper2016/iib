@@ -156,7 +156,7 @@ select
 from      
   tc_mantic_lotes_promedios
 where      
-  id_lote = {idLote} and id_lote_detalle = {idLoteDetalle} and id_articulo = {idArticulo} and id_nota_merma = {idNotaMerma}
+  id_lote = {idLote} and id_lote_detalle = {idLoteDetalle} and id_articulo = {idArticulo} and id_nota_calidad = {idNotaCalidad}
       </select>
       <delete id="rows">
 delete from tc_mantic_lotes_promedios where id_lote= {idLote}        

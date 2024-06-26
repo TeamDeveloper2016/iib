@@ -17,10 +17,12 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.lotes.reglas.Transaccion;
@@ -52,6 +54,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
 	
 	protected AdminLotes orden;	
 	protected EAccion accion;	
+  private FormatLazyModel lazyMerma;
 
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
@@ -69,6 +72,22 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
     this.orden = orden;
   }
 
+  public FormatLazyModel getLazyMerma() {
+    return lazyMerma;
+  }
+
+  public String getPorcentaje() {
+    Double total= 0D;
+		try {
+			for(Entity item: (List<Entity>)this.lazyMerma.getWrappedData())
+				total+= Numero.getDouble(Cadena.eliminar(item.toString("porcentaje"), ','), 0D);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);			
+		} // catch		
+    return "Total: <strong>"+ Numero.formatear(Numero.MILES_CON_DECIMALES, total)+ "%</strong>";  
+  }
+  
 	@PostConstruct
   @Override
   protected void init() {		
@@ -101,7 +120,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
           break;
       } // switch
 			this.toLoadCatalogos();
-      this.toSumPartidas();
+      this.toSumPartidas("porcentajes");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -336,7 +355,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
         JsfBase.addMessage("El producto ya existe en la lista !", ETipoMensaje.INFORMACION);
     } // if
     this.attrs.put("partidas", this.orden.getLote().getPartidas().size());
-    this.toSumPartidas();
+    this.toSumPartidas("promedios");
   }
   
   public void doDelete(Partida row) {
@@ -348,22 +367,52 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
         row.setSql(ESql.DELETE);
     } // if
     this.attrs.put("partidas", this.orden.getLote().getPartidas().size());
-    this.toSumPartidas();
+    this.toSumPartidas("promedios");
   }
   
   public void doRecover(Partida row) {
     if(Objects.equals(ESql.DELETE, row.getSql()))
       row.setSql(ESql.SELECT);
-    this.toSumPartidas();
+    this.toSumPartidas("promedios");
   }
   
-  private void toSumPartidas() {
+  private void toSumPartidas(String idXml) {
     Double sum= 0D;
     for (Partida item: this.orden.getLote().getPartidas()) {
       if(!Objects.equals(ESql.DELETE, item.getSql()))
         sum+= item.getCantidad();
     }
     this.attrs.put("total", "Suma de kilos: <strong>"+ Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, sum)+ "</strong>");
+    this.toLoadMermas(idXml);
+  }
+ 
+  private void toLoadMermas(String idXml) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+    StringBuilder sb         = new StringBuilder();
+    try {      
+      params.put("idLote", this.orden.getLote().getIdLote());
+      for (Partida item: this.orden.getLote().getPartidas()) 
+        sb.append(item.getIdNotaDetalle()).append(", ");
+      if(sb.length()> 0) 
+        sb.delete(sb.length()- 2, sb.length());
+      params.put("idNotaDetalle", Objects.equals(sb.length(), 0)? "-1": sb.toString());
+      params.put("sortOrder", "order by tc_mantic_notas_calidades.id_nota_calidad");
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      this.lazyMerma= new FormatLazyModel("VistaLotesDto", idXml, params, columns);
+      UIBackingUtilities.resetDataTable("tablaMerma");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally {
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
   }
   
 	@Override

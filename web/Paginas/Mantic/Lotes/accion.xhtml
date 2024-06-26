@@ -89,6 +89,7 @@
                   </p:column>
                 </p:selectOneMenu>
               </p:panelGrid>  
+              <p:spacer height="5px"/>
               <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticLotesAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticLotesAccion.attrs.seleccionado}" selectionMode="single" paginator="#{manticLotesAccion.lazyModel.rowCount gt manticLotesAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" styleClass="involucrados" paginatorPosition="bottom" rowStyleClass="#{manticLotesAccion.toColor(row)}">
                 <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
                 <f:facet name="header">
@@ -109,7 +110,7 @@
 								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nota entrada">
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-15" headerText="Nota entrada">
 									<h:outputText value="#{row.consecutivo}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive" headerText="Proveedor">
@@ -125,12 +126,13 @@
 									<h:outputText value="#{row.kilos}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
-                  <p:commandButton icon="fa fa-plus" title="Agregar" process="@this" update="contenedorGrupos:partidas tabla @(.recalculo)" actionListener="#{manticLotesAccion.doAdd(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton icon="fa fa-plus" title="Agregar" process="@this" update="tabla contenedorGrupos:partidas contenedorGrupos:tablaMerma @(.recalculo)" actionListener="#{manticLotesAccion.doAdd(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 								</p:column>
                 <f:facet name="footer">
                   <p:outputLabel value="Total [#{manticLotesAccion.lazyModel== null? 0: manticLotesAccion.lazyModel.rowCount}] registros"/>
                 </f:facet>
 							</p:dataTable>              
+              <p:spacer height="5px"/>
               <p:dataTable id="partidas" var="row" value="#{manticLotesAccion.orden.lote.partidas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" styleClass="recalculo" rowIndexVar="index" rowKey="#{row.idLoteDetalle}">
                 <f:facet name="header">
                   <div style="float: left">
@@ -150,7 +152,7 @@
 								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Nota entrada">
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-15" headerText="Nota entrada">
 									<h:outputText value="#{row.consecutivo}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive" headerText="Proveedor">
@@ -166,8 +168,8 @@
 									<h:outputText value="#{row.cantidad}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
-                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="partidas contenedorGrupos:tabla @(.recalculo)" actionListener="#{manticLotesAccion.doDelete(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql ne 'DELETE'}"/>
-                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="partidas contenedorGrupos:tabla @(.recalculo)" actionListener="#{manticLotesAccion.doRecover(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql eq 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="partidas contenedorGrupos:tablaMerma contenedorGrupos:tabla @(.recalculo)" actionListener="#{manticLotesAccion.doDelete(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql ne 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="partidas contenedorGrupos:tablaMerma contenedorGrupos:tabla @(.recalculo)" actionListener="#{manticLotesAccion.doRecover(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql eq 'DELETE'}"/>
 								</p:column>
                 <f:facet name="footer">
                   <p:outputLabel styleClass="general" style="float: left;" value="#{manticLotesAccion.attrs.total}" escape="false"/>
@@ -179,6 +181,64 @@
               </h:commandLink>
               <h:commandLink id="dataXlsPartidas">
                 <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="partidas" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+              </h:commandLink>	
+              <p:spacer height="5px"/>
+              <p:dataTable lazy="true" id="tablaMerma" widgetVar="kajoolTableMerma" var="row" value="#{manticLotesAccion.lazyMerma}" styleClass="involucrado janal-wid-100 #{manticLotesAccion.lazyMerma eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticLotesAccion.attrs.merma}" selectionMode="single" paginator="#{manticLotesAccion.lazyMerma.rowCount gt manticLotesAccion.lazyMerma.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+                <f:facet name="header">
+                  <div style="float: left">
+                    <p:outputLabel value="Promedios de los productos: #{manticLotesAccion.orden.lote.ikArticulo.nombre}" styleClass="merma janal-text-white"/>
+                  </div>  
+                  <div class="lg-pantalla">
+                    <p:menuButton value="Opciones">
+                      <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfMerma', 'tablaMerma')" oncomplete="janal.desbloquear()"/>
+                      <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsMerma', 'tablaMerma')" oncomplete="janal.desbloquear()"/>
+                    </p:menuButton>
+                  </div>	
+                  <div class="xs-pantalla">
+                    <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdfMerma', 'tablaMerma')" oncomplete="janal.desbloquear()"/>
+                    <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXlsMerma', 'tablaMerma')" oncomplete="janal.desbloquear()"/>
+                  </div>	
+                </f:facet>												
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
+                  <f:facet name="header">
+                    <h:outputText value="No."/>
+                  </f:facet>
+                  <h:outputText value="#{index+ 1}.-"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-column-left" sortBy="#{row.merma}">
+                  <f:facet name="header">
+                    <h:outputText value="Nombre"/>
+                  </f:facet>
+                  <h:outputText value="#{row['nombre']}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-display-none janal-column-right janal-wid-10" sortBy="#{row.cantidad}">
+                  <f:facet name="header">
+                    <h:outputText value="Cantidad"/>
+                  </f:facet>
+                  <h:outputText value="#{row['cantidad']}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-10" sortBy="#{row.porcentaje}">
+                  <f:facet name="header">
+                    <h:outputText value="Porcentaje"/>
+                  </f:facet>
+                  <h:outputText value="#{row['porcentaje']}"/>
+                </p:column>														
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-12" sortBy="#{row.registro}">
+                  <f:facet name="header">
+                    <h:outputText value="Fecha"/>
+                  </f:facet>
+                  <h:outputText value="#{row['registro']}"/>
+                </p:column>					
+                <f:facet name="footer">
+                  <p:outputLabel styleClass="involucrados" style="float: left;" value="#{manticLotesAccion.porcentaje}" escape="false"/>
+                  <p:outputLabel value="Total [#{manticLotesAccion.lazyMerma== null? 0: manticLotesAccion.lazyMerma.rowCount}] registros"/>
+                </f:facet>
+              </p:dataTable>
+              <h:commandLink id="dataPdfMerma">                    
+                <pe:exporter type="pdf" skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="tablaMerma" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+              </h:commandLink>
+              <h:commandLink id="dataXlsMerma">
+                <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tablaMerma" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
               </h:commandLink>	             
               <p:inputText id="productos" value="#{manticLotesAccion.attrs.partidas}" styleClass="janal-display-none involucrados"/>
 						</p:tab>						            						            																																																

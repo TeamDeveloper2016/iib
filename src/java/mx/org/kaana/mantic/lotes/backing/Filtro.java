@@ -44,10 +44,15 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID=1168701967796774746L;
   private FormatLazyModel lazyDetalle;
+  private FormatLazyModel lazyMerma;
 
 	public FormatLazyModel getLazyDetalle() {
 		return lazyDetalle;
 	}		
+
+  public FormatLazyModel getLazyMerma() {
+    return lazyMerma;
+  }
 	
   public String getGeneral() {
     String kilos  = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("cantidad"));
@@ -57,6 +62,18 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String getParticular() {
     String kilos  = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("particular")).toDouble("cantidad"));
     return "Suma de kilos: <strong>"+ kilos+ "</strong>";  
+  }
+  
+  public String getPorcentaje() {
+    Double total= 0D;
+		try {
+			for(Entity item: (List<Entity>)this.lazyMerma.getWrappedData())
+				total+= Numero.getDouble(Cadena.eliminar(item.toString("porcentaje"), ','), 0D);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);			
+		} // catch		
+    return "Total: <strong>"+ Numero.formatear(Numero.MILES_CON_DECIMALES, total)+ "%</strong>";  
   }
   
   @PostConstruct
@@ -94,6 +111,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("general", this.toTotales("VistaLotesDto", "general", params));
 			this.attrs.put("idLote", null);
       this.lazyDetalle= null;
+      this.lazyMerma  = null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -275,10 +293,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}	// doActualizaEstatus
 	
   public void doConsultar() {
-    this.doDetalle((Entity)this.attrs.get("seleccionado"));
+    this.doLoadDetalle((Entity)this.attrs.get("seleccionado"));
   }
   
-  public void doDetalle(Entity row) {
+  public void doLoadDetalle(Entity row) {
 		Map<String, Object>params= new HashMap<>();
 		List<Columna>columns     = new ArrayList<>();
 		try {
@@ -293,6 +311,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 				this.lazyDetalle= new FormatLazyModel("VistaLotesDto", "detalle", params, columns);
 				UIBackingUtilities.resetDataTable("tablaDetalle");
         this.attrs.put("particular", this.toTotales("VistaLotesDto", "particular", params));
+        this.toLoadMermas();
 			} // if
 		} // try
 		catch (Exception e) {
@@ -363,5 +382,42 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Lotes/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
-  
+
+  public String doPorcentajes() {
+		String regresar= "/Paginas/Mantic/Lotes/calidad";
+		try {
+      JsfBase.setFlashAttribute("accion", EAccion.TRANSFORMACION);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
+			JsfBase.setFlashAttribute("idLote", ((Entity)this.attrs.get("seleccionado")).getKey());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR);
+  }
+
+  private void toLoadMermas() {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+    try {      
+      params.put("idLote", ((Entity)this.attrs.get("seleccionado")).getKey());
+      params.put("sortOrder", "order by tc_mantic_notas_calidades.id_nota_calidad");
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      this.lazyMerma= new FormatLazyModel("VistaLotesDto", "porcentajes", params, columns);
+      UIBackingUtilities.resetDataTable("tablaMerma");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally {
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
+
 }

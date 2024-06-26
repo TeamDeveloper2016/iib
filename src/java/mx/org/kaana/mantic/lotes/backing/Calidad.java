@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.inventarios.origenes.backing;
+package mx.org.kaana.mantic.lotes.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
+import mx.org.kaana.mantic.lotes.reglas.Transaccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -22,10 +22,8 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.inventarios.origenes.beans.Porcentaje;
+import mx.org.kaana.mantic.lotes.beans.Porcentaje;
 
 /**
  *@company KAANA
@@ -35,22 +33,18 @@ import mx.org.kaana.mantic.inventarios.origenes.beans.Porcentaje;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticInventariosOrigenesCalidad")
+@Named(value= "manticLotesCalidad")
 @ViewScoped
 public class Calidad extends IBaseAttribute implements Serializable {
 
-  private static final long serialVersionUID= 327393488565639361L;
+  private static final long serialVersionUID= 127393488565639361L;
   
-  private Entity nota;
-  private List<UISelectEntity> detalle;
+  private Entity lote;
 	protected EAccion accion;	
   private List<Porcentaje> porcentajes;
 
-  public Entity getNota() {
-    return nota;  }
-
-  public List<UISelectEntity> getDetalle() {
-    return detalle;
+  public Entity getLote() {
+    return lote;  
   }
 
   public List<Porcentaje> getPorcentajes() {
@@ -67,7 +61,7 @@ public class Calidad extends IBaseAttribute implements Serializable {
     if(JsfBase.getFlashAttribute("accion")== null)
       UIBackingUtilities.execute("janal.isPostBack('cancelar')");
     this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.TRANSFORMACION: (EAccion)JsfBase.getFlashAttribute("accion");
-    this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
+    this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? -1L: JsfBase.getFlashAttribute("idLote"));
     this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
     this.doLoad();    
   }
@@ -76,25 +70,22 @@ public class Calidad extends IBaseAttribute implements Serializable {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {
-      params.put("sortOrder", "order by tc_mantic_notas_entradas.registro");      
+      params.put("sortOrder", "order by tc_mantic_lotes.registro");      
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      params.put("idNotaEntrada", this.attrs.get("idNotaEntrada"));      
-      params.put(Constantes.SQL_CONDICION, "tc_mantic_notas_entradas.id_nota_entrada= "+ this.attrs.get("idNotaEntrada"));      
-      this.nota   = (Entity)DaoFactory.getInstance().toEntity("VistaNotasEntradasDto", "lazy", params);
-      columns.add(new Columna("costo", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("promedio", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("gastos", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      params.put("sortOrder", "order by tc_mantic_notas_detalles.registro");
-      this.detalle= UIEntity.build("TcManticNotasDetallesDto", "igual", params, columns);
-      this.attrs.put("idNotaDetalle", UIBackingUtilities.toFirstKeySelectEntity(this.detalle));
-      this.doLoadPorcentajes();
+      params.put("idLote", this.attrs.get("idLote"));      
+      params.put(Constantes.SQL_CONDICION, "tc_mantic_lotes.id_lote= "+ this.attrs.get("idLote"));      
+      columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      this.lote= (Entity)DaoFactory.getInstance().toEntity("VistaLotesDto", "lazy", params);
+      if(!Objects.equals(this.lote, null)) {
+        UIBackingUtilities.toFormatEntity(this.lote, columns);
+        this.doLoadPorcentajes();
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -108,36 +99,26 @@ public class Calidad extends IBaseAttribute implements Serializable {
  
   public void doLoadPorcentajes() {
     Map<String, Object> params= new HashMap<>();
-    UISelectEntity articulo   = (UISelectEntity)this.attrs.get("idNotaDetalle");
     try {      
-      if(!Objects.equals(this.detalle, null) && !this.detalle.isEmpty()) {
-        int index= this.detalle.indexOf(articulo);
-        if(index>= 0)
-          articulo= this.detalle.get(index);
-        else
-          articulo= this.detalle.get(0);
-        params.put("idNotaDetalle", articulo.toLong("idNotaDetalle"));
-        this.porcentajes= (List<Porcentaje>)DaoFactory.getInstance().toEntitySet(Porcentaje.class, "VistaNotasEntradasDto", "porcentajes", params);
-        if(!Objects.equals(this.porcentajes, null)) {
-          for (Porcentaje item: this.porcentajes) {
-            if(Objects.equals(item.getIdNotaPromedio(), -1L)) {
-              item.setIdNotaEntrada(this.nota.toLong("idNotaEntrada"));
-              item.setIdNotaDetalle(articulo.toLong("idNotaDetalle"));
-              item.setIdArticulo(articulo.toLong("idArticulo"));
-              item.setCantidad(0D);
-              item.setPorcentaje(0D);
-              item.setSql(ESql.INSERT);
-            } // if  
-            else
-              item.setSql(ESql.SELECT);
-          } // for
-        } // if
-        else
-          this.porcentajes= new ArrayList<>();  
-        this.toLoadTotal();
+      params.put("sortOrder", "order by tc_mantic_notas_calidades.id_nota_calidad");
+      params.put("idLote", this.lote.toLong("idLote"));
+      this.porcentajes= (List<Porcentaje>)DaoFactory.getInstance().toEntitySet(Porcentaje.class, "VistaLotesDto", "porcentajes", params);
+      if(!Objects.equals(this.porcentajes, null)) {
+        for (Porcentaje item: this.porcentajes) {
+          if(Objects.equals(item.getIdLotePromedio(), -1L)) {
+            item.setIdLote(this.lote.toLong("idLote"));
+            item.setIdArticulo(this.lote.toLong("idArticulo"));
+            item.setCantidad(0D);
+            item.setPorcentaje(0D);
+            item.setSql(ESql.INSERT);
+          } // if  
+          else
+            item.setSql(ESql.SELECT);
+        } // for
       } // if  
       else
         this.porcentajes= new ArrayList<>();  
+      this.toLoadTotal();
       this.attrs.put("articulos", this.porcentajes.size());
     } // try
     catch (Exception e) {
@@ -169,7 +150,7 @@ public class Calidad extends IBaseAttribute implements Serializable {
   } 
 
   public String doCancelar() {  
-  	JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+  	JsfBase.setFlashAttribute("idLote", this.attrs.get("idLote"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 

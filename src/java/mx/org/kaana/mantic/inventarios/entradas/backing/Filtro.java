@@ -505,7 +505,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
   
   public String doPorcentajes() {
-		String regresar= "/Paginas/Mantic/Inventarios/Origenesa/calidad";
+		String regresar= "/Paginas/Mantic/Inventarios/Origenes/calidad";
 		try {
       JsfBase.setFlashAttribute("accion", EAccion.TRANSFORMACION);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
