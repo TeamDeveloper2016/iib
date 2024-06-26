@@ -21,6 +21,7 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
   private String proveedor;
   private String codigo;
   private String articulo;
+  private Double original;
   private ESql sql;
   
   public Partida() {
@@ -29,16 +30,19 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
 
   public Partida(Long idKey) {
     super(idKey);
+    this.original= 0D;
   }
 
   public Partida(Long idNotaDetalle, Long idArticulo) {
     super(-1L);
+    this.original= 0D;
     this.setIdNotaDetalle(idNotaDetalle);
     this.setIdArticulo(idArticulo);
   }
 
-  public Partida(Long idUsuario, Long idNotaDetalle, Long idLote, Long idLoteDetalle, Double cantidad, Double saldo, Long idArticulo) {
+  public Partida(Long idUsuario, Long idNotaDetalle, Long idLote, Long idLoteDetalle, Double cantidad, Double saldo, Long idArticulo, Double original) {
     super(idUsuario, idNotaDetalle, idLote, idLoteDetalle, cantidad, saldo, idArticulo);
+    this.original= original;
     this.sql= ESql.INSERT;
   }
   
@@ -78,6 +82,14 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
     return sql;
   }
 
+  public Double getOriginal() {
+    return original;
+  }
+
+  public void setOriginal(Double original) {
+    this.original = original;
+  }
+
   public void setSql(ESql sql) {
     this.sql = sql;
   }
@@ -108,7 +120,7 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
 
   @Override
   public String toString() {
-    return "Partida{" + "consecutivo=" + consecutivo + ", proveedor=" + proveedor + ", codigo=" + codigo + ", articulo=" + articulo + '}';
+    return "Partida{" + "consecutivo=" + consecutivo + ", proveedor=" + proveedor + ", codigo=" + codigo + ", articulo=" + articulo + ", original=" + original + ", sql=" + sql + '}';
   }
 
 }

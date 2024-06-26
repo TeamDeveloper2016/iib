@@ -6,11 +6,13 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import static mx.org.kaana.kajool.enums.ESql.DELETE;
 import static mx.org.kaana.kajool.enums.ESql.INSERT;
@@ -19,11 +21,13 @@ import static mx.org.kaana.kajool.enums.ESql.UPDATE;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticLotesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticLotesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesEspecialesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesPromediosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
@@ -45,14 +49,19 @@ public class Transaccion extends IBaseTnx implements Serializable {
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
 	private static final long serialVersionUID= 1069204157451117549L;
  
+	protected Long idLote;	
 	protected Lote orden;	
 	private String messageError;
 	private TcManticLotesBitacoraDto bitacora;
   private List<Porcentaje> porcentajes;
   
-
 	public Transaccion(Lote orden) {
-		this.orden= orden;
+		this(-1L, orden);
+	}
+  
+	public Transaccion(Long idLote, Lote orden) {
+    this.idLote= idLote;
+		this.orden = orden;
 	}
   
 	public Transaccion(List<Porcentaje> porcentajes) {
@@ -91,6 +100,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				case TRANSFORMACION:
           regresar= this.toPromedios(sesion);
 					break;
+				case GENERAR:
+          regresar= this.toFraccionar(sesion);
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -116,6 +128,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
       this.orden.setIdUsuario(JsfBase.getIdUsuario());
       this.orden.setCantidad(this.toSumPartidas());
+      this.orden.setOriginal(this.toSumPartidas());
       DaoFactory.getInstance().insert(sesion, this.orden);
       this.toAddBitacora(sesion);
       this.toFillPromedios(sesion);
@@ -186,7 +199,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
             regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
             break;
           case INSERT:
-            DaoFactory.getInstance().updateAll(sesion, TcManticNotasDetallesDto.class, params, "agregar");
+            if(item.getCantidad()>= item.getOriginal()) 
+              DaoFactory.getInstance().updateAll(sesion, TcManticNotasDetallesDto.class, params, "agregar");
             item.setIdLote(this.orden.getIdLote());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
@@ -335,6 +349,70 @@ public class Transaccion extends IBaseTnx implements Serializable {
     } // try
     catch (Exception e) {
       throw e;      
+    } // catch	
+    return regresar;
+  }
+  
+  private Boolean toFraccionar(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    Double cantidad = 0D;
+    try {      
+      TcManticLotesDto lote= (TcManticLotesDto)DaoFactory.getInstance().findAll(sesion, TcManticLotesDto.class, this.idLote);
+      lote.setCantidad(lote.getCantidad()- this.orden.getCantidad());
+      lote.setIdUsuario(JsfBase.getIdUsuario());
+      lote.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      DaoFactory.getInstance().update(sesion, lote);
+      for (Partida item: this.orden.getPartidas()) {
+        TcManticLotesDetallesDto detalle= (TcManticLotesDetallesDto)DaoFactory.getInstance().findAll(sesion, TcManticLotesDetallesDto.class, item.getIdLoteDetalle());
+        if(item.getCantidad()>= item.getOriginal())
+          DaoFactory.getInstance().delete(sesion, detalle);
+        else 
+          if(item.getCantidad()>= 0) {
+            detalle.setIdUsuario(JsfBase.getIdUsuario());
+            detalle.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+            detalle.setCantidad(detalle.getCantidad()- item.getCantidad());
+            DaoFactory.getInstance().update(sesion, detalle);
+          } // else  
+        cantidad+= item.getCantidad();
+      } // for  
+      regresar= this.toAddNuevo(sesion, lote.getConsecutivo(), cantidad);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
+
+  private Boolean toAddNuevo(Session sesion, String folio, Double cantidad) throws Exception {
+    Boolean regresar     = Boolean.FALSE;
+    Siguiente consecutivo= null;
+    int index            = 0;
+    try {      
+      consecutivo= this.toSiguiente(sesion);
+      this.orden.setConsecutivo(consecutivo.getConsecutivo());
+      this.orden.setOrden(consecutivo.getOrden());
+      this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+      this.orden.setIdUsuario(JsfBase.getIdUsuario());
+      this.orden.setCantidad(cantidad);
+      this.orden.setOriginal(cantidad);
+      this.orden.setObservaciones((Objects.equals(this.orden.getObservaciones(), null)? "": ", ")+ "ESTE LOTE SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
+      DaoFactory.getInstance().insert(sesion, this.orden);
+      this.toAddBitacora(sesion);
+      while(index< this.orden.getPartidas().size()) {
+        Partida partida= this.orden.getPartidas().get(index);
+        partida.setIdLote(-1L);
+        partida.setIdLoteDetalle(-1L);
+        if((partida.getCantidad()<= 0D))
+          this.orden.getPartidas().remove(index);
+        else
+          index++;
+      } // while  
+      this.toFillPromedios(sesion);
+      this.toFillPartidas(sesion);
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
     } // catch	
     return regresar;
   }

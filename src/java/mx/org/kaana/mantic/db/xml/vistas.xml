@@ -81,11 +81,14 @@ order by
 select        
   tc_mantic_lotes.id_lote as id_key,
   tc_mantic_lotes.id_lote,
+  tc_mantic_lotes.id_empresa,
+  tc_mantic_lotes.id_almacen,
   tc_mantic_empresas.nombre as empresa,
   tc_mantic_almacenes.nombre as almacen,
   tc_mantic_lotes.consecutivo,
   tc_mantic_lotes.nombre,
   tc_mantic_lotes.cantidad,
+  tc_mantic_lotes.cantidad as kilos,
   tc_mantic_lotes.id_articulo,
   tc_mantic_articulos.nombre as articulo,
   tc_mantic_lotes.id_lote_estatus,
@@ -229,6 +232,7 @@ group by
 select        
   tc_mantic_lotes_detalles.id_lote_detalle as id_key,
   tc_mantic_lotes_detalles.*,
+  tc_mantic_lotes_detalles.cantidad as original,
   tc_mantic_notas_entradas.consecutivo,
   tc_mantic_proveedores.razon_social as proveedor,
   tc_mantic_articulos_codigos.codigo,

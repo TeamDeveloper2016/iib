@@ -397,6 +397,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar.concat(Constantes.REDIRECIONAR);
   }
 
+  public String doFraccionar() {
+		String regresar= "/Paginas/Mantic/Lotes/fraccionar";
+		try {
+      JsfBase.setFlashAttribute("accion", EAccion.GENERAR);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
+			JsfBase.setFlashAttribute("idLote", ((Entity)this.attrs.get("seleccionado")).getKey());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR);
+  }
+
   private void toLoadMermas() {
 		Map<String, Object>params= new HashMap<>();
 		List<Columna>columns     = new ArrayList<>();

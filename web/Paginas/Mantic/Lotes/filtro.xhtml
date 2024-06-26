@@ -216,8 +216,9 @@
               <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|', manticLotesFiltro.attrs.seleccionado.idLoteEstatus)}"/>					
               <p:separator/>
               <p:menuitem icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticLotesFiltro.doMovimientos}"/>
-              <p:separator rendered="#{fn:contains('|1|2|3|5|6|7|', manticLotesFiltro.attrs.seleccionado.idLoteEstatus)}"/>
-              <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticLotesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|7|', manticLotesFiltro.attrs.seleccionado.idLoteEstatus)}"/>
+              <p:separator rendered="#{fn:contains('|1|2|3|', manticLotesFiltro.attrs.seleccionado.idLoteEstatus)}"/>
+              <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticLotesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|3|', manticLotesFiltro.attrs.seleccionado.idLoteEstatus)}"/>
+              <p:menuitem icon="fa fa-list-ol" value="Fraccionar" action="#{manticLotesFiltro.doFraccionar()}" process="@this" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
               <p:separator/>
               <p:menuitem icon="fa fa-search" value="Detalle" action="#{manticLotesFiltro.doConsultar()}" process="@this tabla" update="tablaDetalle tablaMerma @(.detalle)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
               <p:separator/>

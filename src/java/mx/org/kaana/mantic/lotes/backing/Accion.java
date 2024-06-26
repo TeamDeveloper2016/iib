@@ -338,7 +338,8 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
       -1L, // Long idLoteDetalle, 
       row.toDouble("cantidad"), // Double cantidad, 
       row.toDouble("cantidad"), // Double saldo, 
-      row.toLong("idArticulo") // Long idArticulo            
+      row.toLong("idArticulo"), // Long idArticulo            
+      0D // Double original
     );
     partida.setConsecutivo(row.toString("consecutivo"));
     partida.setCodigo(row.toString("codigo"));

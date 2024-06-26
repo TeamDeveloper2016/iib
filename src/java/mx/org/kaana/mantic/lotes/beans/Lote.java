@@ -30,6 +30,7 @@ public class Lote extends TcManticLotesDto implements Serializable {
 
   public Lote(Long key) {
     super(key);
+    this.setPartidas(new ArrayList<Partida>());
   }
 
   public Lote(Double original, Long idLoteTipo, String nombre, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, Long idLote, String observaciones, Long idEmpresa, Double cantidad, Long orden, Long idArticulo, Long idLoteEstatus) {
