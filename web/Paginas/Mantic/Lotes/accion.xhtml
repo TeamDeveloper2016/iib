@@ -14,14 +14,13 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:consecutivo'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idEmpresa'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nombre'         : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'codigos'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'costales'                          : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:productos'      : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'}
+				'contenedorGrupos\\:productos'      : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},
+				'contenedorGrupos\\:filas'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'}
 			};
 			
     	$(document).ready(function() {
@@ -116,7 +115,7 @@
 								<p:column styleClass="MarAuto Responsive" headerText="Proveedor">
 									<h:outputText value="#{row.proveedor}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-8 gastos" headerText="Código">
+								<p:column styleClass="MarAuto Responsive janal-wid-8" headerText="Código">
 									<h:outputText value="#{row.codigo}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive" headerText="Producto">
@@ -158,7 +157,7 @@
 								<p:column styleClass="MarAuto Responsive" headerText="Proveedor">
 									<h:outputText value="#{row.proveedor}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-8 gastos" headerText="Código">
+								<p:column styleClass="MarAuto Responsive janal-wid-8" headerText="Código">
 									<h:outputText value="#{row.codigo}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive productos" headerText="Producto">
@@ -186,7 +185,7 @@
               <p:dataTable lazy="true" id="tablaMerma" widgetVar="kajoolTableMerma" var="row" value="#{manticLotesAccion.lazyMerma}" styleClass="involucrado janal-wid-100 #{manticLotesAccion.lazyMerma eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticLotesAccion.attrs.merma}" selectionMode="single" paginator="#{manticLotesAccion.lazyMerma.rowCount gt manticLotesAccion.lazyMerma.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
                 <f:facet name="header">
                   <div style="float: left">
-                    <p:outputLabel value="Promedios de los productos: #{manticLotesAccion.orden.lote.ikArticulo.nombre}" styleClass="merma janal-text-white"/>
+                    <p:outputLabel value="Porcentajes de los productos: #{manticLotesAccion.orden.lote.ikArticulo.nombre}" styleClass="merma janal-text-white"/>
                   </div>  
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
@@ -201,31 +200,31 @@
                 </f:facet>												
                 <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-3">
                   <f:facet name="header">
-                    <h:outputText value="No."/>
+                    <p:outputLabel value="No."/>
                   </f:facet>
                   <h:outputText value="#{index+ 1}.-"/>
                 </p:column>														
                 <p:column styleClass="MarAuto Responsive janal-column-left" sortBy="#{row.merma}">
                   <f:facet name="header">
-                    <h:outputText value="Nombre"/>
+                    <p:outputLabel value="Nombre"/>
                   </f:facet>
                   <h:outputText value="#{row['nombre']}"/>
                 </p:column>														
                 <p:column styleClass="MarAuto Responsive janal-display-none janal-column-right janal-wid-10" sortBy="#{row.cantidad}">
                   <f:facet name="header">
-                    <h:outputText value="Cantidad"/>
+                    <p:outputLabel value="Cantidad"/>
                   </f:facet>
                   <h:outputText value="#{row['cantidad']}"/>
                 </p:column>														
                 <p:column styleClass="MarAuto Responsive janal-column-right janal-wid-10" sortBy="#{row.porcentaje}">
                   <f:facet name="header">
-                    <h:outputText value="Porcentaje"/>
+                    <p:outputLabel value="Porcentaje" styleClass="filas"/>
                   </f:facet>
                   <h:outputText value="#{row['porcentaje']}"/>
                 </p:column>														
                 <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-12" sortBy="#{row.registro}">
                   <f:facet name="header">
-                    <h:outputText value="Fecha"/>
+                    <p:outputLabel value="Fecha"/>
                   </f:facet>
                   <h:outputText value="#{row['registro']}"/>
                 </p:column>					
@@ -240,7 +239,8 @@
               <h:commandLink id="dataXlsMerma">
                 <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tablaMerma" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
               </h:commandLink>	             
-              <p:inputText id="productos" value="#{manticLotesAccion.attrs.partidas}" styleClass="janal-display-none involucrados"/>
+              <p:inputText id="productos" value="#{manticLotesAccion.attrs.partidas}" styleClass="janal-display-none recalculo"/>
+              <p:inputText id="filas" value="#{manticLotesAccion.lazyMerma.rowCount}" styleClass="janal-display-none recalculo"/>
 						</p:tab>						            						            																																																
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticLotesAccion.orden.lote.observaciones}"/>
@@ -252,11 +252,11 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" />
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return janal.execute()" oncomplete="janal.desbloquear()" />
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticLotesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesAccion.doAceptar}" onclick="janal.bloquear();" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticLotesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

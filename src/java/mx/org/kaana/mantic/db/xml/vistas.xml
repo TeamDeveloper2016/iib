@@ -7,26 +7,32 @@
 		<unit id="VistaLotesDto">
 			<select id="porcentajes">
 select
-  tc_mantic_lotes_promedios.id_nota_calidad as id_key,
-  tc_mantic_lotes_promedios.id_lote_promedio,
-  tc_mantic_lotes_promedios.id_lote,
-  tc_mantic_lotes_promedios.id_lote_detalle,
-  tc_mantic_lotes_promedios.id_articulo,
-  tc_mantic_lotes_promedios.id_nota_calidad,
+  tc_mantic_notas_calidades.id_nota_calidad as id_key,
   tc_mantic_notas_calidades.nombre,
   tc_mantic_notas_calidades.nombre as merma,
-  tc_mantic_lotes_promedios.cantidad,
-  tc_mantic_lotes_promedios.porcentaje,
-  tc_mantic_lotes_promedios.id_usuario,
-  tc_mantic_lotes_promedios.registro
-from 
-  tc_mantic_lotes_promedios
-inner join
-  tc_mantic_notas_calidades on tc_mantic_lotes_promedios.id_nota_calidad= tc_mantic_notas_calidades.id_nota_calidad
-where
-  tc_mantic_lotes_promedios.id_lote in ({idLote})
+  ifnull(tt_mantic_lotes_promedios.id_lote_promedio, -1) as id_lote_promedio,
+  tt_mantic_lotes_promedios.id_lote,
+  tt_mantic_lotes_promedios.id_lote_detalle,
+  tt_mantic_lotes_promedios.id_articulo,
+  tc_mantic_notas_calidades.id_nota_calidad,
+  tt_mantic_lotes_promedios.cantidad,
+  tt_mantic_lotes_promedios.porcentaje,
+  tt_mantic_lotes_promedios.id_usuario,
+  tt_mantic_lotes_promedios.registro
+from
+  tc_mantic_notas_calidades
+left join (
+  select
+    tc_mantic_lotes_promedios.*
+  from
+    tc_mantic_lotes_promedios
+  where 
+    tc_mantic_lotes_promedios.id_lote= {idLote}
+  group by
+    tc_mantic_lotes_promedios.id_lote_promedio
+) as tt_mantic_lotes_promedios on tc_mantic_notas_calidades.id_nota_calidad= tt_mantic_lotes_promedios.id_nota_calidad
 group by
-  tc_mantic_lotes_promedios.id_nota_calidad  
+  tc_mantic_notas_calidades.id_nota_calidad
 {sortOrder}
       </select>  
 			<select id="promedios">

@@ -223,8 +223,7 @@
               <p:separator/>
               <p:menuitem icon="fa fa-sort-numeric-asc" value="Porcentajes" action="#{manticLotesFiltro.doPorcentajes()}" process="@this" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
             </p:contextMenu>						
-          </div>
-					<div class="ui-grid-row janal-grid-row">
+            <p:spacer height="5px"/>
             <p:dataTable lazy="true" id="tablaDetalle" widgetVar="kajoolTableDetalle" var="row" value="#{manticLotesFiltro.lazyDetalle}" styleClass="detalle janal-wid-100 #{manticLotesFiltro.lazyDetalle eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticLotesFiltro.attrs.detalle}" selectionMode="single" paginator="#{manticLotesFiltro.lazyDetalle.rowCount gt manticLotesFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
               <f:facet name="header">
                 <div style="float: left">
@@ -294,8 +293,7 @@
             <h:commandLink id="dataXlsDetalle">
               <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tablaDetalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
             </h:commandLink>	             
-				  </div>	    
- 					<div class="ui-grid-row janal-grid-row">
+            <p:spacer height="5px"/>
             <p:dataTable lazy="true" id="tablaMerma" widgetVar="kajoolTableMerma" var="row" value="#{manticLotesFiltro.lazyMerma}" styleClass="involucrado janal-wid-100 #{manticLotesFiltro.lazyMerma eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticLotesFiltro.attrs.merma}" selectionMode="single" paginator="#{manticLotesFiltro.lazyMerma.rowCount gt manticLotesFiltro.lazyMerma.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
               <f:facet name="header">
                 <div style="float: left">

@@ -402,7 +402,8 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.lazyMerma= new FormatLazyModel("VistaLotesDto", idXml, params, columns);
+      if(!Objects.equals(this.orden.getLote().getIdLote(), -1L) || sb.length()> 0)
+        this.lazyMerma= new FormatLazyModel("VistaLotesDto", idXml, params, columns);
       UIBackingUtilities.resetDataTable("tablaMerma");
 		} // try
 		catch (Exception e) {
