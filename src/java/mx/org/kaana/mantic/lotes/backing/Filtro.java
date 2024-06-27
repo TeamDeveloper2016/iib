@@ -67,8 +67,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   public String getPorcentaje() {
     Double total= 0D;
 		try {
-			for(Entity item: (List<Entity>)this.lazyMerma.getWrappedData())
-				total+= Numero.getDouble(Cadena.eliminar(item.toString("porcentaje"), ','), 0D);
+      if(!Objects.equals(this.lazyMerma, null))
+			  for(Entity item: (List<Entity>)this.lazyMerma.getWrappedData())
+				  total+= Numero.getDouble(Cadena.eliminar(item.toString("porcentaje"), ','), 0D);
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);			
@@ -101,7 +102,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_lotes.id_empresa, tc_mantic_lotes.registro desc");
+      params.put("sortOrder", "order by tc_mantic_lotes.id_empresa, tc_mantic_lotes.id_lote desc");
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SAT_DECIMALES));

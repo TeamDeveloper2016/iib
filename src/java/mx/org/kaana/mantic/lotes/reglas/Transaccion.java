@@ -224,9 +224,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
     StringBuilder sb          = new StringBuilder();
     try {      
       params.put("idLote", this.orden.getIdLote());
-      for (Partida item: this.orden.getPartidas()) {
+      for (Partida item: this.orden.getPartidas()) 
         sb.append(item.getIdNotaDetalle()).append(", ");
-      } // for
       if(sb.length()> 0) {
         sb.delete(sb.length()- 2, sb.length());
         params.put("sortOrder", "order by tc_mantic_notas_promedios.id_nota_calidad");
@@ -355,27 +354,27 @@ public class Transaccion extends IBaseTnx implements Serializable {
   
   private Boolean toFraccionar(Session sesion) throws Exception {
     Boolean regresar= Boolean.FALSE;
-    Double cantidad = 0D;
     try {      
-      TcManticLotesDto lote= (TcManticLotesDto)DaoFactory.getInstance().findAll(sesion, TcManticLotesDto.class, this.idLote);
+      TcManticLotesDto lote= (TcManticLotesDto)DaoFactory.getInstance().findById(sesion, TcManticLotesDto.class, this.idLote);
       lote.setCantidad(lote.getCantidad()- this.orden.getCantidad());
       lote.setIdUsuario(JsfBase.getIdUsuario());
       lote.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       DaoFactory.getInstance().update(sesion, lote);
       for (Partida item: this.orden.getPartidas()) {
-        TcManticLotesDetallesDto detalle= (TcManticLotesDetallesDto)DaoFactory.getInstance().findAll(sesion, TcManticLotesDetallesDto.class, item.getIdLoteDetalle());
-        if(item.getCantidad()>= item.getOriginal())
-          DaoFactory.getInstance().delete(sesion, detalle);
-        else 
-          if(item.getCantidad()>= 0) {
-            detalle.setIdUsuario(JsfBase.getIdUsuario());
-            detalle.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-            detalle.setCantidad(detalle.getCantidad()- item.getCantidad());
-            DaoFactory.getInstance().update(sesion, detalle);
-          } // else  
-        cantidad+= item.getCantidad();
+        if(item.getCantidad()> 0D) {
+          TcManticLotesDetallesDto detalle= (TcManticLotesDetallesDto)DaoFactory.getInstance().findById(sesion, TcManticLotesDetallesDto.class, item.getIdLoteDetalle());
+          if(item.getCantidad()>= detalle.getCantidad()) 
+            DaoFactory.getInstance().delete(sesion, detalle);
+          else 
+            if(item.getCantidad()> 0) {
+              detalle.setIdUsuario(JsfBase.getIdUsuario());
+              detalle.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+              detalle.setCantidad(detalle.getCantidad()- item.getCantidad());
+              DaoFactory.getInstance().update(sesion, detalle);
+            } // else  
+        } // if
       } // for  
-      regresar= this.toAddNuevo(sesion, lote.getConsecutivo(), cantidad);
+      regresar= this.toAddNuevo(sesion, lote.getConsecutivo());
     } // try
     catch (Exception e) {
       throw e;
@@ -383,7 +382,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
     return regresar;
   }
 
-  private Boolean toAddNuevo(Session sesion, String folio, Double cantidad) throws Exception {
+  private Boolean toAddNuevo(Session sesion, String folio) throws Exception {
     Boolean regresar     = Boolean.FALSE;
     Siguiente consecutivo= null;
     int index            = 0;
@@ -393,8 +392,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.orden.setOrden(consecutivo.getOrden());
       this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
       this.orden.setIdUsuario(JsfBase.getIdUsuario());
-      this.orden.setCantidad(cantidad);
-      this.orden.setOriginal(cantidad);
       this.orden.setObservaciones((Objects.equals(this.orden.getObservaciones(), null)? "": ", ")+ "ESTE LOTE SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
       DaoFactory.getInstance().insert(sesion, this.orden);
       this.toAddBitacora(sesion);

@@ -150,13 +150,18 @@ where
       <select id="detalle">
 select        
   tc_mantic_lotes_detalles.id_lote_detalle as id_key,
+  tc_mantic_lotes_detalles.id_lote,
   tc_mantic_lotes_detalles.id_lote_detalle,
+  tc_mantic_lotes_detalles.id_nota_detalle,
+  tc_mantic_lotes_detalles.id_articulo,
   tc_mantic_notas_entradas.consecutivo,
   tc_mantic_proveedores.razon_social as proveedor,
   tc_mantic_articulos_codigos.codigo,
   tc_mantic_articulos.nombre as articulo,
   tc_mantic_lotes_detalles.cantidad,
   tc_mantic_lotes_detalles.saldo,
+  tc_mantic_lotes_detalles.cantidad as original,
+  tc_mantic_lotes_detalles.id_usuario,
   tc_mantic_notas_entradas.registro
 from
   tc_mantic_lotes_detalles

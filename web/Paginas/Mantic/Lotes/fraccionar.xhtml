@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Fraccionar el lote"/>
+	<ui:param name="titulo" value="Fraccionar y generar un nuevo lote"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -24,6 +24,7 @@
       
       function execute() {
 				var ok= janal.execute();
+  			janal.desbloquear();
 				if(ok)  
 				  ok= confirm('\u00BF Esta seguro de generar un NUEVO lote por la cantidad de [ '+ $('#contenedorGrupos\\:importe').val()+ ' ] ?');
 				return ok;
@@ -35,12 +36,14 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<p:hotkey bind="esc" handler="if($('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon')){$('#primefacesmessagedlg > div.ui-dialog-titlebar > a.ui-dialog-titlebar-icon').click();}"/>
+    <p:focus context="contenedorGrupos:nombre"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">
-              <p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-15, janal-wid-10, janal-wid-50, janal-wid-10">  
+              <p:inputText value="#{manticLotesFraccionar.lote.nombre}" styleClass="janal-color-blue janal-column-center janal-wid-100-txt" readonly="true"/> 
+              <p:panelGrid columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-30, janal-wid-10, janal-wid-30, janal-wid-10, janal-wid-10">  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="empresa" value="Empresa:"/>
                   <p:inputText id="empresa" value="#{manticLotesFraccionar.lote.empresa}" styleClass="janal-wid-100-txt" readonly="true"/> 
@@ -61,10 +64,15 @@
                   <p:outputLabel value="Cantidad:"/>
                   <p:inputText value="#{manticLotesFraccionar.lote.cantidad}" styleClass="janal-column-right janal-wid-100-txt" readonly="true"/> 
                 </p:panelGrid>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
+                  <p:outputLabel value="Actualizado:"/>
+                  <p:inputText value="#{manticLotesFraccionar.attrs.nuevo}" styleClass="janal-color-blue janal-column-right janal-wid-100-txt total" readonly="true"/> 
+                </p:panelGrid>
               </p:panelGrid>
               <p:outputLabel for="nombre" value="Nombre:"/>
               <p:inputText id="nombre" value="#{manticLotesFraccionar.orden.nombre}" styleClass="janal-wid-100-txt"/> 
-              <p:dataTable id="productos" var="row" value="#{manticLotesFraccionar.productos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idNotaCalidad}" styleClass="productos" rowIndexVar="index">
+              <p:spacer height="5px"/>
+              <p:dataTable id="productos" var="row" value="#{manticLotesFraccionar.orden.partidas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idLoteDetalle}" styleClass="productos" rowIndexVar="index">
 								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
@@ -80,7 +88,7 @@
 								<p:column styleClass="MarAuto Responsive articulos" headerText="Producto">
 									<h:outputText value="#{row.articulo}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-10">
+								<p:column styleClass="MarAuto Responsive janal-wid-8">
                   <f:facet name="header">
                     <p:outputLabel for="cantidad" value="Cantidad"/>
                   </f:facet>
@@ -88,13 +96,16 @@
                     <p:ajax event="change" listener="#{manticLotesFraccionar.doUpdateCantidad(row)}" process="@this" update="@(.total)"/>
                   </p:inputNumber>  
 								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8" headerText="Original">
+									<h:outputText value="#{row.original}"/>
+								</p:column>   
                 <f:facet name="footer">
-                  <p:outputLabel style="float: left;" value="Total [#{manticLotesFraccionar.productos.size()}] registros"/>
+                  <p:outputLabel style="float: left;" value="Total [#{manticLotesFraccionar.orden.partidas.size()}] registros"/>
                   <p:outputLabel for="contenedorGrupos:importe" styleClass="total" value="#{manticLotesFraccionar.attrs.total}" escape="false"/>
                 </f:facet>
 							</p:dataTable>
               <p:inputText id="articulos" value="#{manticLotesFraccionar.attrs.articulos}" styleClass="janal-display-none"/>
-              <p:inputText id="importe" value="#{manticLotesFraccionar.attrs.importe}" styleClass="janal-display-none total"/>
+              <p:inputText id="importe" value="#{manticLotesFraccionar.attrs.importe}" converter="javax.faces.Double" styleClass="janal-display-none total"/>
 						</p:tab>
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticLotesFraccionar.orden.observaciones}"/>
@@ -106,11 +117,11 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesFraccionar.doAceptar}" onclick="janal.bloquear();" onstart="return execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesFraccionar.productos.size() eq 0}"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesFraccionar.doAceptar}" onclick="janal.bloquear();" onstart="return execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesFraccionar.orden.partidas.size() eq 0}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticLotesFraccionar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesFraccionar.doAceptar}" onclick="janal.bloquear()" onstart="return execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesFraccionar.productos.size() eq 0}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesFraccionar.doAceptar}" onclick="janal.bloquear()" onstart="return execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesFraccionar.orden.partidas.size() eq 0}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticLotesFraccionar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

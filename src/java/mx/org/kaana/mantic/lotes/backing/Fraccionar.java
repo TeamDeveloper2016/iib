@@ -23,6 +23,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.lotes.beans.Lote;
 import mx.org.kaana.mantic.lotes.beans.Partida;
@@ -85,8 +86,6 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lote= (Entity)DaoFactory.getInstance().toEntity("VistaLotesDto", "lazy", params);
       if(!Objects.equals(this.lote, null)) {
-        UIBackingUtilities.toFormatEntity(this.lote, columns);
-        this.doLoadPartidas();
         this.orden= new Lote(
           this.lote.toDouble("cantidad"), // Double original, 
           2L, // Long idLoteTipo, 
@@ -103,6 +102,11 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
           this.lote.toLong("idArticulo"), // Long idArticulo
           1L // Long idLoteEstatus     
         );
+        this.orden.setIkEmpresa(new UISelectEntity(this.lote.toLong("idEmpresa")));
+        this.orden.setIkAlmacen(new UISelectEntity(this.lote.toLong("idAlmacen")));
+        this.orden.setIkArticulo(new UISelectEntity(this.lote.toLong("idArticulo")));
+        this.doLoadPartidas();
+        UIBackingUtilities.toFormatEntity(this.lote, columns);
       } // if  
       else
         this.orden= new Lote(-1L);
@@ -143,6 +147,8 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
     String regresar        = null;
     Transaccion transaccion= null;
     try {			
+      this.orden.setCantidad((Double)this.attrs.get("importe"));
+      this.orden.setOriginal((Double)this.attrs.get("importe"));
 			transaccion = new Transaccion((Long)this.attrs.get("idLote"), this.orden);
 			if (transaccion.ejecutar(this.accion)) {
         this.attrs.put("idLote", this.orden.getIdLote());
@@ -179,6 +185,7 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
     } // for
     this.attrs.put("total", "Total: <strong>"+ suma+ "</strong>");
     this.attrs.put("importe", suma);
+    this.attrs.put("nuevo", this.lote.toDouble("kilos")- suma);
   }
   
 }
