@@ -213,7 +213,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       throw e;
     } // catch	
     finally {
-      Methods.clean(params);
+     Methods.clean(params);
     } // finally
     return regresar;
   }

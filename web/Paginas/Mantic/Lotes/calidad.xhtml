@@ -84,11 +84,11 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesCalidad.doAceptar}" onclick="janal.bloquear();" onstart="return janal.execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesCalidad.porcentajes.size() eq 0}"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesCalidad.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesCalidad.porcentajes.size() eq 0}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticLotesCalidad.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesCalidad.doAceptar}" onclick="janal.bloquear()" onstart="return janal.execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesCalidad.porcentajes.size() eq 0}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesCalidad.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesCalidad.porcentajes.size() eq 0}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticLotesCalidad.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

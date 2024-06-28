@@ -10,6 +10,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -45,16 +46,18 @@ import org.primefaces.event.TabChangeEvent;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticLotesAccion")
+@Named(value= "manticLotesEspecial")
 @ViewScoped
-public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
+public class Especial extends IBaseFilter implements IBaseStorage, Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Accion.class);
+	private static final Log LOG              = LogFactory.getLog(Especial.class);
   private static final long serialVersionUID= 317393488565639367L;
 	
+  private Long idPivote;
 	protected AdminLotes orden;	
 	protected EAccion accion;	
   private FormatLazyModel lazyMerma;
+  private List<UISelectEntity> articulos;
 
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
@@ -79,19 +82,27 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
   public String getPorcentaje() {
     Double total= 0D;
 		try {
-			for(Entity item: (List<Entity>)this.lazyMerma.getWrappedData())
-				total+= Numero.getDouble(Cadena.eliminar(item.toString("porcentaje"), ','), 0D);
+      if(!Objects.equals(this.lazyMerma, null))
+        for(Entity item: (List<Entity>)this.lazyMerma.getWrappedData())
+          total+= Numero.getDouble(Cadena.eliminar(item.toString("porcentaje"), ','), 0D);
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);			
 		} // catch		
     return "Total: <strong>"+ Numero.formatear(Numero.MILES_CON_DECIMALES, total)+ "%</strong>";  
   }
-  
+
 	@PostConstruct
   @Override
   protected void init() {		
     try {
+      this.articulos= new ArrayList<>();
+      UISelectEntity articulo= new UISelectEntity(-1L);
+      articulo.put("codigo", new Value("codigo", "SELECCIONE"));
+      articulo.put("articulo", new Value("articulo", ""));
+      articulo.put("idArticulo", new Value("idArticulo", -1L));
+      this.articulos.add(articulo);
+      this.attrs.put("articulos", articulos);      
       this.attrs.put("idArticuloTipo", 4L);      
 			if(JsfBase.getFlashAttribute("accion")== null)
 			  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
@@ -99,6 +110,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
       this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? -1L: JsfBase.getFlashAttribute("idLote"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.doLoad();
+      this.idPivote= -1L;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -113,6 +125,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
       switch (this.accion) {
         case AGREGAR:											
           this.orden= new AdminLotes();
+          this.orden.getLote().setIdLoteTipo(3L);
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -133,13 +146,12 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
     String regresar        = null;
     try {			
       if(this.checkLote()) {
-        this.orden.getLote().setIdTipoClase(null);
         transaccion = new Transaccion(this.orden.getLote());
-        if (false && transaccion.ejecutar(this.accion)) {
+        if (transaccion.ejecutar(this.accion)) {
           regresar= this.doCancelar();
         } // if
         else 
-          JsfBase.addMessage("Ocurrió un error al registrar el lote", ETipoMensaje.ERROR);
+          JsfBase.addMessage("Ocurrió un error al registrar el lote", ETipoMensaje.ERROR);      			
       } // if  
       else
         JsfBase.addMessage("No se ha agregado un producto al lote", ETipoMensaje.ERROR);      			
@@ -231,7 +243,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
 			} // if
       else
 			  this.orden.getLote().setIkAlmacen(new UISelectEntity(-1L));
-      this.doUpdateArticulos();
+      this.doUpdateClases();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -243,34 +255,28 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
     } // finally
   }
   
-	public void doUpdateArticulos() {
-    List<Columna> columns         = new ArrayList<>();    
-    Map<String, Object> params    = new HashMap<>();
-		List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+	public void doUpdateClases() {
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
     try {
-      int index= almacenes.indexOf(this.orden.getLote().getIkAlmacen());
-      if(index>= 0) 
-        this.orden.getLote().setIkAlmacen(almacenes.get(index));
-  		params.put("idLote", this.orden.getLote().getIdLote());
-      params.put("idAlmacen", this.orden.getLote().getIdAlmacen()); 
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("articulo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
- 			List<UISelectEntity> articulos= UIEntity.seleccione("VistaLotesDto", "partidas", params, columns, "codigo");
-      this.attrs.put("articulos", articulos);
-			if(!Objects.equals(articulos, null) && !articulos.isEmpty()) {
+ 			List<UISelectEntity> clases= UIEntity.seleccione("TcManticTiposClasesDto", params, columns, "clave");
+      this.attrs.put("clases", clases);
+			if(!Objects.equals(clases, null) && !clases.isEmpty()) {
 				if(this.accion.equals(EAccion.AGREGAR))
-				  this.orden.getLote().setIkArticulo(articulos.get(0));
+				  this.orden.getLote().setIkTipoClase(clases.get(0));
 				else {
-					index= articulos.indexOf(new UISelectEntity(this.orden.getLote().getIdArticulo()));
+					int index= clases.indexOf(new UISelectEntity(this.orden.getLote().getIdTipoClase()));
 					if(index>= 0)
-					  this.orden.getLote().setIkArticulo(articulos.get(index));
+					  this.orden.getLote().setIkTipoClase(clases.get(index));
 					else
-  				  this.orden.getLote().setIkArticulo(articulos.get(0));
+  				  this.orden.getLote().setIkTipoClase(clases.get(0));
 				} // else	
       } // if  
       else 
- 			  this.orden.getLote().setIkArticulo(new UISelectEntity(-1L));
+ 			  this.orden.getLote().setIkTipoClase(new UISelectEntity(-1L));
       this.doUpdateProductos();
     } // try
     catch (Exception e) {
@@ -284,20 +290,28 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
 	}
   
 	public void doUpdateProductos() {
-    List<Columna> columns     = new ArrayList<>();    
-    Map<String, Object> params= new HashMap<>();
+    List<Columna> columns      = new ArrayList<>();    
+    Map<String, Object> params = new HashMap<>();
+		List<UISelectEntity> clases= (List<UISelectEntity>)this.attrs.get("clases");
     try {
-  		params.put("sortOrder", "order by tc_mantic_notas_detalles.id_nota_detalle");
-  		params.put("idLote", this.orden.getLote().getIdLote());
-  		params.put("idArticulo", this.orden.getLote().getIdArticulo());
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("articulo", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("kilos", EFormatoDinamicos.MILES_CON_DECIMALES));
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.lazyModel = new FormatCustomLazy("VistaLotesDto", "productos", params, columns);
+      int index= clases.indexOf(this.orden.getLote().getIkTipoClase());
+      if(index>= 0) {
+        this.orden.getLote().setIkTipoClase(clases.get(index));
+        params.put("sortOrder", "order by tc_mantic_notas_detalles.id_nota_detalle");
+        params.put("idLote", this.orden.getLote().getIdLote());
+        params.put("clase", this.orden.getLote().getIkTipoClase().toString("clave"));
+        columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("articulo", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("kilos", EFormatoDinamicos.MILES_CON_DECIMALES));
+        params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+        if(!Objects.equals(this.orden.getLote().getIdTipoClase(), -1L))
+          this.lazyModel= new FormatCustomLazy("VistaLotesDto", "clase", params, columns);
+        if(!Objects.equals(this.orden.getLote().getIdTipoClase(), this.orden.getLote().getItTipoClase())) 
+          this.toCheckPartidas();
+      } // if  
+      else 
+        this.lazyModel= null;
       UIBackingUtilities.resetDataTable();
-      if(!Objects.equals(this.orden.getLote().getIdArticulo(), this.orden.getLote().getItArticulo())) 
-        this.toCheckPartidas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -321,9 +335,9 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
       if(Objects.equals(this.orden.getLote().getNombre(), null) && this.orden.getLote().getPartidas().size()> 0)
         if (transaccion.ejecutar(this.accion)) {
           UIBackingUtilities.execute("jsArticulos.back('guard\\u00F3 el lote', '"+ this.orden.getLote().getConsecutivo()+ "');");
-				this.accion= EAccion.MODIFICAR;
-				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
-			} // if	
+          this.accion= EAccion.MODIFICAR;
+          this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
+        } // if	
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -349,7 +363,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
       row.toDouble("cantidad"), // Double cantidad, 
       row.toDouble("cantidad"), // Double saldo, 
       row.toLong("idArticulo"), // Long idArticulo            
-      null, // Long idTipoClase
+      this.orden.getLote().getIdTipoClase(), // Long idTipoClase
       0D // Double original
     );
     partida.setConsecutivo(row.toString("consecutivo"));
@@ -383,23 +397,53 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
   }
   
   public void doRecover(Partida row) {
-    if(Objects.equals(row.getIdArticulo(), this.orden.getLote().getIdArticulo())) {
+    if(Objects.equals(row.getIdTipoClase(), this.orden.getLote().getIdTipoClase())) {
       if(Objects.equals(ESql.DELETE, row.getSql()))
         row.setSql(ESql.SELECT);
       this.toSumPartidas("promedios");
     } // if  
     else
-      JsfBase.addMessage("No se puede recuperar porque no coincide con el producto", ETipoMensaje.ERROR);      			 
+      JsfBase.addMessage("No se puede recuperar porque no coincide con la clase", ETipoMensaje.ERROR);      			 
   }
   
   private void toSumPartidas(String idXml) {
-    Double sum= 0D;
-    for (Partida item: this.orden.getLote().getPartidas()) {
-      if(!Objects.equals(ESql.DELETE, item.getSql()))
-        sum+= item.getCantidad();
-    }
-    this.attrs.put("total", "Suma de kilos: <strong>"+ Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, sum)+ "</strong>");
-    this.toLoadMermas(idXml);
+    Long idArticulo= -1L;
+    Double cantidad= 0D;
+    Double sum     = 0D;
+    try {
+      this.articulos.clear();
+      UISelectEntity articulo= new UISelectEntity(-1L);
+      articulo.put("codigo", new Value("codigo", "SELECCIONE"));
+      articulo.put("articulo", new Value("articulo", ""));
+      articulo.put("idArticulo", new Value("idArticulo", -1L));
+      this.articulos.add(articulo);
+      for (Partida item: this.orden.getLote().getPartidas()) {
+        if(!Objects.equals(ESql.DELETE, item.getSql())) {
+          sum+= item.getCantidad();
+          
+          articulo= new UISelectEntity(item.getIdArticulo());
+          articulo.put("codigo", new Value("codigo", item.getCodigo()));
+          articulo.put("articulo", new Value("articulo", item.getArticulo()));
+          articulo.put("idArticulo", new Value("idArticulo", item.getIdArticulo()));
+          int index= this.articulos.indexOf(articulo);
+          if(index< 0)
+            this.articulos.add(articulo);
+        } // if  
+        if(cantidad< item.getCantidad()) {
+          idArticulo= item.getIdArticulo();
+          cantidad  = item.getCantidad();
+          this.idPivote= item.getIdNotaDetalle();
+        } // if  
+      } // if
+      this.attrs.put("total", "Suma de kilos: <strong>"+ Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, sum)+ "</strong>");
+      this.orden.getLote().setIkArticulo(new UISelectEntity(idArticulo));
+      this.toLoadMermas(idXml);
+      this.attrs.put("articulos", this.articulos);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
   }
  
   private void toLoadMermas(String idXml) {
@@ -432,12 +476,17 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
 		} // finally
   }
  
+	public String doIdentificar(Partida row) {
+		return Objects.equals(row.getIdNotaDetalle(), this.idPivote) ? "janal-tr-yellow": "";
+	} 
+
   private void toCheckPartidas() {
     try {      
       int index= 0;
+      int count= 0;
       while (index<this.orden.getLote().getPartidas().size()) {
         Partida item= this.orden.getLote().getPartidas().get(index);
-        if(!Objects.equals(item.getIdArticulo(), this.orden.getLote().getIdArticulo())) {
+        if(!Objects.equals(item.getIdTipoClase(), this.orden.getLote().getIdTipoClase())) {
           if(Objects.equals(item.getSql(), ESql.INSERT))
             this.orden.getLote().getPartidas().remove(index);
           else {
@@ -449,16 +498,22 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
           if(Objects.equals(item.getSql(), ESql.DELETE))
             item.setSql(ESql.UPDATE);
           index++;
+          count++;
         } // else  
       } // while
-      this.orden.getLote().setItArticulo(this.orden.getLote().getIdArticulo());
+      this.orden.getLote().setItTipoClase(this.orden.getLote().getIdTipoClase());
+      if(count<= 0) {
+        this.idPivote = -1L;
+        this.lazyMerma= null;
+        this.attrs.put("total", "Suma de kilos: <strong>0</strong>");
+     } //   
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
   } 
-
+ 
   private Boolean checkLote() {
     int regresar= 0;
     try {      
@@ -473,7 +528,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
     } // catch	
     return regresar> 0;
   }
-
+  
 	@Override
 	protected void finalize() throws Throwable {
 		try {
@@ -483,5 +538,5 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
 			super.finalize();
 		} // finally	
 	}
-  
+ 
 }

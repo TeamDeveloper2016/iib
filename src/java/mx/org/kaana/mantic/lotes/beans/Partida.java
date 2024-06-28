@@ -41,8 +41,8 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
     this.setIdArticulo(idArticulo);
   }
 
-  public Partida(Long idUsuario, Long idNotaDetalle, Long idLote, Long idLoteDetalle, Double cantidad, Double saldo, Long idArticulo, Double original) {
-    super(idUsuario, idNotaDetalle, idLote, idLoteDetalle, cantidad, saldo, idArticulo);
+  public Partida(Long idUsuario, Long idNotaDetalle, Long idLote, Long idLoteDetalle, Double cantidad, Double saldo, Long idArticulo, Long idTipoClase, Double original) {
+    super(idUsuario, idNotaDetalle, idLote, idLoteDetalle, cantidad, saldo, idArticulo, idTipoClase);
     this.original= original;
     this.sql= ESql.INSERT;
   }

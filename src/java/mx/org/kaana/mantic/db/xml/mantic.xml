@@ -10,11 +10,14 @@
     <unit id="TcManticTiposClasesDto">
       <select id="row">
 select      
-  *
+  tc_mantic_tipos_clases.id_tipo_clase as id_key,
+  tc_mantic_tipos_clases.*
 from      
   tc_mantic_tipos_clases
 where 
   {condicion} 
+order by
+  tc_mantic_tipos_clases.id_tipo_clase        
       </select>
       <select id="identically">
 select      
@@ -45,6 +48,8 @@ where
       <select id="igual">
 select      
   tc_mantic_lotes.id_lote as id_key,
+  tc_mantic_lotes.id_articulo as it_articulo,
+  tc_mantic_lotes.id_tipo_clase as it_tipo_clase,
   tc_mantic_lotes.*
 from      
   tc_mantic_lotes

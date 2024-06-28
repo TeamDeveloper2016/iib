@@ -7,8 +7,8 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticLotesAccion.attrs.nombreAccion} una lote"/>
-  <ui:param name="janalBackingPage" value="#{manticLotesAccion}"/>
+	<ui:param name="titulo" value="#{manticLotesEspecial.attrs.nombreAccion} una lote especial"/>
+  <ui:param name="janalBackingPage" value="#{manticLotesEspecial}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
@@ -17,6 +17,7 @@
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idEmpresa'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idTipoClase'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idArticulo'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nombre'         : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
@@ -25,7 +26,7 @@
 			};
 			
     	$(document).ready(function() {
-				setTimeout("janal.readingMode('#{manticLotesAccion.attrs.nombreAccion}')", 500);
+				setTimeout("janal.readingMode('#{manticLotesEspecial.attrs.nombreAccion}')", 500);
 				janal.decimals= 4;
       });
 		</script>   
@@ -39,16 +40,16 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticLotesAccion.doTabChange}" process="@this" update="@(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
+            <p:ajax event="tabChange" listener="#{manticLotesEspecial.doTabChange}" process="@this" update="@(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">		
-								<p:outputLabel for="consecutivo" value="No. nota entrada:" style="display: #{manticLotesAccion.agregar}"/>
-								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticLotesAccion.orden.lote.consecutivo}" readonly="true" style="display: #{manticLotesAccion.agregar}"/>
-								<p:separator style="display: #{manticLotesAccion.agregar}"/>
+								<p:outputLabel for="consecutivo" value="No. nota entrada:" style="display: #{manticLotesEspecial.agregar}"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticLotesEspecial.orden.lote.consecutivo}" readonly="true" style="display: #{manticLotesEspecial.agregar}"/>
+								<p:separator style="display: #{manticLotesEspecial.agregar}"/>
                 <p:outputLabel for="idEmpresa" value="Sucursal:"/>
-                <p:selectOneMenu id="idEmpresa" value="#{manticLotesAccion.orden.lote.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticLotesAccion.doUpdateAlmacenes}" update="idAlmacen idArticulo tabla" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                  <f:selectItems value="#{manticLotesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <p:selectOneMenu id="idEmpresa" value="#{manticLotesEspecial.orden.lote.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticLotesEspecial.doUpdateAlmacenes}" update="idAlmacen idTipoClase tabla" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{manticLotesEspecial.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>
                   </p:column>   
@@ -57,9 +58,9 @@
                   </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
-								<p:selectOneMenu id="idAlmacen" value="#{manticLotesAccion.orden.lote.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticLotesAccion.doUpdateArticulos}" process="@this" update="idArticulo tabla @(.involucrados)"/>
-									<f:selectItems value="#{manticLotesAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
+								<p:selectOneMenu id="idAlmacen" value="#{manticLotesEspecial.orden.lote.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticLotesEspecial.doUpdateClases}" process="@this" update="idTipoClase tabla @(.involucrados)"/>
+									<f:selectItems value="#{manticLotesEspecial.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -68,11 +69,21 @@
 									</p:column>   
 								</p:selectOneMenu>
                 <p:outputLabel for="nombre" value="Nombre:"/>
-                <p:inputText id="nombre" value="#{manticLotesAccion.orden.lote.nombre}" styleClass="janal-wid-100-txt"/> 
-                <p:outputLabel for="idArticulo" value="Producto(s):"/>
-                <p:selectOneMenu id="idArticulo" value="#{manticLotesAccion.orden.lote.ikArticulo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticLotesAccion.doUpdateProductos}" process="@this" update="idArticulo tabla partidas tablaMerma @(.involucrados)"/>
-                  <f:selectItems value="#{manticLotesAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.articulo or element.articulo eq ''? '': '|'}#{element.articulo}"/>
+                <p:inputText id="nombre" value="#{manticLotesEspecial.orden.lote.nombre}" styleClass="janal-wid-100-txt"/> 
+                <p:outputLabel for="idTipoClase" value="Clase(s):"/>
+                <p:selectOneMenu id="idTipoClase" value="#{manticLotesEspecial.orden.lote.ikTipoClase}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticLotesEspecial.doUpdateProductos}" process="@this" update="idTipoClase tabla partidas tablaMerma @(.involucrados)"/>
+                  <f:selectItems value="#{manticLotesEspecial.attrs.clases}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.descripcion or element.descripcion eq ''? '': '|'}#{element.descripcion}"/>
+                  <p:column headerText="Clave">
+                    <h:outputText value="#{item.clave}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.descripcion}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="idArticulo" value="Producto:"/>
+                <p:selectOneMenu id="idArticulo" value="#{manticLotesEspecial.orden.lote.ikArticulo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt recalculo" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{manticLotesEspecial.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.articulo or element.articulo eq ''? '': '|'}#{element.articulo}"/>
                   <p:column headerText="Código">
                     <h:outputText value="#{item.codigo}"/>
                   </p:column>   
@@ -82,7 +93,7 @@
                 </p:selectOneMenu>
               </p:panelGrid>  
               <p:spacer height="5px"/>
-              <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticLotesAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticLotesAccion.attrs.seleccionado}" selectionMode="single" paginator="#{manticLotesAccion.lazyModel.rowCount gt manticLotesAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true" styleClass="involucrados" paginatorPosition="bottom" rowStyleClass="#{manticLotesAccion.doColor(row)}">
+              <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticLotesEspecial.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticLotesEspecial.attrs.seleccionado}" selectionMode="single" paginator="#{manticLotesEspecial.lazyModel.rowCount gt manticLotesEspecial.lazyModel.pageSize}" rowIndexVar="index" reflow="true" styleClass="involucrados" paginatorPosition="bottom" rowStyleClass="#{manticLotesEspecial.doColor(row)}">
                 <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
                 <f:facet name="header">
                   <div style="float: left">
@@ -118,14 +129,14 @@
 									<h:outputText value="#{row.kilos}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
-                  <p:commandButton icon="fa fa-plus" title="Agregar" process="@this" update="tabla contenedorGrupos:partidas contenedorGrupos:tablaMerma @(.recalculo)" actionListener="#{manticLotesAccion.doAdd(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton icon="fa fa-plus" title="Agregar" process="@this" update="tabla contenedorGrupos:idArticulo contenedorGrupos:partidas contenedorGrupos:tablaMerma @(.recalculo)" actionListener="#{manticLotesEspecial.doAdd(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
 								</p:column>
                 <f:facet name="footer">
-                  <p:outputLabel value="Total [#{manticLotesAccion.lazyModel== null? 0: manticLotesAccion.lazyModel.rowCount}] registros"/>
+                  <p:outputLabel value="Total [#{manticLotesEspecial.lazyModel== null? 0: manticLotesEspecial.lazyModel.rowCount}] registros"/>
                 </f:facet>
 							</p:dataTable>              
               <p:spacer height="5px"/>
-              <p:dataTable id="partidas" var="row" value="#{manticLotesAccion.orden.lote.partidas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" styleClass="recalculo" rowIndexVar="index" rowKey="#{row.idLoteDetalle}">
+              <p:dataTable id="partidas" var="row" value="#{manticLotesEspecial.orden.lote.partidas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" styleClass="recalculo" rowIndexVar="index" rowKey="#{row.idLoteDetalle}" rowStyleClass="#{manticLotesEspecial.doIdentificar(row)}">
                 <f:facet name="header">
                   <div style="float: left">
                     <p:outputLabel value="Productos asignados" styleClass="janal-text-white"/>
@@ -160,12 +171,12 @@
 									<h:outputText value="#{row.cantidad}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
-                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="partidas contenedorGrupos:tablaMerma contenedorGrupos:tabla @(.recalculo)" actionListener="#{manticLotesAccion.doDelete(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql ne 'DELETE'}"/>
-                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="partidas contenedorGrupos:tablaMerma contenedorGrupos:tabla @(.recalculo)" actionListener="#{manticLotesAccion.doRecover(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql eq 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="partidas contenedorGrupos:idArticulo contenedorGrupos:tablaMerma contenedorGrupos:tabla @(.recalculo)" actionListener="#{manticLotesEspecial.doDelete(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql ne 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="partidas contenedorGrupos:idArticulo contenedorGrupos:tablaMerma contenedorGrupos:tabla @(.recalculo)" actionListener="#{manticLotesEspecial.doRecover(row)}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{row.sql eq 'DELETE'}"/>
 								</p:column>
                 <f:facet name="footer">
-                  <p:outputLabel styleClass="general" style="float: left;" value="#{manticLotesAccion.attrs.total}" escape="false"/>
-                  <p:outputLabel value="Total [#{manticLotesAccion.orden.lote.partidas.size()}] registros"/>
+                  <p:outputLabel styleClass="general" style="float: left;" value="#{manticLotesEspecial.attrs.total}" escape="false"/>
+                  <p:outputLabel value="Total [#{manticLotesEspecial.orden.lote.partidas.size()}] registros"/>
                 </f:facet>
 							</p:dataTable>         
               <h:commandLink id="dataPdfPartidas">                    
@@ -175,10 +186,10 @@
                 <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="partidas" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
               </h:commandLink>	
               <p:spacer height="5px"/>
-              <p:dataTable lazy="true" id="tablaMerma" widgetVar="kajoolTableMerma" var="row" value="#{manticLotesAccion.lazyMerma}" styleClass="involucrado janal-wid-100 #{manticLotesAccion.lazyMerma eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticLotesAccion.attrs.merma}" selectionMode="single" paginator="#{manticLotesAccion.lazyMerma.rowCount gt manticLotesAccion.lazyMerma.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+              <p:dataTable lazy="true" id="tablaMerma" widgetVar="kajoolTableMerma" var="row" value="#{manticLotesEspecial.lazyMerma}" styleClass="involucrado janal-wid-100 #{manticLotesEspecial.lazyMerma eq null ? 'janal-display-none': ''}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticLotesEspecial.attrs.merma}" selectionMode="single" paginator="#{manticLotesEspecial.lazyMerma.rowCount gt manticLotesEspecial.lazyMerma.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
                 <f:facet name="header">
                   <div style="float: left">
-                    <p:outputLabel value="Porcentajes de los productos: #{manticLotesAccion.orden.lote.ikArticulo.nombre}" styleClass="merma janal-text-white"/>
+                    <p:outputLabel value="Porcentajes de los productos: #{manticLotesEspecial.orden.lote.ikArticulo.nombre}" styleClass="merma janal-text-white"/>
                   </div>  
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
@@ -222,8 +233,8 @@
                   <h:outputText value="#{row['registro']}"/>
                 </p:column>					
                 <f:facet name="footer">
-                  <p:outputLabel styleClass="involucrados" style="float: left;" value="#{manticLotesAccion.porcentaje}" escape="false"/>
-                  <p:outputLabel value="Total [#{manticLotesAccion.lazyMerma== null? 0: manticLotesAccion.lazyMerma.rowCount}] registros"/>
+                  <p:outputLabel styleClass="involucrados" style="float: left;" value="#{manticLotesEspecial.porcentaje}" escape="false"/>
+                  <p:outputLabel value="Total [#{manticLotesEspecial.lazyMerma== null? 0: manticLotesEspecial.lazyMerma.rowCount}] registros"/>
                 </f:facet>
               </p:dataTable>
               <h:commandLink id="dataPdfMerma">                    
@@ -232,11 +243,11 @@
               <h:commandLink id="dataXlsMerma">
                 <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tablaMerma" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
               </h:commandLink>	             
-              <p:inputText id="productos" value="#{manticLotesAccion.attrs.partidas}" styleClass="janal-display-none recalculo"/>
-              <p:inputText id="filas" value="#{manticLotesAccion.lazyMerma.rowCount}" styleClass="janal-display-none recalculo"/>
+              <p:inputText id="productos" value="#{manticLotesEspecial.attrs.partidas}" styleClass="janal-display-none recalculo"/>
+              <p:inputText id="filas" value="#{manticLotesEspecial.lazyMerma.rowCount}" styleClass="janal-display-none recalculo"/>
 						</p:tab>						            						            																																																
 						<p:tab title="Observaciones">
-							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticLotesAccion.orden.lote.observaciones}"/>
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticLotesEspecial.orden.lote.observaciones}"/>
 						</p:tab>
 					</p:tabView>
 				</div>
@@ -245,12 +256,12 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" styleClass="recalculo" disabled="#{manticLotesAccion.lazyMerma== null or manticLotesAccion.lazyMerma.rowCount eq 0}"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticLotesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesEspecial.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" styleClass="recalculo" disabled="#{manticLotesEspecial.lazyMerma== null or manticLotesEspecial.lazyMerma.rowCount eq 0}"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticLotesEspecial.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" styleClass="recalculo" disabled="#{manticLotesAccion.lazyMerma== null or manticLotesAccion.lazyMerma.rowCount eq 0}"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticLotesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesEspecial.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" styleClass="recalculo" disabled="#{manticLotesEspecial.lazyMerma== null or manticLotesEspecial.lazyMerma.rowCount eq 0}"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticLotesEspecial.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
 </ui:composition>

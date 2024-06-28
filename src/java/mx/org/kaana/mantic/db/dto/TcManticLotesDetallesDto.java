@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -50,6 +44,8 @@ public class TcManticLotesDetallesDto implements IBaseDto, Serializable {
   private Double saldo;
   @Column (name="id_articulo")
   private Long idArticulo;
+  @Column (name="id_tipo_clase")
+  private Long idTipoClase;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -58,11 +54,11 @@ public class TcManticLotesDetallesDto implements IBaseDto, Serializable {
   }
 
   public TcManticLotesDetallesDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticLotesDetallesDto(Long idUsuario, Long idNotaDetalle, Long idLote, Long idLoteDetalle, Double cantidad, Double saldo, Long idArticulo) {
+  public TcManticLotesDetallesDto(Long idUsuario, Long idNotaDetalle, Long idLote, Long idLoteDetalle, Double cantidad, Double saldo, Long idArticulo, Long idTipoClase) {
     setIdUsuario(idUsuario);
     setIdNotaDetalle(idNotaDetalle);
     setIdLote(idLote);
@@ -70,6 +66,7 @@ public class TcManticLotesDetallesDto implements IBaseDto, Serializable {
     setCantidad(cantidad);
     setSaldo(saldo);
     setIdArticulo(idArticulo);
+    setIdTipoClase(idTipoClase);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -129,6 +126,14 @@ public class TcManticLotesDetallesDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
+  public Long getIdTipoClase() {
+    return idTipoClase;
+  }
+
+  public void setIdTipoClase(Long idTipoClase) {
+    this.idTipoClase = idTipoClase;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -166,6 +171,8 @@ public class TcManticLotesDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoClase());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -181,14 +188,15 @@ public class TcManticLotesDetallesDto implements IBaseDto, Serializable {
 		regresar.put("cantidad", getCantidad());
 		regresar.put("saldo", getSaldo());
 		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("idTipoClase", getIdTipoClase());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdUsuario(), getIdNotaDetalle(), getIdLote(), getIdLoteDetalle(), getCantidad(), getSaldo(), getIdArticulo(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdUsuario(), getIdNotaDetalle(), getIdLote(), getIdLoteDetalle(), getCantidad(), getSaldo(), getIdArticulo(), getIdTipoClase(), getRegistro()
     };
     return regresar;
   }

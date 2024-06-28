@@ -145,7 +145,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		String regresar= "/Paginas/Mantic/Lotes/especial";
 		try {
       JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
-			JsfBase.setFlashAttribute("idLoteTipo", 2L);		
+			JsfBase.setFlashAttribute("idLoteTipo", 3L);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
 			JsfBase.setFlashAttribute("idLote", -1L);
 		} // try

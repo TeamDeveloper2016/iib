@@ -44,9 +44,12 @@ public class AdminLotes implements Serializable {
         0D, // Double cantidad, 
         1L,// Long orden, 
         -1L, // Long idArticulo
-        1L // Long idLoteEstatus     
+        1L, // Long idLoteEstatus  
+        -1L // Long idTipoClase     
       )
     );
+    this.lote.setItArticulo(-1L);
+    this.lote.setItTipoClase(-1L);
   }
 
   public AdminLotes(Long idLote) throws Exception {

@@ -61,10 +61,10 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
-    // if(JsfBase.getFlashAttribute("accion")== null)
-    //  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+    if(JsfBase.getFlashAttribute("accion")== null)
+      UIBackingUtilities.execute("janal.isPostBack('cancelar')");
     this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.GENERAR: (EAccion)JsfBase.getFlashAttribute("accion");
-    this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? 1L: JsfBase.getFlashAttribute("idLote"));
+    this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? -1L: JsfBase.getFlashAttribute("idLote"));
     this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
     this.doLoad();    
   }
@@ -100,8 +100,11 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
           this.lote.toDouble("cantidad"), // Double cantidad, 
           1L,// Long orden, 
           this.lote.toLong("idArticulo"), // Long idArticulo
-          1L // Long idLoteEstatus     
+          1L, // Long idLoteEstatus     
+          this.lote.toLong("idTipoArticulo") // Long idTipoClase      
         );
+        this.orden.setItArticulo(this.lote.toLong("idArticulo"));
+        this.orden.setItTipoClase(this.lote.toLong("idTipoArticulo"));
         this.orden.setIkEmpresa(new UISelectEntity(this.lote.toLong("idEmpresa")));
         this.orden.setIkAlmacen(new UISelectEntity(this.lote.toLong("idAlmacen")));
         this.orden.setIkArticulo(new UISelectEntity(this.lote.toLong("idArticulo")));

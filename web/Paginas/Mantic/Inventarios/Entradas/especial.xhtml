@@ -658,13 +658,13 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticInventariosEntradasEspecial.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()" />
-			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasEspecial.doAplicar}" onclick="janal.bloquear();" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasEspecial.isAplicar}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticInventariosEntradasEspecial.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()" />
+			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasEspecial.doAplicar}" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasEspecial.isAplicar}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticInventariosEntradasEspecial.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasEspecial.doAceptar}" onclick="janal.bloquear();" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasEspecial.doAplicar}" onclick="janal.bloquear();" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasEspecial.isAplicar}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasEspecial.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasEspecial.doAplicar}" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasEspecial.isAplicar}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosEntradasEspecial.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
