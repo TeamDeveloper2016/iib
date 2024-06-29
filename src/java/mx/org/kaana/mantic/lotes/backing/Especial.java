@@ -9,7 +9,6 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -18,25 +17,20 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.lotes.reglas.Transaccion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.lotes.beans.Partida;
 import mx.org.kaana.mantic.lotes.reglas.AdminLotes;
-import org.primefaces.event.TabChangeEvent;
 
 /**
  *@company KAANA
@@ -48,49 +42,13 @@ import org.primefaces.event.TabChangeEvent;
 
 @Named(value= "manticLotesEspecial")
 @ViewScoped
-public class Especial extends IBaseFilter implements IBaseStorage, Serializable {
+public class Especial extends Accion implements IBaseStorage, Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Especial.class);
   private static final long serialVersionUID= 317393488565639367L;
 	
-  private Long idPivote;
-	protected AdminLotes orden;	
-	protected EAccion accion;	
-  private FormatLazyModel lazyMerma;
-  private List<UISelectEntity> articulos;
-
-	public String getAgregar() {
-		return this.accion.equals(EAccion.AGREGAR)? "none": "";
-	}
-
-	public String getConsultar() {
-		return this.accion.equals(EAccion.CONSULTAR)? "none": "";
-	}
-
-  public AdminLotes getOrden() {
-    return orden;
-  }
-
-  public void setOrden(AdminLotes orden) {
-    this.orden = orden;
-  }
-
-  public FormatLazyModel getLazyMerma() {
-    return lazyMerma;
-  }
-
-  public String getPorcentaje() {
-    Double total= 0D;
-		try {
-      if(!Objects.equals(this.lazyMerma, null))
-        for(Entity item: (List<Entity>)this.lazyMerma.getWrappedData())
-          total+= Numero.getDouble(Cadena.eliminar(item.toString("porcentaje"), ','), 0D);
-		} // try
-		catch (Exception e) {			
-			Error.mensaje(e);			
-		} // catch		
-    return "Total: <strong>"+ Numero.formatear(Numero.MILES_CON_DECIMALES, total)+ "%</strong>";  
-  }
+  protected Long idPivote;
+  protected List<UISelectEntity> articulos;
 
 	@PostConstruct
   @Override
@@ -103,13 +61,7 @@ public class Especial extends IBaseFilter implements IBaseStorage, Serializable 
       articulo.put("idArticulo", new Value("idArticulo", -1L));
       this.articulos.add(articulo);
       this.attrs.put("articulos", articulos);      
-      this.attrs.put("idArticuloTipo", 4L);      
-			if(JsfBase.getFlashAttribute("accion")== null)
-			  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? -1L: JsfBase.getFlashAttribute("idLote"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
-			this.doLoad();
+      super.init();
       this.idPivote= -1L;
     } // try
     catch (Exception e) {
@@ -141,6 +93,7 @@ public class Especial extends IBaseFilter implements IBaseStorage, Serializable 
     } // catch		
   } 
 
+  @Override
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
@@ -163,64 +116,6 @@ public class Especial extends IBaseFilter implements IBaseStorage, Serializable 
     return regresar;
   } // doAccion
 
-  public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idLote", this.orden.getLote().getIdLote());
-    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
-  } // doCancelar
-
-	private void toLoadCatalogos() {
-		List<Columna> columns     = new ArrayList<>();
-    Map<String, Object> params= new HashMap<>();
-    try {
-      this.toLoadEmpresas();
-      } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    } // finally
-	}
-    
-  private void toLoadEmpresas() {
-    List<Columna> columns     = new ArrayList<>();    
-    Map<String, Object> params= new HashMap<>();
-    try {      
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      if(JsfBase.isAdminEncuestaOrAdmin())
-			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      else
-			  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
- 			List<UISelectEntity> empresas= UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
-      this.attrs.put("empresas", empresas);
-			if(!Objects.equals(empresas, null) && !empresas.isEmpty()) {
-				if(Objects.equals(this.accion, EAccion.AGREGAR))
-				  this.orden.getLote().setIkEmpresa(empresas.get(0));
-				else {
-					int index= empresas.indexOf(new UISelectEntity(this.orden.getLote().getIdEmpresa()));
-					if(index>= 0)
-					  this.orden.getLote().setIkEmpresa(empresas.get(index));
-					else
-  				  this.orden.getLote().setIkEmpresa(empresas.get(0));
-				} // else	
-      } // if  
-      else 
- 			  this.orden.getLote().setIkEmpresa(new UISelectEntity(-1L));
-      this.doUpdateAlmacenes();
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-    finally {
-      Methods.clean(params);
-      Methods.clean(columns);
-    } // finally
-  }
-  
   public void doUpdateAlmacenes() {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
@@ -289,6 +184,7 @@ public class Especial extends IBaseFilter implements IBaseStorage, Serializable 
     } // finally
 	}
   
+  @Override
 	public void doUpdateProductos() {
     List<Columna> columns      = new ArrayList<>();    
     Map<String, Object> params = new HashMap<>();
@@ -299,6 +195,7 @@ public class Especial extends IBaseFilter implements IBaseStorage, Serializable 
         this.orden.getLote().setIkTipoClase(clases.get(index));
         params.put("sortOrder", "order by tc_mantic_notas_detalles.id_nota_detalle");
         params.put("idLote", this.orden.getLote().getIdLote());
+        params.put("idAlmacen", this.orden.getLote().getIkAlmacen().getKey());
         params.put("clase", this.orden.getLote().getIkTipoClase().toString("clave"));
         columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
         columns.add(new Columna("articulo", EFormatoDinamicos.MAYUSCULAS));
@@ -323,79 +220,7 @@ public class Especial extends IBaseFilter implements IBaseStorage, Serializable 
     } // finally
 	}
   
-	public void doTabChange(TabChangeEvent event) {
-		// if(event.getTab().getTitle().equals("Importar") && this.attrs.get("faltantes")== null)
-  }    
-  
   @Override
-  public void toSaveRecord() {
-    Transaccion transaccion= null;
-    try {			
-			transaccion = new Transaccion(this.orden.getLote());
-      if(Objects.equals(this.orden.getLote().getNombre(), null) && this.orden.getLote().getPartidas().size()> 0)
-        if (transaccion.ejecutar(this.accion)) {
-          UIBackingUtilities.execute("jsArticulos.back('guard\\u00F3 el lote', '"+ this.orden.getLote().getConsecutivo()+ "');");
-          this.accion= EAccion.MODIFICAR;
-          this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
-        } // if	
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch    
-  }
- 
-	public String doColor(Entity row) {
-    Partida partida= new Partida(
-      row.toLong("idNotaDetalle"), // Long idNotaDetalle, 
-      row.toLong("idArticulo") // Long idArticulo            
-    );
-    int index= this.orden.getLote().getPartidas().indexOf(partida);
-		return index>= 0? "janal-display-none": "";
-	} 
- 
-  public void doAdd(Entity row) {
-    Partida partida= new Partida(
-      JsfBase.getIdUsuario(), // Long idUsuario, 
-      row.toLong("idNotaDetalle"), // Long idNotaDetalle, 
-      this.orden.getLote().getIdLote(), // Long idLote, 
-      -1L, // Long idLoteDetalle, 
-      row.toDouble("cantidad"), // Double cantidad, 
-      row.toDouble("cantidad"), // Double saldo, 
-      row.toLong("idArticulo"), // Long idArticulo            
-      this.orden.getLote().getIdTipoClase(), // Long idTipoClase
-      0D // Double original
-    );
-    partida.setConsecutivo(row.toString("consecutivo"));
-    partida.setCodigo(row.toString("codigo"));
-    partida.setArticulo(row.toString("articulo"));
-    partida.setProveedor(row.toString("proveedor"));
-    int index= this.orden.getLote().getPartidas().indexOf(partida);
-    if(index< 0)
-      this.orden.getLote().getPartidas().add(partida);
-    else {
-      Partida item= this.orden.getLote().getPartidas().get(index);
-      if(!Objects.equals(ESql.INSERT, item.getSql()))
-        item.setSql(ESql.SELECT);
-      else
-        JsfBase.addMessage("El producto ya existe en la lista !", ETipoMensaje.INFORMACION);
-    } // if
-    this.attrs.put("partidas", this.orden.getLote().getPartidas().size());
-    this.toSumPartidas("promedios");
-  }
-  
-  public void doDelete(Partida row) {
-    int index= this.orden.getLote().getPartidas().indexOf(row);
-    if(index>= 0) {
-      if(Objects.equals(ESql.INSERT, row.getSql()))
-        this.orden.getLote().getPartidas().remove(index);
-      else
-        row.setSql(ESql.DELETE);
-    } // if
-    this.attrs.put("partidas", this.orden.getLote().getPartidas().size());
-    this.toSumPartidas("promedios");
-  }
-  
   public void doRecover(Partida row) {
     if(Objects.equals(row.getIdTipoClase(), this.orden.getLote().getIdTipoClase())) {
       if(Objects.equals(ESql.DELETE, row.getSql()))
@@ -406,7 +231,8 @@ public class Especial extends IBaseFilter implements IBaseStorage, Serializable 
       JsfBase.addMessage("No se puede recuperar porque no coincide con la clase", ETipoMensaje.ERROR);      			 
   }
   
-  private void toSumPartidas(String idXml) {
+  @Override
+  protected void toSumPartidas(String idXml) {
     Long idArticulo= -1L;
     Double cantidad= 0D;
     Double sum     = 0D;
@@ -446,41 +272,12 @@ public class Especial extends IBaseFilter implements IBaseStorage, Serializable 
 		} // catch		
   }
  
-  private void toLoadMermas(String idXml) {
-		Map<String, Object>params= new HashMap<>();
-		List<Columna>columns     = new ArrayList<>();
-    StringBuilder sb         = new StringBuilder();
-    try {      
-      params.put("idLote", this.orden.getLote().getIdLote());
-      for (Partida item: this.orden.getLote().getPartidas()) 
-        sb.append(item.getIdNotaDetalle()).append(", ");
-      if(sb.length()> 0) 
-        sb.delete(sb.length()- 2, sb.length());
-      params.put("idNotaDetalle", Objects.equals(sb.length(), 0)? "-1": sb.toString());
-      params.put("sortOrder", "order by tc_mantic_notas_calidades.id_nota_calidad");
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("porcentaje", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      if(!Objects.equals(this.orden.getLote().getIdLote(), -1L) || sb.length()> 0)
-        this.lazyMerma= new FormatLazyModel("VistaLotesDto", idXml, params, columns);
-      UIBackingUtilities.resetDataTable("tablaMerma");
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-		finally {
-			Methods.clean(params);
-			Methods.clean(columns);
-		} // finally
-  }
- 
 	public String doIdentificar(Partida row) {
 		return Objects.equals(row.getIdNotaDetalle(), this.idPivote) ? "janal-tr-yellow": "";
 	} 
 
-  private void toCheckPartidas() {
+  @Override
+  protected void toCheckPartidas() {
     try {      
       int index= 0;
       int count= 0;
@@ -513,30 +310,5 @@ public class Especial extends IBaseFilter implements IBaseStorage, Serializable 
       JsfBase.addMessageError(e);      
     } // catch	
   } 
- 
-  private Boolean checkLote() {
-    int regresar= 0;
-    try {      
-      for (Partida item: this.orden.getLote().getPartidas()) {
-        if(!Objects.equals(item.getSql(), ESql.DELETE))
-          regresar++;
-      } // for
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);      
-    } // catch	
-    return regresar> 0;
-  }
-  
-	@Override
-	protected void finalize() throws Throwable {
-		try {
-			this.doCancelar();
-		} // try
-		finally {
-			super.finalize();
-		} // finally	
-	}
- 
+
 }

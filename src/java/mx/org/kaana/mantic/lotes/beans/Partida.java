@@ -17,6 +17,7 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
 
   private static final long serialVersionUID = 1193246911478417193L;
   
+  private String lote;
   private String consecutivo;
   private String proveedor;
   private String codigo;
@@ -45,6 +46,14 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
     super(idUsuario, idNotaDetalle, idLote, idLoteDetalle, cantidad, saldo, idArticulo, idTipoClase);
     this.original= original;
     this.sql= ESql.INSERT;
+  }
+
+  public String getLote() {
+    return lote;
+  }
+
+  public void setLote(String lote) {
+    this.lote = lote;
   }
   
   public String getConsecutivo() {
@@ -121,7 +130,7 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
 
   @Override
   public String toString() {
-    return "Partida{" + "consecutivo=" + consecutivo + ", proveedor=" + proveedor + ", codigo=" + codigo + ", articulo=" + articulo + ", original=" + original + ", sql=" + sql + '}';
+    return "Partida{" + "lote=" + lote + ", consecutivo=" + consecutivo + ", proveedor=" + proveedor + ", codigo=" + codigo + ", articulo=" + articulo + ", original=" + original + ", sql=" + sql + '}';
   }
 
 }

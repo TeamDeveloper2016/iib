@@ -5,6 +5,43 @@
 <process>
 	<dml> 
 		<unit id="VistaLotesDto">
+			<select id="agrupado">
+select        
+  tc_mantic_notas_detalles.id_nota_detalle as id_key,
+  tc_mantic_lotes_detalles.id_lote_detalle,
+  tc_mantic_notas_detalles.id_nota_detalle,
+  tc_mantic_notas_detalles.id_articulo,
+  tc_mantic_lotes.consecutivo as lote,
+  tc_mantic_notas_entradas.consecutivo,
+  tc_mantic_proveedores.razon_social as proveedor,
+  tc_mantic_articulos_codigos.codigo,
+  tc_mantic_articulos.nombre as articulo,
+  tc_mantic_notas_detalles.cantidad,
+  tc_mantic_notas_detalles.cantidad as kilos,
+  tc_mantic_notas_detalles.id_lote,
+  tc_mantic_notas_entradas.registro
+from
+  tc_mantic_lotes_detalles
+inner join  
+  tc_mantic_lotes on tc_mantic_lotes_detalles.id_lote= tc_mantic_lotes.id_lote
+inner join  
+  tc_mantic_notas_detalles on tc_mantic_lotes_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
+inner join  
+  tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+inner join  
+  tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+inner join  
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+inner join  
+  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+where                
+  tc_mantic_articulos_codigos.codigo like '{clase}%'
+  and tc_mantic_notas_entradas.id_almacen= {idAlmacen}
+  and (tc_mantic_lotes.id_lote_estatus= 1 or tc_mantic_notas_detalles.id_lote= {idLote})
+group by
+  tc_mantic_lotes_detalles.id_lote_detalle        
+{sortOrder}        
+      </select>  
 			<select id="clase">
 select        
   tc_mantic_notas_detalles.id_nota_detalle as id_key,
@@ -30,6 +67,7 @@ inner join
   tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
 where                
   tc_mantic_articulos_codigos.codigo like '{clase}%'
+  and tc_mantic_notas_entradas.id_almacen= {idAlmacen}
   and tc_mantic_notas_entradas.id_nota_estatus= 3
   and (tc_mantic_notas_detalles.id_lote is null or tc_mantic_notas_detalles.id_lote= {idLote})
   and {condicion}
@@ -44,7 +82,6 @@ select
   tc_mantic_notas_calidades.nombre as merma,
   ifnull(tt_mantic_lotes_promedios.id_lote_promedio, -1) as id_lote_promedio,
   tt_mantic_lotes_promedios.id_lote,
-  tt_mantic_lotes_promedios.id_lote_detalle,
   tt_mantic_lotes_promedios.id_articulo,
   tc_mantic_notas_calidades.id_nota_calidad,
   tt_mantic_lotes_promedios.cantidad,
@@ -127,7 +164,9 @@ select
   tc_mantic_lotes.id_lote_estatus,
   tc_mantic_lotes_estatus.nombre as estatus,
   tc_mantic_lotes_estatus.estatus_asociados,
+  tc_mantic_lotes.id_lote_tipo,
   tc_mantic_lotes_tipos.nombre as tipo,
+  tc_mantic_lotes.observaciones,
   tc_mantic_lotes.registro
 from
   tc_mantic_lotes
@@ -137,15 +176,15 @@ inner join
   tc_mantic_almacenes on tc_mantic_lotes.id_almacen= tc_mantic_almacenes.id_almacen
 inner join  
   tc_mantic_lotes_estatus on tc_mantic_lotes.id_lote_estatus= tc_mantic_lotes_estatus.id_lote_estatus
-inner join  
+left join  
   tc_mantic_lotes_detalles on tc_mantic_lotes.id_lote= tc_mantic_lotes_detalles.id_lote
-inner join  
+left join  
   tc_mantic_articulos on tc_mantic_lotes.id_articulo= tc_mantic_articulos.id_articulo
-inner join  
+left join  
   tc_mantic_notas_detalles on tc_mantic_lotes_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
-inner join  
+left join  
   tc_mantic_notas_entradas on tc_mantic_notas_detalles.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
-inner join  
+left join  
   tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
 inner join  
   tc_mantic_lotes_tipos on tc_mantic_lotes.id_lote_tipo= tc_mantic_lotes_tipos.id_lote_tipo
@@ -260,6 +299,7 @@ inner join
   tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
 where                
   tc_mantic_notas_detalles.id_articulo= {idArticulo}
+  and tc_mantic_notas_entradas.id_almacen= {idAlmacen}
   and tc_mantic_notas_entradas.id_nota_estatus= 3
   and (tc_mantic_notas_detalles.id_lote is null or tc_mantic_notas_detalles.id_lote= {idLote})
   and {condicion}
@@ -272,12 +312,15 @@ select
   tc_mantic_lotes_detalles.id_lote_detalle as id_key,
   tc_mantic_lotes_detalles.*,
   tc_mantic_lotes_detalles.cantidad as original,
+  tc_mantic_lotes.consecutivo as lote,
   tc_mantic_notas_entradas.consecutivo,
   tc_mantic_proveedores.razon_social as proveedor,
   tc_mantic_articulos_codigos.codigo,
   tc_mantic_articulos.nombre as articulo
 from
   tc_mantic_lotes_detalles
+inner join  
+  tc_mantic_lotes on tc_mantic_lotes_detalles.id_id_lote= tc_mantic_lotes.id_lote
 inner join  
   tc_mantic_notas_detalles on tc_mantic_lotes_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
 inner join  

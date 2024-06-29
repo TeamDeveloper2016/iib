@@ -103,6 +103,12 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				case GENERAR:
           regresar= this.toFraccionar(sesion);
 					break;
+				case COMPLETO:
+          regresar= this.toAddAgrupado(sesion);
+					break;
+				case COMPLEMENTAR:
+          regresar= this.toUpdateAgrupado(sesion);
+          break;				
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -147,8 +153,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       this.orden.setCantidad(this.toSumPartidas());
       DaoFactory.getInstance().update(sesion, this.orden);
-      this.toFillPromedios(sesion);
       this.toAddBitacora(sesion);
+      this.toFillPromedios(sesion);
       regresar= this.toFillPartidas(sesion);
     } // try
     catch (Exception e) {
@@ -213,7 +219,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       throw e;
     } // catch	
     finally {
-     Methods.clean(params);
+      Methods.clean(params);
     } // finally
     return regresar;
   }
@@ -230,19 +236,26 @@ public class Transaccion extends IBaseTnx implements Serializable {
         sb.delete(sb.length()- 2, sb.length());
         params.put("sortOrder", "order by tc_mantic_notas_promedios.id_nota_calidad");
         params.put("idNotaDetalle", sb.toString());
-        List<Entity> promedios= DaoFactory.getInstance().toEntitySet(sesion, "VistaLotesDto", "promedios", params);
+        List<Entity> promedios= (List<Entity>)DaoFactory.getInstance().toEntitySet(sesion, "VistaLotesDto", "promedios", params);
         for (Entity item: promedios) {
           TcManticLotesPromediosDto promedio= new TcManticLotesPromediosDto(
             JsfBase.getIdUsuario(), // Long idUsuario, 
             this.orden.getIdLote(), // Long idLote, 
             -1L, // Long idLotePromedio, 
-            null, // Long idLoteDetalle, 
             item.toDouble("cantidad"), // Double cantidad, 
             item.toDouble("porcentaje"), // Double porcentaje, 
             this.orden.getIdArticulo(), // Long idArticulo, 
             item.toLong("idNotaCalidad") // Long idNotaCalidad
           );
-          DaoFactory.getInstance().insert(sesion, promedio);
+          params.put("idArticulo", this.orden.getIdArticulo());
+          params.put("idNotaCalidad", item.toLong("idNotaCalidad"));
+          Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticLotesPromediosDto", "identically", params);
+          if(!Objects.equals(exist, null) && !exist.isEmpty()) {
+            promedio.setIdLotePromedio(exist.toLong("idLotePromedio"));
+            DaoFactory.getInstance().update(sesion, promedio);
+          } // if  
+          else
+            DaoFactory.getInstance().insert(sesion, promedio);
         } // for
       } // if
       else
@@ -392,7 +405,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.orden.setOrden(consecutivo.getOrden());
       this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
       this.orden.setIdUsuario(JsfBase.getIdUsuario());
-      this.orden.setObservaciones((Objects.equals(this.orden.getObservaciones(), null)? "": ", ")+ "ESTE LOTE SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
+      String observaciones= this.orden.getObservaciones();
+      this.orden.setObservaciones((Objects.equals(observaciones, null) || observaciones.trim().length()== 0? "": ", ")+ "ESTE LOTE SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
       DaoFactory.getInstance().insert(sesion, this.orden);
       this.toAddBitacora(sesion);
       while(index< this.orden.getPartidas().size()) {
@@ -411,6 +425,96 @@ public class Transaccion extends IBaseTnx implements Serializable {
     catch (Exception e) {
       throw e;
     } // catch	
+    return regresar;
+  }
+  
+  private Boolean toAddAgrupado(Session sesion) throws Exception {
+    Boolean regresar     = Boolean.FALSE;
+    Siguiente consecutivo= null;
+    StringBuilder sb     = new StringBuilder();
+    try {      
+      consecutivo= this.toSiguiente(sesion);
+      this.orden.setConsecutivo(consecutivo.getConsecutivo());
+      this.orden.setOrden(consecutivo.getOrden());
+      this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+      this.orden.setIdUsuario(JsfBase.getIdUsuario());
+      this.orden.setCantidad(this.toSumPartidas());
+      this.orden.setOriginal(this.toSumPartidas());
+      sb.append("SE FORMO POR LOS LOTES (");
+      for (Partida item: this.orden.getPartidas()) 
+        sb.append(item.getLote()).append(", ");
+      sb.delete(sb.length()- 2, sb.length());
+      sb.append(")");
+      this.orden.setObservaciones(sb.toString());
+      DaoFactory.getInstance().insert(sesion, this.orden);
+      this.toAddBitacora(sesion);
+      this.toFillPromedios(sesion);
+      this.toCancelLotes(sesion);
+      regresar= this.toFillPartidas(sesion);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
+  
+  private Boolean toUpdateAgrupado(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {      
+      this.orden.setIdUsuario(JsfBase.getIdUsuario());
+      this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      this.orden.setCantidad(this.toSumPartidas());
+      DaoFactory.getInstance().update(sesion, this.orden);
+      this.toAddBitacora(sesion);
+      this.toFillPromedios(sesion);
+      this.toCancelLotes(sesion);
+      regresar= this.toFillPartidas(sesion);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
+  
+  private Boolean toCancelLotes(Session sesion) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    Map<Long, String> lotes   = new HashMap<>();
+    try {      
+      // SE SACAN TODOS LOS LOTES Y SE AGRUPAN LOS LOTES DETALLES DEL LOTE
+      for (Partida item: this.orden.getPartidas()) {
+        params.put("idNotaDetalle", item.getIdNotaDetalle());
+        DaoFactory.getInstance().updateAll(sesion, TcManticNotasDetallesDto.class, params, "eliminar");
+        if(lotes.containsKey(item.getIdLote())) {
+          String detalle= lotes.get(item.getIdLote()); 
+          lotes.put(item.getIdLote(), detalle+ item.getIdLoteDetalle()+ ", "); 
+        } // if  
+        else 
+          lotes.put(item.getIdLote(), item.getIdLoteDetalle()+ ", "); 
+        item.setIdLoteDetalle(-1L);
+      } // for
+      // RECORRER LOS LOTES Y VERIFICAR SI AUN CUENTA CON ALGUN PRODUCTO EN SU DEFECTO CANCELAR Y DEPURAR EL DETALLE
+      for (Long key: lotes.keySet()) {
+        params.put("idLote", key);
+        params.put("detalle", lotes.get(key).substring(0, lotes.get(key).length()- 2));
+        params.put("observaciones", "SE CANCELO POR EL LOTE (".concat(this.orden.getConsecutivo()).concat(")"));
+        Entity lote= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticLotesDto", "cuantos", params);
+        if(Objects.equals(lote, null) || lote.isEmpty()) {
+          DaoFactory.getInstance().updateAll(sesion, TcManticLotesDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TcManticLotesPromediosDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TcManticLotesDetallesDto.class, params);
+        } // if
+        else 
+          DaoFactory.getInstance().deleteAll(sesion, TcManticLotesDetallesDto.class, "igual", params);
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
     return regresar;
   }
   

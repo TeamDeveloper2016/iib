@@ -33,26 +33,26 @@
               <p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-20, janal-wid-50, janal-wid-10">  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="empresa" value="Empresa:"/>
-                  <p:inputText id="empresa" value="#{manticLotesCalidad.nota.empresa}" styleClass="janal-wid-100-txt" readonly="true"/> 
+                  <p:inputText id="empresa" value="#{manticInventariosOrigenesCalidad.nota.empresa}" styleClass="janal-wid-100-txt" readonly="true"/> 
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="consecutivo" value="Nota entrada:"/>
-                  <p:inputText id="consecutivo" value="#{manticLotesCalidad.nota.consecutivo}" styleClass="janal-column-center janal-wid-100-txt" readonly="true"/> 
+                  <p:inputText id="consecutivo" value="#{manticInventariosOrigenesCalidad.nota.consecutivo}" styleClass="janal-column-center janal-wid-100-txt" readonly="true"/> 
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="idProveedor" value="Proveedor:"/>
-                  <p:inputText id="idProveedor" value="#{manticLotesCalidad.nota.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/> 
+                  <p:inputText id="idProveedor" value="#{manticInventariosOrigenesCalidad.nota.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/> 
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="partidas" value="Partida(s):"/>
-                  <p:inputText id="partidas" value="#{manticLotesCalidad.nota.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/> 
+                  <p:inputText id="partidas" value="#{manticInventariosOrigenesCalidad.nota.razonSocial}" styleClass="janal-wid-100-txt" readonly="true"/> 
                 </p:panelGrid>
               </p:panelGrid>
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                 <p:outputLabel for="idNotaDetalle" value="Producto(s):"/>
-                <p:selectOneMenu id="idNotaDetalle" value="#{manticLotesCalidad.attrs.idNotaDetalle}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-									<p:ajax event="change" listener="#{manticLotesCalidad.doLoadPorcentajes}" update="porcentajes @(.total)" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-                  <f:selectItems value="#{manticLotesCalidad.detalle}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.nombre or element.nombre eq ''? '': '|'}#{element.nombre}"/>
+                <p:selectOneMenu id="idNotaDetalle" value="#{manticInventariosOrigenesCalidad.attrs.idNotaDetalle}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<p:ajax event="change" listener="#{manticInventariosOrigenesCalidad.doLoadPorcentajes}" update="porcentajes @(.total)" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <f:selectItems value="#{manticInventariosOrigenesCalidad.detalle}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.nombre or element.nombre eq ''? '': '|'}#{element.nombre}"/>
                   <p:column headerText="Código">
                     <h:outputText value="#{item.codigo}"/>
                   </p:column>   
@@ -67,7 +67,7 @@
                   </p:column>   
                 </p:selectOneMenu>
               </p:panelGrid>
-              <p:dataTable id="porcentajes" var="row" value="#{manticLotesCalidad.porcentajes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idNotaCalidad}" styleClass="porcentajes" rowIndexVar="index">
+              <p:dataTable id="porcentajes" var="row" value="#{manticInventariosOrigenesCalidad.porcentajes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idNotaCalidad}" styleClass="porcentajes" rowIndexVar="index">
 								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
@@ -79,15 +79,15 @@
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Porcentaje">
                   <p:inputNumber id="porcentaje" value="#{row.porcentaje}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" thousandSeparator=",">
-                    <p:ajax event="change" listener="#{manticLotesCalidad.doUpdatePorcentaje(row)}" process="@this" update="@(.total)"/>
+                    <p:ajax event="change" listener="#{manticInventariosOrigenesCalidad.doUpdatePorcentaje(row)}" process="@this" update="@(.total)"/>
                   </p:inputNumber>  
 								</p:column> 
                 <f:facet name="footer">
-                  <p:outputLabel style="float: left;" value="Total [#{manticLotesCalidad.porcentajes.size()}] registros"/>
-                  <p:outputLabel styleClass="total" value="#{manticLotesCalidad.attrs.total}" escape="false"/>
+                  <p:outputLabel style="float: left;" value="Total [#{manticInventariosOrigenesCalidad.porcentajes.size()}] registros"/>
+                  <p:outputLabel styleClass="total" value="#{manticInventariosOrigenesCalidad.attrs.total}" escape="false"/>
                 </f:facet>
 							</p:dataTable>
-              <p:inputText id="articulos" value="#{manticLotesCalidad.attrs.articulos}" styleClass="janal-display-none"/>
+              <p:inputText id="articulos" value="#{manticInventariosOrigenesCalidad.attrs.articulos}" styleClass="janal-display-none"/>
 						</p:tab>
 					</p:tabView>
 				</div>
@@ -96,12 +96,12 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesCalidad.doAceptar}" onclick="janal.bloquear()" onstart="return janal.execute()" oncomplete="janal.desbloquear()" />
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticLotesCalidad.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticInventariosOrigenesCalidad.doAceptar}" onclick="janal.bloquear()" onstart="return janal.execute()" oncomplete="janal.desbloquear()" />
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticInventariosOrigenesCalidad.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesCalidad.doAceptar}" onclick="janal.bloquear()" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticLotesCalidad.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosOrigenesCalidad.doAceptar}" onclick="janal.bloquear()" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosOrigenesCalidad.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
 </ui:composition>

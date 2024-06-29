@@ -47,7 +47,8 @@ public class Calidad extends IBaseAttribute implements Serializable {
   private List<Porcentaje> porcentajes;
 
   public Entity getNota() {
-    return nota;  }
+    return nota;  
+  }
 
   public List<UISelectEntity> getDetalle() {
     return detalle;
@@ -155,7 +156,7 @@ public class Calidad extends IBaseAttribute implements Serializable {
     try {			
 			transaccion = new Transaccion(this.porcentajes);
 			if (transaccion.ejecutar(this.accion)) {
-        regresar= this.doCancelar();
+        // regresar= this.doCancelar();
         JsfBase.addMessage("Se actualizaron los porcentajes", ETipoMensaje.INFORMACION);
       } // if
       else 

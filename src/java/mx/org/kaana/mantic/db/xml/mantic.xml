@@ -56,6 +56,20 @@ from
 where      
   id_lote= {idLote}
       </select>
+      <select id="cuantos">
+select      
+  tc_mantic_lotes.id_lote as id_key,
+  count(distinct(tc_mantic_lotes_detalles.id_lote_detalle)) as total
+from      
+  tc_mantic_lotes
+inner join  
+  tc_mantic_lotes_detalles on tc_mantic_lotes.id_lote= tc_mantic_lotes_detalles.id_lote
+where      
+  tc_mantic_lotes.id_lote= {idLote}
+  and tc_mantic_lotes_detalles.id_lote_detalle not in({detalle})
+group by
+  tc_mantic_lotes.id_lote        
+      </select>
       <select id="siguiente">
 select
   max(orden)+ 1 as siguiente
@@ -65,7 +79,16 @@ where
   ejercicio= {ejercicio} 
   and id_empresa= {idEmpresa}	
   and orden{operador} 900000			
-			</select>		      
+			</select>
+			<update id="rows">
+update 
+  tc_mantic_lotes 
+set 
+  id_lote_estatus= 4,
+  observaciones= '{observaciones}'
+where 
+  id_lote= {idLote}        
+			</update>
     </unit>    
     <unit id="TcManticLotesDetallesDto">
       <select id="row">
@@ -86,6 +109,9 @@ where
       </select>
       <delete id="rows">
 delete from tc_mantic_lotes_detalles where id_lote = {idLote}
+      </delete>
+      <delete id="igual">
+delete from tc_mantic_lotes_detalles where id_lote_detalle in ({detalle})
       </delete>
     </unit>    
     <unit id="TcManticLotesEspecialesDto">
@@ -161,7 +187,7 @@ select
 from      
   tc_mantic_lotes_promedios
 where      
-  id_lote = {idLote} and id_lote_detalle = {idLoteDetalle} and id_articulo = {idArticulo} and id_nota_calidad = {idNotaCalidad}
+  id_lote = {idLote} and id_articulo = {idArticulo} and id_nota_calidad = {idNotaCalidad}
       </select>
       <delete id="rows">
 delete from tc_mantic_lotes_promedios where id_lote= {idLote}        
@@ -6359,22 +6385,22 @@ group by
   id_nota_entrada
 			</select>
 			<select id="errores">
-				select
-					count(*) as total
-				from
-					tc_mantic_notas_detalles
-				where      
-					id_nota_entrada= {idNotaEntrada}
-					and cantidades&lt;&gt; 0
+select
+  count(*) as total
+from
+  tc_mantic_notas_detalles
+where      
+  id_nota_entrada= {idNotaEntrada}
+  and cantidades&lt;&gt; 0
 			</select>
 			<select id="iguales">
-				select
-					count(*) as total
-				from
-					tc_mantic_notas_detalles
-				where      
-					id_nota_entrada= {idNotaEntrada}
-					and cantidades&gt; 0
+select
+  count(*) as total
+from
+  tc_mantic_notas_detalles
+where      
+  id_nota_entrada= {idNotaEntrada}
+  and cantidades&gt; 0
 			</select>
       <update id="rows">
 update tc_mantic_notas_detalles set id_lote= null where id_lote= {idLote}

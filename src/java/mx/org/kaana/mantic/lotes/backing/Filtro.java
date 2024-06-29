@@ -125,12 +125,32 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
   public String doAccion(String accion) {
-		String regresar= "/Paginas/Mantic/Lotes/accion";
-    EAccion eaccion= null;
+		String regresar    = "/Paginas/Mantic/Lotes/accion";
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");
+    Long idLoteTipo    = 1L;
+    EAccion eaccion    = null;
 		try {
+      eaccion= EAccion.valueOf(accion.toUpperCase());      
+      if(!Objects.equals(eaccion, EAccion.AGREGAR)) {
+        switch(seleccionado.toLong("idLoteTipo").intValue()) {
+          case 1: // NORMAL
+            break;
+          case 2: // FRACCIONADO
+            idLoteTipo= 2L;
+            break;
+          case 3:  // POR TIPO DE CLASE DESDE LAS NOTAS DE ENTRADAS
+            idLoteTipo= 3L;
+            regresar  = "/Paginas/Mantic/Lotes/especial"; 
+            break;
+          case 4: // POR TIPO DE CLASE DESDE LOS LOTES
+            idLoteTipo= 4L;
+            regresar  = "/Paginas/Mantic/Lotes/agrupado";
+            break;
+        } // switch
+      } // if  
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("idLoteTipo", 1L);		
+			JsfBase.setFlashAttribute("idLoteTipo", idLoteTipo);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
 			JsfBase.setFlashAttribute("idLote", Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
 		} // try
@@ -146,6 +166,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
       JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 			JsfBase.setFlashAttribute("idLoteTipo", 3L);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
+			JsfBase.setFlashAttribute("idLote", -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR);
+  } 
+	
+  public String doAgrupado() {
+		String regresar= "/Paginas/Mantic/Lotes/agrupado";
+		try {
+			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+			JsfBase.setFlashAttribute("idLoteTipo", 4L);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
 			JsfBase.setFlashAttribute("idLote", -1L);
 		} // try
