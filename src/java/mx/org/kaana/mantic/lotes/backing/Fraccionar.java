@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -101,7 +102,10 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
           1L,// Long orden, 
           this.lote.toLong("idArticulo"), // Long idArticulo
           1L, // Long idLoteEstatus     
-          this.lote.toLong("idTipoArticulo") // Long idTipoClase      
+          this.lote.toLong("idTipoArticulo"), // Long idTipoClase      
+          0D, // merma
+          0D, // terminado
+          0D // restos
         );
         this.orden.setItArticulo(this.lote.toLong("idArticulo"));
         this.orden.setItTipoClase(this.lote.toLong("idTipoArticulo"));
@@ -188,7 +192,7 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
     } // for
     this.attrs.put("total", "Total: <strong>"+ suma+ "</strong>");
     this.attrs.put("importe", suma);
-    this.attrs.put("nuevo", this.lote.toDouble("kilos")- suma);
+    this.attrs.put("nuevo", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.lote.toDouble("kilos")- suma));
   }
   
 }

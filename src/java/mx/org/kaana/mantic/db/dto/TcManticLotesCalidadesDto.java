@@ -42,10 +42,8 @@ public class TcManticLotesCalidadesDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="id_lote")
   private Long idLote;
-  @Column (name="id_nota_calidad")
-  private Long idNotaCalidad;
-  @Column (name="id_lote_detalle")
-  private Long idLoteDetalle;
+  @Column (name="id_nota_merma")
+  private Long idNotaMerma;
   @Column (name="cantidad")
   private Double cantidad;
   @Column (name="porcentaje")
@@ -60,16 +58,15 @@ public class TcManticLotesCalidadesDto implements IBaseDto, Serializable {
   }
 
   public TcManticLotesCalidadesDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticLotesCalidadesDto(Long idLoteCalidad, Long idUsuario, Long idLote, Long idNotaCalidad, Long idLoteDetalle, Double cantidad, Double porcentaje, Long idArticulo) {
+  public TcManticLotesCalidadesDto(Long idLoteCalidad, Long idUsuario, Long idLote, Long idNotaMerma, Double cantidad, Double porcentaje, Long idArticulo) {
     setIdLoteCalidad(idLoteCalidad);
     setIdUsuario(idUsuario);
     setIdLote(idLote);
-    setIdNotaCalidad(idNotaCalidad);
-    setIdLoteDetalle(idLoteDetalle);
+    setIdNotaMerma(idNotaMerma);
     setCantidad(cantidad);
     setPorcentaje(porcentaje);
     setIdArticulo(idArticulo);
@@ -100,20 +97,12 @@ public class TcManticLotesCalidadesDto implements IBaseDto, Serializable {
     return idLote;
   }
 
-  public void setIdNotaCalidad(Long idNotaCalidad) {
-    this.idNotaCalidad = idNotaCalidad;
+  public void setIdNotaMerma(Long idNotaMerma) {
+    this.idNotaMerma = idNotaMerma;
   }
 
-  public Long getIdNotaCalidad() {
-    return idNotaCalidad;
-  }
-
-  public void setIdLoteDetalle(Long idLoteDetalle) {
-    this.idLoteDetalle = idLoteDetalle;
-  }
-
-  public Long getIdLoteDetalle() {
-    return idLoteDetalle;
+  public Long getIdNotaMerma() {
+    return idNotaMerma;
   }
 
   public void setCantidad(Double cantidad) {
@@ -169,9 +158,7 @@ public class TcManticLotesCalidadesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdLote());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNotaCalidad());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdLoteDetalle());
+		regresar.append(getIdNotaMerma());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
@@ -190,8 +177,7 @@ public class TcManticLotesCalidadesDto implements IBaseDto, Serializable {
 		regresar.put("idLoteCalidad", getIdLoteCalidad());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idLote", getIdLote());
-		regresar.put("idNotaCalidad", getIdNotaCalidad());
-		regresar.put("idLoteDetalle", getIdLoteDetalle());
+		regresar.put("idNotaCalidad", getIdNotaMerma());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("porcentaje", getPorcentaje());
 		regresar.put("idArticulo", getIdArticulo());
@@ -201,8 +187,8 @@ public class TcManticLotesCalidadesDto implements IBaseDto, Serializable {
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdLoteCalidad(), getIdUsuario(), getIdLote(), getIdNotaCalidad(), getIdLoteDetalle(), getCantidad(), getPorcentaje(), getIdArticulo(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdLoteCalidad(), getIdUsuario(), getIdLote(), getIdNotaMerma(), getCantidad(), getPorcentaje(), getIdArticulo(), getRegistro()
     };
     return regresar;
   }

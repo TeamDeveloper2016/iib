@@ -104,6 +104,64 @@ group by
   tc_mantic_notas_calidades.id_nota_calidad
 {sortOrder}
       </select>  
+			<select id="cantidades">
+select
+  tc_mantic_notas_mermas.id_nota_merma as id_key,
+  tc_mantic_notas_mermas.nombre,
+  tc_mantic_notas_mermas.nombre as merma,
+  ifnull(tt_mantic_lotes_calidades.id_lote_calidad, -1) as id_lote_calidad,
+  tt_mantic_lotes_calidades.id_lote,
+  tt_mantic_lotes_calidades.id_articulo,
+  tc_mantic_notas_mermas.id_nota_merma,
+  tt_mantic_lotes_calidades.cantidad,
+  tt_mantic_lotes_calidades.porcentaje,
+  tt_mantic_lotes_calidades.id_usuario,
+  tt_mantic_lotes_calidades.registro
+from
+  tc_mantic_notas_mermas
+left join (
+  select
+    tc_mantic_lotes_calidades.*
+  from
+    tc_mantic_lotes_calidades
+  where 
+    tc_mantic_lotes_calidades.id_lote= {idLote}
+  group by
+    tc_mantic_lotes_calidades.id_lote_calidad
+) as tt_mantic_lotes_calidades on tc_mantic_notas_mermas.id_nota_merma= tt_mantic_lotes_calidades.id_nota_merma
+group by
+  tc_mantic_notas_mermas.id_nota_merma
+{sortOrder}
+      </select>  
+			<select id="limpios">
+select
+  tc_mantic_notas_limpios.id_nota_limpio as id_key,
+  tc_mantic_notas_limpios.nombre,
+  tc_mantic_notas_limpios.nombre as merma,
+  ifnull(tt_mantic_lotes_limpios.id_lote_limpio, -1) as id_lote_limpio,
+  tt_mantic_lotes_limpios.id_lote,
+  tt_mantic_lotes_limpios.id_articulo,
+  tc_mantic_notas_limpios.id_nota_limpio,
+  tt_mantic_lotes_limpios.cantidad,
+  tt_mantic_lotes_limpios.porcentaje,
+  tt_mantic_lotes_limpios.id_usuario,
+  tt_mantic_lotes_limpios.registro
+from
+  tc_mantic_notas_limpios
+left join (
+  select
+    tc_mantic_lotes_limpios.*
+  from
+    tc_mantic_lotes_limpios
+  where 
+    tc_mantic_lotes_limpios.id_lote= {idLote}
+  group by
+    tc_mantic_lotes_limpios.id_lote_limpio
+) as tt_mantic_lotes_limpios on tc_mantic_notas_limpios.id_nota_limpio= tt_mantic_lotes_limpios.id_nota_limpio
+group by
+  tc_mantic_notas_limpios.id_nota_limpio
+{sortOrder}
+      </select>  
 			<select id="promedios">
 select
   tc_mantic_notas_promedios.id_nota_calidad as id_key,
@@ -167,6 +225,9 @@ select
   tc_mantic_lotes.id_lote_tipo,
   tc_mantic_lotes_tipos.nombre as tipo,
   tc_mantic_lotes.observaciones,
+  tc_mantic_lotes.merma,
+  tc_mantic_lotes.terminado,
+  tc_mantic_lotes.restos,
   tc_mantic_lotes.registro
 from
   tc_mantic_lotes

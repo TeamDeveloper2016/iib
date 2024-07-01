@@ -158,7 +158,6 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
   } // doCancelar
 
 	protected void toLoadCatalogos() {
-		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
       this.toLoadEmpresas();
@@ -168,7 +167,6 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
     finally {
-      Methods.clean(columns);
       Methods.clean(params);
     } // finally
 	}

@@ -24,7 +24,6 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -33,10 +32,10 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticLotesBitacoraDto;
+import mx.org.kaana.mantic.lotes.reglas.Transaccion;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
-import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
+import mx.org.kaana.mantic.lotes.beans.Lote;
 
 @Named(value = "manticLotesFiltro")
 @ViewScoped
@@ -192,11 +191,13 @@ public class Filtro extends IBaseFilter implements Serializable {
   } 
 	
   public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
+		Transaccion transaccion   = null;
+		Entity seleccionado       = null;
+    Map<String, Object> params= new HashMap<>();
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
-      NotaEntrada orden= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticLotesDto", "igual", Variables.toMap("idLote~"+ seleccionado.getKey()));
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+      params.put("idLote", seleccionado.getKey());
+      Lote orden= (Lote)DaoFactory.getInstance().toEntity(Lote.class, "TcManticLotesDto", "igual", params);
 			transaccion= new Transaccion(orden);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "El lote se ha eliminado correctamente", ETipoMensaje.ERROR);
@@ -207,6 +208,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
+    finally {
+      Methods.clean(params);
+    } // finally
   } // doEliminar
 
 	private Map<String, Object> toPrepare() {
@@ -307,17 +311,27 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public void doActualizarEstatus() {
 		Transaccion transaccion          = null;
-		TcManticNotasBitacoraDto bitacora= null;
+		TcManticLotesBitacoraDto bitacora= null;
 		Entity seleccionado              = null;
+    Map<String, Object> params       = new HashMap<>();
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-//      NotaEntrada orden= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticLotesDto", "igual", Variables.toMap("idLote~"+ seleccionado.getKey()));
-//			bitacora= new TcManticNotasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getConsecutivo(), orden.getTotal());
-//			transaccion= new Transaccion(orden, bitacora);
-//			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-//				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
-//			else
-//				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+      params.put("idLote", seleccionado.getKey());
+      Lote orden= (Lote)DaoFactory.getInstance().toEntity(Lote.class, "TcManticLotesDto", "igual", params);
+      if(Objects.equals(orden.getIdTipoClase(), -1L))
+        orden.setIdTipoClase(null);
+			bitacora= new TcManticLotesBitacoraDto(
+        (String)this.attrs.get("justificacion"), // String justificacion, 
+        Long.valueOf(this.attrs.get("estatus").toString()), // Long idLoteEstatus, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        seleccionado.getKey(), // Long idLote, 
+        -1L // Long idLoteBitacora              
+      );
+			transaccion= new Transaccion(orden, bitacora);
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus del lote", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de lote", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -325,8 +339,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 		finally {
 			this.attrs.put("justificacion", "");
+      Methods.clean(params);
 		} // finally
-	}	// doActualizaEstatus
+	}	
 	
   public void doConsultar() {
     this.doLoadDetalle((Entity)this.attrs.get("seleccionado"));
@@ -420,9 +435,37 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 
   public String doPorcentajes() {
-		String regresar= "/Paginas/Mantic/Lotes/calidad";
+		String regresar= "/Paginas/Mantic/Lotes/porcentajes";
 		try {
       JsfBase.setFlashAttribute("accion", EAccion.TRANSFORMACION);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
+			JsfBase.setFlashAttribute("idLote", ((Entity)this.attrs.get("seleccionado")).getKey());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR);
+  }
+
+  public String doCalidad() {
+		String regresar= "/Paginas/Mantic/Lotes/calidad";
+		try {
+      JsfBase.setFlashAttribute("accion", EAccion.RESTAURAR);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
+			JsfBase.setFlashAttribute("idLote", ((Entity)this.attrs.get("seleccionado")).getKey());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR);
+  }
+
+  public String doTerminado() {
+		String regresar= "/Paginas/Mantic/Lotes/terminado";
+		try {
+      JsfBase.setFlashAttribute("accion", EAccion.COPIAR);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
 			JsfBase.setFlashAttribute("idLote", ((Entity)this.attrs.get("seleccionado")).getKey());
 		} // try
@@ -448,8 +491,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
 
   private void toLoadMermas() {
-		Map<String, Object>params= new HashMap<>();
 		List<Columna>columns     = new ArrayList<>();
+		Map<String, Object>params= new HashMap<>();
     try {      
       params.put("idLote", ((Entity)this.attrs.get("seleccionado")).getKey());
       params.put("sortOrder", "order by tc_mantic_notas_calidades.id_nota_calidad");

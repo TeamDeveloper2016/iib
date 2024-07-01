@@ -266,7 +266,7 @@ select
 from      
   tc_mantic_lotes_calidades
 where      
-  id_lote = {idLote} and id_nota_calidad = {idNotaCalidad} and id_lote_detalle = {idLoteDetalle} and id_articulo = {idArticulo}
+  id_lote= {idLote} and id_nota_merma= {idNotaMerma} and id_articulo= {idArticulo}
       </select>
     </unit>    
     <unit id="TcManticNotasMermasDto">

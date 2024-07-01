@@ -7,13 +7,13 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Actualizar los porcentajes de producto de origen"/>
+	<ui:param name="titulo" value="Porcentajes de merma de origen"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:articulos'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'cantidad'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
-				'porcentaje'                      : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
+				'porcentaje'                      : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": 100})', mascara: 'libre', grupo: 'general'}
 			};
 			
     	$(document).ready(function() {
@@ -78,7 +78,7 @@
 									<h:outputText value="#{row.cantidad}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Porcentaje">
-                  <p:inputNumber id="porcentaje" value="#{row.porcentaje}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" thousandSeparator=",">
+                  <p:inputNumber id="porcentaje" value="#{row.porcentaje}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" maxValue="100" thousandSeparator=",">
                     <p:ajax event="change" listener="#{manticInventariosOrigenesCalidad.doUpdatePorcentaje(row)}" process="@this" update="@(.total)"/>
                   </p:inputNumber>  
 								</p:column> 

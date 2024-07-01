@@ -24,8 +24,9 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.lotes.beans.Kilo;
 import mx.org.kaana.mantic.lotes.beans.Lote;
+import mx.org.kaana.mantic.lotes.beans.Porcentaje;
+import mx.org.kaana.mantic.lotes.beans.Unidad;
 
 /**
  *@company KAANA
@@ -35,26 +36,26 @@ import mx.org.kaana.mantic.lotes.beans.Lote;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticLotesCalidad")
+@Named(value= "manticLotesTerminado")
 @ViewScoped
-public class Calidad extends IBaseAttribute implements Serializable {
+public class Terminado extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID= 127393488565639361L;
   
   private Entity lote;
 	protected EAccion accion;	
-  private List<Kilo> cantidades;
+  private List<Unidad> porcentajes;
 
   public Entity getLote() {
     return lote;  
   }
 
-  public List<Kilo> getCantidades() {
-    return cantidades;
+  public List<Unidad> getPorcentajes() {
+    return porcentajes;
   }
 
-  public void setCantidades(List<Kilo> cantidades) {
-    this.cantidades = cantidades;
+  public void setPorcentajes(List<Unidad> porcentajes) {
+    this.porcentajes = porcentajes;
   }
 
   @PostConstruct
@@ -65,6 +66,8 @@ public class Calidad extends IBaseAttribute implements Serializable {
     this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.TRANSFORMACION: (EAccion)JsfBase.getFlashAttribute("accion");
     this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? -1L: JsfBase.getFlashAttribute("idLote"));
     this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+    this.attrs.put("terminado", 0D);
+    this.attrs.put("restos", 0D);
     this.doLoad();    
   }
   
@@ -85,8 +88,10 @@ public class Calidad extends IBaseAttribute implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lote= (Entity)DaoFactory.getInstance().toEntity("VistaLotesDto", "lazy", params);
       if(!Objects.equals(this.lote, null)) {
+        this.attrs.put("terminado", this.lote.toDouble("terminado"));
+        this.attrs.put("restos", this.lote.toDouble("restos"));
         UIBackingUtilities.toFormatEntity(this.lote, columns);
-        this.doLoadCantidades();
+        this.doLoadPorcentajes();
       } // if  
     } // try
     catch (Exception e) {
@@ -99,15 +104,15 @@ public class Calidad extends IBaseAttribute implements Serializable {
     } // finally
   } // doLoad
  
-  public void doLoadCantidades() {
+  public void doLoadPorcentajes() {
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("sortOrder", "order by tc_mantic_notas_mermas.id_nota_merma");
+      params.put("sortOrder", "order by tc_mantic_notas_limpios.id_nota_limpio");
       params.put("idLote", this.lote.toLong("idLote"));
-      this.cantidades= (List<Kilo>)DaoFactory.getInstance().toEntitySet(Kilo.class, "VistaLotesDto", "cantidades", params);
-      if(!Objects.equals(this.cantidades, null)) {
-        for (Kilo item: this.cantidades) {
-          if(Objects.equals(item.getIdLoteCalidad(), -1L)) {
+      this.porcentajes= (List<Unidad>)DaoFactory.getInstance().toEntitySet(Unidad.class, "VistaLotesDto", "limpios", params);
+      if(!Objects.equals(this.porcentajes, null)) {
+        for (Unidad item: this.porcentajes) {
+          if(Objects.equals(item.getIdLoteLimpio(), -1L)) {
             item.setIdLote(this.lote.toLong("idLote"));
             item.setIdArticulo(this.lote.toLong("idArticulo"));
             item.setCantidad(0D);
@@ -119,9 +124,9 @@ public class Calidad extends IBaseAttribute implements Serializable {
         } // for
       } // if  
       else
-        this.cantidades= new ArrayList<>();  
-      this.toLoadTotal();
-      this.attrs.put("articulos", this.cantidades.size());
+        this.porcentajes= new ArrayList<>();  
+      this.doLoadTotal();
+      this.attrs.put("articulos", this.porcentajes.size());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -133,16 +138,17 @@ public class Calidad extends IBaseAttribute implements Serializable {
   }
   
   public String doAceptar() {  
-    String regresar          = null;
-    Transaccion transaccion   = null;
+    String regresar        = null;
+    Transaccion transaccion= null;
     Map<String, Object> params= new HashMap<>();
 		try {
       params.put("idLote", this.attrs.get("idLote"));
       Lote orden= (Lote)DaoFactory.getInstance().toEntity(Lote.class, "TcManticLotesDto", "igual", params);
       if(Objects.equals(orden.getIdTipoClase(), -1L))
         orden.setIdTipoClase(null);
-      orden.setMerma((Double)this.attrs.get("merma"));
-			transaccion = new Transaccion(orden, this.cantidades);
+      orden.setTerminado((Double)this.attrs.get("terminado"));
+      orden.setRestos((Double)this.attrs.get("restos"));
+			transaccion = new Transaccion(this.porcentajes, orden);
 			if (transaccion.ejecutar(this.accion)) {
         regresar= this.doCancelar();
         JsfBase.addMessage("Se actualizaron los porcentajes", ETipoMensaje.INFORMACION);
@@ -162,20 +168,21 @@ public class Calidad extends IBaseAttribute implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 
-  public void doUpdateCantidad(Kilo item) {
+  public void doUpdatePorcentaje(Unidad item) {
     if(Objects.equals(item.getSql(), ESql.SELECT))
       item.setSql(ESql.UPDATE);
-    this.toLoadTotal();
+    this.doLoadTotal();
   }
   
-  private void toLoadTotal() {
+  public void doLoadTotal() {
     Double suma= 0D;
-    for (Kilo item: this.cantidades) {  
-      suma+= item.getCantidad();
+    for (Unidad item: this.porcentajes) {  
+      suma+= item.getPorcentaje();
     } // for
-    this.attrs.put("total", "Total: <strong>"+ suma+ "</strong>");
+    this.attrs.put("total", "Total: <strong>"+ suma+ "%</strong>");
     this.attrs.put("merma", suma);
-    this.attrs.put("nuevo", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.lote.toDouble("kilos")- suma));
+    Double total= this.lote.toDouble("merma")+ (Double)this.attrs.get("terminado")+ (Double)this.attrs.get("restos");
+    this.attrs.put("nuevo", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.lote.toDouble("kilos")- total));
   }
   
 }

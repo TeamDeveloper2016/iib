@@ -31,9 +31,11 @@ import mx.org.kaana.mantic.db.dto.TcManticLotesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesEspecialesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesPromediosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
+import mx.org.kaana.mantic.lotes.beans.Kilo;
 import mx.org.kaana.mantic.lotes.beans.Porcentaje;
 import mx.org.kaana.mantic.lotes.beans.Lote;
 import mx.org.kaana.mantic.lotes.beans.Partida;
+import mx.org.kaana.mantic.lotes.beans.Unidad;
 import org.apache.log4j.Logger;
 
 /**
@@ -54,6 +56,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private String messageError;
 	private TcManticLotesBitacoraDto bitacora;
   private List<Porcentaje> porcentajes;
+  private List<Kilo> cantidades;
+  private List<Unidad> promedios;
   
 	public Transaccion(Lote orden) {
 		this(-1L, orden);
@@ -64,12 +68,27 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		this.orden = orden;
 	}
   
+	public Transaccion(Lote orden, TcManticLotesBitacoraDto bitacora) {
+		this.orden   = orden;
+    this.bitacora= bitacora;
+	}
+  
 	public Transaccion(List<Porcentaje> porcentajes) {
 		this.porcentajes= porcentajes;
 	}
   
+	public Transaccion(Lote orden, List<Kilo> cantidades) {
+    this.orden     = orden;
+		this.cantidades= cantidades;
+	}
+  
+	public Transaccion(List<Unidad> promedios, Lote orden) {
+    this.orden    = orden;
+		this.promedios= promedios;
+	}
+  
 	protected void setMessageError(String messageError) {
-		this.messageError=messageError;
+		this.messageError= messageError;
 	}
 
 	public String getMessageError() {
@@ -108,6 +127,12 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					break;
 				case COMPLEMENTAR:
           regresar= this.toUpdateAgrupado(sesion);
+          break;				
+				case RESTAURAR:
+          regresar= this.toCantidades(sesion);
+          break;				
+				case COPIAR:
+          regresar= this.toTerminado(sesion);
           break;				
 			} // switch
 			if(!regresar)
@@ -515,6 +540,66 @@ public class Transaccion extends IBaseTnx implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
+    return regresar;
+  }
+  
+  private Boolean toCantidades(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {
+      DaoFactory.getInstance().update(sesion, this.orden);
+      for (Kilo item: this.cantidades) {
+        item.setIdUsuario(JsfBase.getIdUsuario());
+        item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        switch(item.getSql()) {
+          case SELECT:
+            break;
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+            break;
+          case INSERT:
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+        } // switch    
+        item.setSql(ESql.SELECT);
+      } // for  
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
+    return regresar;
+  }
+  
+  private Boolean toTerminado(Session sesion) throws Exception {
+  Boolean regresar= Boolean.FALSE;
+    try {
+      DaoFactory.getInstance().update(sesion, this.orden);
+      for (Unidad item: this.promedios) {
+        item.setIdUsuario(JsfBase.getIdUsuario());
+        item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        switch(item.getSql()) {
+          case SELECT:
+            break;
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+            break;
+          case INSERT:
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+        } // switch    
+        item.setSql(ESql.SELECT);
+      } // for  
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;      
+    } // catch	
     return regresar;
   }
   
