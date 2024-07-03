@@ -7,15 +7,20 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Porcentaje de merma de producto limpio"/>
+	<ui:param name="titulo" value="Producto terminado"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
-				'contenedorGrupos\\:terminado': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
-				'contenedorGrupos\\:restos'   : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
-				'cantidad'                    : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
-				'porcentaje'                  : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": 100})', mascara: 'libre', grupo: 'general'}
+				'contenedorGrupos\\:articulos' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
+				'contenedorGrupos\\:terminado' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
+				'contenedorGrupos\\:restos'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
+				'cantidad'                     : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'porcentaje'                   : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": 100})', mascara: 'libre', grupo: 'general'},
+				'kilos'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.lote.cantidad}})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:nuevo'     : {validaciones: 'requerido|igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idProducto': {validaciones: 'requerido', mascara: 'no-aplica', grupo: 'importe'},
+				'contenedorGrupos\\:importe'   : {validaciones: 'requerido|mayor({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.lote.cantidad}})', mascara: 'libre', grupo: 'importe'}
 			};
 			
     	$(document).ready(function() {
@@ -48,7 +53,7 @@
                   <p:inputText id="consecutivo" value="#{manticLotesTerminado.lote.consecutivo}" styleClass="janal-column-center janal-wid-100-txt" readonly="true"/> 
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
-                  <p:outputLabel for="idArticulo" value="Articulo:"/>
+                  <p:outputLabel for="idArticulo" value="Producto origen:"/>
                   <p:inputText id="idArticulo" value="#{manticLotesTerminado.lote.articulo}" styleClass="janal-wid-100-txt" readonly="true"/> 
                 </p:panelGrid>
               </p:panelGrid>
@@ -63,23 +68,21 @@
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="terminado" value="Terminado:"/>
-                  <p:inputNumber id="terminado" value="#{manticLotesTerminado.attrs.terminado}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-color-blue janal-wid-100-txt janal-column-right" minValue="0" maxValue="#{manticLotesTerminado.lote.kilos}" thousandSeparator=",">
-                    <p:ajax event="change" listener="#{manticLotesTerminado.doLoadTotal()}" process="@this" update="@(.total)"/>
-                  </p:inputNumber>  
+                  <p:inputText id="terminado" value="#{manticLotesTerminado.orden.terminado}" styleClass="janal-column-center janal-wid-100-txt total" readonly="true"/> 
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="restos" value="Restos:"/>
-                  <p:inputNumber id="restos" value="#{manticLotesTerminado.attrs.restos}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-color-blue janal-wid-100-txt janal-column-right" minValue="0" maxValue="#{manticLotesTerminado.lote.kilos}" thousandSeparator=",">
+                  <p:inputNumber id="restos" value="#{manticLotesTerminado.orden.restos}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-color-blue janal-wid-100-txt janal-column-right" minValue="0" maxValue="#{manticLotesTerminado.lote.kilos}" thousandSeparator=",">
                     <p:ajax event="change" listener="#{manticLotesTerminado.doLoadTotal()}" process="@this" update="@(.total)"/>
                   </p:inputNumber>  
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
-                  <p:outputLabel value="Actualizado:"/>
-                  <p:inputText value="#{manticLotesTerminado.attrs.nuevo}" styleClass="janal-font-bold janal-color-red janal-column-center janal-wid-100-txt total" readonly="true"/> 
+                  <p:outputLabel for="nuevo" value="Actualizado:"/>
+                  <p:inputText id="nuevo" value="#{manticLotesTerminado.attrs.nuevo}" styleClass="janal-font-bold janal-color-red janal-column-center janal-wid-100-txt total" readonly="true"/> 
                 </p:panelGrid>
               </p:panelGrid>
               <p:spacer height="5px"/>
-              <p:dataTable id="porcentajes" var="row" value="#{manticLotesTerminado.porcentajes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idNotaCalidad}" styleClass="porcentajes" rowIndexVar="index">
+              <p:dataTable id="porcentajes" var="row" value="#{manticLotesTerminado.orden.unidades}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idNotaCalidad}" styleClass="porcentajes" rowIndexVar="index">
 								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
@@ -89,17 +92,69 @@
 								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Cantidad" rendered="false">
 									<h:outputText value="#{row.cantidad}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Porcentaje">
+								<p:column styleClass="MarAuto Responsive janal-wid-15">
+                  <f:facet name="header">
+                    <p:outputLabel for="contenedorGrupos:total" value="Porcentaje"/>
+                  </f:facet>
                   <p:inputNumber id="porcentaje" value="#{row.porcentaje}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" maxValue="100" thousandSeparator=",">
                     <p:ajax event="change" listener="#{manticLotesTerminado.doUpdatePorcentaje(row)}" process="@this" update="@(.total)"/>
                   </p:inputNumber>  
 								</p:column> 
                 <f:facet name="footer">
-                  <p:outputLabel style="float: left;" value="Total [#{manticLotesTerminado.porcentajes.size()}] registros"/>
+                  <p:outputLabel style="float: left;" value="Total [#{manticLotesTerminado.orden.unidades.size()}] registros"/>
                   <p:outputLabel styleClass="total" value="#{manticLotesTerminado.attrs.total}" escape="false"/>
                 </f:facet>
 							</p:dataTable>
-              <p:inputText id="articulos" value="#{manticLotesTerminado.attrs.articulos}" styleClass="janal-display-none"/>
+              <p:inputText id="articulos" value="#{manticLotesTerminado.attrs.articulos}" styleClass="janal-display-none total"/>
+              <p:inputText id="total" value="#{manticLotesTerminado.attrs.merma}" styleClass="janal-display-none total"/>
+              <p:spacer height="3px"/>
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-80, janal-wid-20">		
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-100-txt">		
+                  <p:outputLabel for="idProducto" value="Producto terminado:"/>
+                  <p:selectOneMenu id="idProducto" value="#{manticLotesTerminado.articulo.ikArticulo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt importe" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                    <f:selectItems value="#{manticLotesTerminado.attrs.productos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.articulo or element.articulo eq ''? '': '|'}#{element.articulo}"/>
+                    <p:column headerText="Código">
+                      <h:outputText value="#{item.codigo}"/>
+                    </p:column>   
+                    <p:column headerText="Nombre">
+                      <h:outputText value="#{item.articulo}"/>
+                    </p:column>   
+                  </p:selectOneMenu>
+                </p:panelGrid>  
+                <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt">
+									<p:outputLabel for="importe" value="Importe:"/>
+                  <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-95, janal-fix-5 janal-column-right" style="margin-top: -2px">
+                    <p:inputNumber id="importe" value="#{manticLotesTerminado.articulo.cantidad}" styleClass="janal-wid-100-txt importe" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" maxValue="#{manticLotesTerminado.lote.kilos}" thousandSeparator=","/>
+                    <p:commandButton action="#{manticLotesTerminado.doAdd()}" icon="fa fa-plus" title="Agregar" process="@this @(.importe)" update=" productos @(.total)" onstart="return janal.partial('importe')" oncomplete="janal.desbloquear()"/>
+                  </p:panelGrid>  
+                </p:panelGrid>  
+              </p:panelGrid>  
+              <p:dataTable id="productos" var="row" value="#{manticLotesTerminado.orden.articulos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idArticulo}" styleClass="costos" rowIndexVar="index">
+								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-8 gastos" headerText="Código">
+									<h:outputText value="#{row.codigo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive" headerText="Producto terminado">
+									<h:outputText value="#{row.articulo}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right">
+                  <f:facet name="header">
+                    <p:outputLabel value="Cantidad" styleClass="kilos"/>
+                  </f:facet>
+                  <p:inputNumber id="kilos" value="#{row.cantidad}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" maxValue="#{manticLotesTerminado.lote.kilos}" thousandSeparator=",">
+                    <p:ajax event="change" listener="#{manticLotesTerminado.doUpdateImporte(row)}" process="@this" update="@(.total)"/>      
+                  </p:inputNumber>  
+								</p:column>   
+								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
+                  <p:commandButton icon="fa fa-trash" title="Eliminar" process="@this" update="productos @(.total)" actionListener="#{manticLotesTerminado.doDelete(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.sql ne 'DELETE'}"/>
+                  <p:commandButton icon="fa fa-recycle" title="Recuperar" process="@this" update="productos @(.total)" actionListener="#{manticLotesTerminado.doRecover(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" rendered="#{row.sql eq 'DELETE'}"/>
+								</p:column>
+                <f:facet name="footer">
+                  <p:outputLabel value="Total [#{manticLotesTerminado.orden.articulos.size()}] registros"/>
+                </f:facet>
+							</p:dataTable>
 						</p:tab>
 					</p:tabView>
 				</div>
@@ -108,11 +163,11 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesTerminado.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesTerminado.porcentajes.size() eq 0}"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesTerminado.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()" disabled="#{manticLotesTerminado.orden.unidades.size() eq 0}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticLotesTerminado.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesTerminado.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesTerminado.porcentajes.size() eq 0}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesTerminado.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()" disabled="#{manticLotesTerminado.orden.unidades.size() eq 0}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticLotesTerminado.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

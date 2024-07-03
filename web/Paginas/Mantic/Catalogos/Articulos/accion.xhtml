@@ -11,6 +11,7 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 
+				'contenedorGrupos\\:clase'         : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:nombre'         : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:precio'         : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:ancho'          : {validaciones: 'requerido', mascara: 'libre'},
@@ -84,6 +85,10 @@
 						<p:ajax event="tabChange" process="@this" update="tablaTiposVenta tablaPreciosSugeridos tablaDescuentosEspeciales tablaEspecificaciones tablaDescuentos tablaArticulosProveedores" oncomplete="janal.refresh();"/>
             <p:tab title="General">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-120, janal-wid-100-txt">								
+								<p:outputLabel for="idTipoClase" value="Clase:"/>
+                <p:selectOneMenu id="idTipoClase" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idTipoClase}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">
+                  <f:selectItems value="#{manticCatalogosArticulosAccion.attrs.clases}"/>
+								</p:selectOneMenu>								
 								<p:outputLabel for="nombre" value="Nombre:"/>
 								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.nombre}" />                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
@@ -141,10 +146,10 @@
 								<p:outputLabel for="idTipoArticulo" value="Tipo articulo:"/>
 								<p:selectOneMenu id="idTipoArticulo" value="#{manticCatalogosArticulosAccion.registroArticulo.idTipoArticulo}" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" onstart="janal.bloquear()" process="@this contenedorGrupos" update="contenedorGrupos" oncomplete="janal.desbloquear();janal.refresh();"/>
-									<f:selectItem itemLabel="ARTICULO" itemValue="1"/>
+									<f:selectItem itemLabel="PRODUCTO TERMINADO" itemValue="1"/>
 									<f:selectItem itemLabel="REFACCIÓN" itemValue="2"/>
 									<f:selectItem itemLabel="SERVICIO" itemValue="3"/>
-									<f:selectItem itemLabel="INSUMOS" itemValue="4"/>
+									<f:selectItem itemLabel="PRODUCTO ORIGEN" itemValue="4"/>
 								</p:selectOneMenu>								
 								<p:outputLabel for="idBarras" value="Código de barras:"/>
 								<p:inputSwitch id="idBarras" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idBarras}" offLabel="NO" onLabel="SI"/>

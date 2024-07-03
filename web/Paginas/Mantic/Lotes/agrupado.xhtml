@@ -81,7 +81,7 @@
                     <h:outputText value="#{item.descripcion}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="idArticulo" value="Producto:"/>
+                <p:outputLabel for="idArticulo" value="Producto origen:"/>
                 <p:selectOneMenu id="idArticulo" value="#{manticLotesAgrupado.orden.lote.ikArticulo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt recalculo" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{manticLotesAgrupado.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo}#{empty element.articulo or element.articulo eq ''? '': '|'}#{element.articulo}"/>
                   <p:column headerText="Código">

@@ -26,6 +26,10 @@ public class Lote extends TcManticLotesDto implements Serializable {
   private UISelectEntity ikArticulo;
   private UISelectEntity ikTipoClase;
   private List<Partida> partidas;
+  private List<Unidad> unidades;
+  private List<Articulo> articulos;
+  private List<Kilo> cantidades;
+  private List<Porcentaje> porcentajes;
 
   public Lote() {
     this(-1L);
@@ -38,6 +42,10 @@ public class Lote extends TcManticLotesDto implements Serializable {
     this.setIkArticulo(new UISelectEntity(-1L));
     this.setIkTipoClase(new UISelectEntity(-1L));
     this.setPartidas(new ArrayList<Partida>());
+    this.setUnidades(new ArrayList<Unidad>());
+    this.setArticulos(new ArrayList<Articulo>());
+    this.setCantidades(new ArrayList<Kilo>());
+    this.setPorcentajes(new ArrayList<Porcentaje>());
   }
 
   public Lote(Double original, Long idLoteTipo, String nombre, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, Long idLote, String observaciones, Long idEmpresa, Double cantidad, Long orden, Long idArticulo, Long idLoteEstatus, Long idTipoClase, Double merma, Double terminado, Double restos) {
@@ -47,6 +55,10 @@ public class Lote extends TcManticLotesDto implements Serializable {
     this.setIkArticulo(new UISelectEntity(-1L));
     this.setIkTipoClase(new UISelectEntity(-1L));
     this.setPartidas(new ArrayList<Partida>());
+    this.setUnidades(new ArrayList<Unidad>());
+    this.setArticulos(new ArrayList<Articulo>());
+    this.setCantidades(new ArrayList<Kilo>());
+    this.setPorcentajes(new ArrayList<Porcentaje>());
   }
   
   public UISelectEntity getIkEmpresa() {
@@ -111,6 +123,38 @@ public class Lote extends TcManticLotesDto implements Serializable {
 
   public void setItArticulo(Long itArticulo) {
     this.itArticulo = itArticulo;
+  }
+
+  public List<Unidad> getUnidades() {
+    return unidades;
+  }
+
+  public void setUnidades(List<Unidad> unidades) {
+    this.unidades = unidades;
+  }
+
+  public List<Articulo> getArticulos() {
+    return articulos;
+  }
+
+  public void setArticulos(List<Articulo> articulos) {
+    this.articulos = articulos;
+  }
+
+  public List<Kilo> getCantidades() {
+    return cantidades;
+  }
+
+  public void setCantidades(List<Kilo> cantidades) {
+    this.cantidades = cantidades;
+  }
+
+  public List<Porcentaje> getPorcentajes() {
+    return porcentajes;
+  }
+
+  public void setPorcentajes(List<Porcentaje> porcentajes) {
+    this.porcentajes = porcentajes;
   }
   
 }

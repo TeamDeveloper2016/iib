@@ -41,20 +41,20 @@ public class Calidad extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID= 127393488565639361L;
   
+  private Lote orden;
   private Entity lote;
 	protected EAccion accion;	
-  private List<Kilo> cantidades;
 
+  public Lote getOrden() {
+    return orden;
+  }
+
+  public void setOrden(Lote orden) {
+    this.orden = orden;
+  }
+  
   public Entity getLote() {
     return lote;  
-  }
-
-  public List<Kilo> getCantidades() {
-    return cantidades;
-  }
-
-  public void setCantidades(List<Kilo> cantidades) {
-    this.cantidades = cantidades;
   }
 
   @PostConstruct
@@ -62,7 +62,7 @@ public class Calidad extends IBaseAttribute implements Serializable {
   protected void init() {
     if(JsfBase.getFlashAttribute("accion")== null)
       UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-    this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.TRANSFORMACION: (EAccion)JsfBase.getFlashAttribute("accion");
+    this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.RESTAURAR: (EAccion)JsfBase.getFlashAttribute("accion");
     this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? -1L: JsfBase.getFlashAttribute("idLote"));
     this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
     this.doLoad();    
@@ -84,10 +84,15 @@ public class Calidad extends IBaseAttribute implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lote= (Entity)DaoFactory.getInstance().toEntity("VistaLotesDto", "lazy", params);
-      if(!Objects.equals(this.lote, null)) {
+      switch(this.accion) {
+        case CONSULTAR:
+        case RESTAURAR:
+          this.orden= (Lote)DaoFactory.getInstance().toEntity(Lote.class, "TcManticLotesDto", "igual", params);
+          break;
+      } // switch
+      if(!Objects.equals(this.lote, null)) 
         UIBackingUtilities.toFormatEntity(this.lote, columns);
-        this.doLoadCantidades();
-      } // if  
+      this.doLoadCantidades();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -97,16 +102,16 @@ public class Calidad extends IBaseAttribute implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally
-  } // doLoad
+  } 
  
   public void doLoadCantidades() {
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("sortOrder", "order by tc_mantic_notas_mermas.id_nota_merma");
       params.put("idLote", this.lote.toLong("idLote"));
-      this.cantidades= (List<Kilo>)DaoFactory.getInstance().toEntitySet(Kilo.class, "VistaLotesDto", "cantidades", params);
-      if(!Objects.equals(this.cantidades, null)) {
-        for (Kilo item: this.cantidades) {
+      this.orden.setCantidades((List<Kilo>)DaoFactory.getInstance().toEntitySet(Kilo.class, "VistaLotesDto", "cantidades", params));
+      if(!Objects.equals(this.orden.getCantidades(), null)) {
+        for (Kilo item: this.orden.getCantidades()) {
           if(Objects.equals(item.getIdLoteCalidad(), -1L)) {
             item.setIdLote(this.lote.toLong("idLote"));
             item.setIdArticulo(this.lote.toLong("idArticulo"));
@@ -119,9 +124,9 @@ public class Calidad extends IBaseAttribute implements Serializable {
         } // for
       } // if  
       else
-        this.cantidades= new ArrayList<>();  
+        this.orden.setCantidades(new ArrayList<>());  
       this.toLoadTotal();
-      this.attrs.put("articulos", this.cantidades.size());
+      this.attrs.put("articulos", this.orden.getCantidades().size());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -133,22 +138,16 @@ public class Calidad extends IBaseAttribute implements Serializable {
   }
   
   public String doAceptar() {  
-    String regresar          = null;
-    Transaccion transaccion   = null;
-    Map<String, Object> params= new HashMap<>();
+    String regresar        = null;
+    Transaccion transaccion= null;
 		try {
-      params.put("idLote", this.attrs.get("idLote"));
-      Lote orden= (Lote)DaoFactory.getInstance().toEntity(Lote.class, "TcManticLotesDto", "igual", params);
-      if(Objects.equals(orden.getIdTipoClase(), -1L))
-        orden.setIdTipoClase(null);
-      orden.setMerma((Double)this.attrs.get("merma"));
-			transaccion = new Transaccion(orden, this.cantidades);
+			transaccion = new Transaccion(orden);
 			if (transaccion.ejecutar(this.accion)) {
         regresar= this.doCancelar();
-        JsfBase.addMessage("Se actualizaron los porcentajes", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se actualizó la información", ETipoMensaje.INFORMACION);
       } // if
       else 
-				JsfBase.addMessage("Ocurrió un error en los porcentajes", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error en la información", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -170,12 +169,11 @@ public class Calidad extends IBaseAttribute implements Serializable {
   
   private void toLoadTotal() {
     Double suma= 0D;
-    for (Kilo item: this.cantidades) {  
+    for (Kilo item: this.orden.getCantidades()) 
       suma+= item.getCantidad();
-    } // for
     this.attrs.put("total", "Total: <strong>"+ suma+ "</strong>");
-    this.attrs.put("merma", suma);
-    this.attrs.put("nuevo", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.lote.toDouble("kilos")- suma));
+    this.orden.setMerma(suma);
+    this.attrs.put("nuevo", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.lote.toDouble("kilos")- this.orden.getMerma()));
   }
   
 }

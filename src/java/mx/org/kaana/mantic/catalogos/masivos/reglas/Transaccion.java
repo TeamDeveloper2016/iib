@@ -574,6 +574,25 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toFindArticuloIndentico
 
+	private Long toFindClase(Session sesion, String clase) {
+		Long regresar             = 1L;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("descripcion", clase);
+			Value data= DaoFactory.getInstance().toField(sesion, "TcManticTiposClasesDto", "igual", params, "idTipoClase");
+			if(data!= null && data.getData()!= null)
+				regresar= data.toLong();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toFindPrincipal
+
+  
   private Boolean toArticulos(Session sesion, File archivo) throws Exception {
 		Boolean regresar	      = false;
 		Workbook workbook	      = null;
@@ -599,7 +618,7 @@ public class Transaccion extends IBaseTnx {
 					try {
 						if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 							// 0           1          2        3          4          5          6           7        8        9            10            11          12      13         14         15         16
-							//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT|CODIGOFABRICANTE|FACTOR|TIPO PRODUCTO  
+							//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO|SAT|CODIGOFABRICANTE|FACTOR|TIPO PRODUCTO|CLASE  
 							String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							double costo   = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 							double menudeo = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
@@ -613,9 +632,11 @@ public class Transaccion extends IBaseTnx {
 							String sat     = new String(sheet.getCell(13, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							String fabricante= new String(sheet.getCell(14, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							double pesoEstimado= Numero.getDouble(sheet.getCell(15, fila).getContents()!= null? sheet.getCell(15, fila).getContents().replaceAll("[$, ]", ""): "0", 1D);
-							long articuloTipo  = Numero.getLong(sheet.getCell(16, fila).getContents()!= null? sheet.getCell(16, fila).getContents().replaceAll("[$, ]", ""): "1", 1L);
-							String nombre  = new String(contenido.getBytes(ISO_8859_1), UTF_8);
+							long articuloTipo= Numero.getLong(sheet.getCell(16, fila).getContents()!= null? sheet.getCell(16, fila).getContents().replaceAll("[$, ]", ""): "1", 1L);
+							String clase     = new String(sheet.getCell(17, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							String nombre    = new String(contenido.getBytes(ISO_8859_1), UTF_8);
 							if(costo>= 0 && menudeo>= 0 && medio>= 0 && mayoreo>= 0) {
+                Long idTipoClse= this.toFindClase(sesion, clase);
 								nombre= nombre.replaceAll(Constantes.CLEAN_ART, "").trim();
                 fabricante= fabricante.replaceAll(Constantes.CLEAN_ART, "").trim();                
                 codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
@@ -646,6 +667,8 @@ public class Transaccion extends IBaseTnx {
 											articulo.setSat(sat);
 										if(pesoEstimado>= 0D) 
 											articulo.setPesoEstimado(pesoEstimado);
+                    if(!Objects.equals(clase, null) && clase.trim().length()> 0)
+                      articulo.setIdTipoClase(idTipoClse);
 										DaoFactory.getInstance().update(sesion, articulo);
 									} // if
 									else {
@@ -689,7 +712,8 @@ public class Transaccion extends IBaseTnx {
                       !Cadena.isVacio(fabricante)? fabricante.replaceAll(Constantes.CLEAN_ART, "").trim(): null, // String fabricante
                       2L, // Long idVerificado 
                       Numero.toAjustarDecimales(menudeo, costo<= 10), // especial
-                      0D // Double factor
+                      0D, // Double factor
+                      idTipoClse // Long idTipoClase      
 										);
 										TcManticArticulosDto identico= this.toFindArticuloIdentico(sesion, articulo.toMap(), 1L);
 										if(identico== null)

@@ -67,7 +67,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.doLoadUnidadesMedidas();
       this.loadGrupos();
       this.loadTiposVentas();
-      this.toloadArticulosImpuestos();
+      this.toLoadArticulosImpuestos();
+      this.toLoadClases();
       String dns= Configuracion.getInstance().getPropiedadServidor("sistema.dns");
       this.path = dns.substring(0, dns.lastIndexOf("/")+ 1).concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/galeria/1/");
     } // try
@@ -241,7 +242,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // loadClientes	
 	
-	private void toloadArticulosImpuestos() {
+	private void toLoadArticulosImpuestos() {
 		List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
@@ -258,7 +259,24 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally
-	} // loadArticulosImpuestos
+	} 
+  
+	private void toLoadClases() {
+    Map<String, Object> params= new HashMap<>();
+    List<UISelectItem> clases = null;
+    try {      
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			clases= UISelect.build("TcManticTiposClasesDto", params, "descripcion", EFormatoDinamicos.MAYUSCULAS);
+			this.attrs.put("clases", clases);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+	} 
   
 	public String doKardex() {
 		JsfBase.setFlashAttribute("idArticulo", this.attrs.get("idArticulo"));

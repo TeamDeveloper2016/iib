@@ -23,6 +23,7 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.lotes.beans.Lote;
 import mx.org.kaana.mantic.lotes.beans.Porcentaje;
 
 /**
@@ -39,29 +40,29 @@ public class Porcentajes extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID= 127393488565639361L;
   
+  private Lote orden;
   private Entity lote;
 	protected EAccion accion;	
-  private List<Porcentaje> porcentajes;
 
+  public Lote getOrden() {
+    return orden;
+  }
+
+  public void setOrden(Lote orden) {
+    this.orden = orden;
+  }
+  
   public Entity getLote() {
     return lote;  
-  }
-
-  public List<Porcentaje> getPorcentajes() {
-    return porcentajes;
-  }
-
-  public void setPorcentajes(List<Porcentaje> porcentajes) {
-    this.porcentajes = porcentajes;
   }
 
   @PostConstruct
   @Override
   protected void init() {
-    if(JsfBase.getFlashAttribute("accion")== null)
-      UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+    // if(JsfBase.getFlashAttribute("accion")== null)
+    //  UIBackingUtilities.execute("janal.isPostBack('cancelar')");
     this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.TRANSFORMACION: (EAccion)JsfBase.getFlashAttribute("accion");
-    this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? -1L: JsfBase.getFlashAttribute("idLote"));
+    this.attrs.put("idLote", JsfBase.getFlashAttribute("idLote")== null? 13L: JsfBase.getFlashAttribute("idLote"));
     this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
     this.doLoad();    
   }
@@ -82,10 +83,15 @@ public class Porcentajes extends IBaseAttribute implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lote= (Entity)DaoFactory.getInstance().toEntity("VistaLotesDto", "lazy", params);
-      if(!Objects.equals(this.lote, null)) {
+      switch(this.accion) {
+        case CONSULTAR:
+        case TRANSFORMACION:
+          this.orden= (Lote)DaoFactory.getInstance().toEntity(Lote.class, "TcManticLotesDto", "igual", params);
+          break;
+      } // switch
+      if(!Objects.equals(this.lote, null)) 
         UIBackingUtilities.toFormatEntity(this.lote, columns);
-        this.doLoadPorcentajes();
-      } // if  
+      this.doLoadPorcentajes();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -102,9 +108,9 @@ public class Porcentajes extends IBaseAttribute implements Serializable {
     try {      
       params.put("sortOrder", "order by tc_mantic_notas_calidades.id_nota_calidad");
       params.put("idLote", this.lote.toLong("idLote"));
-      this.porcentajes= (List<Porcentaje>)DaoFactory.getInstance().toEntitySet(Porcentaje.class, "VistaLotesDto", "porcentajes", params);
-      if(!Objects.equals(this.porcentajes, null)) {
-        for (Porcentaje item: this.porcentajes) {
+      this.orden.setPorcentajes((List<Porcentaje>)DaoFactory.getInstance().toEntitySet(Porcentaje.class, "VistaLotesDto", "porcentajes", params));
+      if(!Objects.equals(this.orden.getPorcentajes(), null)) {
+        for (Porcentaje item: this.orden.getPorcentajes()) {
           if(Objects.equals(item.getIdLotePromedio(), -1L)) {
             item.setIdLote(this.lote.toLong("idLote"));
             item.setIdArticulo(this.lote.toLong("idArticulo"));
@@ -117,9 +123,9 @@ public class Porcentajes extends IBaseAttribute implements Serializable {
         } // for
       } // if  
       else
-        this.porcentajes= new ArrayList<>();  
+        this.orden.setPorcentajes(new ArrayList<>());  
       this.toLoadTotal();
-      this.attrs.put("articulos", this.porcentajes.size());
+      this.attrs.put("articulos", this.orden.getPorcentajes().size());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -134,7 +140,7 @@ public class Porcentajes extends IBaseAttribute implements Serializable {
     String regresar        = null;
     Transaccion transaccion= null;
     try {			
-			transaccion = new Transaccion(this.porcentajes);
+			transaccion = new Transaccion(this.orden);
 			if (transaccion.ejecutar(this.accion)) {
         regresar= this.doCancelar();
         JsfBase.addMessage("Se actualizaron los porcentajes", ETipoMensaje.INFORMACION);
@@ -162,10 +168,10 @@ public class Porcentajes extends IBaseAttribute implements Serializable {
   
   private void toLoadTotal() {
     double suma= 0D;
-    for (Porcentaje item: this.porcentajes) {  
+    for (Porcentaje item: this.orden.getPorcentajes()) 
       suma+= item.getPorcentaje();
-    } // for
     this.attrs.put("total", "Total: <strong>"+ suma+ "%</strong>");
+    this.attrs.put("porcentaje", suma);
   }
   
 }

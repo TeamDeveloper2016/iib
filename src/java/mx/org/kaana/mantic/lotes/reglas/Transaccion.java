@@ -31,6 +31,7 @@ import mx.org.kaana.mantic.db.dto.TcManticLotesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesEspecialesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesPromediosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
+import mx.org.kaana.mantic.lotes.beans.Articulo;
 import mx.org.kaana.mantic.lotes.beans.Kilo;
 import mx.org.kaana.mantic.lotes.beans.Porcentaje;
 import mx.org.kaana.mantic.lotes.beans.Lote;
@@ -55,9 +56,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	protected Lote orden;	
 	private String messageError;
 	private TcManticLotesBitacoraDto bitacora;
-  private List<Porcentaje> porcentajes;
-  private List<Kilo> cantidades;
-  private List<Unidad> promedios;
   
 	public Transaccion(Lote orden) {
 		this(-1L, orden);
@@ -71,20 +69,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	public Transaccion(Lote orden, TcManticLotesBitacoraDto bitacora) {
 		this.orden   = orden;
     this.bitacora= bitacora;
-	}
-  
-	public Transaccion(List<Porcentaje> porcentajes) {
-		this.porcentajes= porcentajes;
-	}
-  
-	public Transaccion(Lote orden, List<Kilo> cantidades) {
-    this.orden     = orden;
-		this.cantidades= cantidades;
-	}
-  
-	public Transaccion(List<Unidad> promedios, Lote orden) {
-    this.orden    = orden;
-		this.promedios= promedios;
 	}
   
 	protected void setMessageError(String messageError) {
@@ -364,7 +348,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
   private Boolean toPromedios(Session sesion) throws Exception {
     Boolean regresar= Boolean.FALSE;
     try {
-      for (Porcentaje item: this.porcentajes) {
+      for (Porcentaje item: this.orden.getPorcentajes()) {
         item.setIdUsuario(JsfBase.getIdUsuario());
         item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         switch(item.getSql()) {
@@ -377,6 +361,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
             regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
             break;
           case INSERT:
+            item.setIdLote(this.orden.getIdLote());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
         } // switch    
@@ -547,7 +532,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Boolean regresar= Boolean.FALSE;
     try {
       DaoFactory.getInstance().update(sesion, this.orden);
-      for (Kilo item: this.cantidades) {
+      for (Kilo item: this.orden.getCantidades()) {
         item.setIdUsuario(JsfBase.getIdUsuario());
         item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         switch(item.getSql()) {
@@ -560,6 +545,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
             regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
             break;
           case INSERT:
+            item.setIdLote(this.orden.getIdLote());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
         } // switch    
@@ -574,10 +560,10 @@ public class Transaccion extends IBaseTnx implements Serializable {
   }
   
   private Boolean toTerminado(Session sesion) throws Exception {
-  Boolean regresar= Boolean.FALSE;
+    Boolean regresar= Boolean.FALSE;
     try {
       DaoFactory.getInstance().update(sesion, this.orden);
-      for (Unidad item: this.promedios) {
+      for (Unidad item: this.orden.getUnidades()) {
         item.setIdUsuario(JsfBase.getIdUsuario());
         item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
         switch(item.getSql()) {
@@ -590,6 +576,26 @@ public class Transaccion extends IBaseTnx implements Serializable {
             regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
             break;
           case INSERT:
+            item.setIdLote(this.orden.getIdLote());
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+        } // switch    
+        item.setSql(ESql.SELECT);
+      } // for  
+      for (Articulo item: this.orden.getArticulos()) {
+        item.setIdUsuario(JsfBase.getIdUsuario());
+        item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        switch(item.getSql()) {
+          case SELECT:
+            break;
+          case UPDATE:
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+            break;
+          case INSERT:
+            item.setIdLote(this.orden.getIdLote());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
         } // switch    

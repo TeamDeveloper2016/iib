@@ -1,6 +1,9 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
+import java.sql.Blob;
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -10,6 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -24,46 +30,43 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_lotes_limpios")
-public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_lotes_terminados")
+public class TcManticLotesTerminadosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_lote_limpio")
-  private Long idLoteLimpio;
   @Column (name="id_lote")
   private Long idLote;
-  @Column (name="id_nota_limpio")
-  private Long idNotaLimpio;
+  @Column (name="observaciones")
+  private String observaciones;
   @Column (name="cantidad")
   private Double cantidad;
-  @Column (name="porcentaje")
-  private Double porcentaje;
   @Column (name="id_articulo")
   private Long idArticulo;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_lote_terminado")
+  private Long idLoteTerminado;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcManticLotesLimpiosDto() {
+  public TcManticLotesTerminadosDto() {
     this(new Long(-1L));
   }
 
-  public TcManticLotesLimpiosDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null);
+  public TcManticLotesTerminadosDto(Long key) {
+    this(null, null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcManticLotesLimpiosDto(Long idUsuario, Long idLoteLimpio, Long idLote, Long idNotaLimpio, Double cantidad, Double porcentaje, Long idArticulo) {
+  public TcManticLotesTerminadosDto(Long idUsuario, Long idLote, String observaciones, Double cantidad, Long idArticulo, Long idLoteTerminado) {
     setIdUsuario(idUsuario);
-    setIdLoteLimpio(idLoteLimpio);
     setIdLote(idLote);
-    setIdNotaLimpio(idNotaLimpio);
+    setObservaciones(observaciones);
     setCantidad(cantidad);
-    setPorcentaje(porcentaje);
     setIdArticulo(idArticulo);
+    setIdLoteTerminado(idLoteTerminado);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -75,14 +78,6 @@ public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdLoteLimpio(Long idLoteLimpio) {
-    this.idLoteLimpio = idLoteLimpio;
-  }
-
-  public Long getIdLoteLimpio() {
-    return idLoteLimpio;
-  }
-
   public void setIdLote(Long idLote) {
     this.idLote = idLote;
   }
@@ -91,12 +86,12 @@ public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
     return idLote;
   }
 
-  public void setIdNotaLimpio(Long idNotaLimpio) {
-    this.idNotaLimpio = idNotaLimpio;
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
   }
 
-  public Long getIdNotaLimpio() {
-    return idNotaLimpio;
+  public String getObservaciones() {
+    return observaciones;
   }
 
   public void setCantidad(Double cantidad) {
@@ -107,20 +102,20 @@ public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
     return cantidad;
   }
 
-  public void setPorcentaje(Double porcentaje) {
-    this.porcentaje = porcentaje;
-  }
-
-  public Double getPorcentaje() {
-    return porcentaje;
-  }
-
   public void setIdArticulo(Long idArticulo) {
     this.idArticulo = idArticulo;
   }
 
   public Long getIdArticulo() {
     return idArticulo;
+  }
+
+  public void setIdLoteTerminado(Long idLoteTerminado) {
+    this.idLoteTerminado = idLoteTerminado;
+  }
+
+  public Long getIdLoteTerminado() {
+    return idLoteTerminado;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -134,12 +129,12 @@ public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdLoteLimpio();
+  	return getIdLoteTerminado();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idLoteLimpio = key;
+  	this.idLoteTerminado = key;
   }
 
   @Override
@@ -148,17 +143,15 @@ public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdLoteLimpio());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdLote());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNotaLimpio());
+		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getPorcentaje());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdLoteTerminado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -169,20 +162,19 @@ public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idLoteLimpio", getIdLoteLimpio());
 		regresar.put("idLote", getIdLote());
-		regresar.put("idNotaLimpio", getIdNotaLimpio());
+		regresar.put("observaciones", getObservaciones());
 		regresar.put("cantidad", getCantidad());
-		regresar.put("porcentaje", getPorcentaje());
 		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("idLoteTerminado", getIdLoteTerminado());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[] {
-      getIdUsuario(), getIdLoteLimpio(), getIdLote(), getIdNotaLimpio(), getCantidad(), getPorcentaje(), getIdArticulo(), getRegistro()
+    Object[] regresar = new Object[]{
+    getIdUsuario(), getIdLote(), getObservaciones(), getCantidad(), getIdArticulo(), getIdLoteTerminado(), getRegistro()
     };
     return regresar;
   }
@@ -196,8 +188,8 @@ public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idLoteLimpio~");
-    regresar.append(getIdLoteLimpio());
+    regresar.append("idLoteTerminado~");
+    regresar.append(getIdLoteTerminado());
     regresar.append("|");
     return regresar.toString();
   }
@@ -205,18 +197,18 @@ public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdLoteLimpio());
+    regresar.append(getIdLoteTerminado());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticLotesLimpiosDto.class;
+    return TcManticLotesTerminadosDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdLoteLimpio()!= null && getIdLoteLimpio()!=-1L;
+  	return getIdLoteTerminado()!= null && getIdLoteTerminado()!=-1L;
   }
 
   @Override
@@ -227,8 +219,8 @@ public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticLotesLimpiosDto other = (TcManticLotesLimpiosDto) obj;
-    if (getIdLoteLimpio() != other.idLoteLimpio && (getIdLoteLimpio() == null || !getIdLoteLimpio().equals(other.idLoteLimpio))) {
+    final TcManticLotesTerminadosDto other = (TcManticLotesTerminadosDto) obj;
+    if (getIdLoteTerminado() != other.idLoteTerminado && (getIdLoteTerminado() == null || !getIdLoteTerminado().equals(other.idLoteTerminado))) {
       return false;
     }
     return true;
@@ -237,7 +229,7 @@ public class TcManticLotesLimpiosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdLoteLimpio() != null ? getIdLoteLimpio().hashCode() : 0);
+    hash = 67 * hash + (getIdLoteTerminado() != null ? getIdLoteTerminado().hashCode() : 0);
     return hash;
   }
 

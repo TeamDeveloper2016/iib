@@ -7,13 +7,14 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Porcentajes de merma de origen"/>
+	<ui:param name="titulo" value="Porcentajes de merma de producto origen"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:articulos'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
-				'cantidad'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
-				'porcentaje'                      : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": 100})', mascara: 'libre', grupo: 'general'}
+				'contenedorGrupos\\:total'    : {validaciones: 'requerido|mayor({"cuanto": 0})|menor-igual({"cuanto": 100})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
+				'cantidad'                    : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'porcentaje'                  : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": 100})', mascara: 'libre', grupo: 'general'}
 			};
 			
     	$(document).ready(function() {
@@ -46,7 +47,7 @@
                   <p:inputText id="consecutivo" value="#{manticLotesPorcentajes.lote.consecutivo}" styleClass="janal-column-center janal-wid-100-txt" readonly="true"/> 
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
-                  <p:outputLabel for="idArticulo" value="Articulo:"/>
+                  <p:outputLabel for="idArticulo" value="Producto origen:"/>
                   <p:inputText id="idArticulo" value="#{manticLotesPorcentajes.lote.articulo}" styleClass="janal-wid-100-txt" readonly="true"/> 
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
@@ -55,7 +56,7 @@
                 </p:panelGrid>
               </p:panelGrid>
               <p:spacer height="5px"/>
-              <p:dataTable id="porcentajes" var="row" value="#{manticLotesPorcentajes.porcentajes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idNotaCalidad}" styleClass="porcentajes" rowIndexVar="index">
+              <p:dataTable id="porcentajes" var="row" value="#{manticLotesPorcentajes.orden.porcentajes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.idNotaCalidad}" styleClass="porcentajes" rowIndexVar="index">
 								<p:column styleClass="MarAuto Responsive janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
@@ -65,17 +66,21 @@
 								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Cantidad" rendered="false">
 									<h:outputText value="#{row.cantidad}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Porcentaje">
+								<p:column styleClass="MarAuto Responsive janal-wid-15">
+                  <f:facet name="header">
+                    <p:outputLabel for="contenedorGrupos:total" value="Porcentaje"/>
+                  </f:facet>
                   <p:inputNumber id="porcentaje" value="#{row.porcentaje}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" maxValue="100" thousandSeparator=",">
                     <p:ajax event="change" listener="#{manticLotesPorcentajes.doUpdatePorcentaje(row)}" process="@this" update="@(.total)"/>
                   </p:inputNumber>  
 								</p:column> 
                 <f:facet name="footer">
-                  <p:outputLabel style="float: left;" value="Total [#{manticLotesPorcentajes.porcentajes.size()}] registros"/>
+                  <p:outputLabel style="float: left;" value="Total [#{manticLotesPorcentajes.orden.porcentajes.size()}] registros"/>
                   <p:outputLabel styleClass="total" value="#{manticLotesPorcentajes.attrs.total}" escape="false"/>
                 </f:facet>
 							</p:dataTable>
               <p:inputText id="articulos" value="#{manticLotesPorcentajes.attrs.articulos}" styleClass="janal-display-none"/>
+              <p:inputText id="total" value="#{manticLotesPorcentajes.attrs.porcentaje}" styleClass="janal-display-none total"/>
 						</p:tab>
 					</p:tabView>
 				</div>
@@ -84,11 +89,11 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesPorcentajes.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesPorcentajes.porcentajes.size() eq 0}"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticLotesPorcentajes.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesPorcentajes.orden.porcentajes.size() eq 0}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticLotesPorcentajes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesPorcentajes.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesPorcentajes.porcentajes.size() eq 0}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticLotesPorcentajes.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" disabled="#{manticLotesPorcentajes.orden.porcentajes.size() eq 0}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticLotesPorcentajes.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

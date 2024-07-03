@@ -60,7 +60,7 @@
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticLotesEspecial.orden.lote.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt involucrados" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticLotesEspecial.doUpdateClases}" process="@this" update="idTipoClase tabla @(.involucrados)"/>
-									<f:selectItems value="#{manticLotesEspecial.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
+									<f:selectItems value="#{manticLotesEspecial.attrs.almacenes}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
