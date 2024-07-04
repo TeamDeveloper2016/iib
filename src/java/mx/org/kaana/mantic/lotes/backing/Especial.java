@@ -116,6 +116,7 @@ public class Especial extends Accion implements IBaseStorage, Serializable {
     return regresar;
   } // doAccion
 
+  @Override
   public void doUpdateAlmacenes() {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();

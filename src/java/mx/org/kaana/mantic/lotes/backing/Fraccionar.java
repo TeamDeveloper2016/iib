@@ -14,10 +14,10 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.mantic.lotes.reglas.Transaccion;
-import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
@@ -74,6 +74,7 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       params.put("sortOrder", "order by tc_mantic_lotes.registro");      
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -112,7 +113,7 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
         this.orden.setIkEmpresa(new UISelectEntity(this.lote.toLong("idEmpresa")));
         this.orden.setIkAlmacen(new UISelectEntity(this.lote.toLong("idAlmacen")));
         this.orden.setIkArticulo(new UISelectEntity(this.lote.toLong("idArticulo")));
-        this.doLoadPartidas();
+        this.toLoadPartidas();
         UIBackingUtilities.toFormatEntity(this.lote, columns);
       } // if  
       else
@@ -128,16 +129,9 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
     } // finally
   } // doLoad
  
-  public void doLoadPartidas() {
-    Map<String, Object> params= new HashMap<>();
+  public void toLoadPartidas() {
     try {      
-      params.put("sortOrder", "order by tc_mantic_lotes_detalles.id_lote_detalle");
-      params.put("idLote", this.lote.toLong("idLote"));
-      this.orden.setPartidas((List<Partida>)DaoFactory.getInstance().toEntitySet(Partida.class, "VistaLotesDto", "detalle", params));
-      if(!Objects.equals(this.orden.getPartidas(), null)) {
-        for (Partida item: this.orden.getPartidas()) 
-          item.setSql(ESql.INSERT);
-      } // if  
+      this.orden.toLoadPartidas();
       this.toLoadTotal();
       this.attrs.put("articulos", this.orden.getPartidas().size());
     } // try
@@ -145,9 +139,6 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
   }
   
   public String doAceptar() {  

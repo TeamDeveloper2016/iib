@@ -6,7 +6,7 @@
 	<dml> 
 		<unit id="VistaLotesDto">
 			<select id="agrupado">
-select        
+select
   tc_mantic_notas_detalles.id_nota_detalle as id_key,
   tc_mantic_lotes_detalles.id_lote_detalle,
   tc_mantic_notas_detalles.id_nota_detalle,
@@ -318,7 +318,9 @@ group by
 select        
   tc_mantic_articulos.id_articulo as id_key,
   tc_mantic_articulos_codigos.codigo,
-  tc_mantic_articulos.nombre as articulo
+  tc_mantic_articulos.nombre as articulo,
+  tc_mantic_articulos.id_tipo_clase,
+  tc_mantic_tipos_clases.descripcion as clase
 from
   tc_mantic_notas_detalles
 inner join  
@@ -327,6 +329,8 @@ inner join
   tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
 inner join  
   tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+inner join  
+  tc_mantic_tipos_clases on tc_mantic_articulos.id_tipo_clase= tc_mantic_tipos_clases.id_tipo_clase
 where                
   tc_mantic_notas_entradas.id_almacen= {idAlmacen}
   and tc_mantic_notas_entradas.id_nota_estatus= 3
@@ -347,6 +351,7 @@ select
   tc_mantic_notas_detalles.cantidad,
   tc_mantic_notas_detalles.cantidad as kilos,
   tc_mantic_notas_detalles.id_lote,
+  tc_mantic_articulos.id_tipo_clase,
   tc_mantic_notas_entradas.registro
 from
   tc_mantic_notas_detalles
@@ -381,7 +386,7 @@ select
 from
   tc_mantic_lotes_detalles
 inner join  
-  tc_mantic_lotes on tc_mantic_lotes_detalles.id_id_lote= tc_mantic_lotes.id_lote
+  tc_mantic_lotes on tc_mantic_lotes_detalles.id_lote= tc_mantic_lotes.id_lote
 inner join  
   tc_mantic_notas_detalles on tc_mantic_lotes_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
 inner join  

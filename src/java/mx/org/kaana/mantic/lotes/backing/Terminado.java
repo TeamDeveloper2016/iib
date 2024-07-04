@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -88,6 +89,7 @@ public class Terminado extends IBaseAttribute implements Serializable {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       params.put("sortOrder", "order by tc_mantic_lotes.registro");      
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -104,12 +106,7 @@ public class Terminado extends IBaseAttribute implements Serializable {
         case CONSULTAR:
         case COPIAR:
           this.orden= (Lote)DaoFactory.getInstance().toEntity(Lote.class, "TcManticLotesDto", "igual", params);
-          this.orden.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticLotesTerminadosDto", "igual", params, -1L));
-          if(!Objects.equals(this.orden.getArticulos(), null))
-            for (Articulo item: this.orden.getArticulos()) 
-              item.setSql(ESql.SELECT);
-          else
-            this.orden.setArticulos(new ArrayList<>());
+          this.orden.toLoadArticulos();
           break;
       } // switch
       if(!Objects.equals(this.lote, null)) 

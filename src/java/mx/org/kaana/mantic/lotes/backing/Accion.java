@@ -283,9 +283,18 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
 	}
   
 	public void doUpdateProductos() {
-    List<Columna> columns     = new ArrayList<>();    
-    Map<String, Object> params= new HashMap<>();
+    List<Columna> columns         = new ArrayList<>();    
+    Map<String, Object> params    = new HashMap<>();
+  	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
     try {
+      if(Objects.equals(articulos, null) && !articulos.isEmpty()) {
+        int index= articulos.indexOf(this.orden.getLote().getIkArticulo());
+        if(index>= 0)
+          this.orden.getLote().setIkArticulo(articulos.get(index));
+        else
+          this.orden.getLote().setIkArticulo(articulos.get(0));
+      } // if  
+      this.orden.getLote().setIdTipoClase(this.orden.getLote().getIkArticulo().toLong("idTipoClase"));
   		params.put("sortOrder", "order by tc_mantic_notas_detalles.id_nota_detalle");
   		params.put("idLote", this.orden.getLote().getIdLote());
       params.put("idAlmacen", this.orden.getLote().getIkAlmacen().getKey());
@@ -294,7 +303,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
       columns.add(new Columna("articulo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("kilos", EFormatoDinamicos.MILES_CON_DECIMALES));
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.lazyModel = new FormatCustomLazy("VistaLotesDto", "productos", params, columns);
+      this.lazyModel= new FormatCustomLazy("VistaLotesDto", "productos", params, columns);
       UIBackingUtilities.resetDataTable();
       if(!Objects.equals(this.orden.getLote().getIdArticulo(), this.orden.getLote().getItArticulo())) 
         this.toCheckPartidas();

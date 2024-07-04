@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -72,6 +73,7 @@ public class Calidad extends IBaseAttribute implements Serializable {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       params.put("sortOrder", "order by tc_mantic_lotes.registro");      
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -92,7 +94,7 @@ public class Calidad extends IBaseAttribute implements Serializable {
       } // switch
       if(!Objects.equals(this.lote, null)) 
         UIBackingUtilities.toFormatEntity(this.lote, columns);
-      this.doLoadCantidades();
+      this.toLoadCantidades();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -104,27 +106,9 @@ public class Calidad extends IBaseAttribute implements Serializable {
     } // finally
   } 
  
-  public void doLoadCantidades() {
-    Map<String, Object> params= new HashMap<>();
+  public void toLoadCantidades() {
     try {      
-      params.put("sortOrder", "order by tc_mantic_notas_mermas.id_nota_merma");
-      params.put("idLote", this.lote.toLong("idLote"));
-      this.orden.setCantidades((List<Kilo>)DaoFactory.getInstance().toEntitySet(Kilo.class, "VistaLotesDto", "cantidades", params));
-      if(!Objects.equals(this.orden.getCantidades(), null)) {
-        for (Kilo item: this.orden.getCantidades()) {
-          if(Objects.equals(item.getIdLoteCalidad(), -1L)) {
-            item.setIdLote(this.lote.toLong("idLote"));
-            item.setIdArticulo(this.lote.toLong("idArticulo"));
-            item.setCantidad(0D);
-            item.setPorcentaje(0D);
-            item.setSql(ESql.INSERT);
-          } // if  
-          else
-            item.setSql(ESql.SELECT);
-        } // for
-      } // if  
-      else
-        this.orden.setCantidades(new ArrayList<>());  
+      this.orden.toLoadCantidades();
       this.toLoadTotal();
       this.attrs.put("articulos", this.orden.getCantidades().size());
     } // try
@@ -132,9 +116,6 @@ public class Calidad extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
   }
   
   public String doAceptar() {  

@@ -20,6 +20,7 @@
 				'contenedorGrupos\\:apodo'        : {validaciones: 'libre', mascara: 'letras', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:nacimiento'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},				
 				'contenedorGrupos\\:idEstadoCivil': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},								
+				'contenedorGrupos\\:idAutoriza'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:tipoPersona'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},				
 				'contenedorGrupos\\:sexo'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:clave'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
@@ -131,6 +132,11 @@
 								<p:selectOneMenu id="idEstadoCivil" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idEstadoCivil}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.estadosCiviles}"/>
 								</p:selectOneMenu>																			
+								<p:outputLabel for="idAutoriza" value="Autorizar:"/>
+								<p:selectOneMenu id="idAutoriza" value="#{manticCatalogosPersonasAccion.registroPersona.persona.idAutoriza}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+									<f:selectItem itemValue="1" itemLabel="SI"/>
+									<f:selectItem itemValue="2" itemLabel="NO"/>
+								</p:selectOneMenu>	
               </p:panelGrid>
 						</p:tab>
             <p:tab title="Empresa">

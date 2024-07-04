@@ -22,14 +22,19 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
+import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesEspecialesDto;
 import mx.org.kaana.mantic.db.dto.TcManticLotesPromediosDto;
+import mx.org.kaana.mantic.db.dto.TcManticMovimientosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.lotes.beans.Articulo;
 import mx.org.kaana.mantic.lotes.beans.Kilo;
@@ -49,9 +54,10 @@ import org.apache.log4j.Logger;
 
 public class Transaccion extends IBaseTnx implements Serializable {
 
-  private static final Logger LOG = Logger.getLogger(Transaccion.class);
-	private static final long serialVersionUID= 1069204157451117549L;
- 
+  private static final Logger LOG= Logger.getLogger(Transaccion.class);
+	private static final long serialVersionUID      = 1069204157451117549L;
+  private static final Long ID_PROVEEDOR_FRIJOLITO= 1L;
+  
 	protected Long idLote;	
 	protected Lote orden;	
 	private String messageError;
@@ -62,11 +68,15 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	}
   
 	public Transaccion(Long idLote, Lote orden) {
-    this.idLote= idLote;
-		this.orden = orden;
+    this(idLote, orden, null);
 	}
   
 	public Transaccion(Lote orden, TcManticLotesBitacoraDto bitacora) {
+    this(-1L, orden, bitacora);
+	}
+  
+	public Transaccion(Long idLote, Lote orden, TcManticLotesBitacoraDto bitacora) {
+    this.idLote  = idLote;
 		this.orden   = orden;
     this.bitacora= bitacora;
 	}
@@ -81,7 +91,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
+		boolean regresar= false;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el lote");
 			switch(accion) {
@@ -93,12 +103,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
           break;				
 				case ELIMINAR:
           regresar= this.toDeleteLote(sesion);
-					break;
-				case JUSTIFICAR:
-					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-						this.orden.setIdLoteEstatus(this.bitacora.getIdLoteEstatus());
-						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-          } // if
 					break;
 				case TRANSFORMACION:
           regresar= this.toPromedios(sesion);
@@ -118,6 +122,30 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				case COPIAR:
           regresar= this.toTerminado(sesion);
           break;				
+				case JUSTIFICAR:
+					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
+						this.orden.setIdLoteEstatus(this.bitacora.getIdLoteEstatus());
+						DaoFactory.getInstance().update(sesion, this.orden);
+            switch(this.orden.getIdLoteEstatus().intValue()) {
+              case 2: // EN PROCESO
+                regresar= this.toCheckPorcentajes(sesion);
+                break;
+              case 3: // EN PRODUCCION
+                regresar= this.toCheckCantidades(sesion);
+                break;
+              case 5: // TERMINADO
+                // FALTA GENERAR LOS MOVIMIENTOS DE ENTRADA AL ALMACEN CON UN NUEVO MOVIMIENTO
+                if(this.toCheckArticulos(sesion)) {
+                  this.toInventarios(sesion);
+                  regresar= this.toAddRestos(sesion);
+                } // if  
+                break;
+              default:
+                regresar= Boolean.TRUE;
+                break;
+            } // switch
+          } // if
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -217,6 +245,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
             if(item.getCantidad()>= item.getOriginal()) 
               DaoFactory.getInstance().updateAll(sesion, TcManticNotasDetallesDto.class, params, "agregar");
             item.setIdLote(this.orden.getIdLote());
+            item.setIdTipoClase(this.orden.getIdTipoClase());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
         } // switch    
@@ -416,7 +445,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
       this.orden.setIdUsuario(JsfBase.getIdUsuario());
       String observaciones= this.orden.getObservaciones();
-      this.orden.setObservaciones((Objects.equals(observaciones, null) || observaciones.trim().length()== 0? "": ", ")+ "ESTE LOTE SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
+      this.orden.setObservaciones((Objects.equals(observaciones, null) || observaciones.trim().length()== 0? "": ", ")+ "SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
       DaoFactory.getInstance().insert(sesion, this.orden);
       this.toAddBitacora(sesion);
       while(index< this.orden.getPartidas().size()) {
@@ -606,6 +635,274 @@ public class Transaccion extends IBaseTnx implements Serializable {
     catch (Exception e) {
       throw e;      
     } // catch	
+    return regresar;
+  }
+  
+  private Boolean toInventarios(Session sesion) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    try {      
+      Long idAlmacen= this.toFindAlmacenPrincipal(sesion);
+      for (Articulo item: this.orden.getArticulos()) {
+        this.toAffectAlmacenes(sesion, 10L, idAlmacen, item, 1D);
+        // SE INDICA QUE EL ARTICULO A SALIR DEL ALMACEN DE ORIGEN ES EL QUE ESTA EN EL LOTE
+        item.setIdArticulo(this.orden.getIdArticulo());
+        this.toAffectAlmacenes(sesion, 10L, this.orden.getIdAlmacen(), item, -1D);
+      } // for
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
+  
+  private Boolean toAddRestos(Session sesion) throws Exception {
+    Boolean regresar     = Boolean.FALSE;
+    Boolean cubre        = Boolean.FALSE;
+    Siguiente consecutivo= null;
+    String folio         = this.orden.getConsecutivo();
+    Long idAlmacen       = this.orden.getIdAlmacen();
+    int index            = 0;
+    int count            = 0;
+    try {      
+      consecutivo= this.toSiguiente(sesion);
+      this.orden.setIdLote(-1L);
+      this.orden.setConsecutivo(consecutivo.getConsecutivo());
+      this.orden.setOrden(consecutivo.getOrden());
+      this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+      this.orden.setIdUsuario(JsfBase.getIdUsuario());
+      this.orden.setCantidad(this.orden.getRestos());
+      this.orden.setOriginal(this.orden.getRestos());
+      this.orden.setIdAlmacen(this.toFindAlmacenRestos(sesion));
+      this.orden.setMerma(0D);
+      this.orden.setTerminado(0D);
+      this.orden.setRestos(0D);
+      this.orden.setIdLoteTipo(1L);
+      this.orden.setIdLoteEstatus(1L);
+      this.orden.setObservaciones("SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
+      this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      DaoFactory.getInstance().insert(sesion, this.orden);
+      this.toAddBitacora(sesion);
+      // DETERMINAR BASADO EN LAS PARTIDAS QUE PARTIDA CUBRE LA CANTIDAD DE RESTOS
+      while(index< this.orden.getPartidas().size() && !cubre) {
+        Partida partida= this.orden.getPartidas().get(index);
+        cubre= partida.getCantidad()>= this.orden.getCantidad();
+        index++;
+      } // while
+      if(cubre) {
+        index--;
+        while(count< this.orden.getPartidas().size()) {
+          if(!Objects.equals(index, count))
+            this.orden.getPartidas().remove(count);
+          else {
+            Partida partida= this.orden.getPartidas().get(count);
+            partida.setIdLote(-1L);
+            partida.setIdLoteDetalle(-1L);
+            partida.setCantidad(this.orden.getCantidad());
+            partida.setSaldo(partida.getCantidad());
+            // ESTE MAS UNO ES PARA QUE NO ACTUALICE LA NOTA DETALLE CON EL ID DEL NUEVO LOTE
+            partida.setOriginal(partida.getCantidad()+ 1L);
+            partida.setSql(ESql.INSERT);
+            count++;
+          } // if  
+        } // while  
+      } // if
+      else {
+        // SUMAR TODAS LAS NOTAS DETALLES HASTA CUBRIR LOS RESTOS
+        Double suma= 0D;
+        while(count< this.orden.getPartidas().size()) {
+          Partida partida= this.orden.getPartidas().get(count);
+          if(Objects.equals(suma, this.orden.getCantidad())) {
+            this.orden.getPartidas().remove(count);
+          } // if
+          else {
+            partida.setIdLote(-1L);
+            partida.setIdLoteDetalle(-1L);
+            partida.setSql(ESql.INSERT);
+            if(suma+ partida.getCantidad()<= this.orden.getCantidad()) 
+              suma+= partida.getCantidad();
+            else {
+              partida.setCantidad(this.orden.getCantidad()- suma);
+              suma= this.orden.getCantidad();
+            } // else  
+            partida.setSaldo(partida.getCantidad());
+            partida.setOriginal(partida.getCantidad()+ 1L);
+            count++;
+          } // else  
+        } // while  
+      } // else
+      this.toFillPromedios(sesion);
+      this.toFillPartidas(sesion);
+      Articulo articulo= new Articulo(-1L);
+      for (Partida item: this.orden.getPartidas()) {
+        articulo.setIdArticulo(this.orden.getIdArticulo());
+        articulo.setCantidad(articulo.getCantidad()+ item.getCantidad());
+      } // for
+      this.toAffectAlmacenes(sesion, 11L, this.orden.getIdAlmacen(), articulo, 1D);
+      this.toAffectAlmacenes(sesion, 11L, idAlmacen, articulo, -1D);
+      regresar= Boolean.FALSE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
+  
+  private Long toFindAlmacenRestos(Session sesion) throws Exception {
+    Long regresar             = this.orden.getIdAlmacen();
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idEmpresa", this.orden.getIdEmpresa());
+      Entity almacen= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticAlmacenesDto", "restos", params);
+      if(!Objects.equals(almacen, null) && !almacen.isEmpty())
+        regresar= almacen.toLong("idAlmacen");
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private Long toFindAlmacenPrincipal(Session sesion) throws Exception {
+    Long regresar             = this.orden.getIdAlmacen();
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("sucursales", this.orden.getIdEmpresa());
+      Entity almacen= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticAlmacenesDto", "almacenPrincipal", params);
+      if(!Objects.equals(almacen, null) && !almacen.isEmpty())
+        regresar= almacen.toLong("idAlmacen");
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+
+	private void toAffectAlmacenes(Session sesion, Long idTipoMovimiento, Long idAlmacen, Articulo item, Double factor) throws Exception {
+		Map<String, Object> params= new HashMap<>();
+		Double stock              = 0D;
+		try {
+			params.put("idAlmacen", idAlmacen);
+			params.put("idArticulo", item.getIdArticulo());
+			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
+			if(ubicacion== null) {
+			  TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
+				if(general== null) {
+  				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), idAlmacen, -1L);
+					DaoFactory.getInstance().insert(sesion, general);
+				} // if	
+			  Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosDto", "inventario", params);
+				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(
+          entity.toDouble("minimo"), // Double minimo, 
+          -1L, // Long idAlmacenArticulo, 
+          general.getIdUsuario(), // Long idUsuario, 
+          general.getIdAlmacen(), // Long idAlmacen, 
+          entity.toDouble("maximo"), // Double maximo, 
+          general.getIdAlmacenUbicacion(), // Long idAlmacenUbicacion, 
+          item.getIdArticulo(), // Long idArticulo, 
+          item.getCantidad()* factor // Double stock
+        );
+				DaoFactory.getInstance().insert(sesion, articulo);
+		  } // if
+			else { 
+				stock= ubicacion.getStock();
+				ubicacion.setStock(ubicacion.getStock()+ (item.getCantidad()* factor));
+				DaoFactory.getInstance().update(sesion, ubicacion);
+			} // if
+
+			// generar un registro en la bitacora de movimientos de los articulos 
+			TcManticMovimientosDto entrada= new TcManticMovimientosDto(
+			  this.orden.getConsecutivo(), // String consecutivo, 
+				idTipoMovimiento, // Long idTipoMovimiento, PRODUCCION
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				idAlmacen, // Long idAlmacen, 
+				-1L, // Long idMovimiento, 
+				item.getCantidad(), // Double cantidad, 
+				item.getIdArticulo(), // Long idArticulo, 
+				stock, // Double stock, 
+				Numero.toRedondearSat(stock+ (item.getCantidad()* factor)), // Double calculo
+				null // String observaciones
+		  );
+			DaoFactory.getInstance().insert(sesion, entrada);
+			
+			// afectar el inventario general de articulos dentro del almacen
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
+			if(inventario== null)
+				DaoFactory.getInstance().insert(sesion, 
+          new TcManticInventariosDto(
+            JsfBase.getIdUsuario(), 
+            idAlmacen, // idAlmacen
+            item.getCantidad()* factor, // entrada
+            -1L, //idInventario
+            item.getIdArticulo(), // idArticulo
+            0D,  // inicial
+            item.getCantidad()* factor, // stock
+            0D, // salida
+            new Long(Calendar.getInstance().get(Calendar.YEAR)), // ejercicio
+            1L)
+          ); // idAutomatico
+			else {
+				inventario.setEntradas(inventario.getEntradas()+ (item.getCantidad()* factor));
+				inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())+ (item.getCantidad()* factor));
+				DaoFactory.getInstance().update(sesion, inventario);
+			} // else
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}	
+
+  private Boolean toCheckPorcentajes(Session sesion) throws Exception {  
+    Boolean regresar          = Boolean.FALSE;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idLote", this.orden.getIdLote());
+      Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticLotesPromediosDto", "existe", params);
+      if(!Objects.equals(exist, null) && !exist.isEmpty()) 
+        regresar= exist.toLong("total")> 0L;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+    return regresar;
+  }
+  
+  private Boolean toCheckCantidades(Session sesion) throws Exception {  
+    Boolean regresar          = Boolean.FALSE;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idLote", this.orden.getIdLote());
+      Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticLotesCalidadesDto", "existe", params);
+      if(!Objects.equals(exist, null) && !exist.isEmpty()) 
+        regresar= exist.toLong("total")> 0L;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+    return regresar;
+  }
+  
+  private Boolean toCheckArticulos(Session sesion) throws Exception {  
+    Boolean regresar          = Boolean.FALSE;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idLote", this.orden.getIdLote());
+      Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticLotesTerminadosDto", "existe", params);
+      if(!Objects.equals(exist, null) && !exist.isEmpty()) 
+        regresar= exist.toLong("total")> 0L;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
     return regresar;
   }
   

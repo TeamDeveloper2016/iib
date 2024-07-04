@@ -2,9 +2,16 @@ package mx.org.kaana.mantic.lotes.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticLotesDto;
 
 /**
@@ -155,6 +162,108 @@ public class Lote extends TcManticLotesDto implements Serializable {
 
   public void setPorcentajes(List<Porcentaje> porcentajes) {
     this.porcentajes = porcentajes;
+  }
+  
+  public void toLoadArticulos() {
+    Map<String, Object> params= new HashMap<>();
+    try {
+      params.put("idLote", this.getIdLote());      
+      this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticLotesTerminadosDto", "igual", params, -1L));
+      if(!Objects.equals(this.getArticulos(), null))
+        for (Articulo item: this.getArticulos()) 
+          item.setSql(ESql.SELECT);
+      else
+        this.setArticulos(new ArrayList<>());
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } 
+  
+  public void toLoadPorcentajes() {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("sortOrder", "order by tc_mantic_notas_calidades.id_nota_calidad");
+      params.put("idLote", this.getIdLote());
+      this.setPorcentajes((List<Porcentaje>)DaoFactory.getInstance().toEntitySet(Porcentaje.class, "VistaLotesDto", "porcentajes", params));
+      if(!Objects.equals(this.getPorcentajes(), null)) {
+        for (Porcentaje item: this.getPorcentajes()) {
+          if(Objects.equals(item.getIdLotePromedio(), -1L)) {
+            item.setIdLote(this.getIdLote());
+            item.setIdArticulo(this.getIdArticulo());
+            item.setCantidad(0D);
+            item.setPorcentaje(0D);
+            item.setSql(ESql.INSERT);
+          } // if  
+          else
+            item.setSql(ESql.SELECT);
+        } // for
+      } // if  
+      else
+        this.setPorcentajes(new ArrayList<>());  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  public void toLoadCantidades() {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("sortOrder", "order by tc_mantic_notas_mermas.id_nota_merma");
+      params.put("idLote", this.getIdLote());
+      this.setCantidades((List<Kilo>)DaoFactory.getInstance().toEntitySet(Kilo.class, "VistaLotesDto", "cantidades", params));
+      if(!Objects.equals(this.getCantidades(), null)) {
+        for (Kilo item: this.getCantidades()) {
+          if(Objects.equals(item.getIdLoteCalidad(), -1L)) {
+            item.setIdLote(this.getIdLote());
+            item.setIdArticulo(this.getIdArticulo());
+            item.setCantidad(0D);
+            item.setPorcentaje(0D);
+            item.setSql(ESql.INSERT);
+          } // if  
+          else
+            item.setSql(ESql.SELECT);
+        } // for
+      } // if  
+      else
+        this.setCantidades(new ArrayList<>());  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+
+  public void toLoadPartidas() {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("sortOrder", "order by tc_mantic_lotes_detalles.id_lote_detalle");
+      params.put("idLote", this.getIdLote());
+      this.setPartidas((List<Partida>)DaoFactory.getInstance().toEntitySet(Partida.class, "VistaLotesDto", "detalle", params));
+      if(!Objects.equals(this.getPartidas(), null)) {
+        for (Partida item: this.getPartidas()) 
+          item.setSql(ESql.INSERT);
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
 }

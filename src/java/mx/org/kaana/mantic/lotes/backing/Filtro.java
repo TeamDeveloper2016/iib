@@ -36,6 +36,7 @@ import mx.org.kaana.mantic.db.dto.TcManticLotesBitacoraDto;
 import mx.org.kaana.mantic.lotes.reglas.Transaccion;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.lotes.beans.Lote;
+import mx.org.kaana.mantic.lotes.reglas.AdminLotes;
 
 @Named(value = "manticLotesFiltro")
 @ViewScoped
@@ -315,11 +316,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado              = null;
     Map<String, Object> params       = new HashMap<>();
 		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
-      params.put("idLote", seleccionado.getKey());
-      Lote orden= (Lote)DaoFactory.getInstance().toEntity(Lote.class, "TcManticLotesDto", "igual", params);
-      if(Objects.equals(orden.getIdTipoClase(), -1L))
-        orden.setIdTipoClase(null);
+			seleccionado    = (Entity)this.attrs.get("seleccionado");
+      AdminLotes orden= new AdminLotes(seleccionado.getKey());
+      orden.getLote().toLoadArticulos();
 			bitacora= new TcManticLotesBitacoraDto(
         (String)this.attrs.get("justificacion"), // String justificacion, 
         Long.valueOf(this.attrs.get("estatus").toString()), // Long idLoteEstatus, 
@@ -327,11 +326,11 @@ public class Filtro extends IBaseFilter implements Serializable {
         seleccionado.getKey(), // Long idLote, 
         -1L // Long idLoteBitacora              
       );
-			transaccion= new Transaccion(orden, bitacora);
+			transaccion= new Transaccion(orden.getLote(), bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus del lote", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus !", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de lote", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -436,10 +435,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public String doPorcentajes() {
 		String regresar= "/Paginas/Mantic/Lotes/porcentajes";
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");    
 		try {
-      JsfBase.setFlashAttribute("accion", EAccion.TRANSFORMACION);		
+      JsfBase.setFlashAttribute("accion", Objects.equals(seleccionado.toLong("idLoteEstatus"), 1L)? EAccion.TRANSFORMACION: EAccion.CONSULTAR);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
-			JsfBase.setFlashAttribute("idLote", ((Entity)this.attrs.get("seleccionado")).getKey());
+			JsfBase.setFlashAttribute("idLote", seleccionado.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -450,10 +450,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public String doCalidad() {
 		String regresar= "/Paginas/Mantic/Lotes/calidad";
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");
 		try {
-      JsfBase.setFlashAttribute("accion", EAccion.RESTAURAR);		
+      JsfBase.setFlashAttribute("accion", Objects.equals(seleccionado.toLong("idLoteEstatus"), 2L)? EAccion.RESTAURAR: EAccion.CONSULTAR);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
-			JsfBase.setFlashAttribute("idLote", ((Entity)this.attrs.get("seleccionado")).getKey());
+			JsfBase.setFlashAttribute("idLote", seleccionado.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -463,11 +464,12 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
 
   public String doTerminado() {
-		String regresar= "/Paginas/Mantic/Lotes/terminado";
+		String regresar    = "/Paginas/Mantic/Lotes/terminado";
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");
 		try {
-      JsfBase.setFlashAttribute("accion", EAccion.COPIAR);		
+      JsfBase.setFlashAttribute("accion", Objects.equals(seleccionado.toLong("idLoteEstatus"), 3L)? EAccion.COPIAR: EAccion.CONSULTAR);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Lotes/filtro");		
-			JsfBase.setFlashAttribute("idLote", ((Entity)this.attrs.get("seleccionado")).getKey());
+			JsfBase.setFlashAttribute("idLote", seleccionado.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
