@@ -31,10 +31,9 @@ public abstract class ComunInventarios extends IBaseTnx {
   protected String messageError;
 	
 	protected Long toUbicacion(Session sesion, Long idAlmacen, Long idArticulo) throws Exception {
-		Long regresar= -1L;
-		Map<String, Object> params= null;
+		Long regresar             = -1L;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", idArticulo);
 			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class, params, "ubicacion");
@@ -68,10 +67,9 @@ public abstract class ComunInventarios extends IBaseTnx {
 //  }
   
 	protected void toAutorizarAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
     Double stock              = 0D;
 		try {
-			params=new HashMap<>();
 			//Afectar el almacen original restando los articulos que fueron extraidos
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", articulo.getIdArticulo());
@@ -126,10 +124,9 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
   
 	protected void toMovimientosAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
     Double stock              = 0D; 
 		try {
-			params=new HashMap<>();
 			//Afectar el almacen original restando los articulos que fueron extraidos
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", articulo.getIdArticulo());
@@ -184,11 +181,10 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
 	
 	protected void toMovimientosAlmacenDestino(Session sesion, String consecutivo, Long idDestino, Articulo articulo, TcManticArticulosDto umbrales, Double diferencia) throws Exception {
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
     Double stock              = 0D;
 		try {
 			//Afectar el almacen destino sumando los articulos que fueron agregados
-			params=new HashMap<>();
 			params.put("idAlmacen", idDestino);
 			params.put("idArticulo", articulo.getIdArticulo());
 			params.put("consecutivo", consecutivo);

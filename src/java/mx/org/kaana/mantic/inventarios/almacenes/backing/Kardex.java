@@ -732,10 +732,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-      columns.add(new Columna("impuestos", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("impuestos", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("precio", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("importe", EFormatoDinamicos.MILES_SAT_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_SAT_DECIMALES));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_HORA));
 			switch(consecutivo.toLong("idTipoMovimiento").intValue()) {
 				case 1: // ENTRADAS
@@ -811,6 +811,23 @@ public class Kardex extends IBaseAttribute implements Serializable {
           } // if
           this.attrs.put("tipoDocumento", "vales de almacen");
 					break;
+				case 11: // INGRESO PRODUCCION
+				case 12: // INGRESO RESTOS
+				case 13: // REGRESO PRODUCCION
+					Long idLote= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticLotesDto", "consecutivo");
+          columns.remove(new Columna("total"));
+      		params.put("idLote", idLote);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "produccion", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+    			if(documento!= null && !documento.isEmpty()) {
+            Double suma= 0D;
+            for (UISelectEntity item: documento) {
+              suma+= item.toDouble("total");
+            } // for
+   				  documento.get(0).get("total").setData(Numero.toRedondearSat(suma));
+          } // if
+          this.attrs.put("tipoDocumento", "producto terminado");
+          break;
 			} // switch
 			if(documento!= null && !documento.isEmpty()) {
 				documento.get(0).put("articulos", new Value("articulos", documento.size()));

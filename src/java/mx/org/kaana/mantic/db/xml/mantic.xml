@@ -135,6 +135,15 @@ where
   and id_empresa= {idEmpresa}	
   and orden{operador} 900000			
 			</select>
+      <select id="consecutivo">
+select      
+  tc_mantic_lotes.id_lote as id_key
+from      
+  tc_mantic_lotes
+where      
+  id_empresa= {idEmpresa}
+  and consecutivo = '{consecutivo}'
+      </select>
 			<update id="rows">
 update 
   tc_mantic_lotes 
@@ -5579,8 +5588,6 @@ from
 where      
   tc_mantic_almacenes.id_empresa= {idEmpresa}
   and id_principal= 1
-order by
- tc_mantic_almacenes.id_almacen
       </select>
       <select id="origen">
 select      
@@ -5591,8 +5598,6 @@ from
 where      
   tc_mantic_almacenes.id_empresa in ({sucursales})
   and id_principal= 3
-order by
-  tc_mantic_almacenes.clave
       </select>
 			<select id="almacenPrincipal">
 select      
@@ -5602,8 +5607,6 @@ from
   tc_mantic_almacenes
 where      
   tc_mantic_almacenes.id_empresa in ({sucursales}) and id_principal= 1
-order by
- tc_mantic_almacenes.clave
       </select>
       <select id="conteo">
 select      
@@ -5639,9 +5642,8 @@ select
 from      
   tc_mantic_almacenes
 where      
-  tc_mantic_almacenes.id_empresa=  {idEmpresa} and id_principal= 4
-order by
- tc_mantic_almacenes.clave
+  tc_mantic_almacenes.id_empresa= {idEmpresa} 
+  and id_principal= 4
       </select>
     </unit>
 	  <unit id="TcManticAlmacenesArticulosDto">

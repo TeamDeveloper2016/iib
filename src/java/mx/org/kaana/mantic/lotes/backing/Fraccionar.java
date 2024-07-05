@@ -28,6 +28,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.lotes.beans.Lote;
 import mx.org.kaana.mantic.lotes.beans.Partida;
+import mx.org.kaana.mantic.lotes.enums.EEstatusLotes;
 
 /**
  *@company KAANA
@@ -102,7 +103,7 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
           this.lote.toDouble("cantidad"), // Double cantidad, 
           1L,// Long orden, 
           this.lote.toLong("idArticulo"), // Long idArticulo
-          1L, // Long idLoteEstatus     
+          EEstatusLotes.ELABORADO.getKey(), // Long idLoteEstatus     
           this.lote.toLong("idTipoArticulo"), // Long idTipoClase      
           0D, // merma
           0D, // terminado

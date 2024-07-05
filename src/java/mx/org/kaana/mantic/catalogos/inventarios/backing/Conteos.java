@@ -24,6 +24,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -654,11 +655,10 @@ public class Conteos extends IBaseFilter implements Serializable {
 	
 	public String doMoveSection() {
 		UISelectEntity consecutivo    = (UISelectEntity)this.attrs.get("consecutivo");
-		List<Columna> columns         = null;
+		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> documento= null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
@@ -719,6 +719,23 @@ public class Conteos extends IBaseFilter implements Serializable {
           this.attrs.put("documentos", documento);
           this.attrs.put("tipoDocumento", "del conteo");
 					break;
+				case 11: // INGRESO PRODUCCION
+				case 12: // INGRESO RESTOS
+        case 13: // REGRESO PRODUCCION          
+					Long idLote= this.toFindIdKey(consecutivo.toString("consecutivo"), "TcManticLotesDto", "consecutivo");
+          columns.remove(new Columna("total"));
+      		params.put("idLote", idLote);
+					documento= (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "produccion", params, columns, Constantes.SQL_TODOS_REGISTROS);
+          this.attrs.put("documentos", documento);
+    			if(documento!= null && !documento.isEmpty()) {
+            Double suma= 0D;
+            for (UISelectEntity item: documento) {
+              suma+= item.toDouble("total");
+            } // for
+   				  documento.get(0).get("total").setData(Numero.toRedondearSat(suma));
+          } // if
+          this.attrs.put("tipoDocumento", "producto terminado");
+          break;
 			} // switch
 			if(documento!= null && !documento.isEmpty()) {
 				documento.get(0).put("articulos", new Value("articulos", documento.size()));

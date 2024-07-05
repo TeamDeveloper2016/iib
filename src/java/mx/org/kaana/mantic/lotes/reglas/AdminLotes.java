@@ -13,6 +13,7 @@ import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.lotes.enums.EEstatusLotes;
 
 /**
  *@company KAANA
@@ -44,7 +45,7 @@ public class AdminLotes implements Serializable {
         0D, // Double cantidad, 
         1L,// Long orden, 
         -1L, // Long idArticulo
-        1L, // Long idLoteEstatus  
+        EEstatusLotes.ELABORADO.getKey(), // Long idLoteEstatus  
         -1L, // Long idTipoClase     
         0D, // merma
         0D, // terminado

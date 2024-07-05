@@ -42,6 +42,7 @@ import mx.org.kaana.mantic.lotes.beans.Porcentaje;
 import mx.org.kaana.mantic.lotes.beans.Lote;
 import mx.org.kaana.mantic.lotes.beans.Partida;
 import mx.org.kaana.mantic.lotes.beans.Unidad;
+import mx.org.kaana.mantic.lotes.enums.EEstatusLotes;
 import org.apache.log4j.Logger;
 
 /**
@@ -122,6 +123,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				case COPIAR:
           regresar= this.toTerminado(sesion);
           break;				
+				case DESACTIVAR:
+          regresar= this.toAddProduccion(sesion);
+          break;				
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden.setIdLoteEstatus(this.bitacora.getIdLoteEstatus());
@@ -139,6 +143,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
                   this.toInventarios(sesion);
                   regresar= this.toAddRestos(sesion);
                 } // if  
+                break;
+              case 7: // REPROCESADO
+                regresar= this.toAddProduccion(sesion);
                 break;
               default:
                 regresar= Boolean.TRUE;
@@ -643,10 +650,10 @@ public class Transaccion extends IBaseTnx implements Serializable {
     try {      
       Long idAlmacen= this.toFindAlmacenPrincipal(sesion);
       for (Articulo item: this.orden.getArticulos()) {
-        this.toAffectAlmacenes(sesion, 10L, idAlmacen, item, 1D);
+        this.toAffectAlmacenes(sesion, 11L, idAlmacen, item, 1D);
         // SE INDICA QUE EL ARTICULO A SALIR DEL ALMACEN DE ORIGEN ES EL QUE ESTA EN EL LOTE
         item.setIdArticulo(this.orden.getIdArticulo());
-        this.toAffectAlmacenes(sesion, 10L, this.orden.getIdAlmacen(), item, -1D);
+        this.toAffectAlmacenes(sesion, 11L, this.orden.getIdAlmacen(), item, -1D);
       } // for
       regresar= Boolean.TRUE;
     } // try
@@ -678,7 +685,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.orden.setTerminado(0D);
       this.orden.setRestos(0D);
       this.orden.setIdLoteTipo(1L);
-      this.orden.setIdLoteEstatus(1L);
+      this.orden.setIdLoteEstatus(EEstatusLotes.TRANSFERIDO.getKey());
       this.orden.setObservaciones("SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
       this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       DaoFactory.getInstance().insert(sesion, this.orden);
@@ -701,7 +708,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
             partida.setCantidad(this.orden.getCantidad());
             partida.setSaldo(partida.getCantidad());
             // ESTE MAS UNO ES PARA QUE NO ACTUALICE LA NOTA DETALLE CON EL ID DEL NUEVO LOTE
-            partida.setOriginal(partida.getCantidad()+ 1L);
+            partida.setOriginal(partida.getCantidad()+ 1D);
             partida.setSql(ESql.INSERT);
             count++;
           } // if  
@@ -726,7 +733,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
               suma= this.orden.getCantidad();
             } // else  
             partida.setSaldo(partida.getCantidad());
-            partida.setOriginal(partida.getCantidad()+ 1L);
+            partida.setOriginal(partida.getCantidad()+ 1D);
             count++;
           } // else  
         } // while  
@@ -738,9 +745,9 @@ public class Transaccion extends IBaseTnx implements Serializable {
         articulo.setIdArticulo(this.orden.getIdArticulo());
         articulo.setCantidad(articulo.getCantidad()+ item.getCantidad());
       } // for
-      this.toAffectAlmacenes(sesion, 11L, this.orden.getIdAlmacen(), articulo, 1D);
-      this.toAffectAlmacenes(sesion, 11L, idAlmacen, articulo, -1D);
-      regresar= Boolean.FALSE;
+      this.toAffectAlmacenes(sesion, 12L, this.orden.getIdAlmacen(), articulo, 1D);
+      this.toAffectAlmacenes(sesion, 12L, idAlmacen, articulo, -1D);
+      regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
       throw e;
@@ -754,6 +761,24 @@ public class Transaccion extends IBaseTnx implements Serializable {
     try {      
       params.put("idEmpresa", this.orden.getIdEmpresa());
       Entity almacen= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticAlmacenesDto", "restos", params);
+      if(!Objects.equals(almacen, null) && !almacen.isEmpty())
+        regresar= almacen.toLong("idAlmacen");
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  private Long toFindAlmacenOrigen(Session sesion) throws Exception {
+    Long regresar             = this.orden.getIdAlmacen();
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idEmpresa", this.orden.getIdEmpresa());
+      Entity almacen= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticAlmacenesDto", "origen", params);
       if(!Objects.equals(almacen, null) && !almacen.isEmpty())
         regresar= almacen.toLong("idAlmacen");
     } // try
@@ -813,9 +838,33 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			else { 
 				stock= ubicacion.getStock();
 				ubicacion.setStock(ubicacion.getStock()+ (item.getCantidad()* factor));
+        ubicacion.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
 
+			// afectar el inventario general de articulos dentro del almacen
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
+			if(inventario== null) {
+        inventario= new TcManticInventariosDto(
+          JsfBase.getIdUsuario(), // Long idUsuario
+          idAlmacen, // Long idAlmacen
+          item.getCantidad()* factor, // Double entrada
+          -1L, // Long idInventario
+          item.getIdArticulo(), // idArticulo
+          0D,  // Double inicial
+          item.getCantidad()* factor, // Double stock
+          0D, // Double salida
+          new Long(Calendar.getInstance().get(Calendar.YEAR)), // Long ejercicio
+          1L // Long idAutomatico
+        ); 
+				DaoFactory.getInstance().insert(sesion, inventario); 
+      } // if  
+			else {
+				inventario.setEntradas(inventario.getEntradas()+ (item.getCantidad()* factor));
+				inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())+ (item.getCantidad()* factor));
+				DaoFactory.getInstance().update(sesion, inventario);
+			} // else
+      
 			// generar un registro en la bitacora de movimientos de los articulos 
 			TcManticMovimientosDto entrada= new TcManticMovimientosDto(
 			  this.orden.getConsecutivo(), // String consecutivo, 
@@ -830,28 +879,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				null // String observaciones
 		  );
 			DaoFactory.getInstance().insert(sesion, entrada);
-			
-			// afectar el inventario general de articulos dentro del almacen
-			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
-			if(inventario== null)
-				DaoFactory.getInstance().insert(sesion, 
-          new TcManticInventariosDto(
-            JsfBase.getIdUsuario(), 
-            idAlmacen, // idAlmacen
-            item.getCantidad()* factor, // entrada
-            -1L, //idInventario
-            item.getIdArticulo(), // idArticulo
-            0D,  // inicial
-            item.getCantidad()* factor, // stock
-            0D, // salida
-            new Long(Calendar.getInstance().get(Calendar.YEAR)), // ejercicio
-            1L)
-          ); // idAutomatico
-			else {
-				inventario.setEntradas(inventario.getEntradas()+ (item.getCantidad()* factor));
-				inventario.setStock((inventario.getStock()< 0D? 0D: inventario.getStock())+ (item.getCantidad()* factor));
-				DaoFactory.getInstance().update(sesion, inventario);
-			} // else
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -905,5 +932,43 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // catch
     return regresar;
   }
+  
+  private Boolean toAddProduccion(Session sesion) throws Exception {
+    Boolean regresar     = Boolean.FALSE;
+    Siguiente consecutivo= null;
+    String folio         = this.orden.getConsecutivo();
+    Long idAlmacen       = this.orden.getIdAlmacen();
+    try {      
+      consecutivo= this.toSiguiente(sesion);
+      this.orden.setIdLote(-1L);
+      this.orden.setConsecutivo(consecutivo.getConsecutivo());
+      this.orden.setOrden(consecutivo.getOrden());
+      this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+      this.orden.setIdUsuario(JsfBase.getIdUsuario());
+      this.orden.setIdAlmacen(this.toFindAlmacenOrigen(sesion));
+      this.orden.setIdLoteEstatus(EEstatusLotes.DISPONIBLE.getKey());
+      this.orden.setObservaciones("SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
+      this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      DaoFactory.getInstance().insert(sesion, this.orden);
+      this.toAddBitacora(sesion);
+      for (Partida item: this.orden.getPartidas()) 
+        item.setOriginal(item.getCantidad()+ 1D);
+      this.toFillPromedios(sesion);
+      this.toFillPartidas(sesion);
+      Articulo articulo= new Articulo(-1L);
+      for (Partida item: this.orden.getPartidas()) {
+        articulo.setIdArticulo(this.orden.getIdArticulo());
+        articulo.setCantidad(articulo.getCantidad()+ item.getCantidad());
+      } // for
+      this.toAffectAlmacenes(sesion, 13L, this.orden.getIdAlmacen(), articulo, 1D);
+      this.toAffectAlmacenes(sesion, 13L, idAlmacen, articulo, -1D);
+      regresar= Boolean.TRUE;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
+  
   
 } 
