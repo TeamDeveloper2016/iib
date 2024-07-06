@@ -226,8 +226,8 @@
             </p:dataTable>
             <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
               <p:menuitem icon="fa fa-search" action="#{manticLotesFiltro.doAccion('CONSULTAR')}" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-              <p:separator rendered="#{fn:contains('|1|7|', manticLotesFiltro.attrs.seleccionado.idLoteEstatus)}"/>
-              <p:menuitem icon="fa fa-edit" value="Modificar" action="#{manticLotesFiltro.doAccion('MODIFICAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|7|', manticLotesFiltro.attrs.seleccionado.idLoteEstatus)}"/>					
+              <p:separator rendered="#{fn:contains('|1|', manticLotesFiltro.attrs.seleccionado.idLoteEstatus)}"/>
+              <p:menuitem icon="fa fa-edit" value="Modificar" action="#{manticLotesFiltro.doAccion('MODIFICAR')}" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|', manticLotesFiltro.attrs.seleccionado.idLoteEstatus)}"/>					
               <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|', manticLotesFiltro.attrs.seleccionado.idLoteEstatus)}"/>					
               <p:separator/>
               <p:menuitem icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticLotesFiltro.doMovimientos}"/>
@@ -288,7 +288,7 @@
 							</p:column>														
 							<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.articulo}">
 								<f:facet name="header">
-									<h:outputText value="Nombre"/>
+									<h:outputText value="Producto"/>
 								</f:facet>
                 <h:outputText value="#{row['articulo']}"/>
 							</p:column>		

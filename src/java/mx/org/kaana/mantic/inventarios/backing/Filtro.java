@@ -9,14 +9,13 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.comun.Comun;
-import mx.org.kaana.kajool.procesos.reportes.beans.ExportarXls;
-import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -26,14 +25,19 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
-import mx.org.kaana.mantic.enums.EExportacionXls;
 
 @Named(value = "manticInventariosFiltro")
 @ViewScoped
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 1793667741599428879L;
+  
+  private FormatLazyModel lazyDetalle;
 
+	public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}		
+  
   @PostConstruct
   @Override
   protected void init() {
@@ -66,6 +70,7 @@ public class Filtro extends Comun implements Serializable {
       params.put("sortOrder", "order by tc_mantic_almacenes.id_empresa, tc_mantic_almacenes.id_almacen, tc_mantic_articulos.nombre");
       this.lazyModel = new FormatCustomLazy("VistaInventariosDto", "consulta", params, columns);
       UIBackingUtilities.resetDataTable();
+      this.lazyDetalle= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -238,6 +243,36 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(params);
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("articulos");
-	}	// doCompleteArticulo
+	}	
+ 
+  public void doConsultar() {
+    this.doLoadDetalle((Entity)this.attrs.get("seleccionado"));
+  }
+  
+  public void doLoadDetalle(Entity row) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+		try {
+			if(row!= null && !row.isEmpty()) {
+        this.attrs.put("seleccionado", row);
+        params.put("idAlmacen", row.toLong("idAlmacen"));
+        params.put("idArticulo", row.toLong("idArticulo"));
+        params.put("sortOrder", "order by tc_mantic_almacenes_articulos.id_almacen, tc_mantic_almacenes_articulos.id_articulo");
+        columns.add(new Columna("articulo", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+				this.lazyDetalle= new FormatLazyModel("VistaInventariosDto", "detalle", params, columns);
+				UIBackingUtilities.resetDataTable("tablaDetalle");
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
   
 }

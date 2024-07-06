@@ -674,6 +674,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
     try {      
       consecutivo= this.toSiguiente(sesion);
       this.orden.setIdLote(-1L);
+      this.orden.setNombre("[RESTOS] ".concat(this.orden.getNombre()));
       this.orden.setConsecutivo(consecutivo.getConsecutivo());
       this.orden.setOrden(consecutivo.getOrden());
       this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
@@ -777,7 +778,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Long regresar             = this.orden.getIdAlmacen();
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("idEmpresa", this.orden.getIdEmpresa());
+      params.put("sucursales", this.orden.getIdEmpresa());
       Entity almacen= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticAlmacenesDto", "origen", params);
       if(!Objects.equals(almacen, null) && !almacen.isEmpty())
         regresar= almacen.toLong("idAlmacen");
@@ -941,6 +942,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
     try {      
       consecutivo= this.toSiguiente(sesion);
       this.orden.setIdLote(-1L);
+      if(!Objects.equals(this.orden.getNombre(), null) && this.orden.getNombre().contains("[RESTOS]"))
+        this.orden.setNombre(this.orden.getNombre().replaceAll("RESTOS", "REPROCESAR"));
       this.orden.setConsecutivo(consecutivo.getConsecutivo());
       this.orden.setOrden(consecutivo.getOrden());
       this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
@@ -969,6 +972,5 @@ public class Transaccion extends IBaseTnx implements Serializable {
     } // catch	
     return regresar;
   }
-  
   
 } 

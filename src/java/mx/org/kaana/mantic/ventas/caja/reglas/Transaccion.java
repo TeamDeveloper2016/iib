@@ -1257,6 +1257,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		boolean regresar                 = false;
 		TcManticInventariosDto inventario= null;
 		Map<String, Object>params        = new HashMap<>();
+    Double factor                    = -1D;
 		try {
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", idArticulo);
@@ -1275,10 +1276,37 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				inventario.setIdUsuario(JsfBase.getIdUsuario());
 				inventario.setInicial(0D);
 				inventario.setSalidas(cantidad);
-				inventario.setStock(cantidad* -1);
+				inventario.setStock(cantidad* factor);
 				inventario.setIdAutomatico(1L);
 				regresar= DaoFactory.getInstance().insert(sesion, inventario)>= 1L;
 			} // else				
+      
+			// ACTUALIZAR LAS ENTRADAS Y SALIDAS DE LOS ALMACENES POR ARTICULO
+      TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
+			if(ubicacion== null) {
+			  TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
+				if(general== null) {
+  				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), idAlmacen, -1L);
+					DaoFactory.getInstance().insert(sesion, general);
+				} // if	
+			  Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosDto", "inventario", params);
+				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(
+          entity.toDouble("minimo"), // Double minimo, 
+          -1L, // Long idAlmacenArticulo, 
+          general.getIdUsuario(), // Long idUsuario, 
+          general.getIdAlmacen(), // Long idAlmacen, 
+          entity.toDouble("maximo"), // Double maximo, 
+          general.getIdAlmacenUbicacion(), // Long idAlmacenUbicacion, 
+          idArticulo, // Long idArticulo, 
+          cantidad* factor // Double stock
+        );
+				DaoFactory.getInstance().insert(sesion, articulo);
+		  } // if
+			else { 
+				ubicacion.setStock(ubicacion.getStock()+ (cantidad* factor));
+        ubicacion.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				DaoFactory.getInstance().update(sesion, ubicacion);
+			} // if
 		} // try
 		finally {			
 			Methods.clean(params);
@@ -1626,6 +1654,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		boolean regresar                 = false;
 		TcManticInventariosDto inventario= null;
 		Map<String, Object>params        = new HashMap<>();
+    Double factor                    = 1D;
 		try {
 			params.put("idAlmacen", idAlmacen);
 			params.put("idArticulo", idArticulo);
@@ -1648,6 +1677,33 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				inventario.setIdAutomatico(1L);
 				regresar= DaoFactory.getInstance().insert(sesion, inventario)>= 1L;
 			} // else				
+
+      // ACTUALIZAR LAS ENTRADAS Y SALIDAS DE LOS ALMACENES POR ARTICULO
+			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
+			if(ubicacion== null) {
+			  TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
+				if(general== null) {
+  				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), idAlmacen, -1L);
+					DaoFactory.getInstance().insert(sesion, general);
+				} // if	
+			  Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosDto", "inventario", params);
+				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(
+          entity.toDouble("minimo"), // Double minimo, 
+          -1L, // Long idAlmacenArticulo, 
+          general.getIdUsuario(), // Long idUsuario, 
+          general.getIdAlmacen(), // Long idAlmacen, 
+          entity.toDouble("maximo"), // Double maximo, 
+          general.getIdAlmacenUbicacion(), // Long idAlmacenUbicacion, 
+          idArticulo, // Long idArticulo, 
+          cantidad* factor // Double stock
+        );
+				DaoFactory.getInstance().insert(sesion, articulo);
+		  } // if
+			else { 
+				ubicacion.setStock(ubicacion.getStock()+ (cantidad* factor));
+        ubicacion.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+				DaoFactory.getInstance().update(sesion, ubicacion);
+			} // if
 		} // try
 		finally {			
 			Methods.clean(params);
