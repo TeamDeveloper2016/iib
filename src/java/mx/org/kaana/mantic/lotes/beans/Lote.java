@@ -57,10 +57,10 @@ public class Lote extends TcManticLotesDto implements Serializable {
 
   public Lote(Double original, Long idLoteTipo, String nombre, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, Long idLote, String observaciones, Long idEmpresa, Double cantidad, Long orden, Long idArticulo, Long idLoteEstatus, Long idTipoClase, Double merma, Double terminado, Double restos) {
     super(original, idLoteTipo, nombre, ejercicio, consecutivo, idUsuario, idAlmacen, idLote, observaciones, idEmpresa, cantidad, orden, idArticulo, idLoteEstatus, idTipoClase, merma, terminado, restos);
-    this.setIkEmpresa(new UISelectEntity(-1L));
-    this.setIkAlmacen(new UISelectEntity(-1L));
-    this.setIkArticulo(new UISelectEntity(-1L));
-    this.setIkTipoClase(new UISelectEntity(-1L));
+    this.setIkEmpresa(new UISelectEntity(idEmpresa));
+    this.setIkAlmacen(new UISelectEntity(idAlmacen));
+    this.setIkArticulo(new UISelectEntity(idArticulo));
+    this.setIkTipoClase(new UISelectEntity(idTipoClase));
     this.setPartidas(new ArrayList<Partida>());
     this.setUnidades(new ArrayList<Unidad>());
     this.setArticulos(new ArrayList<Articulo>());

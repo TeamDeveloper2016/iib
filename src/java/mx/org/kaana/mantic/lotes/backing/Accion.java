@@ -120,6 +120,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
           this.orden= new AdminLotes((Long)this.attrs.get("idLote"));
           break;
       } // switch
+      this.attrs.put("partidas", this.orden.getLote().getPartidas().size());
 			this.toLoadCatalogos();
       this.toSumPartidas("porcentajes");
     } // try
@@ -134,7 +135,6 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
     String regresar        = null;
     try {			
       if(this.checkLote()) {
-        this.orden.getLote().setIdTipoClase(null);
         transaccion = new Transaccion(this.orden.getLote());
         if (transaccion.ejecutar(this.accion)) {
           regresar= this.doCancelar();
@@ -287,14 +287,15 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
     Map<String, Object> params    = new HashMap<>();
   	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
     try {
-      if(Objects.equals(articulos, null) && !articulos.isEmpty()) {
+      if(!Objects.equals(articulos, null) && !articulos.isEmpty()) {
         int index= articulos.indexOf(this.orden.getLote().getIkArticulo());
         if(index>= 0)
           this.orden.getLote().setIkArticulo(articulos.get(index));
         else
           this.orden.getLote().setIkArticulo(articulos.get(0));
-      } // if  
-      this.orden.getLote().setIdTipoClase(this.orden.getLote().getIkArticulo().toLong("idTipoClase"));
+      } // if
+      if(this.orden.getLote().getIkArticulo().containsKey("idTipoClase"))
+        this.orden.getLote().setIdTipoClase(this.orden.getLote().getIkArticulo().toLong("idTipoClase"));
   		params.put("sortOrder", "order by tc_mantic_notas_detalles.id_nota_detalle");
   		params.put("idLote", this.orden.getLote().getIdLote());
       params.put("idAlmacen", this.orden.getLote().getIkAlmacen().getKey());

@@ -86,7 +86,6 @@ public class Agrupado extends Especial implements IBaseStorage, Serializable {
     try {			
       if(this.checkLote()) {
         this.accion= Objects.equals(this.accion, EAccion.AGREGAR)? EAccion.COMPLETO: Objects.equals(this.accion, EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: this.accion;
-        this.orden.getLote().setIdTipoClase(null);
         transaccion = new Transaccion(this.orden.getLote());
         if (transaccion.ejecutar(this.accion)) {
           regresar= this.doCancelar();

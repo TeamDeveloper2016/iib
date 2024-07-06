@@ -97,20 +97,20 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
           this.lote.toString("consecutivo"), // String consecutivo, 
           JsfBase.getIdUsuario(), // Long idUsuario, 
           this.lote.toLong("idAlmacen"), // Long idAlmacen, 
-          -1L, // Long idLote, 
+          this.lote.toLong("idLote"), // Long idLote, 
           null, // String observaciones, 
           this.lote.toLong("idEmpresa"), // Long idEmpresa, 
           this.lote.toDouble("cantidad"), // Double cantidad, 
           1L,// Long orden, 
           this.lote.toLong("idArticulo"), // Long idArticulo
           EEstatusLotes.ELABORADO.getKey(), // Long idLoteEstatus     
-          this.lote.toLong("idTipoArticulo"), // Long idTipoClase      
+          this.lote.toLong("idTipoClase"), // Long idTipoClase      
           0D, // merma
           0D, // terminado
           0D // restos
         );
         this.orden.setItArticulo(this.lote.toLong("idArticulo"));
-        this.orden.setItTipoClase(this.lote.toLong("idTipoArticulo"));
+        this.orden.setItTipoClase(this.lote.toLong("idTipoClase"));
         this.orden.setIkEmpresa(new UISelectEntity(this.lote.toLong("idEmpresa")));
         this.orden.setIkAlmacen(new UISelectEntity(this.lote.toLong("idAlmacen")));
         this.orden.setIkArticulo(new UISelectEntity(this.lote.toLong("idArticulo")));
@@ -146,6 +146,7 @@ public class Fraccionar extends IBaseAttribute implements Serializable {
     String regresar        = null;
     Transaccion transaccion= null;
     try {			
+      this.orden.setIdLote(-1L);
       this.orden.setCantidad((Double)this.attrs.get("importe"));
       this.orden.setOriginal((Double)this.attrs.get("importe"));
 			transaccion = new Transaccion((Long)this.attrs.get("idLote"), this.orden);
