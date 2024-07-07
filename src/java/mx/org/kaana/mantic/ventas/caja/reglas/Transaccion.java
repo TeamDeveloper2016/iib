@@ -1230,9 +1230,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 	private Long toIdAlmacenUbicacion(Session sesion) throws Exception {
 		Long regresar                            = -1L;
 		TcManticAlmacenesUbicacionesDto ubicacion= null;
-		Map<String, Object>params                = null;		
+		Map<String, Object>params                = new HashMap<>();		
 		try {
-			params= new HashMap<>();
 			params.put("idAlmacen", getOrden().getIdAlmacen());
 			ubicacion= (TcManticAlmacenesUbicacionesDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesUbicacionesDto.class, "TcManticAlmacenesUbicacionesDto", "general", params);
 			if(ubicacion!= null)
@@ -1280,33 +1279,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				inventario.setIdAutomatico(1L);
 				regresar= DaoFactory.getInstance().insert(sesion, inventario)>= 1L;
 			} // else				
-      
-			// ACTUALIZAR LAS ENTRADAS Y SALIDAS DE LOS ALMACENES POR ARTICULO
-      TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
-			if(ubicacion== null) {
-			  TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
-				if(general== null) {
-  				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), idAlmacen, -1L);
-					DaoFactory.getInstance().insert(sesion, general);
-				} // if	
-			  Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosDto", "inventario", params);
-				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(
-          entity.toDouble("minimo"), // Double minimo, 
-          -1L, // Long idAlmacenArticulo, 
-          general.getIdUsuario(), // Long idUsuario, 
-          general.getIdAlmacen(), // Long idAlmacen, 
-          entity.toDouble("maximo"), // Double maximo, 
-          general.getIdAlmacenUbicacion(), // Long idAlmacenUbicacion, 
-          idArticulo, // Long idArticulo, 
-          cantidad* factor // Double stock
-        );
-				DaoFactory.getInstance().insert(sesion, articulo);
-		  } // if
-			else { 
-				ubicacion.setStock(ubicacion.getStock()+ (cantidad* factor));
-        ubicacion.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-				DaoFactory.getInstance().update(sesion, ubicacion);
-			} // if
 		} // try
 		finally {			
 			Methods.clean(params);
@@ -1677,33 +1649,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 				inventario.setIdAutomatico(1L);
 				regresar= DaoFactory.getInstance().insert(sesion, inventario)>= 1L;
 			} // else				
-
-      // ACTUALIZAR LAS ENTRADAS Y SALIDAS DE LOS ALMACENES POR ARTICULO
-			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
-			if(ubicacion== null) {
-			  TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
-				if(general== null) {
-  				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), idAlmacen, -1L);
-					DaoFactory.getInstance().insert(sesion, general);
-				} // if	
-			  Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosDto", "inventario", params);
-				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(
-          entity.toDouble("minimo"), // Double minimo, 
-          -1L, // Long idAlmacenArticulo, 
-          general.getIdUsuario(), // Long idUsuario, 
-          general.getIdAlmacen(), // Long idAlmacen, 
-          entity.toDouble("maximo"), // Double maximo, 
-          general.getIdAlmacenUbicacion(), // Long idAlmacenUbicacion, 
-          idArticulo, // Long idArticulo, 
-          cantidad* factor // Double stock
-        );
-				DaoFactory.getInstance().insert(sesion, articulo);
-		  } // if
-			else { 
-				ubicacion.setStock(ubicacion.getStock()+ (cantidad* factor));
-        ubicacion.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-				DaoFactory.getInstance().update(sesion, ubicacion);
-			} // if
 		} // try
 		finally {			
 			Methods.clean(params);
@@ -1717,8 +1662,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion {
 		almacenArticulo.setIdAlmacen(idAlmacen);
 		almacenArticulo.setIdArticulo(idArticulo);
 		almacenArticulo.setIdUsuario(JsfBase.getIdUsuario());
-		almacenArticulo.setMaximo(0D);
-		almacenArticulo.setMinimo(0D);
+		almacenArticulo.setMaximo(100000D);
+		almacenArticulo.setMinimo(200000D);
 		almacenArticulo.setStock(cantidad);
 		almacenArticulo.setIdAlmacenUbicacion(toIdAlmacenUbicacion(sesion));
 		regresar= DaoFactory.getInstance().insert(sesion, almacenArticulo)>= 1L;		
