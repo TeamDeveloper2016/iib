@@ -97,7 +97,7 @@
                 <p:ajax event="rowSelect" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
                 <f:facet name="header">
                   <div style="float: left">
-                    <p:outputLabel value="Productos disponible" styleClass="janal-text-white"/>
+                    <p:outputLabel value="Productos disponible:" styleClass="janal-text-white"/>
                   </div>  
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
@@ -116,7 +116,13 @@
                 <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-10" headerText="Lote" sortBy="#{row.lote}">
 									<h:outputText value="#{row.lote}"/>
 								</p:column>   
-                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-15" headerText="Nota entrada" sortBy="#{row.consecutivo}">
+                <p:column styleClass="MarAuto Responsive janal-column-center" headerText="Nombre" sortBy="#{row.nombre}">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-10" headerText="Estatus" sortBy="#{row.estatus}">
+									<h:outputText value="#{row.estatus}"/>
+								</p:column>   
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-10" headerText="Nota entrada" sortBy="#{row.consecutivo}">
 									<h:outputText value="#{row.consecutivo}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive" headerText="Proveedor" sortBy="#{row.proveedor}">
@@ -128,7 +134,7 @@
 								<p:column styleClass="MarAuto Responsive" headerText="Producto" sortBy="#{row.articulo}">
 									<h:outputText value="#{row.articulo}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-right" headerText="Cantidad" sortBy="#{row.kilos}">
+								<p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" headerText="Cantidad" sortBy="#{row.kilos}">
 									<h:outputText value="#{row.kilos}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">
@@ -142,7 +148,7 @@
               <p:dataTable id="partidas" var="row" value="#{manticLotesAgrupado.orden.lote.partidas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" styleClass="recalculo" rowIndexVar="index" rowKey="#{row.idLoteDetalle}" rowStyleClass="#{manticLotesAgrupado.doIdentificar(row)}">
                 <f:facet name="header">
                   <div style="float: left">
-                    <p:outputLabel value="Productos asignados" styleClass="janal-text-white"/>
+                    <p:outputLabel value="Productos asignados:" styleClass="janal-text-white"/>
                   </div>  
                   <div class="lg-pantalla">
                     <p:menuButton value="Opciones">
@@ -161,7 +167,13 @@
                 <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-10" headerText="Lote" sortBy="#{row.lote}">
 									<h:outputText value="#{row.lote}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-15" headerText="Nota entrada">
+                <p:column styleClass="MarAuto Responsive janal-column-center" headerText="Nombre" sortBy="#{row.nombre}">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-10" headerText="Estatus" sortBy="#{row.estatus}">
+									<h:outputText value="#{row.estatus}"/>
+								</p:column>   
+								<p:column styleClass="MarAuto Responsive janal-column-center janal-wid-10" headerText="Nota entrada">
 									<h:outputText value="#{row.consecutivo}"/>
 								</p:column>   
 								<p:column styleClass="MarAuto Responsive" headerText="Proveedor">
@@ -173,7 +185,7 @@
 								<p:column styleClass="MarAuto Responsive productos" headerText="Producto">
 									<h:outputText value="#{row.articulo}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-right" headerText="Cantidad">
+								<p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" headerText="Cantidad">
 									<h:outputText value="#{row.cantidad}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38" headerText="...">

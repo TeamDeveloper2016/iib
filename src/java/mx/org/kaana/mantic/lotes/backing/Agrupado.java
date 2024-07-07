@@ -145,6 +145,8 @@ public class Agrupado extends Especial implements IBaseStorage, Serializable {
     partida.setIdLote(row.toLong("idLote"));
     partida.setIdLoteDetalle(row.toLong("idLoteDetalle"));
     partida.setLote(row.toString("lote"));
+    partida.setNombre(row.toString("nombre"));
+    partida.setEstatus(row.toString("estatus"));
     super.toAdd(row, partida);        
   }
 

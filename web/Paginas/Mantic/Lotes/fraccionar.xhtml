@@ -79,6 +79,12 @@
 								<p:column styleClass="MarAuto Responsive janal-wid-10" headerText="Consecutivo">
 									<h:outputText value="#{row.consecutivo}"/>
 								</p:column>   
+                <p:column styleClass="MarAuto Responsive janal-column-center" headerText="Nombre" sortBy="#{row.nombre}">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+                <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-10" headerText="Estatus" sortBy="#{row.estatus}">
+									<h:outputText value="#{row.estatus}"/>
+								</p:column>   
 								<p:column styleClass="MarAuto Responsive" headerText="Proveedor">
 									<h:outputText value="#{row.proveedor}"/>
 								</p:column>   

@@ -19,6 +19,8 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
   
   private String lote;
   private String consecutivo;
+  private String nombre;
+  private String estatus;
   private String proveedor;
   private String codigo;
   private String articulo;
@@ -62,6 +64,22 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
 
   public void setConsecutivo(String consecutivo) {
     this.consecutivo = consecutivo;
+  }
+
+  public String getNombre() {
+    return nombre;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public String getEstatus() {
+    return estatus;
+  }
+
+  public void setEstatus(String estatus) {
+    this.estatus = estatus;
   }
 
   public String getProveedor() {
@@ -130,7 +148,7 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
 
   @Override
   public String toString() {
-    return "Partida{" + "lote=" + lote + ", consecutivo=" + consecutivo + ", proveedor=" + proveedor + ", codigo=" + codigo + ", articulo=" + articulo + ", original=" + original + ", sql=" + sql + '}';
+    return "Partida{" + "lote=" + lote + ", consecutivo=" + consecutivo + ", nombre=" + nombre + ", estatus=" + estatus + ", proveedor=" + proveedor + ", codigo=" + codigo + ", articulo=" + articulo + ", original=" + original + ", sql=" + sql + '}';
   }
 
 }

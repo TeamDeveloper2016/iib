@@ -669,85 +669,88 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Siguiente consecutivo= null;
     String folio         = this.orden.getConsecutivo();
     Long idAlmacen       = this.orden.getIdAlmacen();
+    Double cantidad      = this.orden.getRestos();
     int index            = 0;
     int count            = 0;
     try {      
-      consecutivo= this.toSiguiente(sesion);
-      this.orden.setIdLote(-1L);
-      this.orden.setNombre("[RESTOS] ".concat(this.orden.getNombre()));
-      this.orden.setConsecutivo(consecutivo.getConsecutivo());
-      this.orden.setOrden(consecutivo.getOrden());
-      this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-      this.orden.setIdUsuario(JsfBase.getIdUsuario());
-      this.orden.setCantidad(this.orden.getRestos());
-      this.orden.setOriginal(this.orden.getRestos());
-      this.orden.setIdAlmacen(this.toFindAlmacenRestos(sesion));
-      this.orden.setMerma(0D);
-      this.orden.setTerminado(0D);
-      this.orden.setRestos(0D);
-      this.orden.setIdLoteTipo(1L);
-      this.orden.setIdLoteEstatus(EEstatusLotes.TRANSFERIDO.getKey());
-      this.orden.setObservaciones("SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
-      this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-      DaoFactory.getInstance().insert(sesion, this.orden);
-      this.toAddBitacora(sesion);
-      // DETERMINAR BASADO EN LAS PARTIDAS QUE PARTIDA CUBRE LA CANTIDAD DE RESTOS
-      while(index< this.orden.getPartidas().size() && !cubre) {
-        Partida partida= this.orden.getPartidas().get(index);
-        cubre= partida.getCantidad()>= this.orden.getCantidad();
-        index++;
-      } // while
-      if(cubre) {
-        index--;
-        while(count< this.orden.getPartidas().size()) {
-          if(!Objects.equals(index, count))
-            this.orden.getPartidas().remove(count);
-          else {
-            Partida partida= this.orden.getPartidas().get(count);
-            partida.setIdLote(-1L);
-            partida.setIdLoteDetalle(-1L);
-            partida.setCantidad(this.orden.getCantidad());
-            partida.setSaldo(partida.getCantidad());
-            // ESTE MAS UNO ES PARA QUE NO ACTUALICE LA NOTA DETALLE CON EL ID DEL NUEVO LOTE
-            partida.setOriginal(partida.getCantidad()+ 1D);
-            partida.setSql(ESql.INSERT);
-            count++;
-          } // if  
-        } // while  
-      } // if
-      else {
-        // SUMAR TODAS LAS NOTAS DETALLES HASTA CUBRIR LOS RESTOS
-        Double suma= 0D;
-        while(count< this.orden.getPartidas().size()) {
-          Partida partida= this.orden.getPartidas().get(count);
-          if(Objects.equals(suma, this.orden.getCantidad())) {
-            this.orden.getPartidas().remove(count);
-          } // if
-          else {
-            partida.setIdLote(-1L);
-            partida.setIdLoteDetalle(-1L);
-            partida.setSql(ESql.INSERT);
-            if(suma+ partida.getCantidad()<= this.orden.getCantidad()) 
-              suma+= partida.getCantidad();
+      if(cantidad> 0D) {
+        consecutivo= this.toSiguiente(sesion);
+        this.orden.setIdLote(-1L);
+        this.orden.setNombre("[RESTOS] ".concat(this.orden.getNombre()));
+        this.orden.setConsecutivo(consecutivo.getConsecutivo());
+        this.orden.setOrden(consecutivo.getOrden());
+        this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+        this.orden.setIdUsuario(JsfBase.getIdUsuario());
+        this.orden.setCantidad(this.orden.getRestos());
+        this.orden.setOriginal(this.orden.getRestos());
+        this.orden.setIdAlmacen(this.toFindAlmacenRestos(sesion));
+        this.orden.setMerma(0D);
+        this.orden.setTerminado(0D);
+        this.orden.setRestos(0D);
+        this.orden.setIdLoteTipo(1L);
+        this.orden.setIdLoteEstatus(EEstatusLotes.TRANSFERIDO.getKey());
+        this.orden.setObservaciones("SE FORMO DEL LOTE "+ folio+ " EL "+ Global.format(EFormatoDinamicos.FECHA_HORA, new Timestamp(Calendar.getInstance().getTimeInMillis())));
+        this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+        DaoFactory.getInstance().insert(sesion, this.orden);
+        this.toAddBitacora(sesion);
+        // DETERMINAR BASADO EN LAS PARTIDAS QUE PARTIDA CUBRE LA CANTIDAD DE RESTOS
+        while(index< this.orden.getPartidas().size() && !cubre) {
+          Partida partida= this.orden.getPartidas().get(index);
+          cubre= partida.getCantidad()>= this.orden.getCantidad();
+          index++;
+        } // while
+        if(cubre) {
+          index--;
+          while(count< this.orden.getPartidas().size()) {
+            if(!Objects.equals(index, count))
+              this.orden.getPartidas().remove(count);
             else {
-              partida.setCantidad(this.orden.getCantidad()- suma);
-              suma= this.orden.getCantidad();
+              Partida partida= this.orden.getPartidas().get(count);
+              partida.setIdLote(-1L);
+              partida.setIdLoteDetalle(-1L);
+              partida.setCantidad(this.orden.getCantidad());
+              partida.setSaldo(partida.getCantidad());
+              // ESTE MAS UNO ES PARA QUE NO ACTUALICE LA NOTA DETALLE CON EL ID DEL NUEVO LOTE
+              partida.setOriginal(partida.getCantidad()+ 1D);
+              partida.setSql(ESql.INSERT);
+              count++;
+            } // if  
+          } // while  
+        } // if
+        else {
+          // SUMAR TODAS LAS NOTAS DETALLES HASTA CUBRIR LOS RESTOS
+          Double suma= 0D;
+          while(count< this.orden.getPartidas().size()) {
+            Partida partida= this.orden.getPartidas().get(count);
+            if(Objects.equals(suma, this.orden.getCantidad())) {
+              this.orden.getPartidas().remove(count);
+            } // if
+            else {
+              partida.setIdLote(-1L);
+              partida.setIdLoteDetalle(-1L);
+              partida.setSql(ESql.INSERT);
+              if(suma+ partida.getCantidad()<= this.orden.getCantidad()) 
+                suma+= partida.getCantidad();
+              else {
+                partida.setCantidad(this.orden.getCantidad()- suma);
+                suma= this.orden.getCantidad();
+              } // else  
+              partida.setSaldo(partida.getCantidad());
+              partida.setOriginal(partida.getCantidad()+ 1D);
+              count++;
             } // else  
-            partida.setSaldo(partida.getCantidad());
-            partida.setOriginal(partida.getCantidad()+ 1D);
-            count++;
-          } // else  
-        } // while  
-      } // else
-      this.toFillPromedios(sesion);
-      this.toFillPartidas(sesion);
-      Articulo articulo= new Articulo(-1L);
-      for (Partida item: this.orden.getPartidas()) {
-        articulo.setIdArticulo(this.orden.getIdArticulo());
-        articulo.setCantidad(articulo.getCantidad()+ item.getCantidad());
-      } // for
-      this.toAffectAlmacenes(sesion, 12L, this.orden.getIdAlmacen(), articulo, 1D);
-      this.toAffectAlmacenes(sesion, 12L, idAlmacen, articulo, -1D);
+          } // while  
+        } // else
+        this.toFillPromedios(sesion);
+        this.toFillPartidas(sesion);
+        Articulo articulo= new Articulo(-1L);
+        for (Partida item: this.orden.getPartidas()) {
+          articulo.setIdArticulo(this.orden.getIdArticulo());
+          articulo.setCantidad(articulo.getCantidad()+ item.getCantidad());
+        } // for
+        this.toAffectAlmacenes(sesion, 12L, this.orden.getIdAlmacen(), articulo, 1D);
+        this.toAffectAlmacenes(sesion, 12L, idAlmacen, articulo, -1D);
+      } // if  
       regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {
@@ -897,6 +900,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticLotesPromediosDto", "existe", params);
       if(!Objects.equals(exist, null) && !exist.isEmpty()) 
         regresar= exist.toLong("total")> 0L;
+      this.messageError= "El lote no tiene capturado los porcentajes !";
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -912,6 +916,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticLotesCalidadesDto", "existe", params);
       if(!Objects.equals(exist, null) && !exist.isEmpty()) 
         regresar= exist.toLong("total")> 0L;
+      this.messageError= "El lote no tiene capturado los kilogramos de merma !";
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -927,6 +932,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       Entity exist= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticLotesTerminadosDto", "existe", params);
       if(!Objects.equals(exist, null) && !exist.isEmpty()) 
         regresar= exist.toLong("total")> 0L;
+      this.messageError= "El lote no tiene capturado los productos terminados !";
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -954,8 +960,10 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.orden.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       DaoFactory.getInstance().insert(sesion, this.orden);
       this.toAddBitacora(sesion);
-      for (Partida item: this.orden.getPartidas()) 
+      for (Partida item: this.orden.getPartidas()) {
         item.setOriginal(item.getCantidad()+ 1D);
+        item.setSql(ESql.INSERT);
+      } // if  
       this.toFillPromedios(sesion);
       this.toFillPartidas(sesion);
       Articulo articulo= new Articulo(-1L);
