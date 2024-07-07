@@ -1676,7 +1676,8 @@ select
 	tc_mantic_articulos_codigos.codigo,
 	tc_mantic_articulos.nombre as articulo,
 	tc_mantic_almacenes_articulos.stock,
-	concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario
+	concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+  tc_mantic_almacenes_articulos.registro
 from 
 	tc_mantic_almacenes_articulos
 inner join  

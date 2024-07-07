@@ -54,10 +54,10 @@ public class Filtro extends IBaseFilter implements Serializable {
     Map<String, Object> params= null;
     try {
       params= this.toPrepare();
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));      
-      this.lazyModel = new FormatCustomLazy("TcManticTiposClasesDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("TcManticTiposClasesDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {

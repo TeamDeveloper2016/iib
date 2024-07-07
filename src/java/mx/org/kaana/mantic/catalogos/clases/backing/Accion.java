@@ -22,13 +22,14 @@ import mx.org.kaana.mantic.db.dto.TcManticTiposClasesDto;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 121393488565639367L;
+  
 	private TcManticTiposClasesDto clase;
 
-	public TcManticTiposClasesDto getMerma() {
+	public TcManticTiposClasesDto getClase() {
 		return this.clase;
 	}
 
-	public void setMerma(TcManticTiposClasesDto clase) {
+	public void setClase(TcManticTiposClasesDto clase) {
 		this.clase = clase;
 	}	
 

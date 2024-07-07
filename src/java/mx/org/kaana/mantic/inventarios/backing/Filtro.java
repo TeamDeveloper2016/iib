@@ -259,7 +259,6 @@ public class Filtro extends Comun implements Serializable {
         params.put("idArticulo", row.toLong("idArticulo"));
         params.put("sortOrder", "order by tc_mantic_almacenes_articulos.id_almacen, tc_mantic_almacenes_articulos.id_articulo");
         columns.add(new Columna("articulo", EFormatoDinamicos.MAYUSCULAS));
-        columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
 				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 				this.lazyDetalle= new FormatLazyModel("VistaInventariosDto", "detalle", params, columns);
 				UIBackingUtilities.resetDataTable("tablaDetalle");
