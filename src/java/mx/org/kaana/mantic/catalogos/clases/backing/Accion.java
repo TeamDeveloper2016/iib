@@ -61,7 +61,8 @@ public class Accion extends IBaseAttribute implements Serializable {
             null, // String descripcion, 
             -1L, // Long idTipoClase, 
             null, // String clave, 
-            null // String sat
+            null, // String sat
+            2L // Long idTerminado
           );
           break;
         case MODIFICAR:					

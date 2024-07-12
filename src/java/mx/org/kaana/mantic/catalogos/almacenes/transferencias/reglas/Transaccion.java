@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -63,6 +64,7 @@ public class Transaccion extends ComunInventarios {
     	this.messageError    = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
   		Siguiente consecutivo= null;
       switch (accion) {
+        case PROCESAR:
         case ACTIVAR:
         case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
@@ -150,24 +152,27 @@ public class Transaccion extends ComunInventarios {
 				DaoFactory.getInstance().insert(sesion, item);
 			else 
 				DaoFactory.getInstance().update(sesion, item);
-			if(EAccion.ACTIVAR.equals(accion)) 
+			if(Objects.equals(EAccion.ACTIVAR, accion)) 
 				this.toMovimientos(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
 			else
-  			if(EAccion.REGISTRAR.equals(accion)) {
-					TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
-          articulo.setSolicitados(articulo.getCantidad());
-					switch(this.idTransferenciaEstatus.intValue()) {
-						case 3: // TRANSITO
-    					this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
-							break;
-						case 4: // CANCELAR
-    					this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
-							break;
-						case 5: // RECEPCION
-    					this.toMovimientosAlmacenDestino(sesion, this.dto.getConsecutivo(), this.dto.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-							break;
-					} // switch
-				} // if
+			  if(Objects.equals(EAccion.PROCESAR, accion)) 
+				  this.toAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
+        else
+          if(EAccion.REGISTRAR.equals(accion)) {
+            TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+            articulo.setSolicitados(articulo.getCantidad());
+            switch(this.idTransferenciaEstatus.intValue()) {
+              case 3: // TRANSITO
+                this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
+                break;
+              case 4: // CANCELAR
+                this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
+                break;
+              case 5: // RECEPCION
+                this.toMovimientosAlmacenDestino(sesion, this.dto.getConsecutivo(), this.dto.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+                break;
+            } // switch
+          } // if
 		} // for
 	}
 		

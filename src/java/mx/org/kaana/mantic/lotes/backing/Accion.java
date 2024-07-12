@@ -214,7 +214,7 @@ public class Accion extends IBaseFilter implements IBaseStorage, Serializable {
     try {      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-  	  params.put("sucursales", this.orden.getLote().getIdEmpresa());
+  	  params.put("idEmpresa", this.orden.getLote().getIdEmpresa());
  			List<UISelectEntity> almacenes= UIEntity.seleccione("TcManticAlmacenesDto", "origen", params, columns, "clave");
       this.attrs.put("almacenes", almacenes);
 			if(!Objects.equals(almacenes, null) && !almacenes.isEmpty()) {

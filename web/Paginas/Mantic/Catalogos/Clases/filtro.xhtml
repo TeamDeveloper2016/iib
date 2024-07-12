@@ -9,9 +9,10 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        clave: {validaciones: 'libre', mascara: 'alfanumerico'},
+        clave      : {validaciones: 'libre', mascara: 'alfanumerico'},
         descripcion: {validaciones: 'libre', mascara: 'alfanumerico'},
-        sat: {validaciones: 'libre', mascara: 'alfanumerico'}
+        idTerminado:
+        sat        : {validaciones: 'libre', mascara: 'alfanumerico'}
       };
     </script>		
   </ui:define>
@@ -31,6 +32,12 @@
               <p:inputText id="descripcion" value="#{manticCatalogosClasesFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="sat" value="SAT:"/>
               <p:inputText id="sat" value="#{manticCatalogosClasesFiltro.attrs.sat}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="idTerminado" value="Terminado:"/>
+              <p:selectOneMenu id="idTerminado" styleClass="janal-wid-100-txt" value="#{manticCatalogosClasesFiltro.attrs.idTerminado}" converter="javax.faces.Long">
+                <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItem itemLabel="SI" itemValue="1"/>
+                <f:selectItem itemLabel="NO" itemValue="2"/>								
+              </p:selectOneMenu>
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">

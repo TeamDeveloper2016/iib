@@ -82,7 +82,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private void toInitTransferencia() {
 		this.accion= EAccion.ACTIVAR;
     this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-		Transferencia backup= this.transferencia;
+//		Transferencia backup= this.transferencia;
 		this.transferencia= new Transferencia(
 			null, // Long idSolicito, 
 			8L, // Long idTransferenciaEstatus, 
@@ -95,7 +95,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 			-1L, // Long idDestino, 
 			JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende(), // Long idEmpresa, 
 			1L, // Long orden, 
-			-1L // Long idTransferencia					
+			-1L, // Long idTransferencia					
+      null, // Long idTipoClase      
+      null // Long idArticulo
 		);
 //		if(backup!= null) {
 //		  this.transferencia.setIdAlmacen(backup.getIdAlmacen());

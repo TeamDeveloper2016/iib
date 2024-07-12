@@ -1238,7 +1238,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     try {      
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-  	  params.put("sucursales", ((NotaEntrada)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
+  	  params.put("idEmpresa", ((NotaEntrada)this.getAdminOrden().getOrden()).getIkEmpresa().getKey());
  			List<UISelectEntity> almacenes= UIEntity.build("TcManticAlmacenesDto", "origen", params, columns);
       this.attrs.put("almacenes", almacenes);
 			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 

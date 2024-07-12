@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -62,17 +56,21 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_transferencia")
   private Long idTransferencia;
+  @Column (name="id_tipo_clase")
+  private Long idTipoClase;
+  @Column (name="id_articulo")
+  private Long idArticulo;
 
   public TcManticTransferenciasDto() {
     this(new Long(-1L));
   }
 
   public TcManticTransferenciasDto(Long key) {
-    this(null, 1L, null, null, null, null, null, null, null, null, null, new Long(-1L));
+    this(null, 1L, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticTransferenciasDto(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia) {
+  public TcManticTransferenciasDto(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia, Long idTipoClase, Long idArticulo) {
     setIdSolicito(idSolicito);
     setIdTransferenciaEstatus(idTransferenciaEstatus);
     setIdTransferenciaTipo(idTransferenciaTipo);
@@ -86,6 +84,8 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setOrden(orden);
     setIdTransferencia(idTransferencia);
+    setIdTipoClase(idTipoClase);
+    setIdArticulo(idArticulo);
   }
 	
   public void setIdSolicito(Long idSolicito) {
@@ -192,6 +192,22 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     return idTransferencia;
   }
 
+  public Long getIdTipoClase() {
+    return idTipoClase;
+  }
+
+  public void setIdTipoClase(Long idTipoClase) {
+    this.idTipoClase = idTipoClase;
+  }
+
+  public Long getIdArticulo() {
+    return idArticulo;
+  }
+
+  public void setIdArticulo(Long idArticulo) {
+    this.idArticulo = idArticulo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -232,6 +248,10 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTransferencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoClase());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdArticulo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -252,13 +272,15 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("idTransferencia", getIdTransferencia());
+		regresar.put("idTipoClase", getIdTipoClase());
+		regresar.put("idArticulo", getIdArticulo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdSolicito(), getIdTransferenciaEstatus(), getIdTransferenciaTipo(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getObservaciones(), getIdDestino(), getIdEmpresa(), getOrden(), getIdTransferencia()
+    Object[] regresar = new Object[] {
+      getIdSolicito(), getIdTransferenciaEstatus(), getIdTransferenciaTipo(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getObservaciones(), getIdDestino(), getIdEmpresa(), getOrden(), getIdTransferencia(), getIdTipoClase(), getIdArticulo()
     };
     return regresar;
   }

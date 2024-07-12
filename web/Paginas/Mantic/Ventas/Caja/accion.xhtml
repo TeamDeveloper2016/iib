@@ -495,7 +495,7 @@
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel value="Crédito:"/>
                     <p:inputSwitch id="creditoCliente" widgetVar="widgetSwitchCredito" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente janal-abono" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
-                      <p:ajax listener="#{manticVentasCajaAccion.doValidateCredito}" process="@this contenedorGrupos:observacionesFactura contenedorGrupos:transporta" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="jsArticulos.applyValidacionesCredito();" />
+                      <p:ajax listener="#{manticVentasCajaAccion.doValidateCredito}" process="@this contenedorGrupos:observacionesFactura contenedorGrupos:transporta" update="contenedorGrupos:panelSumatoria" onstart="return janal.bloquear()" oncomplete="jsArticulos.applyValidacionesCredito()" />
                     </p:inputSwitch>
                   </p:panelGrid>  
                 </p:panelGrid>  

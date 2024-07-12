@@ -81,6 +81,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		    sb.append("(tc_mantic_tipos_clases.nombre like '%").append(this.attrs.get("clave")).append("%') and ");
     	if(!Cadena.isVacio(this.attrs.get("descripcion")))
 		    sb.append("(tc_mantic_tipos_clases.descripcion like '%").append(this.attrs.get("descripcion")).append("%') and ");
+    	if(!Cadena.isVacio(this.attrs.get("idTerminado")) && !Objects.equals((Long)this.attrs.get("idTerminado"), -1L))
+		    sb.append("(tc_mantic_tipos_clases.id_terminado=").append(this.attrs.get("idTerminado")).append(") and ");
 			if(Cadena.isVacio(sb.toString()))
 				regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			else

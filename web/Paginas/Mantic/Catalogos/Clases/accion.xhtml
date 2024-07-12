@@ -13,6 +13,7 @@
 			Janal.Control.fields = {				 				
 				clave      : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
 				descripcion: {validaciones: 'libre', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'},
+				idTerminado: {validaciones: 'requerido', mascara: 'entero'},
 				sat        : {validaciones: 'libre', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas'}
 			};						
 			
@@ -30,6 +31,12 @@
             <p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosClasesAccion.clase.descripcion}"/>
             <p:outputLabel for="sat" value="SAT:"/>
             <p:inputText id="sat" styleClass="janal-wid-100-txt" value="#{manticCatalogosClasesAccion.clase.sat}"/>
+            <p:outputLabel for="idTerminado" value="Terminado:"/>
+            <p:selectOneMenu id="idTerminado" styleClass="janal-wid-100-txt" value="#{manticCatalogosClasesAccion.clase.idTerminado}" converter="javax.faces.Long">
+              <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+              <f:selectItem itemLabel="SI" itemValue="1"/>
+              <f:selectItem itemLabel="NO" itemValue="2"/>								
+            </p:selectOneMenu>
           </p:panelGrid>
 				</div>
 			</div>

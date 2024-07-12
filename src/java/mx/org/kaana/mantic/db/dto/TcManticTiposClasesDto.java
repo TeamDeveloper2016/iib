@@ -44,6 +44,8 @@ public class TcManticTiposClasesDto implements IBaseDto, Serializable {
   private String clave;
   @Column (name="sat")
   private String sat;
+	@Column (name="id_terminado")
+  private Long idTerminado;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -52,15 +54,16 @@ public class TcManticTiposClasesDto implements IBaseDto, Serializable {
   }
 
   public TcManticTiposClasesDto(Long key) {
-    this(null, new Long(-1L), null, null);
+    this(null, new Long(-1L), null, null, 2L);
     setKey(key);
   }
 
-  public TcManticTiposClasesDto(String descripcion, Long idTipoClase, String clave, String sat) {
+  public TcManticTiposClasesDto(String descripcion, Long idTipoClase, String clave, String sat, Long idTerminado) {
     setDescripcion(descripcion);
     setIdTipoClase(idTipoClase);
     setClave(clave);
     setSat(sat);
+    setIdTerminado(idTerminado);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -96,6 +99,14 @@ public class TcManticTiposClasesDto implements IBaseDto, Serializable {
     return sat;
   }
 
+  public Long getIdTerminado() {
+    return idTerminado;
+  }
+
+  public void setIdTerminado(Long idTerminado) {
+    this.idTerminado = idTerminado;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -127,6 +138,8 @@ public class TcManticTiposClasesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSat());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTerminado());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -145,8 +158,8 @@ public class TcManticTiposClasesDto implements IBaseDto, Serializable {
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getDescripcion(), getIdTipoClase(), getClave(), getSat(), getRegistro()
+    Object[] regresar = new Object[] {
+      getDescripcion(), getIdTipoClase(), getClave(), getSat(), getIdTerminado(), getRegistro()
     };
     return regresar;
   }

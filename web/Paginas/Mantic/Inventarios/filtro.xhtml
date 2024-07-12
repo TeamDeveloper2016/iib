@@ -238,6 +238,12 @@
 								</f:facet>
 								<h:outputText value="#{row['almacen']}"/>
 							</p:column>														
+							<p:column styleClass="MarAuto Responsive janal-column-left janal-wid-12" sortBy="#{row.tipo}">
+								<f:facet name="header">
+									<h:outputText value="Tipo"/>
+								</f:facet>
+								<h:outputText value="#{row['tipo']}"/>
+							</p:column>														
 							<p:column styleClass="MarAuto Responsive janal-column-left " sortBy="#{row.producto}">
 								<f:facet name="header">
 									<h:outputText value="Producto"/>
@@ -250,7 +256,19 @@
 								</f:facet>
 								<h:outputText value="#{row['stock']}"/>
 							</p:column>														
-							<p:column styleClass="MarAuto Responsive janal-column-left" sortBy="#{row.usuario}">
+							<p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8" sortBy="#{row.cantidad}">
+								<f:facet name="header">
+									<h:outputText value="Cantidad"/>
+								</f:facet>
+								<h:outputText value="#{row['cantidad']}"/>
+							</p:column>														
+							<p:column styleClass="MarAuto Responsive janal-column-right janal-wid-8" sortBy="#{row.calculo}">
+								<f:facet name="header">
+									<h:outputText value="Actual"/>
+								</f:facet>
+								<h:outputText value="#{row['calculo']}"/>
+							</p:column>														
+							<p:column styleClass="MarAuto Responsive janal-column-left janal-display-none" sortBy="#{row.usuario}">
 								<f:facet name="header">
 									<h:outputText value="Usuario"/>
 								</f:facet>

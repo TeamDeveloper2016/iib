@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
@@ -107,6 +108,7 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
       this.attrs.put("transito", false);
 			this.toLoadCatalog();
+      this.toLoadTipos();
       if(this.attrs.get("idTransferencia")!= null) 
 			  this.doLoad();
     } // try
@@ -163,6 +165,8 @@ public class Filtro extends Comun implements Serializable {
 		  sb.append("(date_format(tc_mantic_transferencias.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idTransferenciaEstatus")) && !this.attrs.get("idTransferenciaEstatus").toString().equals("-1"))
   		sb.append("(tc_mantic_transferencias.id_transferencia_estatus= ").append(this.attrs.get("idTransferenciaEstatus")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idTransferenciaTipo")) && !this.attrs.get("idTransferenciaTipo").toString().equals("-1"))
+  		sb.append("(tc_mantic_transferencias.id_transferencia_tipo= ").append(this.attrs.get("idTransferenciaTipo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -193,7 +197,7 @@ public class Filtro extends Comun implements Serializable {
 			columns.remove(0);
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
 			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
-			this.loadPersonas();
+			this.toLoadPersonas();
     } // try
     catch (Exception e) {
       throw e;
@@ -204,7 +208,27 @@ public class Filtro extends Comun implements Serializable {
     }// finally
 	}
 
-  private void loadPersonas() {
+	private void toLoadTipos() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      List<UISelectEntity> tipos= (List<UISelectEntity>) UIEntity.seleccione("TcManticTransferenciasTiposDto", "row", params, columns, "nombre");
+      this.attrs.put("tipos", tipos);
+			this.attrs.put("idTransferenciasTipo", UIBackingUtilities.toFirstKeySelectEntity(tipos));
+			this.toLoadPersonas();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+
+  private void toLoadPersonas() {
     List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -229,15 +253,23 @@ public class Filtro extends Comun implements Serializable {
   }
 	
   public String doAccion(String accion) {
-		String regresar= "accion";
-    EAccion eaccion= null;
+		String regresar    = "accion";
+    EAccion eaccion    = null;
+    Entity seleccionado= (Entity)this.attrs.get("seleccionado");
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 		  JsfBase.setFlashAttribute("retorno", "filtro");		
 		  JsfBase.setFlashAttribute("accion", eaccion);		
-			if(((Entity)this.attrs.get("seleccionado")).toLong("idTransferenciaTipo").equals(2L))
-				regresar= "normal";
-			JsfBase.setFlashAttribute("idTransferencia", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
+      if(Objects.equals(EAccion.PROCESAR, eaccion))
+				regresar= "simples";
+      else 
+        if(Objects.equals(EAccion.ACTIVAR, eaccion))
+          regresar= "accion";
+        else {
+          if(!Objects.equals(seleccionado, null))
+            regresar= Objects.equals(seleccionado.toLong("idTransferenciaTipo"), 2L)? "normal": Objects.equals(seleccionado.toLong("idTransferenciaTipo"), 3L)? "simples": "accion";
+        } // else  
+			JsfBase.setFlashAttribute("idTransferencia", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR))? seleccionado.getKey(): -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -314,7 +346,7 @@ public class Filtro extends Comun implements Serializable {
 		finally{
 			this.attrs.put("justificacion", "");
 		} // finally
-	}	// doActualizaEstatus
+	}	
 
   public void doReporte(String nombre) throws Exception {
     Parametros comunes           = null;

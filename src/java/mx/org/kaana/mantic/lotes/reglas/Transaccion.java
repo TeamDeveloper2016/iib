@@ -781,7 +781,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Long regresar             = this.orden.getIdAlmacen();
     Map<String, Object> params= new HashMap<>();
     try {      
-      params.put("sucursales", this.orden.getIdEmpresa());
+      params.put("idEmpresa", this.orden.getIdEmpresa());
       Entity almacen= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticAlmacenesDto", "origen", params);
       if(!Objects.equals(almacen, null) && !almacen.isEmpty())
         regresar= almacen.toLong("idAlmacen");
