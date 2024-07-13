@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -10,12 +11,16 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
@@ -25,7 +30,7 @@ import org.hibernate.Session;
 
 public class Transaccion extends ComunInventarios {
 
-	private static final Log LOG=LogFactory.getLog(Transaccion.class);
+	private static final Log LOG= LogFactory.getLog(Transaccion.class);
 	
   private TcManticTransferenciasDto dto;
 	private Long idTransferenciaEstatus;
@@ -64,17 +69,19 @@ public class Transaccion extends ComunInventarios {
     	this.messageError    = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
   		Siguiente consecutivo= null;
       switch (accion) {
+        case GENERAR:
         case PROCESAR:
         case ACTIVAR:
         case AGREGAR:
 					consecutivo= this.toSiguiente(sesion);
 					this.dto.setConsecutivo(consecutivo.getConsecutivo());
 					this.dto.setOrden(consecutivo.getOrden());
-          regresar= DaoFactory.getInstance().insert(sesion, this.dto).intValue()> 0;
+          DaoFactory.getInstance().insert(sesion, this.dto);
 					this.toFillArticulos(sesion, accion);
 					this.bitacora= new TcManticTransferenciasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), null, this.dto.getIdTransferenciaEstatus(), this.dto.getIdTransferencia());
-					if(regresar)
-            regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
+          regresar= DaoFactory.getInstance().insert(sesion, bitacora).intValue()> 0;
+          if(Objects.equals(EAccion.GENERAR, accion)) 
+            this.toNewNotaEntrada(sesion);
 					break;
         case MODIFICAR:
           this.dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -119,9 +126,8 @@ public class Transaccion extends ComunInventarios {
 
 	private Siguiente toSiguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
-		Map<String, Object> params= null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("idEmpresa", this.dto.getIdEmpresa());
 			params.put("operador", this.getCurrentSign());
@@ -155,7 +161,7 @@ public class Transaccion extends ComunInventarios {
 			if(Objects.equals(EAccion.ACTIVAR, accion)) 
 				this.toMovimientos(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
 			else
-			  if(Objects.equals(EAccion.PROCESAR, accion)) 
+			  if(Objects.equals(EAccion.PROCESAR, accion) || Objects.equals(EAccion.GENERAR, accion))  
 				  this.toAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
         else
           if(EAccion.REGISTRAR.equals(accion)) {
@@ -175,5 +181,122 @@ public class Transaccion extends ComunInventarios {
           } // if
 		} // for
 	}
-		
+
+  private Boolean toNewNotaEntrada(Session sesion) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+		Map<String, Object> params= new HashMap<>();
+    Siguiente consecutivo     = null;
+    TcManticNotasBitacoraDto estatus= null;
+		try {
+      TcManticNotasEntradasDto orden= new TcManticNotasEntradasDto(
+        0D, // Double descuentos, 
+        1L, // Long idProveedor, 
+        "0.00", // String descuento, 
+        null, // Long idOrdenCompra, 
+        5L, // Long idNotaTipo, 
+        new Date(Calendar.getInstance().getTimeInMillis()), // Date fechaRecepcion, 
+        "0.00", // String extras, 
+        -1L, // Long idNotaEntrada, 
+        new Date(Calendar.getInstance().getTimeInMillis()), // Date fechaFactura, 
+        3L, // Long idNotaEstatus, 
+        new Long(Fecha.getAnioActual()), // Long ejercicio, 
+        "", // String consecutivo, 
+        0D, // Double total, 
+        null, // String factura, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        this.dto.getIdDestino(), // Long idAlmacen, 
+        0D, // Double subTotal, 
+        0D, // Double impuestos, 
+        1D, // Double tipoDeCambio, 
+        2L, // Long idSinIva, 
+        null, // String observaciones, 
+        dto.getIdEmpresa(), // Long idEmpresa, 
+        0L, // Long orden, 
+        0D, // Double excedentes, 
+        30L, // Long diasPlazo, 
+        new Date(Calendar.getInstance().getTimeInMillis()), // Date fechaPago, 
+        0D, // Double deuda, 
+        1L, // Long idProveedorPago, 
+        0D // Double original              
+      );
+      consecutivo= this.toSiguiente(sesion, orden.getIdEmpresa());
+      orden.setConsecutivo(consecutivo.getConsecutivo());
+      orden.setOrden(consecutivo.getOrden());
+      orden.setEjercicio(new Long(Fecha.getAnioActual()));
+      DaoFactory.getInstance().insert(sesion, orden);
+		  estatus= new TcManticNotasBitacoraDto(
+        -1L, // Long idNotaBitacora, 
+        "SE GENERO DE FORMA AUTOMATICA", // String justificacion, 
+        orden.getIdUsuario(), // Long idUsuario, 
+        orden.getIdNotaEntrada(), // Long idNotaEntrada, 
+        orden.getIdNotaEstatus(), // Long idNotaEstatus, 
+        orden.getConsecutivo(), // String consecutivo, 
+        orden.getTotal() // Double importe
+      );
+			DaoFactory.getInstance().insert(sesion, estatus);
+      for (Articulo articulo: this.articulos) {
+        TcManticNotasDetallesDto item= new TcManticNotasDetallesDto(
+          articulo.getCodigo(), // String codigo, 
+          "KILOGRAMO", // String unidadMedida, 
+          0D, // Double costo, 
+          "0.00", // String descuento, 
+          articulo.getSat(), // String sat, 
+          "0.00", // String extras, 
+          orden.getIdNotaEntrada(), //  Long idNotaEntrada, 
+          articulo.getNombre(), // String nombre, 
+          0D, // Double importe, 
+          0D, // Double iva, 
+          -1L, // Long idNotaDetalle, 
+          0D, // Double subTotal, 
+          articulo.getCantidad(), // Double cantidad, 
+          articulo.getIdOrdenDetalle(), //  Long idArticulo, 
+          0D, // Double descuentos, 
+          0D, // Double impuestos, 
+          null, // Long idOrdenDetalle, 
+          articulo.getCantidad(), // Double cantidades, 
+          0D, // Double excedentes, 
+          2L, // Long idAplicar, 
+          0D, // Double declarados, 
+          articulo.getCantidad(), // Double diferencia, 
+          0D, // Double costoReal, 
+          0D, // Double costoCalculado, 
+          null, // String origen, 
+          0D, // Double promedio, 
+          0D, // Double gastos, 
+          1D // Double costales              
+        );
+        DaoFactory.getInstance().insert(sesion, item);
+      } // for
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+    return regresar;
+  }
+
+	private Siguiente toSiguiente(Session sesion, Long idEmpresa) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("ejercicio", this.getCurrentYear());
+			params.put("idEmpresa", idEmpresa);
+			params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticNotasEntradasDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+  
 }

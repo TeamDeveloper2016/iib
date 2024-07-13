@@ -42,9 +42,9 @@ public class Simples extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID= 127393488565639361L;
   
-  private EAccion accion;
-  private Transferencia transferencia;
-  private Articulo detalle;
+  protected EAccion accion;
+  protected Transferencia transferencia;
+  protected Articulo detalle;
 
   public Transferencia getTransferencia() {
     return transferencia;
@@ -178,7 +178,7 @@ public class Simples extends IBaseAttribute implements Serializable {
     this.doUpdateDestino();
   }
   
-  public void doUpdateOrigen() {
+  protected void doUpdateOrigen() {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {      
@@ -257,7 +257,7 @@ public class Simples extends IBaseAttribute implements Serializable {
     } // catch	
   }
   
-  public void doUpdateDestino() {
+  protected void doUpdateDestino() {
     List<Columna> columns     = new ArrayList<>();    
     Map<String, Object> params= new HashMap<>();
     try {
@@ -289,6 +289,10 @@ public class Simples extends IBaseAttribute implements Serializable {
   }
   
   public void doLoadArticulos() {
+    this.toLoadArticulos(this.transferencia.getIdAlmacen());
+  }
+  
+  protected void toLoadArticulos(Long idAlmacen) {
 		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
@@ -297,7 +301,7 @@ public class Simples extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("stock", EFormatoDinamicos.MILES_CON_DECIMALES));
   		params.put("sucursales", this.transferencia.getIdEmpresa());
-  		params.put("idAlmacen", this.transferencia.getIdAlmacen());
+  		params.put("idAlmacen", idAlmacen);
   		params.put("idTerminado", (Boolean)this.attrs.get("idTerminado")? "1": "1, 2");
   		params.put("idTipoClase", this.transferencia.getIdTipoClase());
   		params.put("idArticuloTipo", 4L);
@@ -315,6 +319,10 @@ public class Simples extends IBaseAttribute implements Serializable {
 	}
 
   public void doLoadProductos() {
+    this.toLoadProductos(this.transferencia.getIdDestino());
+  }
+  
+  protected void toLoadProductos(Long idAlmacen) {
 		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> productos= null;
@@ -323,7 +331,7 @@ public class Simples extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("stock", EFormatoDinamicos.MILES_CON_DECIMALES));
   		params.put("sucursales", this.transferencia.getIdEmpresa());
-  		params.put("idAlmacen", this.transferencia.getIdDestino());
+  		params.put("idAlmacen", idAlmacen);
   		params.put("idTipoClase", this.transferencia.getIdTipoClase());
   		params.put("idArticuloTipo", 1L);
       productos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesSimplesDto", "productos", params, columns, 20L, "codigo");
@@ -387,6 +395,7 @@ public class Simples extends IBaseAttribute implements Serializable {
           this.detalle.setIdArticulo(this.transferencia.getIkProducto().toLong("idArticulo"));
           this.detalle.setPropio(this.transferencia.getIkProducto().toString("codigo"));
           this.detalle.setNombre(this.transferencia.getIkProducto().toString("nombre"));
+          this.detalle.setSat(this.transferencia.getIkProducto().toString("sat"));
         } // if
         else
           JsfBase.addMessage("No se tiene un producto seleccionado en el almacen de origen !", ETipoMensaje.ERROR);
@@ -405,8 +414,8 @@ public class Simples extends IBaseAttribute implements Serializable {
     this.doUpdateClases();   
   }
  
-  private Boolean checkStock() {
-    Boolean regresar              = Boolean.FALSE;
+  protected Boolean checkStock() {
+    Boolean regresar              = Boolean.TRUE;
     List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
     try {
       if(!Objects.equals(articulos, null) && !articulos.isEmpty()) {
@@ -415,6 +424,7 @@ public class Simples extends IBaseAttribute implements Serializable {
           this.transferencia.setIkArticulo(articulos.get(index));
         if(this.transferencia.getIkArticulo().containsKey("cantidad")) {
           this.detalle.setIdOrdenDetalle(this.transferencia.getIkArticulo().toLong("idArticulo"));
+          this.detalle.setCodigo(this.transferencia.getIkArticulo().toString("codigo"));
           Double stock= this.transferencia.getIkArticulo().toDouble("cantidad");
           if(stock<= this.detalle.getCantidad())
             JsfBase.addMessage("No se cuenta con el suficiente stock en el almacen de origen !", ETipoMensaje.ERROR);
