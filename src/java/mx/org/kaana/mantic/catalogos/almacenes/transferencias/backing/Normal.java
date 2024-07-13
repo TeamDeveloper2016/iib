@@ -132,16 +132,12 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
   } // doCancelar
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
  			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
@@ -151,8 +147,9 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 			  else
 				  ((Transferencia)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((Transferencia)this.getAdminOrden().getOrden()).getIkEmpresa())));
 				this.attrs.put("idPedidoSucursal", ((Transferencia)this.getAdminOrden().getOrden()).getIkEmpresa());
-			} // if	
-      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+			} // if	 
+      params.put("tipo", "1, 2");
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "especial", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) {
 				List<UISelectEntity> destinos= (List<UISelectEntity>)((ArrayList<UISelectEntity>)almacenes).clone();
@@ -275,7 +272,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 
 	@Override
 	public void doLoadFaltantes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
@@ -286,7 +283,6 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 				String nombre= ((String)this.attrs.get("lookForFaltantes")).replaceAll(Constantes.CLEAN_SQL, "").trim();
 				params.put("codigoFaltante", nombre.toUpperCase());
 			} // else
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -462,10 +458,9 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	public void doLoadAlmacenes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", ((Transferencia)this.getAdminOrden().getOrden()).getIdEmpresa());

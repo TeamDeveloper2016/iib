@@ -515,7 +515,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
+		return regresar.concat(Constantes.REDIRECIONAR);
   }
   
 }

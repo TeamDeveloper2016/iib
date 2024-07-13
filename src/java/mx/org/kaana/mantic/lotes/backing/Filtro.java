@@ -222,6 +222,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(!JsfBase.isEncargado())
         sb.append("(tc_mantic_lotes.id_usuario= ").append(JsfBase.getIdUsuario()).append(") and ");
       
+      if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
+        sb.append("(tc_mantic_lotes.id_almacen=").append(this.attrs.get("idAlmacen")).append(") and ");
       if(!Cadena.isVacio(this.attrs.get("idLote")) && !this.attrs.get("idLote").toString().equals("-1"))
         sb.append("(tc_mantic_lotes.id_lote=").append(this.attrs.get("idLote")).append(") and ");
       if(!Cadena.isVacio(this.attrs.get("consecutivo")))
@@ -273,14 +275,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
+      List<UISelectEntity> empresas= (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
+      this.attrs.put("empresas", empresas);
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity(empresas));
       this.attrs.put("proveedores", (List<UISelectEntity>) UIEntity.build("VistaLotesDto", "proveedores", params, columns));
 			this.attrs.put("idProveedor", new UISelectEntity("-1"));
 			columns.remove(0);
 			params.put(Constantes.SQL_CONDICION, "id_lote_estatus in (1, 2, 3, 4, 5)");
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticLotesEstatusDto", "row", params, columns));
 			this.attrs.put("idLoteEstatus", new UISelectEntity("-1"));
+      this.doLoadAlmacenes();
     } // try
     catch (Exception e) {
       throw e;
@@ -289,6 +293,34 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     }// finally
+	}
+  
+	public void doLoadAlmacenes() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+				params.put("sucursales", this.attrs.get("idEmpresa"));
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			List<UISelectEntity> almacenes= (List<UISelectEntity>)UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave");
+      this.attrs.put("almacenes", almacenes);
+			if(almacenes!= null && !almacenes.isEmpty())
+				this.attrs.put("idAlmacen", almacenes.get(0));
+			else
+			  this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
 	}
   
 	public void doLoadEstatus() {

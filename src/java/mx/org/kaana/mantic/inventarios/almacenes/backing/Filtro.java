@@ -58,11 +58,10 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= null;
     try {
-		  params = this.toPrepare();
-      columns= new ArrayList<>();
+		  params= this.toPrepare();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("hora", EFormatoDinamicos.HORA_LARGA));
@@ -81,10 +80,9 @@ public class Filtro extends Comun implements Serializable {
   } // doLoad
 	
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
@@ -163,12 +161,11 @@ public class Filtro extends Comun implements Serializable {
   } // doAccion
   
 	public void doUpdateArticulos() {
-		List<Columna> columns         = null;
+		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
 		boolean buscaPorCodigo        = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -281,10 +278,9 @@ public class Filtro extends Comun implements Serializable {
 	}
 	
 	public void doAlmacenes() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 				params.put("sucursales", this.attrs.get("idEmpresa"));
 			else
@@ -325,11 +321,9 @@ public class Filtro extends Comun implements Serializable {
 	}
 
 	public void doUpdateCodigos() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			String search= (String)this.attrs.get("codigoCodigo"); 
@@ -377,7 +371,7 @@ public class Filtro extends Comun implements Serializable {
 		String regresar          = null;		
 		Map<String, Object>params= null;
 		try {									   
-			params= this.toPrepare();
+		  params= this.toPrepare();
 			params.put("sortOrder", "order by tc_mantic_articulos.nombre, tc_mantic_articulos.actualizado");
 			JsfBase.setFlashAttribute(Constantes.REPORTE_REFERENCIA, new ExportarXls(new Modelo((Map<String, Object>) ((HashMap)params).clone(), EExportacionXls.CONTEOS.getProceso(), EExportacionXls.CONTEOS.getIdXml(), EExportacionXls.CONTEOS.getNombreArchivo()), EExportacionXls.CONTEOS, "EJERCICIO,CODIGO,NOMBRE,STOCK,FECHA"));
 			JsfBase.getAutentifica().setMonitoreo(new Monitoreo());

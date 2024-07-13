@@ -5606,7 +5606,7 @@ select
 from      
   tc_mantic_almacenes
 where      
-  tc_mantic_almacenes.id_empresa= {idEmpresa}
+  tc_mantic_almacenes.id_empresa in ({idEmpresa})
   and id_principal in ({tipo})
 order by
   tc_mantic_almacenes.nombre              

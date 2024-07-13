@@ -70,7 +70,7 @@
 								</p:selectOneMenu>
                 <p:outputLabel for="nombre" value="Nombre:"/>
                 <p:inputText id="nombre" value="#{manticLotesEspecial.orden.lote.nombre}" styleClass="janal-wid-100-txt"/> 
-                <p:outputLabel for="idTipoClase" value="Clase(s):"/>
+                <p:outputLabel for="idTipoClase" value="Variedad:"/>
                 <p:selectOneMenu id="idTipoClase" value="#{manticLotesEspecial.orden.lote.ikTipoClase}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticLotesEspecial.doUpdateProductos}" process="@this" update="idTipoClase tabla partidas tablaMerma @(.involucrados)"/>
                   <f:selectItems value="#{manticLotesEspecial.attrs.clases}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.descripcion or element.descripcion eq ''? '': '|'}#{element.descripcion}"/>
