@@ -305,7 +305,7 @@ public class Simples extends IBaseAttribute implements Serializable {
   		params.put("idTerminado", (Boolean)this.attrs.get("idTerminado")? "1": "1, 2");
   		params.put("idTipoClase", this.transferencia.getIdTipoClase());
   		params.put("idArticuloTipo", 4L);
-      articulos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesSimplesDto", "articulos", params, columns, 20L, "codigo");
+      articulos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesSimplesDto", "productos", params, columns, 20L, "codigo");
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {
@@ -332,6 +332,7 @@ public class Simples extends IBaseAttribute implements Serializable {
       columns.add(new Columna("stock", EFormatoDinamicos.MILES_CON_DECIMALES));
   		params.put("sucursales", this.transferencia.getIdEmpresa());
   		params.put("idAlmacen", idAlmacen);
+  		params.put("idTerminado", "1, 2");
   		params.put("idTipoClase", this.transferencia.getIdTipoClase());
   		params.put("idArticuloTipo", 1L);
       productos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesSimplesDto", "productos", params, columns, 20L, "codigo");

@@ -55,7 +55,7 @@ public class Regresos extends Simples implements Serializable {
 
   @Override
   public void doLoadProductos() {
-    this.toLoadProductos(this.transferencia.getIdArticulo());
+    this.toLoadProductos(this.transferencia.getIdAlmacen());
   }
   
   @Override
