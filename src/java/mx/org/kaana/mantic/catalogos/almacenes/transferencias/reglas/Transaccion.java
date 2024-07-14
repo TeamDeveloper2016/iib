@@ -161,24 +161,27 @@ public class Transaccion extends ComunInventarios {
 			if(Objects.equals(EAccion.ACTIVAR, accion)) 
 				this.toMovimientos(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
 			else
-			  if(Objects.equals(EAccion.PROCESAR, accion) || Objects.equals(EAccion.GENERAR, accion))  
+			  if(Objects.equals(EAccion.PROCESAR, accion))
 				  this.toAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
         else
-          if(EAccion.REGISTRAR.equals(accion)) {
-            TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
-            articulo.setSolicitados(articulo.getCantidad());
-            switch(this.idTransferenciaEstatus.intValue()) {
-              case 3: // TRANSITO
-                this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
-                break;
-              case 4: // CANCELAR
-                this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
-                break;
-              case 5: // RECEPCION
-                this.toMovimientosAlmacenDestino(sesion, this.dto.getConsecutivo(), this.dto.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-                break;
-            } // switch
-          } // if
+          if(Objects.equals(EAccion.GENERAR, accion))
+            this.toAlmacenTerminado(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
+          else
+            if(EAccion.REGISTRAR.equals(accion)) {
+              TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+              articulo.setSolicitados(articulo.getCantidad());
+              switch(this.idTransferenciaEstatus.intValue()) {
+                case 3: // TRANSITO
+                  this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
+                  break;
+                case 4: // CANCELAR
+                  this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
+                  break;
+                case 5: // RECEPCION
+                  this.toMovimientosAlmacenDestino(sesion, this.dto.getConsecutivo(), this.dto.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+                  break;
+              } // switch
+            } // if
 		} // for
 	}
 
@@ -209,7 +212,7 @@ public class Transaccion extends ComunInventarios {
         0D, // Double impuestos, 
         1D, // Double tipoDeCambio, 
         2L, // Long idSinIva, 
-        null, // String observaciones, 
+        "NOTA GENERADA DE FORMA AUTOMATICA", // String observaciones, 
         dto.getIdEmpresa(), // Long idEmpresa, 
         0L, // Long orden, 
         0D, // Double excedentes, 

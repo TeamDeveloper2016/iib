@@ -20,6 +20,7 @@ select
 	ifnull(tc_mantic_inventarios.entradas, 0) as entradas,
 	ifnull(tc_mantic_inventarios.salidas, 0) as salidas,
 	ifnull(tc_mantic_inventarios.stock, 0) as stock,
+	ifnull(tc_mantic_inventarios.stock, 0) as cantidad,
 	ifnull(tc_mantic_inventarios.registro, now()) as registro
 from 
 	tc_mantic_articulos
@@ -3209,17 +3210,19 @@ where
 	select				
 		convert(concat(recalculo.id_empresa, recalculo.id_caja, recalculo.id_tipo_medio_pago), signed) as id_key,			
 		recalculo.*,
-		if(id_tipo_medio_pago=1, (total - if(deduccion is null, 0, deduccion)), importe) total_deducciones
+		if(id_tipo_medio_pago=1, (total - if(deduccion is null, 0, deduccion)), importe) as total_deducciones
 	from(
 	select 
 		deducciones.*,	
 		(select 
-		   if(importe is null, 0, importe) importe 
+		   if(importe is null, 0, importe) as importe 
 		 from 
 		   tr_mantic_venta_medio_pago 
 		 where 
-		   id_venta= deducciones.id_venta and id_tipo_medio_pago != 1 limit 0, 1
-	  ) deduccion
+		   id_venta= deducciones.id_venta and id_tipo_medio_pago != 1
+    group by
+      tr_mantic_venta_medio_pago.id_venta
+	  ) as deduccion
 	from (
 	select							
 		tc_mantic_ventas.id_venta,
@@ -12072,6 +12075,7 @@ group by
 			</select>
       <select id="detalle">
         select      
+				  tc_mantic_transferencias_detalles.id_transferencia_detalle as id_key,
 				  tc_mantic_transferencias_detalles.id_transferencia_detalle as id_comodin,
 				  tc_mantic_transferencias_detalles.id_transferencia as id_orden_detalle,
           tc_mantic_transferencias_detalles.codigo as propio,

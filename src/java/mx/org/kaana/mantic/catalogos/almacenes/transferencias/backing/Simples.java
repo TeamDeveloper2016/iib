@@ -427,7 +427,7 @@ public class Simples extends IBaseAttribute implements Serializable {
           this.detalle.setIdOrdenDetalle(this.transferencia.getIkArticulo().toLong("idArticulo"));
           this.detalle.setCodigo(this.transferencia.getIkArticulo().toString("codigo"));
           Double stock= this.transferencia.getIkArticulo().toDouble("cantidad");
-          if(stock<= this.detalle.getCantidad())
+          if(stock< this.detalle.getCantidad())
             JsfBase.addMessage("No se cuenta con el suficiente stock en el almacen de origen !", ETipoMensaje.ERROR);
           else
             regresar= Boolean.TRUE;

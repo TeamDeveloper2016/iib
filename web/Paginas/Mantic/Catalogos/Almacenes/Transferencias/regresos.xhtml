@@ -129,7 +129,7 @@
             </p:selectOneMenu>
             <p:outputLabel for="idArticulo" value="Producto origen:"/>
             <p:selectOneMenu id="idArticulo" value="#{manticCatalogosAlmacenesTransferenciasRegresos.transferencia.ikArticulo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt articulos" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticCatalogosAlmacenesTransferenciasRegresos.transferencia.idAlmacen lt 0 and manticCatalogosAlmacenesTransferenciasRegresos.transferencia.idTipoClase lt 0}">
-              <p:ajax event="change" process="@this" oncomplete="setTimeout(function() {$('#cantidad_input').focus()}, 1000)"/>
+              <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasRegresos.doCalculate()}" process="@this" oncomplete="setTimeout(function() {$('#cantidad_input').focus()}, 1000)"/>
               <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasRegresos.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
               <p:column headerText="Codigo">
                 <h:outputText value="#{item.codigo}" />

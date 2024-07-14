@@ -199,7 +199,7 @@
 								<h:graphicImage library="janal" name="icon/semaforos/#{row.idVigente eq '1' ? 'circulo-verde.png': 'circulo-rojo.png'}" title="Articulo #{row.idVigente eq '1' ? 'vigente': 'deshabilitado'}"/>
 							</p:column>
               <p:column styleClass="MarAuto Responsive janal-fix-4 janal-column-center" exportable="false">
-                <p:commandButton icon="fa fa-search" title="Detalle ventas" actionListener="#{manticInventariosFiltro.doLoadDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                <p:commandButton icon="fa fa-search" title="Detalle inventario" actionListener="#{manticInventariosFiltro.doLoadDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
               </p:column>
 							<f:facet name="footer">
 								Total [#{manticInventariosFiltro.lazyModel== null ? 0: manticInventariosFiltro.lazyModel.rowCount}] registros

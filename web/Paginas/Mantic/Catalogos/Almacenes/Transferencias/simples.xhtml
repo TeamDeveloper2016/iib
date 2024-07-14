@@ -100,7 +100,7 @@
             </p:panelGrid>
             <p:outputLabel for="idArticulo" value="Producto origen:"/>
             <p:selectOneMenu id="idArticulo" value="#{manticCatalogosAlmacenesTransferenciasSimples.transferencia.ikArticulo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt articulos" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticCatalogosAlmacenesTransferenciasSimples.transferencia.idAlmacen lt 0 and manticCatalogosAlmacenesTransferenciasSimples.transferencia.idTipoClase lt 0}">
-              <p:ajax event="change" process="@this" oncomplete="setTimeout(function() {$('#cantidad_input').focus()}, 1000)"/>
+              <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasSimples.doCalculate()}" process="@this" oncomplete="setTimeout(function() {$('#cantidad_input').focus()}, 1000)"/>
               <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasSimples.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
               <p:column headerText="Codigo">
                 <h:outputText value="#{item.codigo}" />

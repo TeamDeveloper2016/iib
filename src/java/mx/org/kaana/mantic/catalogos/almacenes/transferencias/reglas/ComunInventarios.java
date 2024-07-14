@@ -56,6 +56,17 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
 
 	protected void toAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Long idDestino, Articulo articulo, Long idTransferenciaEstatus) throws Exception {
+    Long idTemporal= articulo.getIdArticulo();
+    articulo.setIdArticulo(articulo.getIdOrdenDetalle());
+		TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+    articulo.setSolicitados(articulo.getCantidad());
+		this.toMovimientosAlmacenOrigen(sesion, consecutivo, idAlmacen, articulo, umbrales, idTransferenciaEstatus);
+    articulo.setIdArticulo(idTemporal);
+		umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdOrdenDetalle());
+		this.toMovimientosAlmacenDestino(sesion, consecutivo, idDestino, articulo, umbrales, articulo.getCantidad());
+	}
+	
+	protected void toAlmacenTerminado(Session sesion, String consecutivo, Long idAlmacen, Long idDestino, Articulo articulo, Long idTransferenciaEstatus) throws Exception {
 		TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
     articulo.setSolicitados(articulo.getCantidad());
 		this.toMovimientosAlmacenOrigen(sesion, consecutivo, idAlmacen, articulo, umbrales, idTransferenciaEstatus);

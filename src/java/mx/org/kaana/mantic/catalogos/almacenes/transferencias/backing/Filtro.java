@@ -24,6 +24,7 @@ import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -54,8 +55,14 @@ import org.primefaces.model.StreamedContent;
 public class Filtro extends Comun implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
+  
+  private FormatLazyModel lazyDetalle;
   private Reporte reporte;
 
+	public FormatLazyModel getLazyDetalle() {
+		return lazyDetalle;
+	}		
+  
 	public Boolean getIsAutorizar() {
 		Boolean regresar= true;
 		try {
@@ -133,6 +140,7 @@ public class Filtro extends Comun implements Serializable {
       this.lazyModel = new FormatCustomLazy("VistaAlmacenesTransferenciasDto", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idTransferencia", null);
+      this.lazyDetalle= null;
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -543,5 +551,35 @@ public class Filtro extends Comun implements Serializable {
 	public String toColor(Entity row) {
 		return ""; // row.toDouble("perdidos")> 0D? "janal-tr-orange": "";
 	} 
-   
+
+  public void doConsultar() {
+    this.doLoadDetalle((Entity)this.attrs.get("seleccionado"));
+  }
+  
+  public void doLoadDetalle(Entity row) {
+		Map<String, Object>params= new HashMap<>();
+		List<Columna>columns     = new ArrayList<>();
+		try {
+			if(row!= null && !row.isEmpty()) {
+        this.attrs.put("seleccionado", row);
+        params.put("idTransferencia", row.toLong("idTransferencia"));
+        params.put("sortOrder", "order by tc_mantic_transferencias_detalles.registro");
+        columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+        columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+				this.lazyDetalle= new FormatLazyModel("VistaAlmacenesTransferenciasDto", "detalle", params, columns);
+				UIBackingUtilities.resetDataTable("tablaDetalle");
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
+  }
+  
 }
