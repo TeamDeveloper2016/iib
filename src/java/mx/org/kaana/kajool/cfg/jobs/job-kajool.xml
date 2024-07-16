@@ -17,5 +17,6 @@
 		 <clase expresion="0 15 8 1/1 * ? *"   id="correos"     description="Verifica los correos"       load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Correos</clase>
 		 <clase expresion="0 0 9 1/1 * ? *"    id="rfc"         description="Validar los rfc SAT"        load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Rfcs</clase>
 		 <clase expresion="0 0/15 * 1/1 * ? *" id="citas"       description="Notificar a los clientes"   load="false"  desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Notificaciones</clase>
+		 <clase expresion="0 0 22 1/1 * ? *"   id="cierres"     description="Verificar cierres"          load="true"   desarrollo="*" pruebas="*" produccion="*">mx.org.kaana.jobs.Cierres</clase>
    </tarea>      	         
 </tareas>

@@ -16,13 +16,26 @@
 				'contenedorGrupos\\:restos'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'cantidad'                     : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'porcentaje'                   : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": 100})', mascara: 'libre', grupo: 'general'},
-				'kilos'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.lote.cantidad}})', mascara: 'libre', grupo: 'general'},
+				'kilos'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.orden.terminado}})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nuevo'     : {validaciones: 'requerido|igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProducto': {validaciones: 'requerido', mascara: 'no-aplica', grupo: 'importe'},
-				'contenedorGrupos\\:importe'   : {validaciones: 'requerido|mayor({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.lote.cantidad}})', mascara: 'libre', grupo: 'importe'}
+				'contenedorGrupos\\:importe'   : {validaciones: 'requerido|mayor({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.orden.terminado}})', mascara: 'libre', grupo: 'importe'}
 			};
 			
+      function format(n, sep, decimals) {
+        sep = sep || '.'; // Default to period as decimal separator
+        decimals = decimals || 2; // Default to 2 decimals
+        return n.toLocaleString('es-MX', {minimumFractionDigits: 2, maximumFractionDigits: 2}).split(sep)[0]+ sep + n.toFixed(decimals).split(sep)[1];
+      }
+
+      function miles(token) {
+        var token= token || 'janal-format-miles';
+        $('input.'+ token).each(function(index){ 
+          $(this).val(format($(this).val()));
+        });
+      }  
+        
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticLotesTerminado.attrs.nombreAccion}')", 500);
 				janal.decimals= 4;
@@ -69,7 +82,7 @@
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="terminado" value="Terminado:"/>
-                  <p:inputText id="terminado" value="#{manticLotesTerminado.orden.terminado}" styleClass="janal-column-center janal-wid-100-txt total" readonly="true"/> 
+                  <p:inputNumber id="terminado" value="#{manticLotesTerminado.orden.terminado}" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-column-center janal-wid-100-txt total" minValue="0" thousandSeparator="," readonly="true"/> 
                 </p:panelGrid>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"> 
                   <p:outputLabel for="restos" value="Restos:"/>

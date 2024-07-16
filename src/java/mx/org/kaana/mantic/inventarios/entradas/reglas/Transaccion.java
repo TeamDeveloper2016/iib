@@ -223,7 +223,7 @@ public class Transaccion extends Inventarios implements Serializable {
         if(e.getCause()!= null)
           this.messageError= this.messageError.concat("<br/>").concat(e.getCause().toString());
         else
-          this.messageError= this.messageError.concat("<br/>").concat(e.getMessage());
+          this.messageError= this.messageError.concat("<br/>")+ e;
 			throw new Exception(this.messageError);
 		} // catch		
     finally {
@@ -463,6 +463,9 @@ public class Transaccion extends Inventarios implements Serializable {
 			if(!this.orden.getIdNotaTipo().equals(3L))
 				this.toCommonNotaEntrada(sesion, this.orden.getIdNotaEntrada(), this.orden.toMap());
 		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
 		finally {
 			Methods.clean(params);
 		} // finally
@@ -643,7 +646,7 @@ public class Transaccion extends Inventarios implements Serializable {
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
         } // switch    
-        if(!Objects.equals(item.getIdArticulo(), null)) {
+        if(!Objects.equals(item.getIdArticulo(), null) && !Objects.equals(item.getIdArticulo(), -1L)) {
           int index= promedios.indexOf(new Promedio(item.getIdArticulo()));
           if(index< 0)
             promedios.add(new Promedio(item.getIdArticulo(), item.getImporte()));
@@ -752,7 +755,7 @@ public class Transaccion extends Inventarios implements Serializable {
             1L, // Long idEmpresaEstatus, 
             JsfBase.getIdUsuario(), // Long idUsuario, 
             -1L, // Long idEmpresaDeuda, 
-            "GASTO ".concat(item.getNombre()).concat(" | ").concat(item.getArticulo()), // String observaciones, 
+            "GASTO ".concat(item.getNombre()).concat(!Objects.equals(item.getArticulo(), null)? " | ".concat(item.getArticulo()): ""), // String observaciones, 
             this.orden.getIdEmpresa(), // Long idEmpresa, 
             item.getImporte(), // Double saldo, 
             this.orden.getIdNotaEntrada(), // Long idNotaEntrada, 

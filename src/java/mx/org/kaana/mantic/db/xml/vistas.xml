@@ -3598,20 +3598,20 @@ where
 		</unit>	
 		<unit id="VistaCierresCajasDto">
       <select id="consultar">
-        select      
-          tc_mantic_cajas.id_caja as id_key,
-				  tc_mantic_empresas.clave as empresa,  
-				  tc_mantic_empresas.nombre as nombre_empresa,  
-          tc_mantic_cajas.*,
-          if(tc_mantic_cajas.id_activa= 1, 'SI', 'NO') as activa
-        from      
-          tc_mantic_cajas
-				inner join 
-				  tc_mantic_empresas on tc_mantic_cajas.id_empresa= tc_mantic_empresas.id_empresa
-        where      
-          tc_mantic_cajas.id_empresa in ({idEmpresa}) 
-				  and {condicion}
-        {sortOrder}
+select      
+  tc_mantic_cajas.id_caja as id_key,
+  tc_mantic_empresas.clave as empresa,  
+  tc_mantic_empresas.nombre as nombre_empresa,  
+  tc_mantic_cajas.*,
+  if(tc_mantic_cajas.id_activa= 1, 'SI', 'NO') as activa
+from      
+  tc_mantic_cajas
+inner join 
+  tc_mantic_empresas on tc_mantic_cajas.id_empresa= tc_mantic_empresas.id_empresa
+where      
+  tc_mantic_cajas.id_empresa in ({idEmpresa}) 
+  and {condicion}
+{sortOrder}
       </select>
 			<select id="creditos">
 				select
@@ -3835,6 +3835,36 @@ group by
   tc_mantic_ventas.id_venta
 {sortOrder}
 			</select>
+			<select id="importes">
+select
+  tc_mantic_ventas.id_venta as id_key,
+  tr_mantic_venta_medio_pago.id_tipo_medio_pago,
+  ifnull(sum(tc_mantic_ventas_detalles.cantidad), 0) as cantidad,
+  ifnull(sum(tc_mantic_ventas_detalles.importe), 0) as importe,
+  ifnull(count(distinct(tc_mantic_ventas.id_venta)), 0) as ventas 
+from
+  tc_mantic_ventas 
+inner join
+  tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta 
+inner join
+   tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta = tr_mantic_venta_medio_pago.id_venta 
+inner join
+  tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus 
+inner join
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa = tc_mantic_empresas.id_empresa 
+inner join
+  tc_janal_usuarios on tc_mantic_ventas.id_usuario= tc_janal_usuarios.id_usuario 
+inner join
+  tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona 
+where
+  tc_mantic_ventas.ticket is not null   
+  and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 15, 18)   
+  and tr_mantic_venta_medio_pago.id_cierre= {idCierre}
+group by
+  tr_mantic_venta_medio_pago.id_tipo_medio_pago
+order by        
+  tr_mantic_venta_medio_pago.id_tipo_medio_pago
+      </select>  
 			<select id="particular">
 select 
   tc_mantic_ventas.id_venta as id_key,
@@ -9908,23 +9938,23 @@ order by
 				  tc_mantic_proveedores.clave
 			</select>
 			<select id="condiciones">
-        select      
-				  tr_mantic_proveedor_pago.id_proveedor_pago as id_key,
-          tr_mantic_proveedor_pago.id_proveedor,
-          tr_mantic_proveedor_pago.clave,
-          tr_mantic_proveedor_pago.descuento,
-				  tr_mantic_proveedor_pago.plazo,
-          tr_mantic_proveedor_pago.id_tipo_pago,
-          tc_mantic_tipos_pagos.nombre,
-          tr_mantic_proveedor_pago.observaciones
-        from      
-          tr_mantic_proveedor_pago
-        inner join 
-          tc_mantic_tipos_pagos on tr_mantic_proveedor_pago.id_tipo_pago= tc_mantic_tipos_pagos.id_tipo_pago
-        where      
-          tr_mantic_proveedor_pago.id_proveedor = {idProveedor}
-				order by
-				  tr_mantic_proveedor_pago.clave				
+select      
+  tr_mantic_proveedor_pago.id_proveedor_pago as id_key,
+  tr_mantic_proveedor_pago.id_proveedor,
+  tr_mantic_proveedor_pago.clave,
+  tr_mantic_proveedor_pago.descuento,
+  tr_mantic_proveedor_pago.plazo,
+  tr_mantic_proveedor_pago.id_tipo_pago,
+  tc_mantic_tipos_pagos.nombre,
+  tr_mantic_proveedor_pago.observaciones
+from      
+  tr_mantic_proveedor_pago
+inner join 
+  tc_mantic_tipos_pagos on tr_mantic_proveedor_pago.id_tipo_pago= tc_mantic_tipos_pagos.id_tipo_pago
+where      
+  tr_mantic_proveedor_pago.id_proveedor = {idProveedor}
+order by
+  tr_mantic_proveedor_pago.clave				
 			</select>	
 			<select id="moneda">
         select      

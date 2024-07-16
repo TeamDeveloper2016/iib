@@ -2880,12 +2880,15 @@ where
     </unit>				
     <unit id="TcManticCierresDto">
       <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_cierres
-        where 
-          {condicion} 
+select      
+  tc_mantic_cierres.id_cierre as id_key,
+  tc_mantic_cierres.*
+from      
+  tc_mantic_cierres
+where 
+  {condicion} 
+order by
+  id_cierre asc
       </select>
       <select id="identically">
         select      
@@ -2952,12 +2955,16 @@ where
     </unit>
     <unit id="TcManticCierresCajasDto">
       <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_cierres_cajas
-        where 
-          {condicion} 
+select      
+  tc_mantic_cierres_cajas.id_cierre_caja as id_key,
+  tc_mantic_cierres_cajas.*
+from      
+  tc_mantic_cierres_cajas
+where 
+  id_cierre= {idCierre}  
+  and id_tipo_medio_pago= {idTipoMedioPago}
+order by
+  id_tipo_medio_pago        
       </select>
       <select id="identically">
         select      
@@ -2968,22 +2975,22 @@ where
           id_cierre_caja = {idCierreCaja}
       </select>
       <select id="caja">
-        select      
-          *
-        from      
-          tc_mantic_cierres_cajas
-        where      
-          id_cierre= {idCierre}
-				  and id_tipo_medio_pago= 1
+select      
+  *
+from      
+  tc_mantic_cierres_cajas
+where      
+  id_cierre= {idCierre}
+  and id_tipo_medio_pago= 1
       </select>
       <select id="cajaMedioPago">
-        select      
-          *
-        from      
-          tc_mantic_cierres_cajas
-        where      
-          id_cierre= {idCierre}
-				  and id_tipo_medio_pago= {medioPago}
+select      
+  *
+from      
+  tc_mantic_cierres_cajas
+where      
+  id_cierre= {idCierre}
+  and id_tipo_medio_pago= {medioPago}
       </select>
       <select id="cierreCajaEfectivo">
         select      
@@ -3026,6 +3033,15 @@ set
 where      
   id_cierre= {idCierre}
   and id_tipo_medio_pago= {idTipoMedioPago}      
+      </update>  
+      <update id="cierre">
+update
+  tc_mantic_cierres_cajas
+set
+  saldo= {importe},
+  acumulado= {importe} 
+where      
+  id_cierre_caja= {idCierreCaja}
       </update>  
     </unit>
     <unit id="TcManticCierresRetirosDto">

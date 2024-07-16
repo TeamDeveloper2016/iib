@@ -51,6 +51,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Costo;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import org.primefaces.event.FileUploadEvent;
@@ -381,6 +382,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("idProveedor", proveedor.getKey());
+      this.toCheckCondicion(proveedor.getKey());
       this.attrs.put("condiciones", UIEntity.build("VistaOrdenesComprasDto", "condiciones", params, columns));
 			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
 			if(!condiciones.isEmpty()) {
@@ -1263,6 +1265,38 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // finally
   }
  
+  private void toCheckCondicion(Long idProveedor) {
+    List<Columna> columns     = new ArrayList<>();    
+    Map<String, Object> params= new HashMap<>();
+    try {
+      if(!Objects.equals(idProveedor, null) && !Objects.equals(idProveedor, -1L)) {
+        params.put("idProveedor", idProveedor);
+        Entity value= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "condiciones", params);
+        if(Objects.equals(value, null) || value.isEmpty()) {
+          TrManticProveedorPagoDto condicion= new TrManticProveedorPagoDto(
+            -1L, // Long idProveedorPago, 
+            idProveedor, // Long idProveedor, 
+            "TRANSFERENCIA", // String clave, 
+            2L, // Long idTipoPago, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            "0.00", // String descuento, 
+            null, // String observaciones, 
+            30L // Long plazo      
+          );
+          DaoFactory.getInstance().insert(condicion);
+        } // if
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+  }
+  
 	@Override
 	protected void finalize() throws Throwable {
 		try {

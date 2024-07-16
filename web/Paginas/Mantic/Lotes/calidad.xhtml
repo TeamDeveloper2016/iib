@@ -68,7 +68,7 @@
 								<p:column styleClass="MarAuto Responsive articulos" headerText="Nombre">
 									<h:outputText value="#{row.merma}"/>
 								</p:column>   
-								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Cantidad">
+								<p:column styleClass="MarAuto Responsive janal-wid-15" headerText="Kilogramo(s)">
                   <p:inputNumber id="cantidad" value="#{row.cantidad}" styleClass="janal-wid-100-txt" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" maxValue="#{manticLotesCalidad.lote.kilos}" thousandSeparator=",">
                     <p:ajax event="change" listener="#{manticLotesCalidad.doUpdateCantidad(row)}" process="@this" update="@(.total)"/>
                   </p:inputNumber>  
