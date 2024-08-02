@@ -163,7 +163,7 @@ public class Lote extends TcManticLotesDto implements Serializable {
   public void setPorcentajes(List<Porcentaje> porcentajes) {
     this.porcentajes = porcentajes;
   }
-  
+
   public void toLoadArticulos() {
     Map<String, Object> params= new HashMap<>();
     try {

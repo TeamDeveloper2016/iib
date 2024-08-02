@@ -16,11 +16,11 @@
 				'contenedorGrupos\\:restos'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'cantidad'                     : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'porcentaje'                   : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": 100})', mascara: 'libre', grupo: 'general'},
-				'kilos'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.orden.terminado}})', mascara: 'libre', grupo: 'general'},
+				'kilos'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.lote.kilogramos}})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nuevo'     : {validaciones: 'requerido|igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProducto': {validaciones: 'requerido', mascara: 'no-aplica', grupo: 'importe'},
-				'contenedorGrupos\\:importe'   : {validaciones: 'requerido|mayor({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.orden.terminado}})', mascara: 'libre', grupo: 'importe'}
+				'contenedorGrupos\\:importe'   : {validaciones: 'requerido|mayor({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.lote.kilogramos}})', mascara: 'libre', grupo: 'importe'}
 			};
 			
       function format(n, sep, decimals) {
@@ -136,7 +136,7 @@
                   </p:selectOneMenu>
                 </p:panelGrid>  
                 <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100-txt">
-									<p:outputLabel for="importe" value="Importe:"/>
+									<p:outputLabel for="importe" value="Kilogramo(s):"/>
                   <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-fix-95, janal-fix-5 janal-column-right" style="margin-top: -2px">
                     <p:inputNumber id="importe" value="#{manticLotesTerminado.articulo.cantidad}" styleClass="janal-wid-100-txt importe" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" inputStyleClass="janal-wid-100-txt janal-column-right" minValue="0" maxValue="#{manticLotesTerminado.lote.kilos}" thousandSeparator=","/>
                     <p:commandButton action="#{manticLotesTerminado.doAdd()}" icon="fa fa-plus" title="Agregar" process="@this @(.importe)" update=" productos @(.total)" onstart="return janal.partial('importe')" oncomplete="janal.desbloquear()"/>

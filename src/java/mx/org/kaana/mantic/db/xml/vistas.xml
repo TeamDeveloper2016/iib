@@ -48,6 +48,7 @@ left join
 where
   tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
   and tc_mantic_articulos.id_tipo_clase= {idTipoClase}
+  and {condicion}
 group by
   tc_mantic_articulos.id_articulo        
 order by        
@@ -282,6 +283,7 @@ select
   tc_mantic_lotes.merma,
   tc_mantic_lotes.terminado,
   tc_mantic_lotes.restos,
+  round(tc_mantic_lotes.cantidad- (tc_mantic_lotes.merma+ tc_mantic_lotes.terminado+ tc_mantic_lotes.restos), 2) as kilogramos,      
   tc_mantic_lotes.registro
 from
   tc_mantic_lotes
@@ -3835,7 +3837,7 @@ group by
   tc_mantic_ventas.id_venta
 {sortOrder}
 			</select>
-			<select id="importes">
+			<select id="calculos">
 select
   tc_mantic_ventas.id_venta as id_key,
   tr_mantic_venta_medio_pago.id_tipo_medio_pago,

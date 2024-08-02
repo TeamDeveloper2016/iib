@@ -218,8 +218,8 @@ public class Terminado extends IBaseAttribute implements Serializable {
     for (Articulo item: this.orden.getArticulos()) 
       suma+= item.getCantidad();
     this.orden.setTerminado(suma);
-    Double total= this.lote.toDouble("merma")+ this.orden.getTerminado()+ this.orden.getRestos();
-    this.attrs.put("nuevo", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.lote.toDouble("kilos")- total));
+    Double total= this.orden.getMerma()+ this.orden.getTerminado()+ this.orden.getRestos();
+    this.attrs.put("nuevo", Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.orden.getCantidad()- total));
   }
  
   public void doAdd() {

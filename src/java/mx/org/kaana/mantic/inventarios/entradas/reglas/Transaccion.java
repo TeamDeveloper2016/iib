@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.inventarios.entradas.reglas;
 import java.io.File;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -426,7 +427,7 @@ public class Transaccion extends Inventarios implements Serializable {
           );
         else
           deuda= new TcManticEmpresasDeudasDto(
-            3L, // Long idEmpresaEstatus, 
+            4L, // Long idEmpresaEstatus, 
             JsfBase.getIdUsuario(), // Long idUsuario,
             -1L, // Long idEmpresaDeuda,
             "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", // String observaciones, 
@@ -438,8 +439,8 @@ public class Transaccion extends Inventarios implements Serializable {
             this.orden.getDeuda()- this.orden.getExcedentes(), // Double pagar,
             2L,  // Long idRevisado,
             Cadena.isVacio(this.orden.getFactura())? 1L: 2L, // Long idCompleto, 
-            null, // Date fechaRecepcion,
-            null, // Long idRecibio, 
+            new Date(Calendar.getInstance().getTimeInMillis()), // Date fechaRecepcion,
+            JsfBase.getIdUsuario(), // Long idRecibio, 
             this.orden.getIdProveedorPago(), // Long idProveedorPago
             null, // Long idNotaCosto
             this.orden.getIdProveedor() // Long idProveedor

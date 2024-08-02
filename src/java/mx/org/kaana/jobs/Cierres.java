@@ -59,7 +59,7 @@ public class Cierres extends IBaseJob implements Serializable {
 		Map<String, Object> params= new HashMap<>();
 		try {
       params.put("idCierre", corte.toLong("idCierre"));
-      List<Entity> tipos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCierresCajasDto", "importes", params, 500L);
+      List<Entity> tipos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaCierresCajasDto", "calculos", params, 500L);
       if(!Objects.equals(tipos, null) && !tipos.isEmpty()) {
         for (Entity tipo: tipos) {
           params.put("idTipoMedioPago", tipo.toLong("idTipoMedioPago"));

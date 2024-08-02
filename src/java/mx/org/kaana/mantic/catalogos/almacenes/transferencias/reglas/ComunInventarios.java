@@ -67,12 +67,16 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
 	
 	protected void toAlmacenTerminado(Session sesion, String consecutivo, Long idAlmacen, Long idDestino, Articulo articulo, Long idTransferenciaEstatus) throws Exception {
+    this.toAlmacenTerminado(sesion, consecutivo, idAlmacen, idDestino, articulo, idTransferenciaEstatus, 4L);
+  }
+  
+	protected void toAlmacenTerminado(Session sesion, String consecutivo, Long idAlmacen, Long idDestino, Articulo articulo, Long idTransferenciaEstatus, Long idTipoMovimiento) throws Exception {
 		TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
     articulo.setSolicitados(articulo.getCantidad());
-		this.toMovimientosAlmacenOrigen(sesion, consecutivo, idAlmacen, articulo, umbrales, idTransferenciaEstatus);
+		this.toMovimientosAlmacenOrigen(sesion, consecutivo, idAlmacen, articulo, umbrales, idTransferenciaEstatus, idTipoMovimiento);
     articulo.setIdArticulo(articulo.getIdOrdenDetalle());
 		umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdOrdenDetalle());
-		this.toMovimientosAlmacenDestino(sesion, consecutivo, idDestino, articulo, umbrales, articulo.getCantidad());
+		this.toMovimientosAlmacenDestino(sesion, consecutivo, idDestino, articulo, umbrales, articulo.getCantidad(), idTipoMovimiento);
 	}
 	
 	protected void toMovimientos(Session sesion, String consecutivo, Long idAlmacen, Long idDestino, Articulo articulo, Long idTransferenciaEstatus) throws Exception {
@@ -144,6 +148,10 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
   
 	protected void toMovimientosAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus) throws Exception {
+    this.toMovimientosAlmacenOrigen(sesion, consecutivo, idAlmacen, articulo, umbrales, idTransferenciaEstatus, 4L);  
+  }
+  
+	protected void toMovimientosAlmacenOrigen(Session sesion, String consecutivo, Long idAlmacen, Articulo articulo, TcManticArticulosDto umbrales, Long idTransferenciaEstatus, Long idTipoMovimiento) throws Exception {
 		Map<String, Object> params= new HashMap<>();
     Double stock              = 0D; 
 		try {
@@ -176,7 +184,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 			// generar un registro en la bitacora de movimientos de los articulos 
 			TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
 			  consecutivo, // String consecutivo, 
-				4L, // Long idTipoMovimiento, 
+				idTipoMovimiento, // Long idTipoMovimiento, 
 				JsfBase.getIdUsuario(), // Long idUsuario, 
 				idAlmacen, // Long idAlmacen, 
 				-1L, // Long idMovimiento, 
@@ -201,6 +209,10 @@ public abstract class ComunInventarios extends IBaseTnx {
 	}
 	
 	protected void toMovimientosAlmacenDestino(Session sesion, String consecutivo, Long idDestino, Articulo articulo, TcManticArticulosDto umbrales, Double diferencia) throws Exception {
+    this.toMovimientosAlmacenDestino(sesion, consecutivo, idDestino, articulo, umbrales, diferencia, 4L);  
+  }
+  
+	protected void toMovimientosAlmacenDestino(Session sesion, String consecutivo, Long idDestino, Articulo articulo, TcManticArticulosDto umbrales, Double diferencia, Long idTipoMovimiento) throws Exception {
 		Map<String, Object> params= new HashMap<>();
     Double stock              = 0D;
 		try {
@@ -208,7 +220,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 			params.put("idAlmacen", idDestino);
 			params.put("idArticulo", articulo.getIdArticulo());
 			params.put("consecutivo", consecutivo);
-			params.put("idTipoMovimiento", 4);
+			params.put("idTipoMovimiento", idTipoMovimiento);
 			Value existe= (Value)DaoFactory.getInstance().toField(sesion, "TcManticMovimientosDto", "existe", params, "consecutivo");
 			if(existe== null) {
 				TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
@@ -233,7 +245,7 @@ public abstract class ComunInventarios extends IBaseTnx {
 				// generar un registro en la bitacora de movimientos de los articulos 
 				TcManticMovimientosDto movimiento= new TcManticMovimientosDto(
 					consecutivo, // String consecutivo, 
-					4L, // Long idTipoMovimiento, 
+					idTipoMovimiento, // Long idTipoMovimiento, 
 					JsfBase.getIdUsuario(), // Long idUsuario, 
 					idDestino, // Long idAlmacen, 
 					-1L, // Long idMovimiento, 

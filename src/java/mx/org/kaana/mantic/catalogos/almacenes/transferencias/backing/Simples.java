@@ -305,6 +305,7 @@ public class Simples extends IBaseAttribute implements Serializable {
   		params.put("idTerminado", (Boolean)this.attrs.get("idTerminado")? "1": "1, 2");
   		params.put("idTipoClase", this.transferencia.getIdTipoClase());
   		params.put("idArticuloTipo", 4L);
+  		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       articulos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesSimplesDto", "productos", params, columns, 20L, "codigo");
       this.attrs.put("articulos", articulos);
 		} // try
@@ -335,6 +336,7 @@ public class Simples extends IBaseAttribute implements Serializable {
   		params.put("idTerminado", "1, 2");
   		params.put("idTipoClase", this.transferencia.getIdTipoClase());
   		params.put("idArticuloTipo", 1L);
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       productos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesSimplesDto", "productos", params, columns, 20L, "codigo");
       this.attrs.put("productos", productos);
 		} // try

@@ -69,6 +69,7 @@ public class Transaccion extends ComunInventarios {
     	this.messageError    = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
   		Siguiente consecutivo= null;
       switch (accion) {
+				case LISTAR:
         case GENERAR:
         case PROCESAR:
         case ACTIVAR:
@@ -108,7 +109,7 @@ public class Transaccion extends ComunInventarios {
 					if(regresar)
             regresar= DaoFactory.getInstance().insert(sesion, this.bitacora).intValue()> 0;
           // throw new RuntimeException("ERROR PROVACADO INTENCIONALMENTE");
-          break;
+					break;
       } // switch
       if(!regresar) 
         throw new Exception("");
@@ -167,21 +168,24 @@ public class Transaccion extends ComunInventarios {
           if(Objects.equals(EAccion.GENERAR, accion))
             this.toAlmacenTerminado(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
           else
-            if(EAccion.REGISTRAR.equals(accion)) {
-              TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
-              articulo.setSolicitados(articulo.getCantidad());
-              switch(this.idTransferenciaEstatus.intValue()) {
-                case 3: // TRANSITO
-                  this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
-                  break;
-                case 4: // CANCELAR
-                  this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
-                  break;
-                case 5: // RECEPCION
-                  this.toMovimientosAlmacenDestino(sesion, this.dto.getConsecutivo(), this.dto.getIdDestino(), articulo, umbrales, articulo.getCantidad());
-                  break;
-              } // switch
-            } // if
+            if(Objects.equals(EAccion.LISTAR, accion))
+              this.toAlmacenTerminado(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus, 10L);
+            else
+              if(EAccion.REGISTRAR.equals(accion)) {
+                TcManticArticulosDto umbrales= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+                articulo.setSolicitados(articulo.getCantidad());
+                switch(this.idTransferenciaEstatus.intValue()) {
+                  case 3: // TRANSITO
+                    this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
+                    break;
+                  case 4: // CANCELAR
+                    this.toMovimientosAlmacenOrigen(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), articulo, umbrales, this.idTransferenciaEstatus);
+                    break;
+                  case 5: // RECEPCION
+                    this.toMovimientosAlmacenDestino(sesion, this.dto.getConsecutivo(), this.dto.getIdDestino(), articulo, umbrales, articulo.getCantidad());
+                    break;
+                } // switch
+              } // if
 		} // for
 	}
 
