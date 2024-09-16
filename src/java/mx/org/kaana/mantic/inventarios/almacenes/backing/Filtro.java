@@ -393,6 +393,11 @@ public class Filtro extends Comun implements Serializable {
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	} // doMasivo	
 	
+	public String doRegistrar() {
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Almacenes/filtro");
+    return "/Paginas/Mantic/Catalogos/Inventarios/conteos".concat(Constantes.REDIRECIONAR);
+	} // doRegistrar	
+	
 	public String toColor(Entity row) {
 		return Objects.equals(row.toLong("idVerificado"), 1L)? "janal-tr-orange": "";
 	} 

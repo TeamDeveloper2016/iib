@@ -17,18 +17,20 @@ public class Promedio implements Serializable {
   
   private Long idArticulo;
   private Double total;
+  private Boolean especial;
 
   public Promedio() {
     this(-1L);
   }
 
   public Promedio(Long idArticulo) {
-    this(idArticulo, 0D);
+    this(idArticulo, 0D, Boolean.FALSE);
   }
 
-  public Promedio(Long idArticulo, Double total) {
+  public Promedio(Long idArticulo, Double total, Boolean especial) {
     this.idArticulo = idArticulo;
     this.total = total;
+    this.especial = especial;
   }
 
   public Long getIdArticulo() {
@@ -45,6 +47,14 @@ public class Promedio implements Serializable {
 
   public void setTotal(Double total) {
     this.total = total;
+  }
+
+  public Boolean getEspecial() {
+    return especial;
+  }
+
+  public void setEspecial(Boolean especial) {
+    this.especial = especial;
   }
 
   @Override

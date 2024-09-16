@@ -650,7 +650,7 @@ public class Transaccion extends Inventarios implements Serializable {
         if(!Objects.equals(item.getIdArticulo(), null) && !Objects.equals(item.getIdArticulo(), -1L)) {
           int index= promedios.indexOf(new Promedio(item.getIdArticulo()));
           if(index< 0)
-            promedios.add(new Promedio(item.getIdArticulo(), item.getImporte()));
+            promedios.add(new Promedio(item.getIdArticulo(), item.getImporte(), item.getImporte()<= 0D));
           else
             promedios.get(index).setTotal(promedios.get(index).getTotal()+ item.getImporte()); 
         } // if  

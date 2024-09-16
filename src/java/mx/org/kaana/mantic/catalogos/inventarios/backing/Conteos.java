@@ -603,7 +603,7 @@ public class Conteos extends IBaseFilter implements Serializable {
       columns.add(new Columna("calculo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			Periodo periodo= new Periodo();
-			periodo.addMeses(-2);
+			periodo.addMeses(-12);
 			this.attrs.put("registro", periodo.toString());
 			this.attrs.put("periodo", Fecha.formatear(Fecha.FECHA_NOMBRE_DIA, periodo.toString()));
       this.attrs.put("movimientos", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "movimientos", this.attrs, columns));

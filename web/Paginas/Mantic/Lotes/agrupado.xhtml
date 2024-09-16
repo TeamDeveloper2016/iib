@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticLotesAgrupado.attrs.nombreAccion} una lote agrupado"/>
+	<ui:param name="titulo" value="#{manticLotesAgrupado.attrs.nombreAccion} un lote agrupado"/>
   <ui:param name="janalBackingPage" value="#{manticLotesAgrupado}"/>
   <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
 	<ui:define name="librerias">
@@ -70,7 +70,7 @@
 								</p:selectOneMenu>
                 <p:outputLabel for="nombre" value="Nombre:"/>
                 <p:inputText id="nombre" value="#{manticLotesAgrupado.orden.lote.nombre}" styleClass="janal-wid-100-txt"/> 
-                <p:outputLabel for="idTipoClase" value="Variedad:"/>
+                <p:outputLabel for="idTipoClase" value="Clase:"/>
                 <p:selectOneMenu id="idTipoClase" value="#{manticLotesAgrupado.orden.lote.ikTipoClase}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticLotesAgrupado.doUpdateProductos}" process="@this" update="idTipoClase tabla partidas tablaMerma @(.involucrados) @(.recalculo)"/>
                   <f:selectItems value="#{manticLotesAgrupado.attrs.clases}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.descripcion or element.descripcion eq ''? '': '|'}#{element.descripcion}"/>
