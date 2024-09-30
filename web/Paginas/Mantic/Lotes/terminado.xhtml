@@ -13,12 +13,12 @@
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:articulos' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:terminado' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
-				'contenedorGrupos\\:restos'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
+				'contenedorGrupos\\:restos'    : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'cantidad'                     : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'porcentaje'                   : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": 100})', mascara: 'libre', grupo: 'general'},
 				'kilos'                        : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.lote.kilogramos}})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nuevo'     : {validaciones: 'requerido|igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:total'     : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProducto': {validaciones: 'requerido', mascara: 'no-aplica', grupo: 'importe'},
 				'contenedorGrupos\\:importe'   : {validaciones: 'requerido|mayor({"cuanto": 0})|menor-igual({"cuanto": #{manticLotesTerminado.lote.kilogramos}})', mascara: 'libre', grupo: 'importe'}
 			};

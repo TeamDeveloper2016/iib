@@ -83,11 +83,10 @@ public class Ambos extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns     = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_mantic_cajas.id_caja, tc_mantic_cierres_retiros.consecutivo desc");
-      columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("concepto", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("autorizo", EFormatoDinamicos.MAYUSCULAS));
@@ -132,9 +131,8 @@ public class Ambos extends IBaseFilter implements Serializable {
 	}
 
 	private void toLoadCatalog() {
-		List<Columna> columns     = null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("usuarios", (List<UISelectEntity>) UIEntity.build("VistaCierresCajasDto", "usuarios", this.attrs, columns));
 			this.attrs.put("idUsuario", new UISelectEntity("-1"));
@@ -146,9 +144,8 @@ public class Ambos extends IBaseFilter implements Serializable {
 	}
 	
 	private void toLoadEmpresas() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", this.attrs, columns));
@@ -163,9 +160,8 @@ public class Ambos extends IBaseFilter implements Serializable {
 	}
 	
 	public void doLoadCajas() {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("cajas", (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", this.attrs, columns));

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -80,12 +81,16 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
       switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminTransferencias(new Transferencia(-1L, 2L)));
+          ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).setIdArticulo(null);
+          ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).setIdTipoClase(null);
     			this.attrs.put("sinIva", false);
           break;
         case MODIFICAR:			
         case CONSULTAR:											
           this.setAdminOrden(new AdminTransferencias((Transferencia)DaoFactory.getInstance().toEntity(Transferencia.class, "TcManticTransferenciasDto", "detalle", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+          ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).setIdArticulo(null);
+          ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).setIdTipoClase(null);
           break;
       } // switch
 			this.attrs.put("paginator", this.getAdminOrden().getArticulos().size()> Constantes.REGISTROS_LOTE_TOPE);

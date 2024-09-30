@@ -945,6 +945,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
     Siguiente consecutivo= null;
     String folio         = this.orden.getConsecutivo();
     Long idAlmacen       = this.orden.getIdAlmacen();
+    Articulo articulo    = new Articulo(-1L);
     try {      
       consecutivo= this.toSiguiente(sesion);
       this.orden.setIdLote(-1L);
@@ -966,7 +967,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
       } // if  
       this.toFillPromedios(sesion);
       this.toFillPartidas(sesion);
-      Articulo articulo= new Articulo(-1L);
       for (Partida item: this.orden.getPartidas()) {
         articulo.setIdArticulo(this.orden.getIdArticulo());
         articulo.setCantidad(articulo.getCantidad()+ item.getCantidad());
