@@ -697,15 +697,16 @@ public class Transaccion extends IBaseTnx implements Serializable {
         while(index< this.orden.getPartidas().size() && !cubre) {
           Partida partida= this.orden.getPartidas().get(index);
           cubre= partida.getCantidad()>= this.orden.getCantidad();
+          if(cubre)
+            partida.setDelete(Boolean.FALSE);
           index++;
         } // while
         if(cubre) {
-          index--;
           while(count< this.orden.getPartidas().size()) {
-            if(!Objects.equals(index, count))
+            Partida partida= this.orden.getPartidas().get(count);
+            if(partida.getDelete())
               this.orden.getPartidas().remove(count);
             else {
-              Partida partida= this.orden.getPartidas().get(count);
               partida.setIdLote(-1L);
               partida.setIdLoteDetalle(-1L);
               partida.setCantidad(this.orden.getCantidad());

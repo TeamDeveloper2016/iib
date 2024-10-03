@@ -169,7 +169,7 @@ select
 from      
   tc_mantic_lotes_detalles
 where      
-  id_nota_detalle = {idNotaDetalle} and id_lote = {idLote}
+  0= 1
       </select>
       <delete id="rows">
 delete from tc_mantic_lotes_detalles where id_lote = {idLote}

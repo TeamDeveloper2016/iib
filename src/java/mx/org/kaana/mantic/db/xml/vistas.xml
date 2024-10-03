@@ -70,7 +70,7 @@ select
   tc_mantic_articulos.nombre as articulo,
   tc_mantic_lotes_detalles.cantidad,
   tc_mantic_lotes_detalles.cantidad as kilos,
-  tc_mantic_notas_detalles.id_lote,
+  tc_mantic_lotes.id_lote,
   tc_mantic_lotes_estatus.nombre as estatus,
   tc_mantic_notas_entradas.registro
 from
@@ -283,7 +283,7 @@ select
   tc_mantic_lotes.merma,
   tc_mantic_lotes.terminado,
   tc_mantic_lotes.restos,
-  round(tc_mantic_lotes.cantidad- (tc_mantic_lotes.merma+ tc_mantic_lotes.terminado+ tc_mantic_lotes.restos), 2) as kilogramos,      
+  round(tc_mantic_lotes.cantidad- (tc_mantic_lotes.merma+ tc_mantic_lotes.restos), 2) as kilogramos,      
   tc_mantic_lotes.registro
 from
   tc_mantic_lotes

@@ -12,6 +12,7 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
@@ -147,7 +148,51 @@ public class Agrupado extends Especial implements IBaseStorage, Serializable {
     partida.setLote(row.toString("lote"));
     partida.setNombre(row.toString("nombre"));
     partida.setEstatus(row.toString("estatus"));
-    super.toAdd(row, partida);        
+    this.toAdd(row, partida);        
   }
 
+  @Override
+  protected void toAdd(Entity row, Partida partida) {
+    try {      
+      int index= this.toExistPartida(partida);
+      if(index< 0)
+        this.orden.getLote().getPartidas().add(partida);
+      else {
+        Partida item= this.orden.getLote().getPartidas().get(index);
+        if(!Objects.equals(ESql.INSERT, item.getSql()))
+          item.setSql(ESql.SELECT);
+        else
+          JsfBase.addMessage("El producto ya existe en la lista !", ETipoMensaje.INFORMACION);
+      } // if
+      this.attrs.put("partidas", this.orden.getLote().getPartidas().size());
+      this.toSumPartidas("promedios");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch    
+  } 
+  
+  @Override
+	public String doColor(Entity row) {
+    Partida partida= new Partida(
+      row.toLong("idLote"), // Long idLote, 
+      row.toLong("idNotaDetalle"), // Long idNotaDetalle, 
+      row.toLong("idArticulo") // Long idArticulo            
+    );
+    int index= this.toExistPartida(partida);
+		return index>= 0? "janal-display-none": "";
+	}   
+  
+  private int toExistPartida(Partida partida) {
+    int regresar = 0;
+    boolean exist= Boolean.FALSE;
+    while(regresar< this.orden.getLote().getPartidas().size() && !exist) {
+      if(this.orden.getLote().getPartidas().get(regresar).equal(partida))
+        exist= Boolean.TRUE;
+      regresar++;  
+    } // while
+    return exist? regresar: -1;
+  }
+  
 }

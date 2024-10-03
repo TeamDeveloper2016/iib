@@ -25,6 +25,7 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
   private String codigo;
   private String articulo;
   private Double original;
+  private Boolean delete;
   private ESql sql;
   
   public Partida() {
@@ -34,20 +35,29 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
   public Partida(Long idKey) {
     super(idKey);
     this.original= 0D;
-    this.sql= ESql.INSERT;
+    this.sql     = ESql.INSERT;
+    this.delete  = Boolean.TRUE;
   }
 
   public Partida(Long idNotaDetalle, Long idArticulo) {
+    this(-1L, idNotaDetalle, idArticulo);
+  }
+
+  public Partida(Long idLote, Long idNotaDetalle, Long idArticulo) {
     super(-1L);
     this.original= 0D;
+    this.setIdLote(idLote);
     this.setIdNotaDetalle(idNotaDetalle);
     this.setIdArticulo(idArticulo);
+    this.delete  = Boolean.TRUE;
   }
 
   public Partida(Long idUsuario, Long idNotaDetalle, Long idLote, Long idLoteDetalle, Double cantidad, Double saldo, Long idArticulo, Long idTipoClase, Double original) {
     super(idUsuario, idNotaDetalle, idLote, idLoteDetalle, cantidad, saldo, idArticulo, idTipoClase);
     this.original= original;
-    this.sql= ESql.INSERT;
+    this.sql     = ESql.INSERT;
+    this.delete  = Boolean.TRUE;
+    
   }
 
   public String getLote() {
@@ -122,6 +132,14 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
     this.sql = sql;
   }
 
+  public Boolean getDelete() {
+    return delete;
+  }
+
+  public void setDelete(Boolean delete) {
+    this.delete = delete;
+  }
+
   @Override
   public int hashCode() {
     int hash = 3;
@@ -146,6 +164,12 @@ public class Partida extends TcManticLotesDetallesDto implements Serializable {
     return true;
   }
 
+  public boolean equal(Partida partida) {  
+    return Objects.equals(partida.getIdLote(), this.getIdLote()) &&
+           Objects.equals(partida.getIdNotaDetalle(), this.getIdNotaDetalle()) &&
+           Objects.equals(partida.getIdArticulo(), this.getIdArticulo());
+  }
+  
   @Override
   public String toString() {
     return "Partida{" + "lote=" + lote + ", consecutivo=" + consecutivo + ", nombre=" + nombre + ", estatus=" + estatus + ", proveedor=" + proveedor + ", codigo=" + codigo + ", articulo=" + articulo + ", original=" + original + ", sql=" + sql + '}';
