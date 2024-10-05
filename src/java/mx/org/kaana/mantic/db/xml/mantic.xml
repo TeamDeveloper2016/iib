@@ -3554,6 +3554,15 @@ where
           id_empresa = {idEmpresa} 
           and id_nota_entrada = {idNotaEntrada}
       </select>
+			<select id="existe">
+				select
+				  tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
+          tc_mantic_empresas_deudas.*
+			  from
+				  tc_mantic_empresas_deudas
+				where
+				  id_nota_entrada= {idNotaEntrada}
+			</select>
     </unit>
     <unit id="TcManticEmpresasPagosDto">
       <select id="row">
@@ -3990,15 +3999,15 @@ where
           id_almacen = {idAlmacen} and id_articulo = {idArticulo} and ejercicio = {ejercicio} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
       <select id="stock">
-        select      
-          tc_mantic_inventarios.*
-        from      
-          tc_mantic_inventarios
-        where      
-          id_almacen = {idAlmacen} 
-				  and id_articulo = {idArticulo}
-				order by
-				 registro desc
+select      
+  tc_mantic_inventarios.*
+from      
+  tc_mantic_inventarios
+where      
+  id_almacen = {idAlmacen} 
+  and id_articulo = {idArticulo}
+order by
+ registro desc
       </select>
 			<select id="inventario">
 select
@@ -4074,6 +4083,9 @@ order by
         where 
           id_nota_entrada = {idNotaEntrada}
 			</select>
+			<delete id="rows">
+delete from tc_mantic_articulos_bitacora where id_nota_entrada= {idNotaEntrada}
+			</delete>
     </unit>		
     <unit id="TcManticPersonasDto">
       <select id="row">

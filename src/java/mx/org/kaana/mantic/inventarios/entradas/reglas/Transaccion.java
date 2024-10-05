@@ -31,10 +31,13 @@ import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosPromediosDto;
+import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
+import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasCostosDto;
@@ -239,20 +242,56 @@ public class Transaccion extends Inventarios implements Serializable {
 		Map<String, Object> params           = new HashMap<>();
 		try {
   		params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
-      regresar= this.toNotExistsArticulosBitacora(sesion);
-      if(regresar) {
-        this.toRemoveOrdenDetalle(sesion);
-        DaoFactory.getInstance().deleteAll(sesion, TcManticNotasCostosDto.class, params);
-        DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params);
-        DaoFactory.getInstance().delete(sesion, this.orden);
-        this.orden.setIdNotaEstatus(2L);
-        bitacoraNota= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
-        DaoFactory.getInstance().insert(sesion, bitacoraNota);
-        this.toCheckOrden(sesion);
-        this.toCheckDeleteFile(sesion);
+      // regresar= this.toNotExistsArticulosBitacora(sesion);
+      this.toRemoveOrdenDetalle(sesion);
+      // MARCAR COMO ELIMINADAS LAS CUENTAS POR PAGAR DE LA NOTA DE ENTRADA ELIMINADA
+      List<TcManticEmpresasDeudasDto> deudas= (List<TcManticEmpresasDeudasDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticEmpresasDeudasDto.class, "TcManticEmpresasDeudasDto", "existe", params);
+      if(!Objects.equals(deudas, null) && !deudas.isEmpty()) {
+        for (TcManticEmpresasDeudasDto deuda: deudas) {
+          deuda.setIdEmpresaDeuda(6L); // ELIMINADA
+          DaoFactory.getInstance().update(sesion, deuda);
+          TcManticEmpresasBitacoraDto huella= new TcManticEmpresasBitacoraDto(
+            "SE ELIMINO DE FORMA MANUAL", // String justificacion, 
+            deuda.getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
+            JsfBase.getIdUsuario(), // Long idUsuario, 
+            deuda.getIdEmpresaDeuda(), // Long idEmpresaDeuda
+            -1L // Long idEmpresaBitacora
+          );
+          DaoFactory.getInstance().insert(sesion, huella);
+        } // for
       } // if
-      else
-        this.messageError= "No se puede eliminar la nota de entrada";
+      // ACTUALIZAR EL INVENTARIO DESCONTANDO LA CANTIDAD DE CADA PRODUCTO
+      List<TcManticNotasDetallesDto> items= (List<TcManticNotasDetallesDto>)DaoFactory.getInstance().toEntitySet(sesion, TcManticNotasDetallesDto.class, "TcManticNotasDetallesDto", "igual", params);
+      if(!Objects.equals(items, null) && !items.isEmpty()) {
+        params.put("idAlmacen", this.orden.getIdAlmacen());
+        for (TcManticNotasDetallesDto articulo: items) {
+          params.put("idArticulo", articulo.getIdArticulo());
+          TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "stock", params);
+          if(!Objects.equals(inventario, null) && inventario.isValid()) {
+            inventario.setEntradas(Numero.toRedondearSat(inventario.getEntradas()- articulo.getCantidad()));
+            inventario.setStock(Numero.toRedondearSat((inventario.getInicial()+ inventario.getEntradas()))- inventario.getSalidas());
+            DaoFactory.getInstance().update(sesion, inventario);
+          } // if
+          params.put("idEmpresa", this.orden.getIdEmpresa());
+          TcManticArticulosPromediosDto promedio= (TcManticArticulosPromediosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosPromediosDto.class, "TcManticArticulosPromediosDto", "ultimo", params);
+          // BUSCAR EL PRECIO PROMEDIO RESTAR LOS KILOS Y VOLVER A CALULAR EL PRECIO PROMEDIO
+          if(!Objects.equals(inventario, null) && inventario.isValid()) {
+            promedio.setCantidad(Numero.toRedondearSat(promedio.getCantidad()- articulo.getCantidad()));
+            promedio.setImporte(Numero.toRedondearSat(promedio.getImporte()- articulo.getImporte()));
+            promedio.setPromedio(Numero.toRedondearSat(promedio.getImporte()/ promedio.getCantidad()));
+            DaoFactory.getInstance().update(sesion, promedio);
+          } // if
+        } // for
+      } // if          
+      // DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosBitacoraDto.class, params);
+      // DaoFactory.getInstance().deleteAll(sesion, TcManticNotasCostosDto.class, params);
+      // DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params);
+      this.orden.setIdNotaEstatus(2L);
+      DaoFactory.getInstance().update(sesion, this.orden);
+      bitacoraNota= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
+      DaoFactory.getInstance().insert(sesion, bitacoraNota);
+      this.toCheckOrden(sesion);
+      this.toCheckDeleteFile(sesion);
       regresar= Boolean.TRUE;
 		} // try
     catch(Exception e) {
@@ -280,7 +319,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				if(item.getDiferencia()!= 0)
 					error.append("[").append(item.getNombre()!= null && item.getNombre().length()> 20? item.getNombre().substring(0, 20): item.getNombre()).append(" - ").append(item.getDiferencia()).append("]</br> ");
         TcManticNotasDetallesDto detalle= (TcManticNotasDetallesDto)DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap());
-				if((Objects.equals(detalle, null) && (Objects.equals(this.orden.getIdNotaTipo(), 4L) || articulo.getCantidad()> 0D || articulo.getCosto()> 0D))) {
+				if((Objects.equals(detalle, null) && (Objects.equals(this.orden.getIdNotaTipo(), 4L)) || articulo.getCantidad()> 0D || articulo.getCosto()> 0D)) {
 					this.toAffectOrdenDetalle(sesion, articulo);
 					if(!item.isValid()) 
 						DaoFactory.getInstance().insert(sesion, item);
@@ -288,7 +327,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						if(articulo.isModificado())
 							DaoFactory.getInstance().update(sesion, item);
 					articulo.setObservacion("ARTICULO SURTIDO EN LA NOTA DE ENTRADA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
-					// QUITAR DE LAS VENTAS PERDIDAS LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
+					// QUITAR DE LAS VENTAS PERDIDAS DE LOS ARTICULOS QUE FUERON YA SURTIDOS EN EL ALMACEN
 					params.put("idArticulo", articulo.getIdArticulo());
 					params.put("idEmpresa", this.orden.getIdEmpresa());
 					params.put("observaciones", "ESTE ARTICULO FUE SURTIDO CON NO. NOTA DE ENTRADA "+ this.orden.getConsecutivo()+ " EL DIA "+ Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro()));

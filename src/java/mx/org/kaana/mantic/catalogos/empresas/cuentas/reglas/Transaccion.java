@@ -240,7 +240,7 @@ public class Transaccion extends IBaseTnx {
             item .getIdEmpresaEstatus(), // Long idEmpresaEstatus, 
             JsfBase.getIdUsuario(), // Long idUsuario, 
             item .getIdEmpresaDeuda(), // Long idEmpresaDeuda
-            -1L // Long idClienteBitacora, 
+            -1L // Long idEmpresaBitacora 
           );
           DaoFactory.getInstance().insert(sesion, bitacora);
 				} // if

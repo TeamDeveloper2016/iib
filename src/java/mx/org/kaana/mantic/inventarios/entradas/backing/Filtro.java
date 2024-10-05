@@ -345,10 +345,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Transaccion transaccion          = null;
 		TcManticNotasBitacoraDto bitacora= null;
 		Entity seleccionado              = null;
+		Map<String, Object>params        = new HashMap<>();
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-      NotaEntrada orden= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "igual", Variables.toMap("idNotaEntrada~"+ seleccionado.getKey()));
-			bitacora= new TcManticNotasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getConsecutivo(), orden.getTotal());
+      params.put("idNotaEntrada", seleccionado.getKey());
+      NotaEntrada orden= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "igual", params);
+			bitacora   = new TcManticNotasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getConsecutivo(), orden.getTotal());
 			transaccion= new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
@@ -361,8 +363,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 		finally {
 			this.attrs.put("justificacion", "");
+ 			Methods.clean(params);
 		} // finally
-	}	// doActualizaEstatus
+	}	
 	
 	public String doDevolucion() {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");		
