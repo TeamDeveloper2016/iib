@@ -49,8 +49,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID=1368701967796774746L;
   private Reporte reporte;
-  private FormatLazyModel lazyDetalle;
-  private FormatLazyModel lazyGasto;
+  protected FormatLazyModel lazyDetalle;
+  protected FormatLazyModel lazyGasto;
 
 	public FormatLazyModel getLazyDetalle() {
 		return lazyDetalle;
@@ -153,21 +153,26 @@ public class Filtro extends IBaseFilter implements Serializable {
           JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.COMPLETO)? EAccion.AGREGAR: eaccion);
         } // if	
         else 
-          if(Objects.equals(eaccion, EAccion.ACTIVAR)) {
-            regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-            JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);
-          } // if
-          else {
-            if(Objects.equals(eaccion, EAccion.COMPLETO)) 
-              JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
-            else 
-              JsfBase.setFlashAttribute("accion", eaccion);		
-            if(!Objects.equals(eaccion, EAccion.COMPLETO) || ((Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR)) && Objects.equals(idNotaTipo, 2L))) 
-              regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
-            else
-              regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-            JsfBase.setFlashAttribute("idOrdenCompra", (Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR) || Objects.equals(idNotaTipo, 2L)) && idOrdenCompra!= null? idOrdenCompra: -1L);
-          } // else	
+          if(Objects.equals(idNotaTipo, 6L)) {
+            regresar= "/Paginas/Mantic/Inventarios/Entradas/terminado".concat("?zOyOxDwIvGuCt=zOyExRwMvIuNtAsDrTq");
+            JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.COMPLETO)? EAccion.AGREGAR: eaccion);
+          } // if	
+          else 
+            if(Objects.equals(eaccion, EAccion.ACTIVAR)) {
+              regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+              JsfBase.setFlashAttribute("accion", EAccion.COMPLETO);
+            } // if
+            else {
+              if(Objects.equals(eaccion, EAccion.COMPLETO)) 
+                JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+              else 
+                JsfBase.setFlashAttribute("accion", eaccion);		
+              if(!Objects.equals(eaccion, EAccion.COMPLETO) || ((Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR)) && Objects.equals(idNotaTipo, 2L))) 
+                regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
+              else
+                regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+              JsfBase.setFlashAttribute("idOrdenCompra", (Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR) || Objects.equals(idNotaTipo, 2L)) && idOrdenCompra!= null? idOrdenCompra: -1L);
+            } // else	
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", Objects.equals(eaccion, EAccion.MODIFICAR) || Objects.equals(eaccion, EAccion.CONSULTAR)? idNotaEntrada: -1L);
 		} // try
@@ -180,6 +185,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   public String doEspecial() {
 		String regresar= "/Paginas/Mantic/Inventarios/Entradas/especial?zOyOxDwIvGuCt=zLySxPwEvCuItAsEr";
+		try {
+      JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
+			JsfBase.setFlashAttribute("idNotaEntrada", -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
+  } 
+	
+  public String doNormal() {
+		String regresar= "/Paginas/Mantic/Inventarios/Entradas/terminado?zOyOxDwIvGuCt=zLySxPwEvCuItAsEr";
 		try {
       JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
@@ -210,7 +229,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch			
   } // doEliminar
 
-	private Map<String, Object> toPrepare() {
+	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
     StringBuilder sb            = new StringBuilder();
     try {
@@ -485,7 +504,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
   }
 
-  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+  protected Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
     Entity regresar= null;
     try {      
       regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);

@@ -83,6 +83,7 @@ public final class Cifrar {
 		System.out.println("ALMACEN: "+ Cifrar.cifrar("ALMACEN")); // zNyLxMwAvCuEtAs
 		System.out.println("PROVEEDOR: "+ Cifrar.cifrar("PROVEEDOR")); // zRyRxOwVvEuEtDsOrPq
 		System.out.println("ESPECIAL: "+ Cifrar.cifrar("ESPECIAL")); // zLySxPwEvCuItAsEr
+		System.out.println("TERMINADO: "+ Cifrar.cifrar("TERMINADO")); // zOyExRwMvIuNtAsDrTq
 	}	
 
 }

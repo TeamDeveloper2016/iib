@@ -136,7 +136,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					  this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					  this.orden.setOrden(consecutivo.getOrden());
 					  this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					  if(Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L))
+					  if(Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L) || Objects.equals(this.orden.getIdNotaTipo(), 6L))
 						  this.orden.setIdOrdenCompra(null);
 					  regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					  bitacoraNota= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
@@ -166,7 +166,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.orden.setConsecutivo(consecutivo.getConsecutivo());
 					this.orden.setOrden(consecutivo.getOrden());
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					if(Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L))
+					if(Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L) || Objects.equals(this.orden.getIdNotaTipo(), 6L))
 						this.orden.setIdOrdenCompra(null);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, null, JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
@@ -410,7 +410,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				DaoFactory.getInstance().insert(sesion, estatus);
 			} // if
 			else
-			  if((Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L)) && this.aplicar) 
+			  if((Objects.equals(this.orden.getIdNotaTipo(), 1L) || Objects.equals(this.orden.getIdNotaTipo(), 4L) || Objects.equals(this.orden.getIdNotaTipo(), 6L)) && this.aplicar) 
 					this.toApplyNotaEntrada(sesion);
 		} // try
 		catch (Exception e) {

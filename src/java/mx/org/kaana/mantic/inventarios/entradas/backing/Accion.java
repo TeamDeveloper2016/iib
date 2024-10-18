@@ -82,15 +82,15 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private Costo costo;
 
 	public String getValidacion() {
-		return Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL)? "libre": "requerido";
+		return Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL) || Objects.equals(this.tipoOrden, EOrdenes.TERMINADO)? "libre": "requerido";
 	}
 	
 	public String getTitulo() {
-		return Objects.equals(this.tipoOrden, EOrdenes.NORMAL)? "(DIRECTA)": Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL)? "(ESPCIAL)":"";
+		return Objects.equals(this.tipoOrden, EOrdenes.NORMAL)? "(DIRECTA)": Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL)? "(ESPECIAL)":"";
 	}
 
 	public Boolean getIsDirecta() {
-		return Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL);
+		return Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL) || Objects.equals(this.tipoOrden, EOrdenes.TERMINADO);
 	}
 
 	public Boolean getIsAplicar() {
@@ -189,7 +189,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
         case MODIFICAR:					
         case CONSULTAR:					
 					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
-					this.tipoOrden         = Objects.equals(notaEntrada.getIdNotaTipo(), 1L)? EOrdenes.NORMAL: Objects.equals(notaEntrada.getIdNotaTipo(), 4L)? EOrdenes.ESPECIAL: EOrdenes.PROVEEDOR;
+					this.tipoOrden         = Objects.equals(notaEntrada.getIdNotaTipo(), 1L)? EOrdenes.NORMAL: Objects.equals(notaEntrada.getIdNotaTipo(), 4L)? EOrdenes.ESPECIAL: Objects.equals(notaEntrada.getIdNotaTipo(), 6L)? EOrdenes.TERMINADO: EOrdenes.PROVEEDOR;
           this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					
@@ -444,7 +444,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
 				((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
-				if(Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL)) {
+				if(Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL) || Objects.equals(this.tipoOrden, EOrdenes.TERMINADO)) {
 					int count= 0;
 					while(count< this.getAdminOrden().getArticulos().size() && this.getAdminOrden().getArticulos().size()> 1) {
 //						if(this.getAdminOrden().getArticulos().get(count).getIdOrdenDetalle()== null)
@@ -975,7 +975,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		UISelectEntity temporal   = (UISelectEntity)this.attrs.get("proveedor");
 	  Map<String, Object> params= new HashMap<>();
 		try {
-			if(Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL)) {
+			if(Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL) || Objects.equals(this.tipoOrden, EOrdenes.TERMINADO)) {
 			  this.getAdminOrden().toCalculate();
 				if(temporal== null || !this.getEmisor().getRfc().equals(temporal.toString("rfc"))) {
 					params.put("rfc", this.getEmisor().getRfc());

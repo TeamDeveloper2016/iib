@@ -74,7 +74,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
       else {
         // this.orden.setIdNotaTipo(Objects.equals(tipoOrden, EOrdenes.NORMAL)? 1L: Objects.equals(tipoOrden, EOrdenes.ESPECIAL)? 4L: 2L);
         this.orden.setIdNotaTipo(tipoOrden.getIdNotaTipo());
-        if(Objects.equals(tipoOrden, EOrdenes.NORMAL) || Objects.equals(tipoOrden, EOrdenes.ESPECIAL)) {
+        if(Objects.equals(tipoOrden, EOrdenes.NORMAL) || Objects.equals(tipoOrden, EOrdenes.ESPECIAL) || Objects.equals(tipoOrden, EOrdenes.TERMINADO)) {
           this.setArticulos(new ArrayList<>());
           this.orden.setDiasPlazo(1L);
         } // if	
