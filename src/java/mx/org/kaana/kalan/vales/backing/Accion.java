@@ -311,6 +311,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     Map<String, Object> params= new HashMap<>();
     try {
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));

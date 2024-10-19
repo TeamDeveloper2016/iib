@@ -194,7 +194,7 @@
                 <p:outputLabel for="idEmpresa" value="Sucursal:"/>
                 <p:selectOneMenu id="idEmpresa" value="#{manticInventariosEntradasTerminado.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticInventariosEntradasTerminado.doUpdateAlmacenes}" update="idAlmacen" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); reloadAlmacenes();"/>
-                  <f:selectItems value="#{manticInventariosEntradasTerminado.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                  <f:selectItems value="#{manticInventariosEntradasTerminado.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.nombre or element.nombre eq ''? '': ' | '}#{element.nombre}"/>
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>
                   </p:column>   
@@ -215,19 +215,19 @@
 								</p:selectOneMenu>
                 <p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
-								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasTerminado.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt faltantes proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasTerminado.isDirecta}">
-									<p:ajax event="change" listener="#{manticInventariosEntradasTerminado.doUpdateProveedor}" update="idProveedorPago diasPlazo fechaPago datosArticulos tabla @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{manticInventariosEntradasTerminado.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '-'} #{element.razonSocial}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.razonSocial}"/>
-									</p:column>   
-									<p:column styleClass="janal-column-right" headerText="Entrega(dias)">
-										<h:outputText value="#{item.diasEntrega}"/>
-									</p:column>   
-								</p:selectOneMenu>
+                <p:autoComplete id="idProveedor" var="items" placeholder="Ej. ABRROTES LA BOMBITA" itemLabel="#{items.clave}#{empty items.razonSocial or items.razonSocial eq ''? '': ' | '}#{items.razonSocial}" styleClass="janal-wid-100-txt proveedor" inputStyleClass="janal-wid-100-txt" itemValue="#{items}" value="#{manticInventariosEntradasTerminado.adminOrden.orden.ikProveedor}" completeMethod="#{manticInventariosEntradasTerminado.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" groupBy="#{manticInventariosEntradasTerminado.doGroupProveedor(items)}">
+                  <p:ajax event="itemSelect" listener="#{manticInventariosEntradasTerminado.doUpdateProveedor}" process="@this" update="idProveedorPago diasPlazo fechaPago datosArticulos tabla @(.recalculo)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <h:outputText value="Clave:" />
+                      <h:outputText value="#{custom.clave}" />
+                      <h:outputText value="RFC:" />
+                      <h:outputText value="#{custom.rfc}" />
+                      <h:outputText value="Razón social:" />
+                      <h:outputText value="#{custom.razonSocial}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>			
 								<p:outputLabel for="idProveedorPago" value="Condición de pago:"/>
 								<p:selectOneMenu id="idProveedorPago" value="#{manticInventariosEntradasTerminado.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticInventariosEntradasTerminado.doUpdatePlazo}" update="datosArticulos diasPlazo fechaPago tabla @(.recalculo)" process="@this"/>
@@ -655,12 +655,12 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" action="#{manticInventariosEntradasTerminado.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()" />
-			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasTerminado.doAplicar}" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasTerminado.isAplicar}"/>
+			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasTerminado.doAplicar}" onstart="return apply();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticInventariosEntradasTerminado.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasTerminado.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasTerminado.doAplicar}" onstart="return apply();" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasTerminado.isAplicar}"/>
+			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasTerminado.doAplicar}" onstart="return apply();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosEntradasTerminado.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

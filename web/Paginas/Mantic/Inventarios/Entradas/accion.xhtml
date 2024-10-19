@@ -218,19 +218,19 @@
 								</p:selectOneMenu>
                 <p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
-								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt faltantes proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
-									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateProveedor}" update="idProveedorPago diasPlazo fechaPago datosArticulos tabla @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.razonSocial or element.razonSocial eq ''? '': '-'} #{element.razonSocial}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.clave}"/>
-									</p:column>   
-									<p:column headerText="Nombre">
-										<h:outputText value="#{item.razonSocial}"/>
-									</p:column>   
-									<p:column styleClass="janal-column-right" headerText="Entrega(dias)">
-										<h:outputText value="#{item.diasEntrega}"/>
-									</p:column>   
-								</p:selectOneMenu>
+                <p:autoComplete id="idProveedor" var="items" placeholder="Ej. ABRROTES LA BOMBITA" itemLabel="#{items.clave}#{empty items.razonSocial or items.razonSocial eq ''? '': ' | '}#{items.razonSocial}" styleClass="janal-wid-100-txt proveedor" inputStyleClass="janal-wid-100-txt" itemValue="#{items}" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedor}" completeMethod="#{manticInventariosEntradasAccion.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" groupBy="#{manticInventariosEntradasAccion.doGroupProveedor(items)}">
+                  <p:ajax event="itemSelect" listener="#{manticInventariosEntradasAccion.doUpdateProveedor}" process="@this" update="idProveedorPago diasPlazo fechaPago datosArticulos tabla @(.recalculo)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <h:outputText value="Clave:" />
+                      <h:outputText value="#{custom.clave}" />
+                      <h:outputText value="RFC:" />
+                      <h:outputText value="#{custom.rfc}" />
+                      <h:outputText value="Razón social:" />
+                      <h:outputText value="#{custom.razonSocial}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>			
 								<p:outputLabel for="idProveedorPago" value="Condición de pago:"/>
 								<p:selectOneMenu id="idProveedorPago" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 proveedor" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdatePlazo}" update="datosArticulos diasPlazo fechaPago tabla @(.recalculo)" process="@this"/>

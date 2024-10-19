@@ -19,6 +19,8 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -142,7 +144,7 @@ public class Prorroga extends IBaseImportar implements Serializable {
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       List<UISelectEntity> personas= UIEntity.seleccione("VistaAlmacenesTransferenciasDto", "solicito", params, columns, "nombres");
       this.attrs.put("personas", personas);
-      if(this.deuda.toLong("idRecibio")== null)
+      if(Objects.equals(this.deuda.toLong("idRecibio"), null))
         this.ikRecibio= UIBackingUtilities.toFirstKeySelectEntity(personas);
       else {
         int index= personas.indexOf(new UISelectEntity(this.deuda.toLong("idRecibio")));
@@ -151,6 +153,8 @@ public class Prorroga extends IBaseImportar implements Serializable {
         else
     	    this.ikRecibio= UIBackingUtilities.toFirstKeySelectEntity(personas);
       } // if  
+      if(Objects.equals(this.ikRecibio, null) || Objects.equals(this.ikRecibio.getKey(), -1L))
+        this.ikRecibio.getValue("nombres").setData("TECLEAR PERSONA");
     } // try
     catch (Exception e) {
       throw e;
@@ -161,6 +165,34 @@ public class Prorroga extends IBaseImportar implements Serializable {
     } // finally 
   }
 	  
+	public List<UISelectEntity> doCompletePersona(String codigo) {
+ 		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put(Constantes.SQL_CONDICION, "(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(tc_mantic_personas.rfc) regexp '.*").concat(codigo).concat(".*')"));
+      this.attrs.put("personas", UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		return (List<UISelectEntity>)this.attrs.get("personas");
+	}	
+  
 	private void toLoadTiposPagos() {
 		List<UISelectEntity> tiposPagos= null;
 		Map<String, Object>params      = new HashMap<>();

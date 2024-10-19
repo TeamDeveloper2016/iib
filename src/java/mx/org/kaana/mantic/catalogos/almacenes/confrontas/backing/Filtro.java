@@ -228,12 +228,11 @@ public class Filtro extends Comun implements Serializable {
 	}
 
   private void loadPersonas() {
-    List<Columna> columns     = null;
-    Map<String, Object> params= null;
+    List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-      columns= new ArrayList<>();
-      params = new HashMap<>();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));

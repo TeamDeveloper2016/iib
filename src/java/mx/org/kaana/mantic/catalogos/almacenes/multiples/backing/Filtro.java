@@ -205,6 +205,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
       this.attrs.put("personas", personas);
 			if(personas!= null && !personas.isEmpty())

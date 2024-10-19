@@ -29,22 +29,21 @@
         <div class="ui-grid-col-12">
           <p:tabView id="contenedorGrupos">
             <p:tab title="General">
-              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
-                <p:outputLabel for="persona"  value="Persona:"/>
-                <p:selectOneMenu  id="persona" value="#{kajoolUsuariosAccion.criteriosBusqueda.persona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{kajoolUsuariosAccion.attrs.nuevo}">
-                  <p:ajax event="change" process="@this" update="@(.information)" listener="#{kajoolUsuariosAccion.doBuscar}"/>
-                  <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
-                  <f:selectItems value="#{kajoolUsuariosAccion.criteriosBusqueda.listaPersonas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
-                  <p:column>
-                    <h:outputText value="#{item.nombres}"/>
-                  </p:column>                
-                  <p:column>
-                    <h:outputText value="#{item.paterno}"/>
-                  </p:column>                
-                  <p:column>
-                    <h:outputText value="#{item.materno}"/>
-                  </p:column>                
-                </p:selectOneMenu>
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">								
+                <p:outputLabel for="persona" value="Persona:"/>
+                <p:autoComplete id="persona" var="items" placeholder="Ej. ALEJANDRO JIMENEZ" itemLabel="#{items.nombres}#{empty items.paterno or items.paterno eq ''? '': ' | '}#{items.paterno}#{empty items.materno or items.materno eq ''? '': ' | '}#{items.materno}" styleClass="janal-wid-100-txt proveedor" inputStyleClass="janal-wid-100-txt" itemValue="#{items}" value="#{kajoolUsuariosAccion.criteriosBusqueda.persona}" completeMethod="#{kajoolUsuariosAccion.doCompletePersona}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" disabled="#{kajoolUsuariosAccion.attrs.nuevo}">
+                  <p:ajax event="itemSelect" listener="#{kajoolUsuariosAccion.doBuscar}" process="@this" update="@(.information)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <h:outputText value="Nombre:" />
+                      <h:outputText value="#{custom.nombres}" />
+                      <h:outputText value="1er apellido:" />
+                      <h:outputText value="#{custom.paterno}" />
+                      <h:outputText value="2do apellido:" />
+                      <h:outputText value="#{custom.materno}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>			
                 <p:outputLabel for="tipoPerfil" value="Perfil:"/>
                 <p:selectOneMenu id="tipoPerfil" value="#{kajoolUsuariosAccion.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="information janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{kajoolUsuariosAccion.criteriosBusqueda.listaPerfiles}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>

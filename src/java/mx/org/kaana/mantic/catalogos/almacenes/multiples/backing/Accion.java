@@ -181,6 +181,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
       this.attrs.put("personas", personas);
 			if(personas!= null && !this.accion.equals(EAccion.AGREGAR) && ((Multiple)this.getAdminOrden().getOrden()).getIdSolicito()!= null && ((Multiple)this.getAdminOrden().getOrden()).getIdSolicito()> 0L){

@@ -669,32 +669,35 @@ public class Transaccion extends Inventarios implements Serializable {
     Boolean regresar        = Boolean.FALSE;
     List<Promedio> promedios= new ArrayList<>();
     try {
-      for (Costo item: this.orden.getCostos()) {
-        item.setIdUsuario(JsfBase.getIdUsuario());
-        item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-        switch(item.getSql()) {
-          case SELECT:
-            break;
-          case UPDATE:
-            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
-            break;
-          case DELETE:
-            regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
-            break;
-          case INSERT:
-            item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
-            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
-            break;
-        } // switch    
-        if(!Objects.equals(item.getIdArticulo(), null) && !Objects.equals(item.getIdArticulo(), -1L)) {
-          int index= promedios.indexOf(new Promedio(item.getIdArticulo()));
-          if(index< 0)
-            promedios.add(new Promedio(item.getIdArticulo(), item.getImporte(), item.getImporte()<= 0D));
-          else
-            promedios.get(index).setTotal(promedios.get(index).getTotal()+ item.getImporte()); 
-        } // if  
-      } // for
-      this.toCheckCostos(sesion, promedios);
+      // ESTO NO APLICA PARA LAS NOTAS DE ENTRADA DE PRODUCTO TERMINADO
+      if(!Objects.equals(this.orden.getIdNotaTipo(), 6L)) {
+        for (Costo item: this.orden.getCostos()) {
+          item.setIdUsuario(JsfBase.getIdUsuario());
+          item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+          switch(item.getSql()) {
+            case SELECT:
+              break;
+            case UPDATE:
+              regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+              break;
+            case DELETE:
+              regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+              break;
+            case INSERT:
+              item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
+              regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+              break;
+          } // switch    
+          if(!Objects.equals(item.getIdArticulo(), null) && !Objects.equals(item.getIdArticulo(), -1L)) {
+            int index= promedios.indexOf(new Promedio(item.getIdArticulo()));
+            if(index< 0)
+              promedios.add(new Promedio(item.getIdArticulo(), item.getImporte(), item.getImporte()<= 0D));
+            else
+              promedios.get(index).setTotal(promedios.get(index).getTotal()+ item.getImporte()); 
+          } // if  
+        } // for
+        this.toCheckCostos(sesion, promedios);
+      } // if  
       regresar= Boolean.TRUE;
     } // try
     catch (Exception e) {

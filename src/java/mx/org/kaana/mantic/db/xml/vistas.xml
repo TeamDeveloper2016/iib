@@ -9961,28 +9961,28 @@ order by
   tr_mantic_proveedor_pago.clave				
 			</select>	
 			<select id="moneda">
-        select      
-					tc_mantic_proveedores.id_proveedor as id_key,
-          tc_mantic_proveedores.*,
-          tc_mantic_tipos_monedas.nombre as moneda,
-          tc_mantic_tipos_monedas.siglas,
-          tc_mantic_tipos_monedas.simbolo,
-          tc_mantic_tipos_proveedores.nombre as tipo_proveedor,
-          tc_mantic_tipos_proveedores.dias,
-          tc_mantic_tipos_dias.nombre as tipo_dia
-        from      
-          tc_mantic_proveedores
-        inner join 
-          tc_mantic_tipos_monedas on tc_mantic_proveedores.id_tipo_moneda= tc_mantic_tipos_monedas.id_tipo_moneda
-        inner join 
-          tc_mantic_tipos_proveedores on tc_mantic_proveedores.id_tipo_proveedor= tc_mantic_tipos_proveedores.id_tipo_proveedor
-        inner join 
-          tc_mantic_tipos_dias on tc_mantic_proveedores.id_tipo_dia= tc_mantic_tipos_dias.id_tipo_dia
-        where 
-          tc_mantic_proveedores.id_empresa in ({sucursales})
-					and {condicion}
-				order by
-				  tc_mantic_proveedores.clave
+select      
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_proveedores.*,
+  tc_mantic_tipos_monedas.nombre as moneda,
+  tc_mantic_tipos_monedas.siglas,
+  tc_mantic_tipos_monedas.simbolo,
+  tc_mantic_tipos_proveedores.nombre as tipo_proveedor,
+  tc_mantic_tipos_proveedores.dias,
+  tc_mantic_tipos_dias.nombre as tipo_dia
+from      
+  tc_mantic_proveedores
+inner join 
+  tc_mantic_tipos_monedas on tc_mantic_proveedores.id_tipo_moneda= tc_mantic_tipos_monedas.id_tipo_moneda
+inner join 
+  tc_mantic_tipos_proveedores on tc_mantic_proveedores.id_tipo_proveedor= tc_mantic_tipos_proveedores.id_tipo_proveedor
+inner join 
+  tc_mantic_tipos_dias on tc_mantic_proveedores.id_tipo_dia= tc_mantic_tipos_dias.id_tipo_dia
+where 
+  tc_mantic_proveedores.id_empresa in ({sucursales})
+  and {condicion}
+order by
+  tc_mantic_proveedores.clave
 			</select>
 		  <select id="consulta">
 				select
@@ -12090,22 +12090,24 @@ group by
 				  tc_mantic_articulos.id_articulo
 			</select>
 			<select id="solicito">
-				select
-					tc_mantic_personas.id_persona as id_key,
-					tc_mantic_personas.id_persona,
-					tc_mantic_personas.nombres,
-					tc_mantic_personas.paterno,
-					tc_mantic_personas.materno
-				from
-					tr_mantic_empresa_personal
-				inner join
-					tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
-				where
-					tr_mantic_empresa_personal.id_empresa in ({sucursales})
-					and tc_mantic_personas.id_tipo_persona in (2, 6)
-          and tr_mantic_empresa_personal.id_activo= 1
-				order by
-					tc_mantic_personas.rfc			
+select
+  tc_mantic_personas.id_persona as id_key,
+  tc_mantic_personas.id_persona,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.nombres,
+  tc_mantic_personas.paterno,
+  tc_mantic_personas.materno
+from
+  tr_mantic_empresa_personal
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and tc_mantic_personas.id_tipo_persona in (2, 6)
+  and tr_mantic_empresa_personal.id_activo= 1
+  and {condicion}
+order by
+  tc_mantic_personas.rfc			
 			</select>
       <select id="detalle">
         select      

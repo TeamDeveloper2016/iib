@@ -286,12 +286,14 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 		  params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.attrs.put("proveedores", UIEntity.seleccione("VistaOrdenesComprasDto", "moneda", params, columns, "clave"));
-			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+			List<UISelectEntity> proveedores= UIEntity.seleccione("VistaOrdenesComprasDto", "moneda", params, columns, "clave");
+      this.attrs.put("proveedores", proveedores);
 			int index= 0;
 			if(!proveedores.isEmpty()) {
-				if(this.accion.equals(EAccion.AGREGAR) && ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor().getKey().equals(-1L))
-			   ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(0));
+				if(this.accion.equals(EAccion.AGREGAR) && ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor().getKey().equals(-1L)) {
+			    ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(0));
+          ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor().getValue("clave").setData("TECLEAR PROVEEDOR");
+        } // if  
 				else {
 				  index= proveedores.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor());
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(index));
@@ -328,7 +330,6 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
           productos.remove(productos.size()- 1);
       } // if
       this.attrs.put("productos", productos);
-      
       this.toNewCosto(null);
     } // try
     catch (Exception e) {
@@ -444,14 +445,14 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 				((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
 				((NotaEntrada)this.getAdminOrden().getOrden()).setOriginal(Numero.toRedondearSat(Double.parseDouble(this.getFactura().getTotal())));
-				if(Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL) || Objects.equals(this.tipoOrden, EOrdenes.TERMINADO)) {
-					int count= 0;
-					while(count< this.getAdminOrden().getArticulos().size() && this.getAdminOrden().getArticulos().size()> 1) {
+//				if(Objects.equals(this.tipoOrden, EOrdenes.NORMAL) || Objects.equals(this.tipoOrden, EOrdenes.ESPECIAL) || Objects.equals(this.tipoOrden, EOrdenes.TERMINADO)) {
+//					int count= 0;
+//					while(count< this.getAdminOrden().getArticulos().size() && this.getAdminOrden().getArticulos().size()> 1) {
 //						if(this.getAdminOrden().getArticulos().get(count).getIdOrdenDetalle()== null)
-							this.getAdminOrden().getArticulos().remove(count);
+//							this.getAdminOrden().getArticulos().remove(count);
 //						count++;
-					} // while 
-				} // if
+//					} // while 
+//				} // if
 				this.toMoveSelectedProveedor();
 				this.toPrepareDisponibles(true);
 				this.doCheckFolio();
@@ -459,7 +460,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			} // if
 		} // if
 		else 
-			JsfBase.addMessage("Se tiene que seleccionar un proveedor primero.", ETipoMensaje.ALERTA);      			
+			JsfBase.addMessage("Se tiene que seleccionar un proveedor primero", ETipoMensaje.ALERTA);      			
 	} // doFileUpload	
 	
 	private void toPrepareDisponibles(boolean checkItems) {
@@ -541,12 +542,11 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	private void toCheckProveedor(boolean checkItems) {
-		Articulo faltante        = null;
-		int relacionados         = this.attrs.get("relacionados")== null? 0: (int)this.attrs.get("relacionados");
-		Integer idTipoComparacion= (Integer)this.attrs.get("idTipoComparacion");
-	  Map<String, Object> params=null;
+		Articulo faltante         = null;
+		int relacionados          = this.attrs.get("relacionados")== null? 0: (int)this.attrs.get("relacionados");
+		Integer idTipoComparacion = (Integer)this.attrs.get("idTipoComparacion");
+	  Map<String, Object> params= new HashMap<>();
 		try {
-			params= new HashMap<>();
 			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
 			int x= 0;
@@ -633,9 +633,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 
 	public void doCheckFolio() {
-		Map<String, Object> params=null;
+		Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("factura", ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura());
 			params.put("idProveedor", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedor());
 			params.put("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
@@ -650,7 +649,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			} // else
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticNotasEntradasDto", "folio", params);
 			if(entity!= null && entity.size()> 0) 
-				UIBackingUtilities.execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura()+ "] se registró en la nota de entrada "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
+				UIBackingUtilities.execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura()+ "] se registró en la nota de entrada "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs'}]);");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -987,7 +986,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						temporal= new UISelectEntity(new Entity(encontrado.getIdProveedor()));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(temporal);
 						List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");						
-						temporal= proveedores.get(proveedores.indexOf(temporal));
+            int index= proveedores.indexOf(temporal);
+            if(index>= 0)
+						  temporal= proveedores.get(index);
+            else {
+              proveedores= this.doCompleteProveedor(encontrado.getRfc());
+              index= proveedores.indexOf(temporal);
+              if(index>= 0)
+                temporal= proveedores.get(index);
+              else
+                temporal= proveedores.get(0);
+              ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(temporal);
+            } // else  
 						temporal.put("fechaEstimada", new Value("fechaEstimada", this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias"))));
 						this.attrs.put("proveedor", temporal);
 						this.toLoadCondiciones(temporal);
@@ -1001,7 +1011,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 						this.getXml().setRuta(newFileName);
 					} // if	
 					else
-						JsfBase.addAlert("El proveedor no existe en el catalogo de proveedores,<br/>favor de agregarlo antes al catálogo para generar la nota de entrada.<br/><br/> RFC ["+ this.getEmisor().getRfc()+ "] ".concat(this.getEmisor().getNombre()).concat("<br/>"), ETipoMensaje.ALERTA);
+						JsfBase.addAlert("El proveedor no existe en el catalogo de proveedores,<br/>favor de agregarlo antes al catálogo para generar la nota de entrada<br/><br/> RFC ["+ this.getEmisor().getRfc()+ "] ".concat(this.getEmisor().getNombre()).concat("<br/>"), ETipoMensaje.ALERTA);
 				} // if
 		  } // if
 	  }	// try
@@ -1296,6 +1306,39 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       Methods.clean(columns);
     } // finally
   }
+ 
+	public List<UISelectEntity> doCompleteProveedor(String codigo) {
+ 		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+			} // if	
+			else
+				codigo= "WXYZ";
+ 		  // params.put("codigo", codigo);
+      params.put(Constantes.SQL_CONDICION, "(upper(razon_social) regexp '.*"+ codigo+ ".*' or upper(rfc) regexp '.*"+ codigo+ ".*')");
+      this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("proveedores");
+	}	
+ 
+  public char doGroupProveedor(UISelectEntity item) {
+    return item.toString("rfc").charAt(0);
+  }  
   
 	@Override
 	protected void finalize() throws Throwable {

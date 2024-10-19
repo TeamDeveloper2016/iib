@@ -33,6 +33,7 @@ import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.BouncyEncryption;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -195,4 +196,33 @@ public class Accion extends IBaseAttribute implements Serializable {
     return !((TcManticPersonasDto)this.attrs.get("tcManticPersonasDto")).isValid();
   }
 
+	public List<UISelectEntity> doCompletePersona(String codigo) {
+ 		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+    try {
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put(Constantes.SQL_CONDICION, "(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*".concat(codigo).concat(".*' or upper(tc_mantic_personas.rfc) regexp '.*").concat(codigo).concat(".*')"));
+      this.criteriosBusqueda.setListaPersonas(UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns, 40L));
+      this.attrs.put("personas", this.criteriosBusqueda.getListaPersonas());
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+		return (List<UISelectEntity>)this.attrs.get("personas");
+	}	
+  
 }

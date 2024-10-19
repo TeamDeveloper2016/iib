@@ -96,18 +96,19 @@
                 <p:outputLabel value="Comentarios:" styleClass="janal-display-none janal-color-blue"/>												
                 <p:inputTextarea id="comentarios" styleClass="janal-wid-100-txt janal-display-none janal-color-blue" value="#{manticCatalogosEmpresasCuentasProrroga.attrs.deuda.comentarios}" readonly="true" rows="1"/>
                 <p:outputLabel for="idRecibio" value="Recibio:"/>
-                <p:selectOneMenu id="idRecibio" value="#{manticCatalogosEmpresasCuentasProrroga.ikRecibio}" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{manticCatalogosEmpresasCuentasProrroga.attrs.personas}" var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>					
-                  <p:column>
-                    <h:outputText value="#{item.nombres}"/>
-                  </p:column>                
-                  <p:column>
-                    <h:outputText value="#{item.paterno}"/>
-                  </p:column>                
-                  <p:column>
-                    <h:outputText value="#{item.materno}"/>
-                  </p:column>                
-                </p:selectOneMenu>
+                <p:autoComplete id="idRecibio" var="items" placeholder="Ej. ALEJANDRO JIMENEZ" itemLabel="#{items.nombres}#{empty items.paterno or items.paterno eq ''? '': ' | '}#{items.paterno}#{empty items.materno or items.materno eq ''? '': ' | '}#{items.materno}" styleClass="janal-wid-100-txt proveedor" inputStyleClass="janal-wid-100-txt" itemValue="#{items}" value="#{manticCatalogosEmpresasCuentasProrroga.ikRecibio}" completeMethod="#{manticCatalogosEmpresasCuentasProrroga.doCompletePersona}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <p:ajax event="itemSelect" process="@this" update="@(.recalculo)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <h:outputText value="Nombre:" />
+                      <h:outputText value="#{custom.nombres}" />
+                      <h:outputText value="1er apellido:" />
+                      <h:outputText value="#{custom.paterno}" />
+                      <h:outputText value="2do apellido:" />
+                      <h:outputText value="#{custom.materno}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>			
                 <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-column-center, janal-column-center">
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="importe" value="Importe:"/>						
