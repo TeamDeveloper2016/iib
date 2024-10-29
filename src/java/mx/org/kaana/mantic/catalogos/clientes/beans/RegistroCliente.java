@@ -354,7 +354,7 @@ public class RegistroCliente implements Serializable {
 			clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			clienteDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
 			if(!actualizar)
-				clienteDomicilio.setConsecutivo(this.clientesDomicilio.size() + 1L);
+				clienteDomicilio.setConsecutivo(this.clientesDomicilio.size()+ 1L);
 			clienteDomicilio.setIdEntidad(this.domicilio.getIdEntidad());
 			clienteDomicilio.setIdMunicipio(this.domicilio.getIdMunicipio());
 			clienteDomicilio.setIdLocalidad(this.domicilio.getLocalidad());

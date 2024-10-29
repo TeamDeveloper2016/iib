@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -275,11 +276,11 @@ public class RegistroProveedor implements Serializable{
 		} // catch		
 	} // initCollections
 	
-	public void doAgregarProveedorDomicilio(){
+	public void doAgregarProveedorDomicilio() {
 		ProveedorDomicilio proveedorDomicilio= null;
 		try {								
 			proveedorDomicilio= new ProveedorDomicilio(this.contadores.getTotalProveedoresDomicilios() + this.countIndice, ESql.INSERT, true);	
-			setValuesProveedorDomicilio(proveedorDomicilio, false);			
+			this.toUpdateProveedorPivote(proveedorDomicilio, Boolean.FALSE);			
 			this.proveedoresDomicilio.add(proveedorDomicilio);			
 		} // try
 		catch (Exception e) {
@@ -291,7 +292,7 @@ public class RegistroProveedor implements Serializable{
 		} // finally
 	} // doAgregarProveedorDomicilio
 	
-	public void doEliminarProveedorDomicilio(){
+	public void doEliminarProveedorDomicilio() {
 		try {			
 			if(this.proveedoresDomicilio.remove(this.proveedorDomicilioSeleccion)){
 				if(!this.proveedorDomicilioSeleccion.getNuevo())
@@ -336,12 +337,12 @@ public class RegistroProveedor implements Serializable{
 		} // catch		
 	} // doConsultarProveedorDomicilio
 	
-	public void doActualizarProveedorDomicilio(){
+	public void doActualizarProveedorDomicilio() {
 		ProveedorDomicilio pivote= null;
 		try {			
 			pivote= this.proveedoresDomicilio.get(this.proveedoresDomicilio.indexOf(this.proveedorDomicilioSeleccion));			
-			pivote.setModificar(false);
-			setValuesProveedorDomicilio(pivote, true);						
+			pivote.setModificar(Boolean.FALSE);
+			this.toUpdateProveedorPivote(pivote, Boolean.TRUE);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -349,19 +350,22 @@ public class RegistroProveedor implements Serializable{
 		} // catch				
 	} // doActualizarProveedorDomicilio
 	
-	private void setValuesProveedorDomicilio(ProveedorDomicilio proveedorDomicilio, boolean actualizar) throws Exception{
+	public void toUpdateProveedorPivote(ProveedorDomicilio proveedorDomicilio, boolean actualizar) throws Exception {
+    Long idDomicilio= this.getDomicilioPivote()== null? -1L: this.getDomicilioPivote().getIdDomicilio();
 		try {
-			if(this.domicilio.getPrincipal()){
+			if(this.domicilio.getPrincipal()) {
 				for(ProveedorDomicilio record: this.proveedoresDomicilio)
 					record.setIdPrincipal(0L);
 			} // if
-			proveedorDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);			
-			proveedorDomicilio.setDomicilio(this.domicilio.getDomicilio());
-			proveedorDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
+			if(this.domicilio.getDomicilio()!= null){
+    		proveedorDomicilio.setIdDomicilio(idDomicilio);
+	  		proveedorDomicilio.setIdPrincipal(this.domicilio.getPrincipal()? 1L: 2L);
+			} // if	
+			proveedorDomicilio.setDomicilio(new Entity(idDomicilio));
 			proveedorDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			proveedorDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
 			if(!actualizar)
-				proveedorDomicilio.setConsecutivo(this.proveedoresDomicilio.size() + 1L);
+				proveedorDomicilio.setConsecutivo(this.proveedoresDomicilio.size()+ 1L);
 			proveedorDomicilio.setIdEntidad(this.domicilio.getIdEntidad());
 			proveedorDomicilio.setIdMunicipio(this.domicilio.getIdMunicipio());
 			proveedorDomicilio.setIdLocalidad(this.domicilio.getLocalidad());

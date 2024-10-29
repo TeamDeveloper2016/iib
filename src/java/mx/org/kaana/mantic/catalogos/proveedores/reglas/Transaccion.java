@@ -1,13 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mx.org.kaana.mantic.catalogos.proveedores.reglas;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -95,17 +91,17 @@ public class Transaccion extends IBaseTnx {
     boolean regresar = false;
     Long idProveedor = -1L;
     try {
-      this.messageError = "Error al registrar el articulo";
+      this.messageError = "Error al registrar el proveedor";
       if (eliminarRegistros(sesion)) {
         this.registroProveedor.getProveedor().setIdUsuario(JsfBase.getIdUsuario());
         this.registroProveedor.getProveedor().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
         idProveedor = DaoFactory.getInstance().insert(sesion, this.registroProveedor.getProveedor());
-        if (registraProveedoresDomicilios(sesion, idProveedor)) {
-          if (registraProveedoresAgentes(sesion, idProveedor)) {
-            if(registraProveedoresTipoContacto(sesion, idProveedor)){
-							if(registraProveedoresServicios(sesion, idProveedor)){
-								if(registraProveedoresTransferencia(sesion, idProveedor)){
-									if(registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())){
+        if (this.registraDomicilios(sesion, idProveedor)) {
+          if (this.registraProveedoresAgentes(sesion, idProveedor)) {
+            if(this.registraProveedoresTipoContacto(sesion, idProveedor)){
+							if(this.registraProveedoresServicios(sesion, idProveedor)){
+								if(this.registraProveedoresTransferencia(sesion, idProveedor)){
+									if(this.registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())) {
 										this.registroProveedor.getPortal().setIdProveedor(idProveedor);
 										regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;
 									} // if
@@ -127,13 +123,13 @@ public class Transaccion extends IBaseTnx {
     Long idProveedor = -1L;
     try {
       idProveedor = this.registroProveedor.getIdProveedor();
-      if (registraProveedoresDomicilios(sesion, idProveedor)) {
-        if (registraProveedoresAgentes(sesion, idProveedor)) {
-          if (registraProveedoresTipoContacto(sesion, idProveedor)) {
-						if(registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())){
-							if(registraProveedoresServicios(sesion, idProveedor)){
-								if(registraProveedoresTransferencia(sesion, idProveedor)){
-									if(this.registroProveedor.getPortal().isValid()){
+      if (this.registraDomicilios(sesion, idProveedor)) {
+        if (this.registraProveedoresAgentes(sesion, idProveedor)) {
+          if (this.registraProveedoresTipoContacto(sesion, idProveedor)) {
+						if (this.registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())){
+							if (this.registraProveedoresServicios(sesion, idProveedor)){
+								if (this.registraProveedoresTransferencia(sesion, idProveedor)){
+									if (this.registroProveedor.getPortal().isValid()){
 										if(DaoFactory.getInstance().update(sesion, this.registroProveedor.getPortal())>= 0L){
 											regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
 										} // if
@@ -182,20 +178,58 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } // eliminarProveedor
 
+  private Boolean registraDomicilios(Session sesion, Long idProveedor) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    if(!Objects.equals(this.registroProveedor.getProveedoresDomicilio(), null) && this.registroProveedor.getProveedoresDomicilio().size()> 0)
+      regresar= this.registraProveedoresDomicilios(sesion, idProveedor);
+    else {
+      TcManticDomiciliosDto pivote   = (TcManticDomiciliosDto)DaoFactory.getInstance().findById(sesion, TcManticDomiciliosDto.class, 1L);
+      TcManticDomiciliosDto domicilio= new TcManticDomiciliosDto(
+        pivote.getAsentamiento(), // String asentamiento, 
+        pivote.getIdLocalidad(), // Long idLocalidad, 
+        pivote.getCodigoPostal(), // String codigoPostal, 
+        pivote.getLatitud(), // String latitud, 
+        pivote.getEntreCalle(), // String entreCalle, 
+        pivote.getCalle(), // String calle, 
+        -1L, // Long idDomicilio, 
+        pivote.getNumeroInterior(), // String numeroInterior,  
+        pivote.getYcalle(), // String ycalle, 
+        pivote.getLongitud(), // String longitud, 
+        pivote.getNumeroExterior(), // String numeroExterior, 
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        ""
+      );
+      DaoFactory.getInstance().insert(sesion, domicilio);
+      TrManticProveedorDomicilioDto relacion= new TrManticProveedorDomicilioDto(
+        -1L, // Long idProveedorDomicilio, 
+        idProveedor, // Long idProveedor, 
+        domicilio.getIdUsuario(), // Long idUsuario, 
+        1L, // Long idTipoDomicilio, 
+        domicilio.getIdDomicilio(), // Long idDomicilio, 
+        1L, // Long idPrincipal, 
+        "" // String observaciones      
+      );
+      regresar= DaoFactory.getInstance().insert(sesion, relacion)> 0L;
+    } // if
+    return regresar;
+  }
+  
   private boolean registraProveedoresDomicilios(Session sesion, Long idProveedor) throws Exception {
     TrManticProveedorDomicilioDto dto = null;
-    ESql sqlAccion = null;
-    int count = 0;
-    int countPrincipal = 0;
-    boolean validate = false;
-    boolean regresar = false;
+    ESql sqlAccion    = null;
+    int count         = 0;
+    int countPrincipal= 0;
+    boolean validate  = Boolean.FALSE;
+    boolean regresar  = Boolean.FALSE;
     try {
 			if(this.registroProveedor.getProveedoresDomicilio().size()== 1)
-					this.registroProveedor.getProveedoresDomicilio().get(0).setIdPrincipal(1L);
+				this.registroProveedor.getProveedoresDomicilio().get(0).setIdPrincipal(1L);
       for (ProveedorDomicilio proveedorDomicilio : this.registroProveedor.getProveedoresDomicilio()) {								
 				if(proveedorDomicilio.getIdPrincipal().equals(1L))
 					countPrincipal++;
-				if(countPrincipal== 0 && this.registroProveedor.getProveedoresDomicilio().size()-1 == count)
+        else
+					proveedorDomicilio.setIdPrincipal(2L);
+				if(countPrincipal== 0 && Objects.equals(this.registroProveedor.getProveedoresDomicilio().size()-1, count))
 					proveedorDomicilio.setIdPrincipal(1L);
         proveedorDomicilio.setIdProveedor(idProveedor);
         proveedorDomicilio.setIdUsuario(JsfBase.getIdUsuario());
@@ -506,8 +540,8 @@ public class Transaccion extends IBaseTnx {
   } // registraProveedoresTipoContacto
 
   private boolean eliminarRegistros(Session sesion) throws Exception {
-    boolean regresar = true;
-    int count = 0;
+    boolean regresar= Boolean.TRUE;
+    int count       = 0;
     try {
       for (IBaseDto dto : this.registroProveedor.getDeleteList()) {
         if (DaoFactory.getInstance().delete(sesion, dto) >= 1L) 

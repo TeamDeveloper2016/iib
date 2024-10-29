@@ -40,7 +40,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      loadTiposProveedores();
+      this.loadTiposProveedores();
+      if(JsfBase.getFlashAttribute("idProveedorProcess")!= null) {
+        this.attrs.put("idProveedorProcess", JsfBase.getFlashAttribute("idProveedorProcess"));
+        this.doLoad();
+        this.attrs.put("idProveedorProcess", null);
+      } // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -67,11 +72,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns    = null;
+    List<Columna> columns    = new ArrayList<>();
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
-      columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("tipoProveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("tipoDia", EFormatoDinamicos.MAYUSCULAS));
@@ -159,6 +163,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb              = new StringBuilder();
 	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
 		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+    if(!Cadena.isVacio(this.attrs.get("idProveedorProcess")) && !this.attrs.get("idProveedorProcess").toString().equals("-1")) 
+      sb.append("(tc_mantic_proveedores.id_proveedor=").append(this.attrs.get("idProveedorProcess")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
 			sb.append("(tc_mantic_proveedores.clave like '%").append(this.attrs.get("clave")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("rfc")))

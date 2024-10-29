@@ -178,7 +178,7 @@
                     <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doActualizaCodigosPostales}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
                     <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticCatalogosClientesAccion.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
-										<p:column  styleClass="janal-column-center">
+										<p:column styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
 										</p:column>   
 										<p:column styleClass="janal-column-left">

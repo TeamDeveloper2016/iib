@@ -186,7 +186,7 @@ public class Transaccion extends TransaccionFactura {
 		catch (Exception e) {			
 			Error.mensaje(e);
 		} // catch		
-	} // actualizarArticuloFacturama
+	} 
 	
   private boolean actualizarCliente(Session sesion) throws Exception {
     boolean regresar= false;
@@ -277,7 +277,7 @@ public class Transaccion extends TransaccionFactura {
     boolean regresar  = Boolean.FALSE;
     try {
 			if(this.registroCliente.getClientesDomicilio().size()== 1)
-					this.registroCliente.getClientesDomicilio().get(0).setIdPrincipal(1L);
+				this.registroCliente.getClientesDomicilio().get(0).setIdPrincipal(1L);
       for (ClienteDomicilio clienteDomicilio: this.registroCliente.getClientesDomicilio()) {								
 				if(clienteDomicilio.getIdPrincipal().equals(1L))
 					countPrincipal++;
@@ -483,7 +483,7 @@ public class Transaccion extends TransaccionFactura {
   } // registraClientesTipoContacto
 
   private boolean eliminarRegistros(Session sesion) throws Exception {
-    boolean regresar= true;
+    boolean regresar= Boolean.TRUE;
     int count       = 0;
     try {
       for (IBaseDto dto: this.registroCliente.getDeleteList()) {
