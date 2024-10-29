@@ -105,7 +105,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
         case MODIFICAR:
         case CONSULTAR:
-          this.attrs.put("cpNuevo", true);
+          this.attrs.put("cpNuevo", Boolean.TRUE);
           idProveedor = Long.valueOf(this.attrs.get("idProveedor").toString());
           this.registroProveedor = new RegistroProveedor(idProveedor);
 					this.toLoadCollections();
@@ -651,15 +651,26 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}
 	
 	public List<UISelectEntity> doCompleteCodigo(String query) {
-		List<Columna> columns        = new ArrayList<>();
-    Map<String, Object> params   = new HashMap<>();
-		List<UISelectEntity> regresar= null;
+		if(this.registroProveedor.getDomicilio().getIdEntidad().getKey()>= 1L && !Cadena.isVacio(query)) {
+			this.attrs.put("condicionCodigoPostal", query);
+			this.doUpdateCodigosPostales();		
+			return (List<UISelectEntity>)this.attrs.get("allCodigosPostales");
+		} // if
+    else {
+			this.registroProveedor.getDomicilio().setNuevoCp(Boolean.FALSE);
+			this.registroProveedor.getDomicilio().setIdCodigoPostal(-1L);
+			this.registroProveedor.getDomicilio().setCodigoPostal("");
+			return new ArrayList<>();
+		} // else		
+	}
+
+	public void doUpdateCodigosPostales() {
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("idEntidad", this.registroProveedor.getDomicilio().getIdEntidad().getKey());
-  		params.put("codigo", query);
-      regresar= (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "existe", params, columns, 30L);
-      this.attrs.put("codigosPostales", regresar);
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));      
+  		params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.registroProveedor.getDomicilio().getIdEntidad().getKey() + " and codigo like '" + this.attrs.get("condicionCodigoPostal") + "%'");
+      this.attrs.put("allCodigosPostales", (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "row", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -668,20 +679,19 @@ public class Accion extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally	
-		return regresar;
-	}
-
+    } // finally
+	}	
+  
 	public void doAsignaCodigo(SelectEvent event) {
 		UISelectEntity seleccion    = null;
-		List<UISelectEntity> codigos= (List<UISelectEntity>) this.attrs.get("codigosPostales");
+		List<UISelectEntity> codigos= (List<UISelectEntity>) this.attrs.get("allCodigosPostales");
 		try {
 			seleccion= codigos.get(codigos.indexOf((UISelectEntity)event.getObject()));
 			if(seleccion!= null && !seleccion.isEmpty()) {
 				this.registroProveedor.getDomicilio().setIdCodigoPostal(seleccion.getKey());
 				this.registroProveedor.getDomicilio().setCodigoPostal(seleccion.toString("codigo"));
 				this.registroProveedor.getDomicilio().setNuevoCp(true);
-				this.attrs.put("codigoBuscado", seleccion);
+				this.attrs.put("codigoSeleccionado", seleccion);
 			} // if	
 			else {
 				this.registroProveedor.getDomicilio().setIdCodigoPostal(-1L);
@@ -698,7 +708,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void asignaCodigoPostal() {
 		List<UISelectEntity> codigosPostales= null;
 		try {
-			codigosPostales= (List<UISelectEntity>) this.attrs.get("codigosPostales");
+			codigosPostales= (List<UISelectEntity>) this.attrs.get("allCodigosPostales");
 			if(codigosPostales!= null && !codigosPostales.isEmpty()){
 				this.registroProveedor.getDomicilio().setCodigoPostal(codigosPostales.get(0).toString("codigo"));
 				this.registroProveedor.getDomicilio().setNuevoCp(true);
@@ -716,12 +726,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
 			this.registroProveedor.getDomicilio().setIdCodigoPostal(-1L);
 			this.registroProveedor.getDomicilio().setCodigoPostal("");
-			if((Boolean)this.attrs.get("cpNuevo")){
-				this.registroProveedor.getDomicilio().setNuevoCp(true);		
+			if((Boolean)this.attrs.get("cpNuevo")) {
+				this.registroProveedor.getDomicilio().setNuevoCp(Boolean.TRUE);		
 				this.attrs.put("codigoSeleccionado", new UISelectEntity(-1L));
 			} // 				
 			else
-				this.registroProveedor.getDomicilio().setNuevoCp(false);			
+				this.registroProveedor.getDomicilio().setNuevoCp(Boolean.FALSE);
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -730,7 +740,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} 
 
   public void doCodigoPostal() {
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
     try {      
       params.put("codigo", JsfBase.getParametro("contenedorGrupos:cp")== null? JsfBase.getParametro("contenedorGrupos:codigoPostal_input"): JsfBase.getParametro("cp"));      
       Entity codigo = (Entity)DaoFactory.getInstance().toEntity("TcManticCodigosPostalesDto", "igual", params);

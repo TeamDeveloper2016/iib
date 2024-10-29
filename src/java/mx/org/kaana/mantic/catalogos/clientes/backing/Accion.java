@@ -77,9 +77,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin() || JsfBase.isEncargado());
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Catalogos/Clientes/filtro": JsfBase.getFlashAttribute("retorno"));
-			this.attrs.put("cpNuevo", false);						
+			this.attrs.put("cpNuevo", Boolean.FALSE);						
       this.doLoad();      					
-			this.attrs.put("renderedFacturacion", false);
+			this.attrs.put("renderedFacturacion", Boolean.FALSE);
 			this.doCreateMessage();
     } // try
     catch (Exception e) {
@@ -117,7 +117,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
         case MODIFICAR:
         case CONSULTAR:
-					this.attrs.put("cpNuevo", true);
+					this.attrs.put("cpNuevo", Boolean.TRUE);
           idCliente = Long.valueOf(this.attrs.get("idCliente").toString());
           this.registroCliente = new RegistroCliente(idCliente);
 					this.loadCollections();
@@ -598,7 +598,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doEliminarArticuloCodigo	
+  } 
 	
 	public void doActualizaDomicilio() {
 		try {
@@ -611,7 +611,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-	} // doActualizaDomicilio
+	} 
 	
 	public void doEliminarDomicilio(){
 		try {
@@ -639,7 +639,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // doAgregarClienteRepresentante
+	} 
 	
 	public void doAgregarRepresentante() {
     try {
@@ -650,7 +650,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doAgregarCliente
+  } 
 	
 	public void doActualizaRepresentante(){
 		try {
@@ -684,7 +684,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	} // doEliminarRepresentante
+	} 
 	
 	private void toLoadRegimenesFiscales() {
 		List<Columna> columns     = new ArrayList<>();    
@@ -728,9 +728,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // loadTiposClientes
 	
 	private void loadTiposVentas() {
-		List<UISelectItem> tiposVentas= null;
+		List<UISelectItem> tiposVentas= new ArrayList<>();
 		try {
-			tiposVentas= new ArrayList<>();
 			for(ETipoVenta tipoVenta: ETipoVenta.values())
 				tiposVentas.add(new UISelectItem(tipoVenta.getIdTipoVenta(), Cadena.reemplazarCaracter(tipoVenta.name(), '_', ' ')));
 			this.attrs.put("tiposVentas", tiposVentas);
@@ -755,11 +754,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}	// doCompleteCodigoPostal
 	
 	public void doUpdateCodigosPostales() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
     try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));      
   		params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.registroCliente.getDomicilio().getIdEntidad().getKey() + " and codigo like '" + this.attrs.get("condicionCodigoPostal") + "%'");						  		
       this.attrs.put("allCodigosPostales", (List<UISelectEntity>) UIEntity.build("TcManticCodigosPostalesDto", "row", params, columns, 20L));

@@ -186,11 +186,12 @@
 										<p:ajax process="@this" update="contenedorGrupos:formularioDomicilio contenedorGrupos:codigoPostal contenedorGrupos:cp" listener="#{manticCatalogosProveedoresAccion.doInicializaCodigo}" oncomplete="janal.refresh();"/>
 									</p:selectBooleanButton>
                   <p:outputLabel for="codigoPostal" value="Código postal:"/>
-									<p:autoComplete id="codigoPostal" widgetVar="listadoCodigoPostal" placeholder="Ej. 20001" var="customCodigo" itemLabel="#{customCodigo.codigo}" inputStyleClass="janal-wid-100-txt" itemValue="#{customCodigo}" value="#{manticCatalogosProveedoresAccion.attrs.codigoBuscado}" completeMethod="#{manticCatalogosProveedoresAccion.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-150" rendered="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.nuevoCp}">
+									<p:autoComplete id="codigoPostal" widgetVar="listadoCodigoPostal" placeholder="Ej. 20001" var="customCodigo" itemLabel="#{customCodigo.codigo}" inputStyleClass="janal-wid-100-txt" itemValue="#{customCodigo}" value="#{manticCatalogosProveedoresAccion.attrs.codigoSeleccionado}" completeMethod="#{manticCatalogosProveedoresAccion.doCompleteCodigo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" panelStyleClass="janal-wid-col-150" rendered="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.nuevoCp}">
 										<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" update="@(.codigoPostal)" listener="#{manticCatalogosProveedoresAccion.doAsignaCodigo}" oncomplete="janal.refresh();janal.desbloquear();"/>
+                    <p:ajax event="change" listener="#{manticCatalogosProveedoresAccion.doCodigoPostal}" process="@this" update="contenedorGrupos:formularioDomicilio contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh()"/>
 										<f:facet name="itemtip">
 											<h:panelGrid columns="2" cellpadding="5">												
-												<h:outputText value="Código Postal:" />
+												<h:outputText value="Código Postal:"/>
 												<h:outputText value="#{customCodigo.codigo}"/>									
 											</h:panelGrid>
 										</f:facet>
