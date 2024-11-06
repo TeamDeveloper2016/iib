@@ -206,7 +206,8 @@ public class Transaccion extends ComunInventarios {
         consecutivo.getOrden(), // Long orden, 
         -1L, // Long idTransferencia              
         null, // Long idTipoClase      
-        null // Long idArticulo
+        null, // Long idArticulo
+        1L // Long idArticuloTipo
       );
       DaoFactory.getInstance().insert(sesion, transferencia);
       for (TcManticTransferenciasMultiplesDetallesDto item: detalles) {

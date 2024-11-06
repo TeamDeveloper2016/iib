@@ -2,7 +2,6 @@ package mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans;
 
 import java.io.Serializable;
 import java.util.Calendar;
-import java.util.Objects;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
@@ -36,11 +35,11 @@ public class Transferencia extends TcManticTransferenciasDto implements Serializ
 	}
 	
 	public Transferencia(Long key, Long idTransferenciaTipo) {
-		this(-1L, 1L, idTransferenciaTipo, new Long(Calendar.getInstance().get(Calendar.YEAR)), new Long(Calendar.getInstance().get(Calendar.YEAR))+ "00000", 1L, -1L, "", -1L, JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, -1L, -1L, -1L);
+		this(-1L, 1L, idTransferenciaTipo, new Long(Calendar.getInstance().get(Calendar.YEAR)), new Long(Calendar.getInstance().get(Calendar.YEAR))+ "00000", 1L, -1L, "", -1L, JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, -1L, -1L, -1L, 4L);
 	}
 
-	public Transferencia(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia, Long idTipoClase, Long idArticulo) {
-		super(idSolicito, idTransferenciaEstatus, idTransferenciaTipo, ejercicio, consecutivo, idUsuario, idAlmacen, observaciones, idDestino, idEmpresa, orden, idTransferencia, idTipoClase, idArticulo);
+	public Transferencia(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia, Long idTipoClase, Long idArticulo, Long idArticuloTipo) {
+		super(idSolicito, idTransferenciaEstatus, idTransferenciaTipo, ejercicio, consecutivo, idUsuario, idAlmacen, observaciones, idDestino, idEmpresa, orden, idTransferencia, idTipoClase, idArticulo, idArticuloTipo);
     this.init();
 	}
 	

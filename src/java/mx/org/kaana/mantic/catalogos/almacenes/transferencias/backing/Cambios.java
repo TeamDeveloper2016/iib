@@ -68,7 +68,7 @@ public class Cambios extends Simples implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
   	  params.put("idEmpresa", this.transferencia.getIdEmpresa());
-  	  params.put("tipo", "1");
+  	  params.put("tipo", Objects.equals(this.transferencia.getIdArticuloTipo(), 4L)? "3": "1");
  			List<UISelectEntity> almacenes= UIEntity.seleccione("TcManticAlmacenesDto", "especial", params, columns, "clave");
 			if(!Objects.equals(almacenes, null) && !almacenes.isEmpty()) {
 				if(this.accion.equals(EAccion.PROCESAR))
@@ -142,10 +142,10 @@ public class Cambios extends Simples implements Serializable {
         if(transaccion.ejecutar(EAccion.LISTAR)) {
           regresar= this.doCancelar();
           UIBackingUtilities.execute("janal.back(' gener\\u00F3 la transferencia ', '"+ this.transferencia.getConsecutivo()+ "');");
-          JsfBase.addMessage("Se registró la conversión de forma correcta", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("Se registró el traspaso de forma correcta", ETipoMensaje.INFORMACION);
         } // if
         else
-          JsfBase.addMessage("Ocurrió un error al registrar la conversión", ETipoMensaje.ERROR);
+          JsfBase.addMessage("Ocurrió un error al registrar el traspaso", ETipoMensaje.ERROR);
       } // if  
 		} // try
 		catch (Exception e) {
@@ -160,8 +160,24 @@ public class Cambios extends Simples implements Serializable {
  
   @Override
   public void doUpdateProductos() {  
-    super.doUpdateProductos();
-    this.doLoadArticulos();
+    List<UISelectEntity> productos= (List<UISelectEntity>)this.attrs.get("productos");
+    try {
+      if(!Objects.equals(productos, null) && !productos.isEmpty()) {
+        int index= productos.indexOf(this.transferencia.getIkProducto());
+        if(index>= 0)
+          this.attrs.put("producto", productos.get(index));
+        else
+          this.attrs.put("producto", productos.get(0));
+      } // if
+      else
+        this.attrs.put("producto", new UISelectEntity(-1L));
+      super.doUpdateProductos();
+      this.doLoadArticulos();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
   }
   
   @Override
@@ -170,9 +186,45 @@ public class Cambios extends Simples implements Serializable {
   }
   
   @Override
+  protected void toLoadProductos(Long idAlmacen) {
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
+		List<UISelectEntity> productos= null;
+    try {
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("stock", EFormatoDinamicos.MILES_CON_DECIMALES));
+  		params.put("sucursales", this.transferencia.getIdEmpresa());
+  		params.put("idAlmacen", idAlmacen);
+  		params.put("idTerminado", "1, 2");
+  		params.put("idTipoClase", this.transferencia.getIdTipoClase());
+  		params.put("idArticuloTipo", this.transferencia.getIdArticuloTipo());
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      productos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesDto", "productos", params, columns, 20L, "codigo");
+      this.attrs.put("productos", productos);
+      if(!Objects.equals(productos, null) && !productos.isEmpty())
+        this.attrs.put("producto", productos.get(0));
+      else
+        this.attrs.put("producto", new UISelectEntity(-1L));
+      this.attrs.put("stock", 0D);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+  
+  @Override
   protected void toLoadArticulos(Long idAlmacen) {
 		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
+    UISelectEntity producto       = (UISelectEntity)this.attrs.get("producto");
+    String embolsado              = "XYZ";
+    String codigo                 = "XYZ";
 		List<UISelectEntity> articulos= null;
     try {
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
@@ -182,9 +234,20 @@ public class Cambios extends Simples implements Serializable {
   		params.put("idAlmacen", idAlmacen);
   		params.put("idTerminado", "1, 2");
   		params.put("idTipoClase", this.transferencia.getIdTipoClase());
-  		params.put("idArticuloTipo", 1L);
-      params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos.id_articulo!= "+ this.transferencia.getIkProducto().getKey());
-      articulos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesSimplesDto", "productos", params, columns, 20L, "codigo");
+  		params.put("idArticuloTipo", this.transferencia.getIdArticuloTipo());
+      if(!Objects.equals(producto, null) && producto.containsKey("codigo")) {
+        embolsado= producto.toString("codigo");
+        int index= embolsado.indexOf(':', 4);
+        if(index>= 0)
+          codigo = embolsado.substring(0, index);
+        else
+          codigo = embolsado;
+      } // if  
+      if(embolsado.endsWith(Constantes.CODIGO_EMBOLSADO))
+        params.put(Constantes.SQL_CONDICION, "(tc_mantic_articulos.id_articulo!= "+ this.transferencia.getIkProducto().getKey()+ ") and (tc_mantic_articulos_codigos.codigo like '".concat(codigo).concat("%') and (tc_mantic_articulos_codigos.codigo not like '%").concat(Constantes.CODIGO_EMBOLSADO).concat("')"));
+      else
+        params.put(Constantes.SQL_CONDICION, "(tc_mantic_articulos.id_articulo!= "+ this.transferencia.getIkProducto().getKey()+ ") and (tc_mantic_articulos_codigos.codigo like '".concat(codigo).concat("%') and (tc_mantic_articulos_codigos.codigo like '%").concat(Constantes.CODIGO_EMBOLSADO).concat("')"));
+      articulos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesDto", "productos", params, columns, 20L, "codigo");
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {

@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticCatalogosAlmacenesTransferenciasClase.attrs.nombreAccion} traspaso de productos por clase"/>
+	<ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {
+				idEmpresa       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				idArticuloTipo  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        idAlmacenDestino: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				idTipoClase     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				idProducto      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				idAlmacenOrigen : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				idArticulo      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        cantidad        : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+        costo           : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+        observaciones   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
+			};
+      
+      $(document).ready(function() {
+				janal.readingMode('#{manticCatalogosAlmacenesTransferenciasClase.attrs.nombreAccion}');
+				
+				var VK_MINUS= 109;
+				var VK_REST = 189;
+				var VK_ENTER= 13;
+				$(document).on('keydown', '.janal-key-cantidad', function(e) {
+					var key= e.keyCode ? e.keyCode : e.which;
+					janal.console('jsTransfer.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+					switch(key) {
+						case VK_MINUS:
+						case VK_REST:
+						case VK_ENTER:
+							$('#aceptar').click();
+							return false;
+							break;
+					} // switch
+				});					
+				
+			});		
+		</script>        
+		<style>
+			.janal-image-frame {
+				margin: 11px;
+			}
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:focus context="idAlmacenOrigen"/>
+		<p:defaultCommand target="tabla"/>
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">			
+          <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+            <p:outputLabel for="idArticuloTipo" value="Tipo producto:"/>
+            <p:selectOneMenu id="idArticuloTipo" value="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.idArticuloTipo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt almacen">
+              <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasClase.doUpdateTipo}" process="@this" update="idAlmacenOrigen idProducto idArticulo cantidad @(.producto)"/>
+              <f:selectItem itemLabel="PRODUCTO ORIGEN" itemValue="4"/>
+              <f:selectItem itemLabel="PRODUCTO TERMINADO" itemValue="1"/>
+            </p:selectOneMenu>								
+            <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+            <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasClase.doUpdateAlmacenes}" update="@(.empresa)" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+              <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasClase.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+              <p:column headerText="Clave">
+                <h:outputText value="#{item.clave}"/>
+              </p:column>   
+              <p:column headerText="Nombre">
+                <h:outputText value="#{item.nombre}"/>
+              </p:column>   
+            </p:selectOneMenu>
+            <p:outputLabel for="idAlmacenOrigen" value="Almacen:"/>
+            <p:selectOneMenu id="idAlmacenOrigen" value="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt empresa" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasClase.doLoadProductos()}" process="@this" update="@(.cantidad)" oncomplete="janal.refresh();"/>
+              <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasClase.attrs.destinos}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.nombre or element.nombre eq ''? '': '|'}#{element.nombre}"/>
+              <p:column headerText="Clave">
+                <h:outputText value="#{item.clave}"/>
+              </p:column>   
+              <p:column headerText="Nombre">
+                <h:outputText value="#{item.nombre}"/>
+              </p:column>   
+            </p:selectOneMenu>
+            <p:panelGrid columns="1" styleClass="janal-wid-100">
+              <p:outputLabel for="idTipoClase" value="Clase(s):"/>
+              <p:selectOneMenu id="idTipoClase" value="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.ikTipoClase}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt articulos" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasClase.doUpdateClases}" process="@this" update="@(.producto) @(.articulos)"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasClase.attrs.clases}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.descripcion or element.descripcion eq ''? '': '|'}#{element.descripcion}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.descripcion}"/>
+                </p:column>   
+              </p:selectOneMenu>
+            </p:panelGrid>
+            <p:outputLabel for="idProducto" value="Producto fuente:"/>
+            <p:selectOneMenu id="idProducto" value="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.ikProducto}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt articulos" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.idDestino lt 0 and manticCatalogosAlmacenesTransferenciasClase.transferencia.idTipoClase lt 0}">
+              <p:ajax event="change" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasClase.doUpdateProductos}" update="idArticulo"/>
+              <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasClase.attrs.productos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+              <p:column headerText="Codigo">
+                <h:outputText value="#{item.codigo}" />
+              </p:column>
+              <p:column headerText="Nombre">
+                <h:outputText value="#{item.nombre}" />
+              </p:column>
+              <p:column headerText="Stock" styleClass="janal-column-right">
+                <h:outputText value="#{item.stock}"/>
+              </p:column>   
+            </p:selectOneMenu>
+            <p:outputLabel for="cantidad" value="Cantidad:"/>
+            <p:inputNumber id="cantidad" tabindex="2" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt producto" value="#{manticCatalogosAlmacenesTransferenciasClase.detalle.cantidad}" converter="javax.faces.Double" disabled="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.idDestino lt 0 and manticCatalogosAlmacenesTransferenciasClase.transferencia.idTipoClase lt 0}">
+              <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasClase.doCalculate()}" process="@this" update="@(.total)"/>
+            </p:inputNumber>
+            <p:outputLabel for="idArticulo" value="Producto destino:"/>
+            <p:selectOneMenu id="idArticulo" value="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.ikArticulo}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt articulos" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.idAlmacen lt 0 and manticCatalogosAlmacenesTransferenciasClase.transferencia.idTipoClase lt 0}">
+              <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasClase.doCostoPromedio()}" update="@(.producto)" process="@this" oncomplete="setTimeout(function() {$('#cantidad_input').focus()}, 1000)"/>
+              <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasClase.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+              <p:column headerText="Codigo">
+                <h:outputText value="#{item.codigo}" />
+              </p:column>
+              <p:column headerText="Nombre">
+                <h:outputText value="#{item.nombre}" />
+              </p:column>
+              <p:column headerText="Stock" styleClass="janal-column-right">
+                <h:outputText value="#{item.stock}"/>
+              </p:column>   
+            </p:selectOneMenu>
+            <p:outputLabel for="costo" value="Costo promedio:" styleClass="producto #{manticCatalogosAlmacenesTransferenciasClase.transferencia.idArticuloTipo eq 4? '': 'janal-display-none'}"/>
+            <p:inputNumber id="costo" tabindex="3" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt janal-key-cantidad producto #{manticCatalogosAlmacenesTransferenciasClase.transferencia.idArticuloTipo eq 4? '': 'janal-display-none'}" value="#{manticCatalogosAlmacenesTransferenciasClase.detalle.real}" converter="javax.faces.Double" disabled="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.idDestino lt 0 and manticCatalogosAlmacenesTransferenciasClase.transferencia.idTipoClase lt 0}">
+              <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasClase.doCheckCosto()}" process="@this" update="@(.total)"/>
+            </p:inputNumber>
+            <p:outputLabel for="observaciones" value="Observaciones:"/>
+            <p:inputTextarea id="observaciones" rows="3" cols="50" styleClass="janal-wid-100-txt refresh" value="#{manticCatalogosAlmacenesTransferenciasClase.transferencia.observaciones}">
+              <p:ajax event="blur" process="@this"/>
+            </p:inputTextarea>	
+          </p:panelGrid>	
+        </div>
+			</div>
+		</div>
+		<p:commandButton id="tabla" value="" styleClass="janal-zero-size janal-display-none"/>
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@form" action="#{manticCatalogosAlmacenesTransferenciasClase.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh()"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosAlmacenesTransferenciasClase.doCancelar}" ajax="false"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@form" action="#{manticCatalogosAlmacenesTransferenciasClase.doAceptar}" onstart="return janal.partial('general');" oncomplete="janal.desbloquear(); janal.refresh()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesTransferenciasClase.doCancelar}" ajax="false"/>
+		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
+			<ui:param name="dialogo" value="articulos"/>
+			<ui:param name="seleccionado" value="#{manticCatalogosAlmacenesTransferenciasClase.attrs.seleccionado}"/>
+		</ui:include>
+	</ui:define>
+</ui:composition>

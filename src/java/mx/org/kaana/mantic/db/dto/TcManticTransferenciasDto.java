@@ -60,17 +60,19 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   private Long idTipoClase;
   @Column (name="id_articulo")
   private Long idArticulo;
+  @Column (name="id_articulo_tipo")
+  private Long idArticuloTipo;
 
   public TcManticTransferenciasDto() {
     this(new Long(-1L));
   }
 
   public TcManticTransferenciasDto(Long key) {
-    this(null, 1L, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null);
+    this(null, 1L, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, 1L);
     setKey(key);
   }
 
-  public TcManticTransferenciasDto(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia, Long idTipoClase, Long idArticulo) {
+  public TcManticTransferenciasDto(Long idSolicito, Long idTransferenciaEstatus, Long idTransferenciaTipo, Long ejercicio, String consecutivo, Long idUsuario, Long idAlmacen, String observaciones, Long idDestino, Long idEmpresa, Long orden, Long idTransferencia, Long idTipoClase, Long idArticulo, Long idArticuloTipo) {
     setIdSolicito(idSolicito);
     setIdTransferenciaEstatus(idTransferenciaEstatus);
     setIdTransferenciaTipo(idTransferenciaTipo);
@@ -86,6 +88,7 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     setIdTransferencia(idTransferencia);
     setIdTipoClase(idTipoClase);
     setIdArticulo(idArticulo);
+    setIdArticuloTipo(idArticuloTipo);
   }
 	
   public void setIdSolicito(Long idSolicito) {
@@ -208,6 +211,14 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     this.idArticulo = idArticulo;
   }
 
+  public Long getIdArticuloTipo() {
+    return idArticuloTipo;
+  }
+
+  public void setIdArticuloTipo(Long idArticuloTipo) {
+    this.idArticuloTipo = idArticuloTipo;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -252,6 +263,8 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
 		regresar.append(getIdTipoClase());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdArticuloTipo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -274,13 +287,14 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
 		regresar.put("idTransferencia", getIdTransferencia());
 		regresar.put("idTipoClase", getIdTipoClase());
 		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("idArticuloTipo", getIdArticuloTipo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdSolicito(), getIdTransferenciaEstatus(), getIdTransferenciaTipo(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getObservaciones(), getIdDestino(), getIdEmpresa(), getOrden(), getIdTransferencia(), getIdTipoClase(), getIdArticulo()
+      getIdSolicito(), getIdTransferenciaEstatus(), getIdTransferenciaTipo(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getIdAlmacen(), getObservaciones(), getIdDestino(), getIdEmpresa(), getOrden(), getIdTransferencia(), getIdTipoClase(), getIdArticulo(), getIdArticuloTipo()
     };
     return regresar;
   }

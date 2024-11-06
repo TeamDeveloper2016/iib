@@ -72,11 +72,23 @@
               <p:panel id="panelStickyBody" toggleable="true" styleClass="sticky-body janal-padding-cero" style="border:0px;">
                 <p:focus context="principal" class="janal-padding-cero"/>														
 								<p:spacer height="50px"/>
-                <ui:insert name="contenido"/>
-                <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
-                <div class="janal-line-button">
-                  <ui:insert name="acciones"/>
-                </div>
+                <div class="imox-page-app">
+									<div class="imox-page-content">
+										<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+											<div class="ui-grid-row imox-grid-row">
+												<div id="collapse-find" class="ui-grid-col-12">                
+                          <ui:insert name="contenido"/>
+												</div>
+											</div>
+											<div class="ui-grid-row imox-grid-row">
+												<div class="ui-grid-col-12 imox-align-right">
+                          <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
+                          <ui:insert name="acciones"/>
+												</div>
+											</div>	
+										</div>
+									</div>
+								</div>	
                 <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
                   <h:outputText value="#{textoConfirmacion}" escape="false"/>
                   <ui:insert name="detalleConfirmacion" />

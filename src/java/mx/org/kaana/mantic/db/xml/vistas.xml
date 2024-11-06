@@ -4,57 +4,6 @@
 -->
 <process>
 	<dml> 
-    <unit id="VistaAlmacenesSimplesDto">
-			<select id="productos">
-select
-	tc_mantic_articulos.id_articulo as id_key,
-	tc_mantic_articulos.id_articulo,
-	tc_mantic_articulos.id_tipo_clase,
-	tc_mantic_articulos.id_articulo_tipo,
-  tc_mantic_articulos.sat,
-	ifnull(tc_mantic_empresas.nombre, ' ') as empresa,
-	ifnull(tc_mantic_almacenes.nombre, ' ') as almacen,
-	tc_mantic_articulos_codigos.codigo,
-	tc_mantic_articulos.nombre,
-	ifnull(tc_mantic_inventarios.inicial, 0) as inicial,
-	ifnull(tc_mantic_inventarios.entradas, 0) as entradas,
-	ifnull(tc_mantic_inventarios.salidas, 0) as salidas,
-	ifnull(tc_mantic_inventarios.stock, 0) as stock,
-	ifnull(tc_mantic_inventarios.stock, 0) as cantidad,
-	ifnull(tc_mantic_inventarios.registro, now()) as registro
-from 
-	tc_mantic_articulos
-inner join  
-  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
-inner join  
-  tc_mantic_tipos_clases on tc_mantic_articulos.id_tipo_clase= tc_mantic_tipos_clases.id_tipo_clase and tc_mantic_tipos_clases.id_terminado in ({idTerminado})
-left join  
-  tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen}
-left join (
-  select
-    max(tc_mantic_inventarios.id_inventario) as id_inventario
-  from
-    tc_mantic_inventarios
-  where  
-    tc_mantic_inventarios.id_almacen= {idAlmacen}
-  group by  
-    tc_mantic_inventarios.id_almacen,
-    tc_mantic_inventarios.id_articulo
-) as tt_mantic_inventarios on tc_mantic_inventarios.id_inventario= tt_mantic_inventarios.id_inventario
-left join  
-  tc_mantic_almacenes on tc_mantic_inventarios.id_almacen= tc_mantic_almacenes.id_almacen
-left join  
-  tc_mantic_empresas on tc_mantic_almacenes.id_empresa= tc_mantic_empresas.id_empresa
-where
-  tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
-  and tc_mantic_articulos.id_tipo_clase= {idTipoClase}
-  and {condicion}
-group by
-  tc_mantic_articulos.id_articulo        
-order by        
-  tc_mantic_articulos.nombre
-			</select>
-    </unit>  
 		<unit id="VistaLotesDto">
 			<select id="agrupado">
 select
@@ -6209,44 +6158,34 @@ group by
 					tc_mantic_articulos.id_articulo = {idArticulo}				
 			</select>
 			<select id="inventario">
-				select 
-				  tc_mantic_articulos.id_articulo as id_key,
-				  tc_mantic_articulos.nombre,          
-				  tc_mantic_articulos.menudeo,          
-				  tc_mantic_articulos.medio_mayoreo,          
-				  tc_mantic_articulos.mayoreo,          
-				  tc_mantic_articulos.especial,          
-				  tc_mantic_articulos.stock,       
-				  tc_mantic_articulos.iva,          
-				  tc_mantic_articulos.desperdicio,
-					tc_mantic_articulos_codigos.codigo          
-				from 
-					tc_mantic_articulos
-				inner join
-					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
-				inner join 
-					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
-				inner join
-					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
-				inner join 
-					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
-				inner join 
-					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
-				where 
-					tc_mantic_empresas.id_empresa = {idEmpresa}
-				and 
-					(upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigo}%')
-				or
-					upper(tc_mantic_articulos.nombre) like upper('%{nombre}%'))
-				group by 
-				  tc_mantic_articulos.nombre,          
-				  tc_mantic_articulos.menudeo,          
-				  tc_mantic_articulos.medio_mayoreo,          
-				  tc_mantic_articulos.mayoreo,          
-				  tc_mantic_articulos.stock,          
-				  tc_mantic_articulos.iva,          
-				  tc_mantic_articulos.desperdicio,
-					tc_mantic_articulos_codigos.codigo         
+select 
+  tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_articulos.nombre,          
+  tc_mantic_articulos.menudeo,          
+  tc_mantic_articulos.medio_mayoreo,          
+  tc_mantic_articulos.mayoreo,          
+  tc_mantic_articulos.especial,          
+  tc_mantic_articulos.stock,       
+  tc_mantic_articulos.iva,          
+  tc_mantic_articulos.desperdicio,
+  tc_mantic_articulos_codigos.codigo          
+from 
+  tc_mantic_articulos
+inner join
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+inner join 
+  tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+inner join
+  tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+inner join 
+  tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+inner join 
+  tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+where 
+  tc_mantic_empresas.id_empresa = {idEmpresa}
+  and (upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigo}%') or upper(tc_mantic_articulos.nombre) like upper('%{nombre}%'))
+group by 
+  tc_mantic_articulos.id_articulo
 			</select>
 			<select id="barras">
         select 
@@ -7480,6 +7419,55 @@ where
 			</select>
 		</unit>
 		<unit id="VistaAlmacenesDto">
+			<select id="productos">
+select
+	tc_mantic_articulos.id_articulo as id_key,
+	tc_mantic_articulos.id_articulo,
+	tc_mantic_articulos.id_tipo_clase,
+	tc_mantic_articulos.id_articulo_tipo,
+  tc_mantic_articulos.sat,
+	ifnull(tc_mantic_empresas.nombre, ' ') as empresa,
+	ifnull(tc_mantic_almacenes.nombre, ' ') as almacen,
+	tc_mantic_articulos_codigos.codigo,
+	tc_mantic_articulos.nombre,
+	ifnull(tc_mantic_inventarios.inicial, 0) as inicial,
+	ifnull(tc_mantic_inventarios.entradas, 0) as entradas,
+	ifnull(tc_mantic_inventarios.salidas, 0) as salidas,
+	ifnull(tc_mantic_inventarios.stock, 0) as stock,
+	ifnull(tc_mantic_inventarios.stock, 0) as cantidad,
+	ifnull(tc_mantic_inventarios.registro, now()) as registro
+from 
+	tc_mantic_articulos
+inner join  
+  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
+inner join  
+  tc_mantic_tipos_clases on tc_mantic_articulos.id_tipo_clase= tc_mantic_tipos_clases.id_tipo_clase and tc_mantic_tipos_clases.id_terminado in ({idTerminado})
+left join  
+  tc_mantic_inventarios on tc_mantic_articulos.id_articulo= tc_mantic_inventarios.id_articulo and tc_mantic_inventarios.id_almacen= {idAlmacen}
+left join (
+  select
+    max(tc_mantic_inventarios.id_inventario) as id_inventario
+  from
+    tc_mantic_inventarios
+  where  
+    tc_mantic_inventarios.id_almacen= {idAlmacen}
+  group by  
+    tc_mantic_inventarios.id_almacen,
+    tc_mantic_inventarios.id_articulo
+) as tt_mantic_inventarios on tc_mantic_inventarios.id_inventario= tt_mantic_inventarios.id_inventario
+left join  
+  tc_mantic_almacenes on tc_mantic_inventarios.id_almacen= tc_mantic_almacenes.id_almacen
+left join  
+  tc_mantic_empresas on tc_mantic_almacenes.id_empresa= tc_mantic_empresas.id_empresa
+where
+  tc_mantic_articulos.id_articulo_tipo= {idArticuloTipo}
+  and tc_mantic_articulos.id_tipo_clase= {idTipoClase}
+  and {condicion}
+group by
+  tc_mantic_articulos.id_articulo        
+order by        
+  tc_mantic_articulos.nombre
+			</select>
 			<select id="lazy">
 				select 
 				  tc_mantic_almacenes.id_almacen as id_key,

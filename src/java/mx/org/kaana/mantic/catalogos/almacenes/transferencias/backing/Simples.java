@@ -70,6 +70,7 @@ public class Simples extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
       this.attrs.put("idTerminado", Boolean.TRUE);
+      this.attrs.put("stock", 0D);
       this.doLoad();
 		} // try
 		catch (Exception e) {
@@ -94,7 +95,8 @@ public class Simples extends IBaseAttribute implements Serializable {
 			1L, // Long orden,
 			-1L, // Long idTransferencia
 			-1L, // Long idTipoClase
-      -1L // Long idArticulo
+      -1L, // Long idArticulo
+      4L // Long idArticuloTipo
 		);
 		this.detalle= new Articulo(-1L);
 		this.detalle.setCalculado(1D);
@@ -306,7 +308,7 @@ public class Simples extends IBaseAttribute implements Serializable {
   		params.put("idTipoClase", this.transferencia.getIdTipoClase());
   		params.put("idArticuloTipo", 4L);
   		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      articulos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesSimplesDto", "productos", params, columns, 20L, "codigo");
+      articulos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesDto", "productos", params, columns, 20L, "codigo");
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {
@@ -337,8 +339,9 @@ public class Simples extends IBaseAttribute implements Serializable {
   		params.put("idTipoClase", this.transferencia.getIdTipoClase());
   		params.put("idArticuloTipo", 1L);
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      productos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesSimplesDto", "productos", params, columns, 20L, "codigo");
+      productos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesDto", "productos", params, columns, 20L, "codigo");
       this.attrs.put("productos", productos);
+      this.attrs.put("stock", 0D);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -426,6 +429,7 @@ public class Simples extends IBaseAttribute implements Serializable {
         if(index>= 0)
           this.transferencia.setIkArticulo(articulos.get(index));
         if(this.transferencia.getIkArticulo().containsKey("cantidad")) {
+          this.attrs.put("stock", this.transferencia.getIkArticulo().toDouble("cantidad"));
           this.detalle.setIdOrdenDetalle(this.transferencia.getIkArticulo().toLong("idArticulo"));
           this.detalle.setCodigo(this.transferencia.getIkArticulo().toString("codigo"));
           Double stock= this.transferencia.getIkArticulo().toDouble("cantidad");
@@ -445,6 +449,22 @@ public class Simples extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
     return regresar;
+  }
+ 
+  public void doUpdateTipo() {
+    try {
+      this.attrs.put("stock", 0D);
+      this.transferencia.setIkAlmacen(new UISelectEntity(-1L));
+      this.transferencia.setIkProducto(new UISelectEntity(-1L));
+      this.transferencia.setIkArticulo(new UISelectEntity(-1L));
+      this.detalle.setCantidad(0D);
+      this.detalle.setReal(0D);
+      this.doUpdateAlmacenes();
+    } // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
   }
   
 }

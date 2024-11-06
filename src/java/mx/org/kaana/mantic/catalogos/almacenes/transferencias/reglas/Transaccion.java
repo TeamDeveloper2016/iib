@@ -69,6 +69,7 @@ public class Transaccion extends ComunInventarios {
     	this.messageError    = "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para transferencia de articulos.");
   		Siguiente consecutivo= null;
       switch (accion) {
+				case COPIAR:
 				case LISTAR:
         case GENERAR:
         case PROCESAR:
