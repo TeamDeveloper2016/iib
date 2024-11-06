@@ -49,6 +49,7 @@ public class Clase extends Cambios implements Serializable {
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
       this.attrs.put("idTerminado", Boolean.FALSE);
       this.attrs.put("promedio", 0D);
+      this.attrs.put("stock", 0D);
       this.doLoad();
 		} // try
 		catch (Exception e) {

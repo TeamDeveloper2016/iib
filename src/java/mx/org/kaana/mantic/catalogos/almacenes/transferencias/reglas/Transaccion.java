@@ -169,7 +169,7 @@ public class Transaccion extends ComunInventarios {
           if(Objects.equals(EAccion.GENERAR, accion))
             this.toAlmacenTerminado(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus);
           else
-            if(Objects.equals(EAccion.LISTAR, accion))
+            if(Objects.equals(EAccion.COPIAR, accion) || Objects.equals(EAccion.LISTAR, accion))
               this.toAlmacenTerminado(sesion, this.dto.getConsecutivo(), this.dto.getIdAlmacen(), this.dto.getIdDestino(), articulo, this.idTransferenciaEstatus, 10L);
             else
               if(EAccion.REGISTRAR.equals(accion)) {

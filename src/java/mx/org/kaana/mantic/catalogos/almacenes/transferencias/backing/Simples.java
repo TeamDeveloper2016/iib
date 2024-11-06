@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -71,6 +72,7 @@ public class Simples extends IBaseAttribute implements Serializable {
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
       this.attrs.put("idTerminado", Boolean.TRUE);
       this.attrs.put("stock", 0D);
+      this.attrs.put("existen", 0D);
       this.doLoad();
 		} // try
 		catch (Exception e) {
@@ -310,6 +312,7 @@ public class Simples extends IBaseAttribute implements Serializable {
   		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       articulos= (List<UISelectEntity>) UIEntity.seleccione("VistaAlmacenesDto", "productos", params, columns, 20L, "codigo");
       this.attrs.put("articulos", articulos);
+      this.attrs.put("existen", 0D);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -402,6 +405,7 @@ public class Simples extends IBaseAttribute implements Serializable {
           this.detalle.setPropio(this.transferencia.getIkProducto().toString("codigo"));
           this.detalle.setNombre(this.transferencia.getIkProducto().toString("nombre"));
           this.detalle.setSat(this.transferencia.getIkProducto().toString("sat"));
+          this.attrs.put("stock", Numero.formatear(Numero.MILES_CON_DECIMALES, this.transferencia.getIkProducto().toDouble("cantidad")));
         } // if
         else
           JsfBase.addMessage("No se tiene un producto seleccionado en el almacen de origen !", ETipoMensaje.ERROR);
@@ -429,11 +433,11 @@ public class Simples extends IBaseAttribute implements Serializable {
         if(index>= 0)
           this.transferencia.setIkArticulo(articulos.get(index));
         if(this.transferencia.getIkArticulo().containsKey("cantidad")) {
-          this.attrs.put("stock", this.transferencia.getIkArticulo().toDouble("cantidad"));
+          this.attrs.put("existen", Numero.formatear(Numero.MILES_CON_DECIMALES, this.transferencia.getIkArticulo().toDouble("cantidad")));
           this.detalle.setIdOrdenDetalle(this.transferencia.getIkArticulo().toLong("idArticulo"));
           this.detalle.setCodigo(this.transferencia.getIkArticulo().toString("codigo"));
           Double stock= this.transferencia.getIkArticulo().toDouble("cantidad");
-          if(stock< this.detalle.getCantidad())
+          if(!Objects.equals(this.detalle.getCantidad(), 0D) && stock< this.detalle.getCantidad())
             JsfBase.addMessage("No se cuenta con el suficiente stock en el almacen de origen !", ETipoMensaje.ERROR);
           else
             regresar= Boolean.TRUE;

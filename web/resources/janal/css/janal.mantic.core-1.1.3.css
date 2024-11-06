@@ -50,10 +50,10 @@ div.ui-panelgrid-content {
 	color: #0c5460 !important;
 }
 .imox-page-app {justify-content: center;display: flex;}
-.imox-page-content {width: 1250px;}
+.imox-page-content {width: 1333px;}
 .imox-align-right{position:relative; float:right; margin-right:0px; text-align: -webkit-right;}
 .imox-align-left{position:relative; float:left; margin-right:0px;	text-align: -webkit-left;}
-imox-grid-row{}
+.imox-grid-row{}
 .janal-growl-message {
   float:none !important;
   padding: 0px !important
@@ -612,8 +612,8 @@ imox-grid-row{}
   .distribucion .galeria {width: 86%;}
   .producto .galeria img {width: 200px; height: 80px;}
 }
-/* -------------------- Ajuste de 1250px con margenes----- */
-@media (max-width: 1250px) {
+/* -------------------- Ajuste de 1333px con margenes----- */
+@media (max-width: 1333px) {
 	.imox-page-app {justify-content: transparent; display: transparent;}
 	.imox-page-content {width: 100%;}
 }

@@ -46,6 +46,7 @@ public class Cambios extends Simples implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
       this.attrs.put("idTerminado", Boolean.FALSE);
+      this.attrs.put("stock", 0D);
       this.doLoad();
 		} // try
 		catch (Exception e) {
