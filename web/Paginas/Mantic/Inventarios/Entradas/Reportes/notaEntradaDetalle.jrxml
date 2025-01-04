@@ -78,12 +78,12 @@
 	<field name="ID_NOTA_ENTRADA" class="java.lang.Integer"/>
 	<field name="REGISTRO_NOTA_ENTRADA" class="java.util.Date"/>
 	<field name="OBSERVACIONES_NOTA_ENTRADA" class="java.lang.String"/>
-	<field name="SUB_TOTAL_NOTA" class="java.lang.String"/>
-	<field name="TOTAL_FINAL" class="java.lang.String"/>
-	<field name="IMPUESTOS_NOTA" class="java.lang.String"/>
-	<field name="DESCUENTOS_NOTA" class="java.lang.String"/>
-	<field name="DESCUENTO_NOTA" class="java.lang.String"/>
-	<field name="EXTRAS_NOTA" class="java.lang.String"/>
+	<field name="SUB_TOTAL_NOTA" class="java.math.BigDecimal"/>
+	<field name="TOTAL_FINAL" class="java.math.BigDecimal"/>
+	<field name="IMPUESTOS_NOTA" class="java.math.BigDecimal"/>
+	<field name="DESCUENTOS_NOTA" class="java.math.BigDecimal"/>
+	<field name="DESCUENTO_NOTA" class="java.math.BigDecimal"/>
+	<field name="EXTRAS_NOTA" class="java.math.BigDecimal"/>
 	<field name="FACTURA_NOTA" class="java.lang.String"/>
 	<field name="FECHA_FACTURA" class="java.util.Date"/>
 	<field name="FECHA_RECEPCION" class="java.util.Date"/>
@@ -91,17 +91,17 @@
 	<field name="NOMBRE" class="java.lang.String"/>
 	<field name="SAT" class="java.lang.String"/>
 	<field name="CODIGO" class="java.lang.String"/>
-	<field name="COSTO" class="java.lang.String"/>
+	<field name="COSTO" class="java.math.BigDecimal"/>
 	<field name="VALOR" class="java.lang.String"/>
 	<field name="ID_PROVEEDOR" class="java.lang.String"/>
-	<field name="DESCUENTO" class="java.lang.String"/>
-	<field name="EXTRAS" class="java.lang.String"/>
-	<field name="CALCULO" class="java.lang.String"/>
-	<field name="TOTAL" class="java.lang.String"/>
-	<field name="IMPORTE" class="java.lang.String"/>
-	<field name="SUB_TOTAL" class="java.lang.String"/>
+	<field name="DESCUENTO" class="java.math.BigDecimal"/>
+	<field name="EXTRAS" class="java.math.BigDecimal"/>
+	<field name="CALCULO" class="java.math.BigDecimal"/>
+	<field name="TOTAL" class="java.math.BigDecimal"/>
+	<field name="IMPORTE" class="java.math.BigDecimal"/>
+	<field name="SUB_TOTAL" class="java.math.BigDecimal"/>
 	<field name="DESCUENTOS" class="java.lang.String"/>
-	<field name="SOLICITADOS" class="java.lang.String"/>
+	<field name="SOLICITADOS" class="java.math.BigDecimal"/>
 	<field name="EXCEDENTES" class="java.lang.String"/>
 	<field name="PROPIO" class="java.lang.String"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
@@ -196,21 +196,21 @@
 					<text><![CDATA[No.]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="115" y="0" width="258" height="15" forecolor="#FFFFFF" uuid="b8464838-42ba-4942-8dc3-ba1b3df0add4"/>
+					<reportElement x="115" y="0" width="311" height="15" forecolor="#FFFFFF" uuid="b8464838-42ba-4942-8dc3-ba1b3df0add4"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Descripción]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="423" y="0" width="55" height="15" forecolor="#FFFFFF" uuid="5f4f3000-2394-4b20-a1c0-0dd5343d897b"/>
+					<reportElement x="478" y="0" width="55" height="15" forecolor="#FFFFFF" uuid="5f4f3000-2394-4b20-a1c0-0dd5343d897b"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="10" isBold="true"/>
 					</textElement>
 					<text><![CDATA[Precio]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="479" y="0" width="90" height="15" forecolor="#FFFFFF" uuid="daa14195-358e-49a3-85cd-239fdc443706"/>
+					<reportElement x="534" y="0" width="90" height="15" forecolor="#FFFFFF" uuid="daa14195-358e-49a3-85cd-239fdc443706"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="10" isBold="true"/>
 					</textElement>
@@ -238,14 +238,7 @@
 					<text><![CDATA[Importe]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="569" y="0" width="56" height="15" forecolor="#FFFFFF" uuid="aa0ca344-5406-45c9-8792-e287237e4c87"/>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="10" isBold="true"/>
-					</textElement>
-					<text><![CDATA[Extras(%)]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="373" y="0" width="50" height="15" forecolor="#FFFFFF" uuid="a9d602b9-7bd3-4ed8-ac06-077fd4c2e7e4"/>
+					<reportElement x="427" y="0" width="50" height="15" forecolor="#FFFFFF" uuid="a9d602b9-7bd3-4ed8-ac06-077fd4c2e7e4"/>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="10" isBold="true"/>
 					</textElement>
@@ -476,8 +469,8 @@
 		<band height="14" splitType="Stretch">
 			<frame>
 				<reportElement style="EvenOddRowStyle" x="0" y="0" width="752" height="14" uuid="bef3103b-dde6-4023-a7b4-6e8af44a2eb8"/>
-				<textField pattern="" isBlankWhenNull="true">
-					<reportElement x="373" y="0" width="50" height="14" uuid="4b314aa6-a056-4843-a489-7b31714758b6"/>
+				<textField pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement x="426" y="0" width="50" height="14" uuid="4b314aa6-a056-4843-a489-7b31714758b6"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
@@ -491,14 +484,14 @@
 					<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
-					<reportElement x="479" y="0" width="90" height="14" uuid="e298e896-a771-4ad7-8ce8-d4f5d0a0b550"/>
+					<reportElement x="534" y="0" width="90" height="14" uuid="e298e896-a771-4ad7-8ce8-d4f5d0a0b550"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{DESCUENTO}]]></textFieldExpression>
 				</textField>
 				<textField pattern="" isBlankWhenNull="true">
-					<reportElement x="115" y="0" width="258" height="14" uuid="8d80e1a1-3c26-41fa-b98b-05dfaaebffd4"/>
+					<reportElement x="115" y="0" width="311" height="14" uuid="8d80e1a1-3c26-41fa-b98b-05dfaaebffd4"/>
 					<textElement textAlignment="Left" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
@@ -511,26 +504,19 @@
 					</textElement>
 					<textFieldExpression><![CDATA[$F{PROPIO}]]></textFieldExpression>
 				</textField>
-				<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
-					<reportElement x="423" y="0" width="55" height="14" uuid="981318c2-5a47-4489-a518-795b54c0f404"/>
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
+					<reportElement x="478" y="0" width="55" height="14" uuid="981318c2-5a47-4489-a518-795b54c0f404"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{COSTO}]]></textFieldExpression>
 				</textField>
-				<textField pattern="¤ #,##0.0000" isBlankWhenNull="true">
+				<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
 					<reportElement x="671" y="0" width="81" height="14" uuid="cdefa26c-aaa5-4256-8206-e95c25fb1b1c"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="Arial Narrow" size="9" isBold="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{IMPORTE}]]></textFieldExpression>
-				</textField>
-				<textField pattern="" isBlankWhenNull="true">
-					<reportElement x="569" y="0" width="56" height="14" uuid="9281dd86-43ef-4a27-b3d5-f99a7f9e9213"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial Narrow" size="9" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{EXTRAS}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="625" y="0" width="45" height="14" uuid="13807afd-9b2f-4dab-b911-050613e8d105"/>
@@ -610,21 +596,21 @@
 				</textElement>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
-			<textField pattern="¤ #,##0.0000">
+			<textField pattern="¤ #,##0.00" isBlankWhenNull="true">
 				<reportElement x="670" y="21" width="82" height="18" uuid="10ae557a-2dba-4b85-b672-4cb31b013c11"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DESCUENTOS_NOTA}]]></textFieldExpression>
 			</textField>
-			<textField pattern="¤ #,##0.0000">
+			<textField pattern="¤ #,##0.00">
 				<reportElement x="670" y="38" width="82" height="18" uuid="1315dc27-100d-452f-a578-8f65f87b4d3b"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{IMPUESTOS_NOTA}]]></textFieldExpression>
 			</textField>
-			<textField pattern="¤ #,##0.0000">
+			<textField pattern="¤ #,##0.00">
 				<reportElement x="670" y="55" width="82" height="18" uuid="f939843d-99c2-45dd-8619-3733a6596d01"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>
@@ -641,7 +627,7 @@
 				</box>
 				<imageExpression><![CDATA[$V{CODE_QR}]]></imageExpression>
 			</image>
-			<textField pattern="¤ #,##0.0000">
+			<textField pattern="¤ #,##0.00">
 				<reportElement x="670" y="4" width="82" height="18" uuid="6f272ae7-2dc0-4f9e-ac73-bdf25beeb191"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial Narrow" size="9" isBold="false"/>

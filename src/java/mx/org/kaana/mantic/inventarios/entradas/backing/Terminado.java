@@ -5,17 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -35,6 +32,20 @@ import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 public class Terminado extends Accion implements IBaseStorage, Serializable {
 
   private static final long serialVersionUID= 327323488565639367L;
+  
+	@PostConstruct
+  @Override
+  protected void init() {		
+    try {
+      super.init();
+			this.attrs.put("idTipoComparacion", 1);
+      this.attrs.put("idArticuloTipo", 1L);      
+    } // try
+    catch (Exception e) {
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
   
   @Override
   public void doUpdateAlmacenes() {
