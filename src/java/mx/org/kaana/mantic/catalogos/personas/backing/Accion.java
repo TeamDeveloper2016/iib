@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -335,7 +336,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       if(this.registroPersona.getPersonaDomicilioSeleccion()!= null)
         this.registroPersona.toUpdatePersonaPivote(this.registroPersona.getPersonaDomicilioSeleccion(), Boolean.TRUE);
       this.toLoadRfcCurp();
- 			this.registroPersona.setIdEmpresa(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
+      if(Objects.equals(this.attrs.get("idEmpresa"), null) || ((UISelectEntity)this.attrs.get("idEmpresa")).getKey()< 0L)
+ 			  this.registroPersona.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+      else
+ 			  this.registroPersona.setIdEmpresa(((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
 			if(!Cadena.isVacio(this.attrs.get("idContratista")) && ((UISelectEntity)this.attrs.get("idContratista")).getKey()>= 1L)
 				this.registroPersona.getEmpresaPersona().setIdContratista(((UISelectEntity)this.attrs.get("idContratista")).getKey());
 			else
