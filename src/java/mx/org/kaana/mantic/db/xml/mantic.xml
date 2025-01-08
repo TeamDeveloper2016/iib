@@ -2760,6 +2760,8 @@ where
           tc_mantic_cajas
         where      
           id_empresa in ({idEmpresa})
+        order by
+          tc_mantic_cajas.nombre desc
       </select>
       <select id="unica">
         select      
@@ -5637,7 +5639,7 @@ where
   tc_mantic_almacenes.id_empresa in ({idEmpresa})
   and id_principal in ({tipo})
 order by
-  tc_mantic_almacenes.nombre              
+  tc_mantic_almacenes.nombre desc             
       </select>
 			<select id="almacenPrincipal">
 select      
@@ -5647,6 +5649,8 @@ from
   tc_mantic_almacenes
 where      
   tc_mantic_almacenes.id_empresa in ({sucursales}) and id_principal= 1
+order by
+  tc_mantic_almacenes.nombre desc              
       </select>
       <select id="conteo">
 select      

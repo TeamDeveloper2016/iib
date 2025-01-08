@@ -216,7 +216,7 @@
 													</f:facet>
 													<div class="ui-grid-row janal-grid-row">
                             <div style="display: flex;">                            
-                              <div class="ui-grid-col-12" style="padding-right: 14px; flex: 0 0 60% !important">
+                              <div class="ui-grid-col-12" style="padding-right: 14px; flex: 0 0 50% !important">
                                 <p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                                 <p:inputText id="locks" value="0" style="display:none"/>
                                 <p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticCatalogosAlmacenesTransferenciasNormal.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasNormal.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10">

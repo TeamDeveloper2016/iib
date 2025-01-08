@@ -715,7 +715,7 @@ public class Accion extends IBaseVenta implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	} // loadCatalog
+	} 
 	
 	@Override
 	public void doAsignaCliente(SelectEvent event) {

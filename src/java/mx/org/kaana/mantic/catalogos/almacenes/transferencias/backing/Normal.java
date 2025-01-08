@@ -82,6 +82,7 @@ public class Normal extends IBaseArticulos implements IBaseStorage, Serializable
           this.setAdminOrden(new AdminTransferencias(new Transferencia(-1L, 2L)));
           ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).setIdArticulo(null);
           ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).setIdTipoClase(null);
+          ((TcManticTransferenciasDto)this.getAdminOrden().getOrden()).setIdArticuloTipo(1L);
     			this.attrs.put("sinIva", false);
           break;
         case MODIFICAR:			
