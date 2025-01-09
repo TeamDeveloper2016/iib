@@ -55,8 +55,8 @@
           <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+							<p:outputLabel for="idEmpresa" value="Sucursal:"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{manticCatalogosAlmacenesConfrontasFiltro.doAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                 <p:column headerText="Clave">
@@ -66,8 +66,8 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="idAlmacen" value="Almacen:" rendered="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:outputLabel for="idAlmacen" value="Almacen:"/>
+              <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -100,9 +100,9 @@
 								</f:facet>
 							</p:autoComplete>	
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="idEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idEstatus" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idTransferenciaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
@@ -184,7 +184,7 @@
 							<h:outputText value="#{row['registro']}"/>
 						</p:column>					
 						<f:facet name="footer">
-							<p:outputLabel value="Las filas en color son transferncias con partidas desaparecidas !" style="float: left;"/>
+							<p:outputLabel value="Las filas en color son transferncias con partidas con faltantes !" style="float: left;"/>
 							Total [#{manticCatalogosAlmacenesConfrontasFiltro.lazyModel== null? 0: manticCatalogosAlmacenesConfrontasFiltro.lazyModel.rowCount}] registros
 						</f:facet>
 					</p:dataTable>

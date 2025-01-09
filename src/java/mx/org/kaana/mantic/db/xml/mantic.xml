@@ -5608,7 +5608,7 @@ from
 where      
   tc_mantic_almacenes.id_empresa in ({sucursales})
 order by
- tc_mantic_almacenes.clave
+  tc_mantic_almacenes.clave
       </select>
       <select id="almacen">
 select      
@@ -5616,7 +5616,7 @@ select
 from      
   tc_mantic_almacenes
 where      
-  tc_mantic_almacenes.id_empresa= {idEmpresa}
+  tc_mantic_almacenes.id_empresa in ({idEmpresa})
   and id_principal= 1
       </select>
       <select id="origen">

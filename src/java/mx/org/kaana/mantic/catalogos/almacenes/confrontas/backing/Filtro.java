@@ -66,11 +66,10 @@ public class Filtro extends Comun implements Serializable {
 		StreamedContent regresar= null;
 		Xls xls                 = null;
 		String template         = "CONTEOS";
-		Map<String, Object> params=null;
+		Map<String, Object> params=new HashMap<>();
 		try {
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
-			params         = new HashMap<>();
 			params.put("idConfronta", this.attrs.get("seleccionado")!= null? ((Entity)this.attrs.get("seleccionado")).toLong("idConfronta"): -1L);
       xls= new Xls(fileName, new Modelo(params, "VistaConfrontasDto", "destino", template), "CODIGO,NOMBRE,FECHA,STOCK");	
 			if(xls.procesar()) {
@@ -114,18 +113,17 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos      = null;
+    List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
       params.put("sortOrder", "order by tc_mantic_transferencias.consecutivo desc");
-      campos = new ArrayList<>();
-      campos.add(new Columna("nombreOrigen", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("nombreDestino", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      campos.add(new Columna("solicito", EFormatoDinamicos.MAYUSCULAS));
-      this.lazyModel = new FormatCustomLazy("VistaConfrontasDto", params, campos);
+      columns.add(new Columna("nombreOrigen", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombreDestino", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("solicito", EFormatoDinamicos.MAYUSCULAS));
+      this.lazyModel = new FormatCustomLazy("VistaConfrontasDto", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idTransferencia", null);
 			this.attrs.put("idConfronta", null);
@@ -135,7 +133,7 @@ public class Filtro extends Comun implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally		
   } // doLoad
 
@@ -183,39 +181,29 @@ public class Filtro extends Comun implements Serializable {
 	}
 
 	private void toLoadCatalog() throws Exception {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
-	  List<UISelectEntity> empresas = null;
+		List<Columna> columns        = new ArrayList<>();
+    Map<String, Object> params   = new HashMap<>();
+	  List<UISelectEntity> empresas= null;
+	  List<UISelectEntity> estatus = null;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			if(JsfBase.isAdminEncuestaOrAdmin()) {
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
   			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
         empresas = (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
 			} // if	
 			else {
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
   			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
         empresas = (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
 			} // else	
 			this.attrs.put("empresas", empresas);
-			this.attrs.put("idEmpresa", empresas.size()> 0? empresas.get(0): new UISelectEntity("-1"));
-			List<UISelectEntity> almacenes= null;
-			if(JsfBase.isAdminEncuestaOrAdmin()) 
-				almacenes= (List<UISelectEntity>) UIEntity.seleccione("TcManticAlmacenesDto", "almacenes", params, columns, "clave");
-			else {
-        params.put("idEmpresa", empresas.size()> 0? empresas.get(0).getKey(): -1L);
-  			params.put("sucursales", empresas.size()> 0? empresas.get(0).getKey(): -1L);
-				almacenes= (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns);
-			} // else
-			this.attrs.put("almacenes", almacenes);
-			this.attrs.put("idAlmacen", almacenes.size()> 0? almacenes.get(0): new UISelectEntity("-1"));
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity(empresas));
 			columns.remove(0);
 			params.put(Constantes.SQL_CONDICION, "id_transferencia_estatus>= 3");
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
-			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
+      estatus= (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns);
+      this.attrs.put("catalogo", estatus);
+			this.attrs.put("idTransferenciasEstatus", UIBackingUtilities.toFirstKeySelectEntity(estatus));
+      this.doAlmacenes();
 			this.loadPersonas();
     } // try
     catch (Exception e) {
@@ -270,13 +258,13 @@ public class Filtro extends Comun implements Serializable {
   } // doAccion
   
   public void doReporte(String nombre) throws Exception {
-    Parametros comunes = null;
+    Parametros comunes           = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
     Map<String, Object>params    = null;
 		try {		
-      params= toPrepare();
+      params= this.toPrepare();
       seleccionado = ((Entity)this.attrs.get("seleccionado")); 
       if(seleccionado != null){
         params.put("idKeyTransferencia", seleccionado.getKey());
@@ -336,12 +324,11 @@ public class Filtro extends Comun implements Serializable {
 	} 
 
 	public void doUpdateArticulos() {
-		List<Columna> columns         = null;
+		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
 		boolean buscaPorCodigo        = false;
     try {
-			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
@@ -384,19 +371,24 @@ public class Filtro extends Comun implements Serializable {
 	}	
 
 	public void doAlmacenes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+		List<Columna> columns         = new ArrayList<>();
+    Map<String, Object> params    = new HashMap<>();
+    List<UISelectEntity> almacenes= null;
     try {
-			columns= new ArrayList<>();
 			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-				params.put("sucursales", this.attrs.get("idEmpresa"));
+				params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			else
-				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
-			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+  		params.put("tipo", "1, 3");
+			if(JsfBase.isAdminEncuestaOrAdmin()) 
+        almacenes= (List<UISelectEntity>) UIEntity.seleccione("TcManticAlmacenesDto", "especial", params, columns, "clave");
+			else 
+				almacenes= (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "especial", params, columns);
+      this.attrs.put("almacenes", almacenes);
+			this.attrs.put("idAlmacen", UIBackingUtilities.toFirstKeySelectEntity(almacenes));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -452,12 +444,11 @@ public class Filtro extends Comun implements Serializable {
 	} 
   
   public void doUpdatePerdidos() {
-		List<Columna> columns     = null;
+		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
 		List<Entity> documentos   = null;
     try {
       Entity seleccionado= (Entity)this.attrs.get("seleccionado");
-			columns= new ArrayList<>();
       columns.add(new Columna("autorizo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
