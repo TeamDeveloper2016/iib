@@ -47,7 +47,7 @@ import org.primefaces.context.RequestContext;
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
-	private static final long serialVersionUID=1368701967796774746L;
+	private static final long serialVersionUID= 1368701967796774746L;
   private Reporte reporte;
   protected FormatLazyModel lazyDetalle;
   protected FormatLazyModel lazyGasto;
@@ -213,15 +213,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   public void doEliminar() {
 		Transaccion transaccion = null;
-		Entity seleccionado     = null;
+		Entity seleccionado     = (Entity)this.attrs.get("seleccionado");
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
       NotaEntrada orden= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "igual", Variables.toMap("idNotaEntrada~"+ seleccionado.getKey()));
 			transaccion= new Transaccion(orden);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La nota de entrada se ha eliminado correctamente", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La nota de entrada se ha eliminado", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la nota de entrada", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminarla", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

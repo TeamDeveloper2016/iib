@@ -111,13 +111,13 @@
               </f:facet>
               <h:outputText value="#{row['telefono']}"/>
             </p:column>														
-						<p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.agente}">
+            <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.agente}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Agente"/>
               </f:facet>
               <h:outputText value="#{row['agente']}"/>
             </p:column>	      
-						<p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.celular}">
+						<p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.celular}" rendered="false">
               <f:facet name="header">
                 <h:outputText value="Contacto" title="Telefono/Celular"/>
               </f:facet>

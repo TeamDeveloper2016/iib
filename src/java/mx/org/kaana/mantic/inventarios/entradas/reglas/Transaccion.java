@@ -272,15 +272,18 @@ public class Transaccion extends Inventarios implements Serializable {
             inventario.setStock(Numero.toRedondearSat((inventario.getInicial()+ inventario.getEntradas()))- inventario.getSalidas());
             DaoFactory.getInstance().update(sesion, inventario);
           } // if
-          params.put("idEmpresa", this.orden.getIdEmpresa());
-          TcManticArticulosPromediosDto promedio= (TcManticArticulosPromediosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosPromediosDto.class, "TcManticArticulosPromediosDto", "ultimo", params);
-          // BUSCAR EL PRECIO PROMEDIO RESTAR LOS KILOS Y VOLVER A CALULAR EL PRECIO PROMEDIO
-          if(!Objects.equals(inventario, null) && inventario.isValid()) {
-            promedio.setCantidad(Numero.toRedondearSat(promedio.getCantidad()- articulo.getCantidad()));
-            promedio.setImporte(Numero.toRedondearSat(promedio.getImporte()- articulo.getImporte()));
-            promedio.setPromedio(Numero.toRedondearSat(promedio.getImporte()/ promedio.getCantidad()));
-            DaoFactory.getInstance().update(sesion, promedio);
-          } // if
+          // SI ES DIFERENTE A UNA NOTA DE ENTRADA DE PRODUCTO TERMINADO RECALCULAR LOS PRECIOS PROMEDIOS
+          if(!Objects.equals(this.orden.getIdNotaTipo(), 6L)) {
+            params.put("idEmpresa", this.orden.getIdEmpresa());
+            TcManticArticulosPromediosDto promedio= (TcManticArticulosPromediosDto)DaoFactory.getInstance().toEntity(sesion, TcManticArticulosPromediosDto.class, "TcManticArticulosPromediosDto", "ultimo", params);
+            // BUSCAR EL PRECIO PROMEDIO RESTAR LOS KILOS Y VOLVER A CALULAR EL PRECIO PROMEDIO
+            if(!Objects.equals(inventario, null) && inventario.isValid()) {
+              promedio.setCantidad(Numero.toRedondearSat(promedio.getCantidad()- articulo.getCantidad()));
+              promedio.setImporte(Numero.toRedondearSat(promedio.getImporte()- articulo.getImporte()));
+              promedio.setPromedio(Numero.toRedondearSat(promedio.getImporte()/ promedio.getCantidad()));
+              DaoFactory.getInstance().update(sesion, promedio);
+            } // if
+          } // if  
         } // for
       } // if          
       // DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosBitacoraDto.class, params);
