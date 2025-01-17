@@ -87,7 +87,7 @@
               <p:ajax event="change" process="@this" update="@this"/>
             </p:selectBooleanCheckbox>
             <p:selectOneMenu id="idArticuloTipo" value="#{manticInventariosAlmacenesKardex.attrs.idArticuloTipo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt almacen">
-              <p:ajax event="change" process="@this"/>
+              <p:ajax event="change" listener="#{manticInventariosAlmacenesKardex.doChangeAlmacen()}" process="@this" update="@(.filas) idAlmacen @(.recalculo) contenedorGrupos:panelImage" oncomplete="jsKardex.process();"/>
               <f:selectItem itemLabel="PRODUCTO TERMINADO" itemValue="1"/>
               <f:selectItem itemLabel="PRODUCTO ORIGEN" itemValue="4"/>
             </p:selectOneMenu>								

@@ -40,7 +40,7 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-					<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-col-40, janal-wid-100-txt, janal-wid-col-300">
+					<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-col-40, janal-wid-100-txt, janal-wid-col-400">
   					<p:outputLabel for="codigos" value="Código ó articulo:"/>
 	  				<p:selectBooleanCheckbox value="#{manticCatalogosInventariosConteos.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 							<p:ajax event="change" process="@this" update="@this"/>
@@ -65,8 +65,8 @@
             </p:autoComplete>			
             <p:selectOneMenu id="idArticuloTipo" value="#{manticCatalogosInventariosConteos.attrs.idArticuloTipo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt almacen">
               <p:ajax event="change" listener="#{manticCatalogosInventariosConteos.doChangeAlmacen()}" process="@this" update="@(.filas) almacen contenedorGrupos:tabla contenedorGrupos:panelImage"/>
-              <f:selectItem itemLabel="TERMINADO" itemValue="1"/>
-              <f:selectItem itemLabel="ORIGEN" itemValue="4"/>
+              <f:selectItem itemLabel="PRODUCTO TERMINADO" itemValue="1"/>
+              <f:selectItem itemLabel="PRODUCTO ORIGEN" itemValue="4"/>
             </p:selectOneMenu>								
           </p:panelGrid>	
 				</div>

@@ -112,7 +112,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
   	this.attrs.put("ultimoCosto", 0.0D);
   	this.attrs.put("idArticuloTipo", 1L);
 		this.adminKardex= new AdminKardex(-1L, false);
-		this.toLoadCatalog();
+		this.toLoadAlmacenes("1");
     this.toloadArticulosImpuestos();
 		if(JsfBase.getFlashAttribute("xcodigo")!= null) {
 			this.doCompleteArticulo((String)JsfBase.getFlashAttribute("xcodigo"));
@@ -126,7 +126,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		this.pathImage  = Configuracion.getInstance().getPropiedadServidor("sistema.dns").concat("/").concat(Configuracion.getInstance().getEtapaServidor().name().toLowerCase()).concat("/images/");
 	}
 	
-	private void toLoadCatalog() {
+	private void toLoadAlmacenes(String tipos){
     List<UISelectEntity> almacenes= null;
 		List<Columna> columns         = new ArrayList<>();
     Map<String, Object> params    = new HashMap<>();
@@ -135,7 +135,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-		  params.put("tipos", "1, 3, 4");
+		  params.put("tipos", tipos);
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));							
@@ -228,7 +228,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				} // if	
 			} // if
 			else {
-				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
+				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO</span>");
 				this.attrs.put("articulo", null);
 				this.attrs.put("idRedondear", false);
 				this.attrs.put("idVigente", false);
@@ -1253,5 +1253,21 @@ public class Kardex extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
   } 
+
+  public void doChangeAlmacen() {
+    try {
+      if(Objects.equals((Long)this.attrs.get("idArticuloTipo"), 1L)) 
+        this.toLoadAlmacenes("1");
+      else 
+        this.toLoadAlmacenes("3, 4");
+      this.attrs.put("idArticulo", -1L);
+      this.attrs.put("custom", null);
+      this.doFindArticulo();
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+  }
   
 }
