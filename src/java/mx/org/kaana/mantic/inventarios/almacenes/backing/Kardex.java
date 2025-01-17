@@ -135,6 +135,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+		  params.put("tipos", "1, 3, 4");
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));							
 			columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));							

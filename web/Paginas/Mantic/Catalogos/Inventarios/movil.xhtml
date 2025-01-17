@@ -36,9 +36,9 @@
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                 <p:outputLabel for="idArticuloTipo" value="Tipos de partida(s):"/>
                 <p:selectOneMenu id="idArticuloTipo" value="#{manticCatalogosInventariosConteos.attrs.idArticuloTipo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt almacen">
-                  <p:ajax event="change" process="@this"/>
-                  <f:selectItem itemLabel="ARTICULOS" itemValue="1"/>
-                  <f:selectItem itemLabel="REFACCIONES" itemValue="2"/>
+                  <p:ajax event="change" listener="#{manticCatalogosInventariosConteos.doChangeAlmacen()}" process="@this" update="@(.filas) almacen contenedorGrupos:tabla contenedorGrupos:panelImage"/>
+                  <f:selectItem itemLabel="TERMINADO" itemValue="1"/>
+                  <f:selectItem itemLabel="ORIGEN" itemValue="4"/>
                 </p:selectOneMenu>								
                 <p:outputLabel for="almacen" value="Almacen:"/>
                 <p:selectOneMenu id="almacen" value="#{manticCatalogosInventariosConteos.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade">

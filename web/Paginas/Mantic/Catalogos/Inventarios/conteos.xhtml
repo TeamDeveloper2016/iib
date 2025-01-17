@@ -26,7 +26,7 @@
   <ui:define name="contenido">    			
 		<p:focus for="codigos"/>
 		<p:defaultCommand target="limpio"/>
-		<pe:remoteCommand name="locate" process="@this" update="@(.filas)" actionListener="#{manticCatalogosInventariosConteos.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.locate(), 500);">  
+		<pe:remoteCommand name="locate" process="@this" update="@(.filas)" actionListener="#{manticCatalogosInventariosConteos.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset(); setTimeout(jsKardex.locate(), 500);">  
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
@@ -64,9 +64,9 @@
               </f:facet>
             </p:autoComplete>			
             <p:selectOneMenu id="idArticuloTipo" value="#{manticCatalogosInventariosConteos.attrs.idArticuloTipo}" converter="javax.faces.Long" styleClass="janal-wid-100-txt almacen">
-              <p:ajax event="change" process="@this"/>
-              <f:selectItem itemLabel="ARTICULOS" itemValue="1"/>
-              <f:selectItem itemLabel="REFACCIONES" itemValue="2"/>
+              <p:ajax event="change" listener="#{manticCatalogosInventariosConteos.doChangeAlmacen()}" process="@this" update="@(.filas) almacen contenedorGrupos:tabla contenedorGrupos:panelImage"/>
+              <f:selectItem itemLabel="TERMINADO" itemValue="1"/>
+              <f:selectItem itemLabel="ORIGEN" itemValue="4"/>
             </p:selectOneMenu>								
           </p:panelGrid>	
 				</div>
