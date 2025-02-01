@@ -1,8 +1,6 @@
 package mx.org.kaana.kajool.db.dto;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.persistence.Column;
@@ -24,8 +22,6 @@ public class TcJanalAyudasDto implements IBaseDto, Serializable {
   private String clave;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-  //@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="idAyuda_sequence")
-  //@SequenceGenerator(name="idAyuda_sequence",sequenceName="SEQ_TC_KAJOOL_ayudas" , allocationSize=1 )
   @Column (name="ID_AYUDA")
   private Long idAyuda;
   @Column (name="DESCRIPCION")
