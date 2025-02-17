@@ -280,7 +280,10 @@ public class Transaccion extends Inventarios implements Serializable {
             if(!Objects.equals(inventario, null) && inventario.isValid()) {
               promedio.setCantidad(Numero.toRedondearSat(promedio.getCantidad()- articulo.getCantidad()));
               promedio.setImporte(Numero.toRedondearSat(promedio.getImporte()- articulo.getImporte()));
-              promedio.setPromedio(Numero.toRedondearSat(promedio.getImporte()/ promedio.getCantidad()));
+              if(promedio.getCantidad()<= 0D)
+                promedio.setPromedio(0D);
+              else
+                promedio.setPromedio(Numero.toRedondearSat(promedio.getImporte()/ promedio.getCantidad()));
               DaoFactory.getInstance().update(sesion, promedio);
             } // if
           } // if  

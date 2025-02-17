@@ -662,10 +662,15 @@ public class Filtro extends IBaseTicket implements Serializable {
 		Map<String, Object>params    = new HashMap<>();
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
+    Encriptar encriptado         = new Encriptar();
+    Entity seleccionado          = (Entity)this.attrs.get("seleccionado");
 		try{				
-			reporteSeleccion= EReportes.TICKET_VENTA;
+      if(Objects.equals(seleccionado.toLong("idCredito"), 1L)) 
+        reporteSeleccion= EReportes.TICKET_VENTA_CREDITO;
+      else    
+			  reporteSeleccion= EReportes.TICKET_VENTA;
 			this.reporte= JsfBase.toReporte();
-			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());			
+			params.put("idVenta", seleccionado.getKey());			
       Parametros comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			parametros= comunes.getComunes();
 			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
@@ -685,8 +690,7 @@ public class Filtro extends IBaseTicket implements Serializable {
           break;
       } // swtich
 			parametros.put("REPORTE_NOTIFICA", Configuracion.getInstance().getEmpresa("celular"));		
-      Encriptar encriptado= new Encriptar();
-      String codigo= encriptado.encriptar(Fecha.formatear(Fecha.CODIGO_SEGURIDAD, ((Entity)this.attrs.get("seleccionado")).toTimestamp("registro")));
+      String codigo= encriptado.encriptar(Fecha.formatear(Fecha.CODIGO_SEGURIDAD, seleccionado.toTimestamp("registro")));
 			parametros.put("REPORTE_CODIGO_SEGURIDAD", codigo);			
 			if(email) { 
 				this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		

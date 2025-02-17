@@ -98,7 +98,7 @@ select
 from      
   tc_mantic_lotes
 where      
-  consecutivo = '{consecutivo}'
+  consecutivo = '{consecutivo}' and id_empresa= {idEmpresa}
       </select>
       <select id="igual">
 select      

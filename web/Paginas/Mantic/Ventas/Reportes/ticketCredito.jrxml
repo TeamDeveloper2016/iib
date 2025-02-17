@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ticketCredito" pageWidth="792" pageHeight="612" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="792" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" scriptletClass="mx.org.kaana.libs.reportes.CantidadLetras" isIgnorePagination="true" uuid="03a30fef-c355-447b-b527-52e54c6e0c0c">
 	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="18"/>
-	<property name="ireport.y" value="45"/>
+	<property name="ireport.y" value="0"/>
 	<style name="Title" forecolor="#FFFFFF" fontName="Times New Roman" fontSize="50" isBold="false" pdfFontName="Times-Bold"/>
 	<style name="SubTitle" forecolor="#CCCCCC" fontName="Times New Roman" fontSize="18" isBold="false" pdfFontName="Times-Roman"/>
 	<style name="Column header" forecolor="#666666" fontName="Times New Roman" fontSize="14" isBold="true" pdfFontName="Times-Roman"/>
@@ -95,12 +95,17 @@
 	<field name="VIGENCIA" class="java.sql.Date"/>
 	<field name="OBSERVACIONES" class="java.lang.String"/>
 	<field name="NOMBRE_TRANSPORTA" class="java.lang.String"/>
+	<field name="SUBTOTAL_CANTIDAD" class="java.lang.Float"/>
 	<variable name="CONTADOR" class="java.lang.Integer" calculation="Count">
 		<variableExpression><![CDATA[]]></variableExpression>
 	</variable>
 	<variable name="GPO_IMPORTE" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[]]></variableExpression>
 		<initialValueExpression><![CDATA[0]]></initialValueExpression>
+	</variable>
+	<variable name="SUB_CANTIDAD" class="java.lang.Double" resetType="Group" resetGroup="VENTA" calculation="Sum">
+		<variableExpression><![CDATA[$F{CANTIDAD}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<group name="VENTA">
 		<groupExpression><![CDATA[$F{ID_KEY}]]></groupExpression>
@@ -567,7 +572,7 @@
 				<textFieldExpression><![CDATA[$F{SUBTOTAL_VENTA}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="270" y="1" width="57" height="11" uuid="6a763187-da03-49cf-83bc-55572e0f3c59"/>
+				<reportElement x="122" y="1" width="57" height="11" uuid="6a763187-da03-49cf-83bc-55572e0f3c59"/>
 				<box>
 					<topPen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.0"/>
@@ -614,7 +619,7 @@
 				<textFieldExpression><![CDATA[$F{TOTAL_VENTA}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="8" y="0" width="262" height="11" uuid="6d2a90aa-5e52-4f69-a5a7-f021b9ade1e5"/>
+				<reportElement x="8" y="11" width="262" height="19" uuid="6d2a90aa-5e52-4f69-a5a7-f021b9ade1e5"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
@@ -646,7 +651,7 @@
 				<textFieldExpression><![CDATA[$F{IMPORTE_PAGO}]]></textFieldExpression>
 			</textField>
 			<textField pattern="$ #,##0.00">
-				<reportElement x="52" y="35" width="274" height="10" uuid="e1163815-830b-42e6-b455-d05eedca38a3"/>
+				<reportElement x="195" y="35" width="131" height="10" uuid="e1163815-830b-42e6-b455-d05eedca38a3"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="true"/>
 				</textElement>
@@ -847,7 +852,7 @@
 				<text><![CDATA[NOMBRE Y DATOS DEL DEUDOR]]></text>
 			</staticText>
 			<textField pattern="$ #,##0.00">
-				<reportElement x="451" y="35" width="274" height="10" uuid="4284dd65-c8c9-4f73-89c3-263489432dd9"/>
+				<reportElement x="594" y="35" width="131" height="10" uuid="4284dd65-c8c9-4f73-89c3-263489432dd9"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="true"/>
 				</textElement>
@@ -879,7 +884,7 @@
 				<text><![CDATA[Firma:_______________________]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="669" y="1" width="57" height="11" uuid="37484570-79a5-4ef8-bedb-620e13ec7fec"/>
+				<reportElement x="518" y="2" width="57" height="11" uuid="37484570-79a5-4ef8-bedb-620e13ec7fec"/>
 				<box>
 					<topPen lineWidth="0.0"/>
 					<bottomPen lineWidth="0.0"/>
@@ -931,7 +936,7 @@
 				<textFieldExpression><![CDATA[$F{POBLACION_CLIENTE}]]></textFieldExpression>
 			</textField>
 			<textField pattern="">
-				<reportElement x="404" y="0" width="265" height="11" uuid="0746975c-2c00-4012-b630-8007b3c65485"/>
+				<reportElement x="404" y="12" width="265" height="18" uuid="0746975c-2c00-4012-b630-8007b3c65485"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
@@ -989,6 +994,20 @@
 					<font fontName="Arial" size="6" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{OBSERVACIONES}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Group" evaluationGroup="VENTA" pattern="#,##0.00">
+				<reportElement x="180" y="1" width="77" height="11" uuid="81050a05-3876-4dad-a512-f19af4d839ad"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUB_CANTIDAD}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Group" evaluationGroup="VENTA" pattern="#,##0.00">
+				<reportElement x="576" y="2" width="75" height="11" uuid="3265913a-2ae1-49f3-820c-3fa1ea0a02de"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Arial" size="7" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{SUB_CANTIDAD}]]></textFieldExpression>
 			</textField>
 		</band>
 	</summary>

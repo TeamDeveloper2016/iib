@@ -333,6 +333,7 @@
           tc_mantic_ventas.impuestos as impuestos_venta,
           tc_mantic_ventas.sub_total as subtotal_venta,
           tc_mantic_ventas.total as total_venta,
+          sum(tc_mantic_ventas_detalles.cantidad) as subtotal_cantidad,
           tc_mantic_ventas.registro as registro_venta,
           tc_mantic_ventas_detalles.*,
         	tc_mantic_personas.cuenta,
