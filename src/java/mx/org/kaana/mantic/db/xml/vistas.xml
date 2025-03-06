@@ -256,6 +256,7 @@ inner join
   tc_mantic_lotes_tipos on tc_mantic_lotes.id_lote_tipo= tc_mantic_lotes_tipos.id_lote_tipo
 where                
   tc_mantic_lotes.id_empresa in ({idEmpresa})
+  and tc_mantic_lotes.id_lote_estatus in (1, 2, 3, 4, 5, 9)
   and {condicion}
 group by
   tc_mantic_lotes.id_lote

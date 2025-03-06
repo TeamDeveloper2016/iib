@@ -326,9 +326,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	protected void doLoadFiles(String proceso, Long idSelected, String idNombre, Boolean sinIva, Double tipoDeCambio) {
 		Entity tmp= null;
 		if(idSelected> 0) {
-			Map<String, Object> params=null;
+			Map<String, Object> params= new HashMap<>();
 			try {
-				params=new HashMap<>();
 				params.put(idNombre, idSelected);
 				params.put("idTipoArchivo", 1L);
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
@@ -554,9 +553,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	}
 	
 	protected void doUpdateRfc(TcManticProveedoresDto proveedor) {
-	  Map<String, Object> params=null;
+	  Map<String, Object> params= new HashMap<>();
 		try {
-			params=new HashMap<>();
 			params.put("rfc", this.emisor.getRfc());
 			params.put("idProveedor", proveedor.getIdProveedor());
 			List<Entity> values= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcManticProveedoresDto", "duplicados", params);
@@ -589,9 +587,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	}
 
 	protected void doLoadImportados(String proceso, String idXml, Map<String, Object> params) {
-		List<Columna> columns= null;
+		List<Columna> columns= new ArrayList<>();
 		try {
-			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));

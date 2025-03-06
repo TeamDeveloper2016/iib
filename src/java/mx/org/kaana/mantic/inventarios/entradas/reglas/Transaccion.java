@@ -45,6 +45,7 @@ import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Costo;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
@@ -115,7 +116,7 @@ public class Transaccion extends Inventarios implements Serializable {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar                     = false;
+		boolean regresar                     = Boolean.FALSE;
 		TcManticNotasBitacoraDto bitacoraNota= null;
 		Map<String, Object> params           = new HashMap<>();
 		Siguiente consecutivo                = null;
@@ -792,14 +793,15 @@ public class Transaccion extends Inventarios implements Serializable {
   private Boolean toAddCuentaPagar(Session sesion) throws Exception {
     Boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= new HashMap<>();
-    Long dias                 = 15L;
     try {      
       for (Costo item: this.orden.getCostos()) {
         if(!Objects.equals(item.getIdProveedor(), null) && Objects.equals(item.getIdGenerar(), 1L)) {
           params.put("idProveedor", item.getIdProveedor());
-          Entity fecha= (Entity)DaoFactory.getInstance().toEntity(sesion, "TrManticProveedorPagoDto", "dias", params);
-          if(!Objects.equals(fecha, null) && !fecha.isEmpty())
-            dias= fecha.toLong("plazo");
+          TrManticProveedorPagoDto fecha= (TrManticProveedorPagoDto)DaoFactory.getInstance().toEntity(sesion, TrManticProveedorPagoDto.class, "TrManticProveedorPagoDto", "dias", params);
+          if(Objects.equals(fecha, null)) {
+            fecha= new TrManticProveedorPagoDto(-1L, item.getIdProveedor(), "TRANSFERENCIA", 2L, JsfBase.getIdUsuario(), "0.0", null, 30L);
+            DaoFactory.getInstance().insert(sesion, fecha);
+          } // if  
           TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(
             1L, // Long idEmpresaEstatus, 
             JsfBase.getIdUsuario(), // Long idUsuario, 
@@ -808,14 +810,14 @@ public class Transaccion extends Inventarios implements Serializable {
             this.orden.getIdEmpresa(), // Long idEmpresa, 
             item.getImporte(), // Double saldo, 
             this.orden.getIdNotaEntrada(), // Long idNotaEntrada, 
-            Fecha.toFecha(dias.intValue()), // Date limite, 
+            Fecha.toFecha(fecha.getPlazo().intValue()), // Date limite, 
             item.getImporte(), // Double importe, 
             item.getImporte(), // Double pagar, 
             2L, // Long idRevisado, 
             2L, // Long idCompleto, 
             null, // Date fechaRecepcion, 
             null, // Long idRecibio, 
-            Objects.equals(fecha, null) && !fecha.isEmpty()? fecha.toLong("idProveedorPago"): null, // Long idProveedorPago
+            fecha.getIdProveedorPago(), // Long idProveedorPago
             item.getIdNotaCosto(), // Long idNotaCosto
             item.getIdProveedor() // Long idProveedor
           );

@@ -3374,16 +3374,15 @@ where
 				  registro desc
       </select>
       <select id="exists">
-        select      
-          *
-        from      
-          tc_mantic_notas_archivos
-        where      
-          id_tipo_archivo = {idTipoArchivo} 
-          and id_nota_entrada = {idNotaEntrada}
-          and id_tipo_documento= {idTipoDocumento}
-				order by
-				  registro desc
+select      
+  *
+from      
+  tc_mantic_notas_archivos
+where      
+  id_tipo_archivo = {idTipoArchivo} 
+  and id_nota_entrada = {idNotaEntrada}
+order by
+  registro desc
       </select>
       <select id="all">
         select      
