@@ -527,7 +527,7 @@ public class RegistroProveedor implements Serializable{
 		} // catch			
 	} // doEliminarProveedorTipoContacto
 	
-	public void doEliminarAgenteContacto(){
+	public void doEliminarAgenteContacto() {
 		try {			
 			if(this.personaTipoContactoPivote.getContactos().remove(this.personaTipoContactoSeleccion)){
 				if(!this.personaTipoContactoSeleccion.getNuevo())
@@ -595,8 +595,8 @@ public class RegistroProveedor implements Serializable{
 	public void doEliminarAgente() {
 		try {
 			if(this.personasTiposContacto.remove(this.personaTipoContacto)) {
-				if(!this.personaTipoContacto.getNuevo())
-					addDeleteList(this.personaTipoContactoSeleccion);
+				if(!this.personaTipoContacto.getNuevo() && !Objects.equals(this.personaTipoContacto, null))
+					addDeleteList(this.personaTipoContacto);
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else

@@ -185,23 +185,9 @@
 											<h:outputText value="#{item.descripcion}"/>
 										</p:column>  
                   </p:selectOneMenu>							
-									<p:outputLabel for="nuevo" value="Nuevo:"/>
-									<p:selectBooleanButton value="#{manticCatalogosClientesAccion.attrs.cpNuevo}" onLabel="NO" offLabel="SI" id="nuevo" title="Selecciona SI, si el CP a captura es nuevo y NO si el CP ya existe.">
-										<p:ajax process="@this" update="contenedorGrupos:formularioDomicilio contenedorGrupos:codigoPostal contenedorGrupos:cp" listener="#{manticCatalogosClientesAccion.doInicializaCodigo}" oncomplete="janal.refresh();"/>
-									</p:selectBooleanButton>
-									<p:outputLabel for="codigoPostal" value="Código postal:"/>
-									<p:autoComplete id="codigoPostal" placeholder="Código postal" widgetVar="listadoCodigoPostal" var="customCp" itemLabel="#{customCp.codigo}" inputStyleClass="alinear-izquierda-cp janal-wid-100-txt" itemValue="#{customCp}" value="#{manticCatalogosClientesAccion.attrs.codigoSeleccionado}" completeMethod="#{manticCatalogosClientesAccion.doCompleteCodigoPostal}" converter="janal.convertidor.Entity" minQueryLength="0" maxResults="10" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}">
-										<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this entidad" listener="#{manticCatalogosClientesAccion.doAsignaCodigoPostal}" update="contenedorGrupos:formularioDomicilio contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:tipoDomicilio" oncomplete="janal.desbloquear(); janal.refresh();"/>
-                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doCodigoPostal}" process="@this" update="contenedorGrupos:formularioDomicilio contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh()"/>
-										<f:facet name="itemtip">
-											<h:panelGrid columns="2" cellpadding="5">												
-												<h:outputText value="Código Postal:" />
-												<h:outputText value="#{customCp.codigo}"/>									
-											</h:panelGrid>
-										</f:facet>
-									</p:autoComplete>													
-									<p:inputText id="cp" placeholder="Nuevo ej. 20284" styleClass="janal-wid-100-txt cp-style" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.codigoPostal}" rendered="#{!manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}">
-                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doCodigoPostal}" process="@this" update="contenedorGrupos:formularioDomicilio contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.refresh()"/>
+                  <p:outputLabel for="cp" value="Código postal:"/>                  
+									<p:inputText id="cp" placeholder="Ejemplo: 20284" styleClass="janal-wid-100-txt cp-style" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.codigoPostal}">
+                    <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doUpdateChange}" process="@this" onstart="janal.individual('contenedorGrupos\\:cp'); return true"/>
                   </p:inputText>
                   <p:outputLabel for="calle" value="Calle:"/>
                   <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.calle}">
