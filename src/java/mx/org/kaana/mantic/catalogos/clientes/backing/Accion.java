@@ -448,7 +448,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.loadMunicipios();
       this.loadLocalidades();
-      //loadCodigosPostales();      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
