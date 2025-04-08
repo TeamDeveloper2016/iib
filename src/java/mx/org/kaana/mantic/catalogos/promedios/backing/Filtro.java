@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -48,8 +49,9 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("idArticuloTipo", 4L);
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
+      this.attrs.put("idEmpresas", new Object[] {});
 			this.attrs.put("isGerente", JsfBase.isAdminEncuestaOrAdmin());
-			this.toLoadCatalog();
+			this.toLoadCatalogos();
       if(JsfBase.getFlashAttribute("idArticuloProcess")!= null) {
         this.attrs.put("idArticuloProcess", JsfBase.getFlashAttribute("idArticuloProcess"));
         this.doLoad();
@@ -71,7 +73,7 @@ public class Filtro extends Comun implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("promedio", EFormatoDinamicos.MILES_CON_DECIMALES));
-      params.put("sortOrder", "order by tc_mantic_articulos.nombre");
+      params.put("sortOrder", "order by tc_mantic_empresas.id_empresa, tc_mantic_articulos.nombre, tc_mantic_articulos_promedios.registro desc");
       this.lazyModel = new FormatCustomLazy("VistaPreciosPromediosDto", params, columns);
       UIBackingUtilities.resetDataTable();
       this.lazyDetalle= null;
@@ -85,7 +87,7 @@ public class Filtro extends Comun implements Serializable {
     } // finally		
   } // doLoad
 	
-	private void toLoadCatalog() {
+	private void toLoadCatalogos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -97,8 +99,16 @@ public class Filtro extends Comun implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
+      List<UISelectEntity> empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+      this.attrs.put("empresas", empresas);
+      if(!Objects.equals(empresas, null) && empresas.size()> 0) {
+        Object[] items= new Object[empresas.size()];
+        int x= 0;
+        for (Object item: empresas) {
+          items[x++]= item;
+        } // for
+        this.attrs.put("idEmpresas", items);
+      } // if
     } // try
     catch (Exception e) {
       throw e;
@@ -135,10 +145,18 @@ public class Filtro extends Comun implements Serializable {
 				regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 			else
 			  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));			
-		  if(Cadena.isVacio(this.attrs.get("idEmpresa")) || this.attrs.get("idEmpresa").toString().equals("-1"))
-			  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
-			else
-			  regresar.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
+		  regresar.put("idEmpresa", -1L);
+      if(!Cadena.isVacio(this.attrs.get("idEmpresas"))) {
+        Object[] sucursales= (Object[])this.attrs.get("idEmpresas");
+        StringBuilder items= new StringBuilder("");
+        if(sucursales.length> 0) {
+          for (Object item: sucursales) {
+            items.append(((UISelectEntity)item).getKey()).append(", ");
+          } // for
+          items.append("0");
+	  		  regresar.put("idEmpresa", items.toString());
+        } // if
+      } // if  
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -157,6 +175,7 @@ public class Filtro extends Comun implements Serializable {
 			params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
+      params.put("idArticuloTipo", 4L);	      
 			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
@@ -171,9 +190,9 @@ public class Filtro extends Comun implements Serializable {
 				search= "WXYZ";
   		params.put("codigo", search);
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigoTipoArticulo", params, columns, 40L);
 			else
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 40L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombreTipoArticulo", params, columns, 40L);
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {
@@ -214,7 +233,8 @@ public class Filtro extends Comun implements Serializable {
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);			
   		params.put("codigo", search);			
-      this.attrs.put("codigos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+      params.put("idArticuloTipo", 4L);	      
+      this.attrs.put("codigos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigoTipoArticulo", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -256,6 +276,7 @@ public class Filtro extends Comun implements Serializable {
 		try {
 			if(row!= null && !row.isEmpty()) {
         this.attrs.put("seleccionado", row);
+        params.put("idEmpresa", row.toLong("idEmpresa"));
         params.put("idArticulo", row.toLong("idArticulo"));
         columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
         columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));

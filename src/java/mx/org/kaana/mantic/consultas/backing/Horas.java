@@ -17,11 +17,9 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
-import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -38,7 +36,6 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoDocumento;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
-import org.primefaces.context.RequestContext;
 
 @Named(value= "manticConsultasHoras")
 @ViewScoped
@@ -48,11 +45,6 @@ public class Horas extends IBaseTicket implements Serializable {
 	private FormatLazyModel detalle;
 	private FormatLazyModel lazyCredito;
 	private FormatLazyModel lazyApartado;
-	private Reporte reporte;
-	
-	public Reporte getReporte() {
-		return reporte;
-	}	// getReporte
 
 	public FormatLazyModel getDetalle() {
 		return detalle;
@@ -249,7 +241,7 @@ public class Horas extends IBaseTicket implements Serializable {
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
 			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
 			this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-			doVerificarReporte();
+			this.doVerificarReporte();
 			this.reporte.doAceptar();			
 		} // try
 		catch(Exception e) {
@@ -258,16 +250,6 @@ public class Horas extends IBaseTicket implements Serializable {
     } // catch	
 	} // doReporte
 	
-	public void doVerificarReporte() {
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
-		else{
-			rc.execute("generalHide()");		
-			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-		} // else
-	} // doVerificarReporte		
-
 	public void doLoadCajas() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();

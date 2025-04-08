@@ -41,11 +41,6 @@ import org.primefaces.context.RequestContext;
 public class Filtro extends IBaseTicket implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
-	private Reporte reporte;
-	
-	public Reporte getReporte() {
-		return reporte;
-	}	// getReporte
 	
   @PostConstruct
   @Override
@@ -187,7 +182,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
 			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
 			this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-			doVerificarReporte();
+			this.doVerificarReporte();
 			this.reporte.doAceptar();			
 		} // try
 		catch(Exception e) {
@@ -196,23 +191,12 @@ public class Filtro extends IBaseTicket implements Serializable {
     } // catch	
 	} // doReporte
 	
-	public void doVerificarReporte() {
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
-		else{
-			rc.execute("generalHide()");		
-			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-		} // else
-	} // doVerificarReporte		
-	
-	public void doLoadEstatus(){
+	public void doLoadEstatus() {
 		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
+		Map<String, Object>params    = new HashMap<>();
 		List<UISelectItem> allEstatus= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_garantia_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticGrantiasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);

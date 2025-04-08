@@ -10,6 +10,7 @@
     <h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
     <script type="text/javascript">
+		// <![CDATA[	
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
@@ -31,8 +32,16 @@
 					janal.refresh();
 				} // if
 				return ok;
-			} // validaJustificacion
-			
+			} 
+      
+      function start() {
+        janal.bloquear();
+      }
+
+      function stop() {
+        janal.desbloquear();
+      }
+		// ]]>
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -148,7 +157,7 @@
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasGarantiasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticVentasGarantiasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					            
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasGarantiasFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticVentasGarantiasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
             <p:separator rendered="#{!(manticVentasGarantiasFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>
-						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasGarantiasFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{!(manticVentasGarantiasFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>
+						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasGarantiasFiltro.doTicket}" oncomplete="janal.desbloquear();" update="tabla" rendered="#{!(manticVentasGarantiasFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>
           </p:contextMenu>
         </div>
       </div>

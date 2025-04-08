@@ -63,21 +63,12 @@ public class Filtro extends IBaseTicket implements Serializable {
   private static final long serialVersionUID = 8793667741599428332L;
   private static final Log LOG = LogFactory.getLog(Filtro.class);
   
-	private Reporte reporte;
 	private List<Correo> correos;
 	private List<Correo> selectedCorreos;	
 	private Correo correo;
 	private List<Correo> celulares;
 	private List<Correo> selectedCelulares;	
 	private Correo celular;
-	
-	public Reporte getReporte() {
-		return reporte;
-	}	// getReporte
-
-	public void setReporte(Reporte reporte) {
-		this.reporte=reporte;
-	}
 	
 	public List<Correo> getCorreos() {
 		return correos;
@@ -312,20 +303,6 @@ public class Filtro extends IBaseTicket implements Serializable {
       Methods.clean(params);
     }// finally
 	}
-	
-	public boolean doVerificarReporte() {
-    boolean regresar = Boolean.FALSE;
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L) {
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
-      regresar = Boolean.TRUE;
-    } // if
-    else {
-			rc.execute("generalHide();");		
-			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-		} // else
-    return regresar;
-	} 
 	
 	public void doLoadEstatus(){
 		Entity seleccionado          = (Entity)this.attrs.get("seleccionado");

@@ -99,7 +99,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public Reporte getReporte() {
 		return reporte;
-	}	// getReporte
+	}
 	
 	public String getTitulo() {
 		return "(".concat(tipoOrden.name()).concat(")");

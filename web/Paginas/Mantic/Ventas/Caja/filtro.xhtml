@@ -11,6 +11,7 @@
 		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryTicketJs}"/>
     <script type="text/javascript">
+		// <![CDATA[	
       Janal.Control.fields = {
 				codigo        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				nombre        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
@@ -36,7 +37,16 @@
 					janal.refresh();
 				} // if
 				return ok;
-			} // validaJustificacion
+			} 
+      
+      function start() {
+        janal.bloquear();
+      }
+
+      function stop() {
+        janal.desbloquear();
+      }
+		// ]]>
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -271,7 +281,7 @@
             <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '4')}"/>					            
 						<p:separator rendered="#{!(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '4') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>					
 						<p:menuitem icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaFiltro.doMoveSection}" oncomplete="janal.bloquear();PF('widgetDetalle').show();" update="documento informacion @(.documento)" rendered="#{(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>
-						<p:menuitem icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '9') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '4')}"/>
+						<p:menuitem icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaFiltro.doTicket}" oncomplete="janal.desbloquear();" update="tabla" rendered="#{(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '9') or (manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '4')}"/>
             <p:separator rendered="#{manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '15'}"/>
             <p:menuitem icon="fa fa-trash" value="Cancelar" process="@this tabla" action="#{manticVentasCajaFiltro.doRemover}" onstart="return janal.bloquear();" rendered="#{manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '3' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '4' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6' or manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '15'}"/>
 						<p:separator rendered="#{manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus ne '1' and manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus ne '2' and manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus ne '10' and manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus ne '11'}"/>

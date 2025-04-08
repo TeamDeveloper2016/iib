@@ -16,11 +16,9 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
-import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -37,7 +35,6 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoDocumento;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
-import org.primefaces.context.RequestContext;
 
 @Named(value= "manticConsultasVentas")
 @ViewScoped
@@ -45,11 +42,6 @@ public class Ventas extends IBaseTicket implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	private FormatLazyModel detalle;
-	private Reporte reporte;
-	
-	public Reporte getReporte() {
-		return reporte;
-	}	
 
 	public FormatLazyModel getDetalle() {
 		return detalle;
@@ -256,23 +248,13 @@ public class Ventas extends IBaseTicket implements Serializable {
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
 			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
 			this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-			doVerificarReporte();
+			this.doVerificarReporte();
 			this.reporte.doAceptar();			
 		} // try
 		catch(Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
     } // catch	
-	} 
-	
-	public void doVerificarReporte() {
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
-		else{
-			rc.execute("generalHide()");		
-			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-		} // else
 	} 
 	
 	public void doConsultarDetalle(){

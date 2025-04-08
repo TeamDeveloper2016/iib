@@ -19,7 +19,6 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
-import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -36,7 +35,6 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.apartados.reglas.Transaccion;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticVentasApartados")
 @ViewScoped
@@ -45,7 +43,6 @@ public class Filtro extends IBaseTicket implements Serializable {
   private static final long serialVersionUID = 8793578963299428879L;
   private TcManticApartadosDto apartado;
 	private FormatLazyModel lazyDetalleTicket;
-  private Reporte reporte;
 	
 	public FormatLazyModel getLazyDetalleTicket() {
 		return lazyDetalleTicket;
@@ -367,7 +364,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-      doVerificarReporte();
+      this.doVerificarReporte();
       this.reporte.doAceptar();			
     } // try
     catch(Exception e) {
@@ -376,16 +373,6 @@ public class Filtro extends IBaseTicket implements Serializable {
     } // catch	
   } // doReporte
   
-  public void doVerificarReporte() {
-		RequestContext rc= UIBackingUtilities.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
-		else{
-			rc.execute("generalHide();");		
-			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-		} // else
-	} // doVerificarReporte	
-
   public String doAccion() {
     EAccion eaccion= EAccion.CONSULTAR;
 		String regresar= "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR); 

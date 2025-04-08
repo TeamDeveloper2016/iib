@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.comun.Comun;
@@ -97,7 +96,7 @@ public class Articulos extends Comun implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("codigo")))
   		sb.append("(upper(tc_mantic_listas_precios_detalles.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') or upper(tc_mantic_listas_precios_detalles.auxiliar) like upper('%").append(this.attrs.get("codigo")).append("%')) and ");
-		String search= new String((String)this.attrs.get("nombre"));
+		String search= (String)this.attrs.get("nombre");
 		if(!Cadena.isVacio(search)) {
 			search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*");
   		sb.append(" upper(tc_mantic_listas_precios_detalles.descripcion) regexp '.*").append(search).append(".*' and ");
