@@ -67,8 +67,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Gastos/filtro": JsfBase.getFlashAttribute("retorno"));
 			this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));      
-      if(JsfBase.getFlashAttribute("retorno")== null)
-				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+//      if(JsfBase.getFlashAttribute("retorno")== null)
+//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("idEmpresaGasto", JsfBase.getFlashAttribute("idEmpresaGasto")== null? -1L: JsfBase.getFlashAttribute("idEmpresaGasto"));
       this.attrs.put("total", 0D);
 			this.doLoad();
@@ -106,14 +106,18 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doLoad
 
   private void toLoadEmpresas() {
-    Map<String, Object> params= new HashMap<>();
+    Map<String, Object> params = new HashMap<>();
+    List<UISelectItem> empresas= null;
     try {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      List<UISelectItem> empresas= UISelect.seleccione("TcManticEmpresasDto", "empresas", params, "idKey|titulo", EFormatoDinamicos.MAYUSCULAS);
+      if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        empresas= UISelect.seleccione("TcManticEmpresasDto", "empresas", params, "idKey|titulo", EFormatoDinamicos.MAYUSCULAS);
+      else
+        empresas= UISelect.build("TcManticEmpresasDto", "empresas", params, "idKey|titulo", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("empresas", empresas);
       if(empresas!= null && !empresas.isEmpty()) {
         if(Objects.equals(this.accion, EAccion.AGREGAR)) 
@@ -269,22 +273,18 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAccion
+  } 
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idEmpresaGastoProcess", this.attrs.get("idEmpresaGasto"));
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
-  } // doCancelar	
+  } 
 	
   public void doCalculate() {
-    if(this.gasto.getSubtotal()> 0D) {
-      this.gasto.setIvaCalculado(Numero.toRedondear(this.gasto.getIva()* 100D/ this.gasto.getSubtotal()));
-      this.gasto.setImporte(Numero.toRedondear(this.gasto.getIvaCalculado()+ this.gasto.getSubtotal()));
-      if(this.gasto.getIEPS())
-        this.gasto.setIepsCalculado(Numero.toRedondear(this.gasto.getIeps()* 100D/ this.gasto.getSubtotal()));
-      else
-        this.gasto.setIepsCalculado(0D);
-      this.gasto.setTotal(Numero.toRedondear(this.gasto.getSubtotal()+ this.gasto.getIvaCalculado()- this.gasto.getIvaRetenido()+ this.gasto.getIepsCalculado()));
+    if(this.gasto.getTotal()> 0D) {
+      this.gasto.setIvaCalculado(Numero.toRedondear((this.gasto.getIva()/ 100)* this.gasto.getTotal()));
+      this.gasto.setImporte(Numero.toRedondear(this.gasto.getTotal()));
+      this.gasto.setSubtotal(Numero.toRedondear(this.gasto.getTotal()- this.gasto.getIvaCalculado()));
     } // if
     else {
       this.gasto.setIvaCalculado(0D);
@@ -300,10 +300,6 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
   
   public void doCheque() {
-    
-  }
- 
-  public void doEstatus() {
     
   }
  
@@ -344,10 +340,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       } // else
       sum+= this.gasto.getParcialidades().get(x).getTotal();
       // AJUSTAR LA FECHA DE APLICACION AGREGANDO UN MES CALENDARIO A CADA PAGO
-      if(x> 0) {
+      if(x> 0) 
         start.add(Calendar.MONTH, 1);
-        this.gasto.getParcialidades().get(x).setFechaAplicacion(new Date(start.getTimeInMillis()));
-      } // if  
+      this.gasto.getParcialidades().get(x).setFechaAplicacion(new Date(start.getTimeInMillis()));
       this.gasto.getParcialidades().get(x).setPago(new Long(x+ 1));
     } // for
     // VERIFICAR SI HAY MENOS PAGOS DE LOS YA REGISTRADOS ENTONCES MARCAR COMO ELIMINADOS O DEPURARLOS

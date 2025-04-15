@@ -12,23 +12,21 @@
 		<script type="text/javascript">
       //<![CDATA[
 			Janal.Control.fields = {
-				'contenedorGrupos\\:concepto'   : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:concepto'   : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:idEmpresa'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedor': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:fechaAplicacion'     : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:idGastoClasificacion': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idGastoSubclasificacion': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:idEmpresaCuenta'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:idGastoComprobante'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:referencia'     : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:idEmpresaCuenta'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idGastoComprobante'  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:referencia'     : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:fechaReferencia': {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:subtotal'     : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:ivaCalculado' : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:ivaRetenido'  : {validaciones: 'flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:total'        : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:iepsCalculado': {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:pagos'        : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":1})', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:folio'        : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'cheque'},
 				'contenedorGrupos\\:fecha'        : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'cheque'},
@@ -62,16 +60,25 @@
 					<p:tabView id="contenedorGrupos" widgetVar="pestanias">						
             <p:tab title="Gasto">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
-                <p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100">
-    							<p:panelGrid columns="1" styleClass="janal-wid-100">
-                    <p:outputLabel for="concepto" value="Concepto:"/>
-                    <p:inputText id="concepto" styleClass="janal-wid-100-txt" value="#{kalanGastosAccion.gasto.concepto}"/>
-                  </p:panelGrid>
+                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100">
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="idEmpresa" value="Sucursal:"/>
                     <p:selectOneMenu id="idEmpresa" value="#{kalanGastosAccion.gasto.idEmpresa}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                       <p:ajax event="change" listener="#{kalanGastosAccion.doLoadCuentas}" process="@this" update="idEmpresaCuenta"/>
                       <f:selectItems value="#{kalanGastosAccion.attrs.empresas}"/>
+                    </p:selectOneMenu>
+                  </p:panelGrid>
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="idGastoClasificacion" value="Clasificación:"/>
+                    <p:selectOneMenu id="idGastoClasificacion" value="#{kalanGastosAccion.gasto.idGastoClasificacion}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{kalanGastosAccion.doLoadSubclasificaciones}" process="@this" update="idGastoSubclasificacion"/>
+                      <f:selectItems value="#{kalanGastosAccion.attrs.clasificaciones}"/>
+                    </p:selectOneMenu>
+                  </p:panelGrid>
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="idGastoSubclasificacion" value="Sub clasificación:"/>
+                    <p:selectOneMenu id="idGastoSubclasificacion" value="#{kalanGastosAccion.gasto.idGastoSubclasificacion}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <f:selectItems value="#{kalanGastosAccion.attrs.subclasificaciones}"/>
                     </p:selectOneMenu>
                   </p:panelGrid>
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
@@ -91,30 +98,6 @@
                     </p:autoComplete>			
                   </p:panelGrid>
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
-                    <p:outputLabel for="fechaAplicacion" value="Fecha aplicación:"/>
-                    <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-70 janal-column-left, janal-wid-30 janal-column-right">
-                      <p:calendar id="fechaAplicacion" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanGastosAccion.gasto.fechaAplicacion}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>                  
-                      <p:selectBooleanCheckbox itemLabel="Aplicar:" value="#{kalanGastosAccion.gasto.estatus}">
-                        <p:ajax event="change" listener="#{kalanGastosAccion.doEstatus}"/>
-                      </p:selectBooleanCheckbox>  
-                    </p:panelGrid>  
-                  </p:panelGrid>  
-                </p:panelGrid>  
-                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100">
-    							<p:panelGrid columns="1" styleClass="janal-wid-100">
-                    <p:outputLabel for="idGastoClasificacion" value="Clasificación:"/>
-                    <p:selectOneMenu id="idGastoClasificacion" value="#{kalanGastosAccion.gasto.idGastoClasificacion}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                      <p:ajax event="change" listener="#{kalanGastosAccion.doLoadSubclasificaciones}" process="@this" update="idGastoSubclasificacion"/>
-                      <f:selectItems value="#{kalanGastosAccion.attrs.clasificaciones}"/>
-                    </p:selectOneMenu>
-                  </p:panelGrid>
-    							<p:panelGrid columns="1" styleClass="janal-wid-100">
-                    <p:outputLabel for="idGastoSubclasificacion" value="Sub clasificación:"/>
-                    <p:selectOneMenu id="idGastoSubclasificacion" value="#{kalanGastosAccion.gasto.idGastoSubclasificacion}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                      <f:selectItems value="#{kalanGastosAccion.attrs.subclasificaciones}"/>
-                    </p:selectOneMenu>
-                  </p:panelGrid>
-    							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
                     <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanGastosAccion.gasto.idEmpresaCuenta}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                       <f:selectItems value="#{kalanGastosAccion.attrs.cuentas}"/>
@@ -126,6 +109,12 @@
                       <f:selectItems value="#{kalanGastosAccion.attrs.comprobantes}"/>
                     </p:selectOneMenu>
                   </p:panelGrid>
+                </p:panelGrid>  
+                <p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-20, janal-wid-15, janal-wid-15">
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="concepto" value="Concepto:"/>
+                    <p:inputText id="concepto" styleClass="janal-wid-100-txt" value="#{kalanGastosAccion.gasto.concepto}"/>
+                  </p:panelGrid>
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="referencia" value="Referencia:"/>
                     <p:inputText id="referencia" styleClass="janal-wid-100-txt" value="#{kalanGastosAccion.gasto.referencia}"/>
@@ -134,54 +123,51 @@
                     <p:outputLabel for="fechaReferencia" value="Fecha referencia:"/>
                     <p:calendar id="fechaReferencia" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanGastosAccion.gasto.fechaReferencia}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
                   </p:panelGrid>  
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="fechaAplicacion" value="Fecha aplicación:"/>
+                    <p:calendar id="fechaAplicacion" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanGastosAccion.gasto.fechaAplicacion}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario">
+                      <p:ajax event="dateSelect" listener="#{kalanGastosAccion.doProrratear}" process="@form" update="@(.prorratear)" oncomplete="janal.refresh()"/> 
+                    </p:calendar>   
+                  </p:panelGrid>  
                 </p:panelGrid>  
                 <p:outputLabel for="observaciones" value="Observaciones:"/>
                 <p:inputTextarea id="observaciones" value="#{kalanGastosAccion.gasto.observaciones}" styleClass="janal-wid-100-txt adicional prorratear parcialidades" rows="2"/>
-                <p:panelGrid columns="6" layout="grid" styleClass="janal-wid-100">
+                <p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-20, janal-wid-20, janal-wid-20, janal-wid-20">
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="subtotal" value="Sub total:"/>
-                    <p:inputNumber id="subtotal" value="#{kalanGastosAccion.gasto.subtotal}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-center" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double">
-                      <p:ajax event="change" listener="#{kalanGastosAccion.doCalculate}" process="@this @(.calculo)" update="@(.calculo) @(.parcialidades)"/>
-                    </p:inputNumber>  
+                    <p:inputNumber id="subtotal" value="#{kalanGastosAccion.gasto.subtotal}" styleClass="janal-wid-100-txt calculo" inputStyleClass="janal-column-center" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" readonly="true" disabled="true"/>
                   </p:panelGrid>  
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="iva" value="Tasa IVA:"/>
                     <p:selectOneMenu id="iva" value="#{kalanGastosAccion.gasto.iva}" converter="javax.faces.Double" styleClass="janal-wid-100-txt calculo" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                       <p:ajax event="change" listener="#{kalanGastosAccion.doCalculate}" process="@this @(.calculo)" update="@(.calculo) @(.parcialidades)"/>
-                      <f:selectItem itemValue="16" itemLabel="16 %"/>
                       <f:selectItem itemValue="0"  itemLabel="0 %"/>
+                      <f:selectItem itemValue="16" itemLabel="16 %"/>
                     </p:selectOneMenu>
                   </p:panelGrid>  
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="ivaCalculado" value="IVA:"/>
-                    <p:inputNumber id="ivaCalculado" value="#{kalanGastosAccion.gasto.ivaCalculado}" styleClass="janal-wid-100-txt calculo" inputStyleClass="janal-column-center" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" readonly="true"/>
-                  </p:panelGrid>  
-    							<p:panelGrid columns="1" styleClass="janal-wid-100">
-                    <p:outputLabel for="importe" value="Importe:"/>
-                    <p:inputNumber id="importe" value="#{kalanGastosAccion.gasto.importe}" styleClass="janal-wid-100-txt calculo" inputStyleClass="janal-column-center" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" readonly="true"/>
-                  </p:panelGrid>  
-    							<p:panelGrid columns="1" styleClass="janal-wid-100">
-                    <p:outputLabel for="ivaRetenido" value="IVA retenido:"/>
-                    <p:inputNumber id="ivaRetenido" value="#{kalanGastosAccion.gasto.ivaRetenido}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-center" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double">
-                      <p:ajax event="change" listener="#{kalanGastosAccion.doCalculate}" process="@this @(.calculo)" update="@(.calculo) @(.parcialidades)"/>
-                    </p:inputNumber>  
+                    <p:inputNumber id="ivaCalculado" value="#{kalanGastosAccion.gasto.ivaCalculado}" styleClass="janal-wid-100-txt calculo" inputStyleClass="janal-column-center" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" readonly="true" disabled="true"/>
                   </p:panelGrid>  
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="total" value="Total:"/>
-                    <p:inputNumber id="total" value="#{kalanGastosAccion.gasto.total}" styleClass="janal-color-blue janal-wid-100-txt calculo" inputStyleClass="janal-column-center" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" readonly="true"/>
+                    <p:inputNumber id="total" value="#{kalanGastosAccion.gasto.total}" styleClass="janal-color-blue janal-wid-100-txt" inputStyleClass="janal-column-center" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double">
+                      <p:ajax event="change" listener="#{kalanGastosAccion.doCalculate}" process="@this @(.calculo)" update="@(.calculo) @(.parcialidades)"/>
+                    </p:inputNumber>
+                  </p:panelGrid>  
+    							<p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:spacer/>
+                    <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center">
+                       <p:selectBooleanCheckbox id="checkCheque" itemLabel="Cheque:" value="#{kalanGastosAccion.gasto.cheque}">
+                         <p:ajax event="change" listener="#{kalanGastosAccion.doCheque}" process="@this" update="@(.cheque)" oncomplete="janal.refresh()"/>
+                       </p:selectBooleanCheckbox>  
+                       <p:selectBooleanCheckbox id="checkProrratear" itemLabel="Prorratear:" value="#{kalanGastosAccion.gasto.prorratear}">
+                         <p:ajax event="change" listener="#{kalanGastosAccion.doProrratear}" process="@form" update="@(.prorratear)" oncomplete="janal.refresh()"/>
+                       </p:selectBooleanCheckbox>  
+                    </p:panelGrid>   
                   </p:panelGrid>  
                 </p:panelGrid>  
-                <p:panelGrid columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-left, janal-column-center, janal-column-center, janal-column-right">
-                  <p:selectBooleanCheckbox itemLabel="IEPS 9%:" value="#{kalanGastosAccion.gasto.IEPS}" styleClass="calculo">
-                    <p:ajax event="change" listener="#{kalanGastosAccion.doCalculate}" process="@this @(.calculo)" update="@(.calculo) @(.parcialidades)"/>
-                  </p:selectBooleanCheckbox>  
-                  <p:inputNumber id="iepsCalculado" value="#{kalanGastosAccion.gasto.iepsCalculado}" styleClass="janal-wid-100-txt calculo" inputStyleClass="janal-column-center" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" readonly="true"/>
-                  <p:selectBooleanCheckbox id="checkCheque" itemLabel="Cheque:" value="#{kalanGastosAccion.gasto.cheque}">
-                    <p:ajax event="change" listener="#{kalanGastosAccion.doCheque}" process="@this" update="@(.cheque)" oncomplete="janal.refresh()"/>
-                  </p:selectBooleanCheckbox>  
-                  <p:selectBooleanCheckbox id="checkProrratear" itemLabel="Prorratear:" value="#{kalanGastosAccion.gasto.prorratear}">
-                    <p:ajax event="change" listener="#{kalanGastosAccion.doProrratear}" process="@form" update="@(.prorratear)" oncomplete="janal.refresh()"/>
-                  </p:selectBooleanCheckbox>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="pagos" value="Número de pagos:" styleClass="#{kalanGastosAccion.gasto.prorratear? '': 'janal-display-none'} prorratear"/>
                   <p:inputNumber id="pagos" value="#{kalanGastosAccion.gasto.pagos}" styleClass="#{kalanGastosAccion.gasto.prorratear? '': 'janal-display-none'} janal-wid-100-txt prorratear" inputStyleClass="janal-column-center" minValue="1" decimalPlaces="0" decimalSeparator="." thousandSeparator="," converter="javax.faces.Long">
                     <p:ajax event="change" listener="#{kalanGastosAccion.doParcialidades}" process="@this" update="@(.parcialidades)" oncomplete="janal.refresh()"/>
@@ -251,24 +237,6 @@
                         <h:outputText value="IVA"/>
                       </f:facet>
                       <h:outputText value="#{row['ivaCalculado']}"/>
-                    </p:column>					
-                    <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center">
-                      <f:facet name="header">
-                        <h:outputText value="Importe"/>
-                      </f:facet>
-                      <h:outputText value="#{row['importe']}"/>
-                    </p:column>					
-                    <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center">
-                      <f:facet name="header">
-                        <h:outputText value="Iva retenido"/>
-                      </f:facet>
-                      <h:outputText value="#{row['ivaRetenido']}"/>
-                    </p:column>					
-                    <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center">
-                      <f:facet name="header">
-                        <h:outputText value="IEPS"/>
-                      </f:facet>
-                      <h:outputText value="#{row['iepsCalculado']}"/>
                     </p:column>					
                     <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center prorrateos">
                       <f:facet name="header">

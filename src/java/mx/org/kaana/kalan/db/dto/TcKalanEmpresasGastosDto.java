@@ -101,7 +101,7 @@ public class TcKalanEmpresasGastosDto implements IBaseDto, Serializable {
   }
 
   public TcKalanEmpresasGastosDto(Long key) {
-    this(-1L, -1L, 0D, 2L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, -1L, Constantes.PORCENTAJE_IVA* 100, new Date(Calendar.getInstance().getTimeInMillis()), -1L, 0D, 2L, 0D, 1L, 1L, -1L, Constantes.PORCENTAJE_IEPS* 100, null, 0D, null, 0D, null, -1L, new Long(-1L), null, 2L, -1L, null, null, null, 1L);
+    this(-1L, -1L, 0D, 2L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), -1L, 0D, 2L, 0D, 1L, 12L, -1L, Constantes.PORCENTAJE_IEPS* 100, null, 0D, null, 0D, null, -1L, new Long(-1L), null, 2L, -1L, null, null, null, 1L);
     setKey(key);
   }
 
