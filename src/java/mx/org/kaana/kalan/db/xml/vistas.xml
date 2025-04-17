@@ -69,7 +69,7 @@ order by
 select
   tc_kalan_empresas_movimientos.id_empresa_movimiento as id_key,
   tc_kalan_empresas_movimientos.id_empresa_movimiento,
-  tc_mantic_empresas.titulo as empresa,
+  tc_mantic_empresas.nombre as empresa,
   tc_kalan_empresas_movimientos.consecutivo,
 	tc_mantic_clientes.razon_social as cliente,
 	tc_kalan_empresas_movimientos.observaciones,
@@ -133,7 +133,7 @@ order by
 select
 	998 as id_key,
   998 as id_gasto_clasificacion,
-	tc_mantic_empresas.titulo as empresa,
+	tc_mantic_empresas.nombre as empresa,
 	'INGRESOS VARIOS' as clasificacion,
 	'{anterior}' as fecha_anterior,
 	round(sum(if(date_format(tc_kalan_empresas_movimientos.fecha_aplicacion, '%Y|%m')= '{anterior}', tc_kalan_empresas_movimientos.total, 0)), 2) as anterior,
@@ -181,7 +181,7 @@ where
 select
 	tc_kalan_empresas_gastos.id_empresa_gasto as id_key,
 	tc_kalan_empresas_gastos.id_empresa_gasto,
-	tc_mantic_empresas.titulo as empresa,
+	tc_mantic_empresas.nombre as empresa,
   tc_kalan_empresas_gastos.consecutivo,
 	tc_kalan_gastos_clasificaciones.descripcion as clasificacion,
 	tc_kalan_gastos_subclasificaciones.descripcion as subclasificacion,
@@ -264,7 +264,7 @@ where
 select
 	tc_kalan_gastos_clasificaciones.id_gasto_clasificacion as id_key,
   tc_kalan_gastos_clasificaciones.id_gasto_clasificacion,
-	tc_mantic_empresas.titulo as empresa,
+	tc_mantic_empresas.nombre as empresa,
 	tc_kalan_gastos_clasificaciones.descripcion as clasificacion,
 	'{anterior}' as fecha_anterior,
 	sum(if(date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y|%m')= '{anterior}', tc_kalan_empresas_gastos.total, 0)) as anterior,
