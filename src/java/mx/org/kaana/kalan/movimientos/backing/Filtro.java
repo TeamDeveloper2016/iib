@@ -175,8 +175,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
+      List<UISelectEntity> empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+      this.attrs.put("empresas", empresas);
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity(empresas));
 			this.attrs.put("idCliente", new UISelectEntity("-1"));
 			columns.remove(0);
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcKalanMovimientosEstatusDto", "row", params, columns));

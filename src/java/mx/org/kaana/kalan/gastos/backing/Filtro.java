@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.kalan.db.dto.TcKalanGastosBitacoraDto;
 import mx.org.kaana.kalan.gastos.beans.Gasto;
+import mx.org.kaana.kalan.gastos.enums.EGastos;
 import mx.org.kaana.kalan.gastos.reglas.AdminGasto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -119,12 +120,27 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
   public String doAccion(String accion) {
+    String regresar= null;
+    try {
+      regresar= this.doAccion(accion, "GASTOS_ADMINISTRATIVOS");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch  
+    return regresar;
+  }
+  
+  public String doAccion(String accion, String gasto) {
 		String regresar    = "/Paginas/Kalan/Gastos/accion";
 		Entity seleccionado= (Entity) this.attrs.get("seleccionado");
     EAccion eaccion    = null;
+    EGastos egasto     = null; 
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
+	    egasto = EGastos.valueOf(gasto.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("egasto", egasto);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Gastos/filtro");		
 			JsfBase.setFlashAttribute("idEmpresaGasto", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? seleccionado.getKey(): -1L);
 		} // try
@@ -164,14 +180,14 @@ public class Filtro extends IBaseFilter implements Serializable {
   		sb.append("(tc_kalan_empresas_gastos.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
 		if(!Cadena.isVacio(this.attrs.get("referencia")))
   		sb.append("(tc_kalan_empresas_gastos.referencia like '%").append(this.attrs.get("referencia")).append("%') and ");
-		if(!Cadena.isVacio(this.attrs.get("fechaAplicacion")))
-		  sb.append("(date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaAplicacion"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaReferencia")))
-		  sb.append("(date_format(tc_kalan_empresas_gastos.fecha_referencia, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaReferencia"))).append("') and ");	
+//		if(!Cadena.isVacio(this.attrs.get("fechaAplicacion")))
+//		  sb.append("(date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaAplicacion"))).append("') and ");	
+//		if(!Cadena.isVacio(this.attrs.get("fechaReferencia")))
+//		  sb.append("(date_format(tc_kalan_empresas_gastos.fecha_referencia, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaReferencia"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_kalan_empresas_gastos.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_kalan_empresas_gastos.fechaAplicacion, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_kalan_empresas_gastos.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		  sb.append("(date_format(tc_kalan_empresas_gastos.fechaAplicacion, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
   		sb.append("(tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idGastoClasificacion")) && !this.attrs.get("idGastoClasificacion").toString().equals("-1"))
@@ -203,8 +219,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
+      List<UISelectEntity> empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+      this.attrs.put("empresas", empresas);
+  	  this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity(empresas));
 			this.attrs.put("idProveedor", new UISelectEntity("-1"));
 			columns.remove(0);
       this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcKalanGastosEstatusDto", "row", params, columns));
@@ -221,7 +238,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
   
   public void doReporte(String nombre) throws Exception{
-    Parametros comunes = null;
+    Parametros comunes           = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;

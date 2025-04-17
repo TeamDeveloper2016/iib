@@ -411,6 +411,14 @@ set
 where  
   tc_kalan_empresas_controles.id_empresa_gasto= {idEmpresaGasto}
       </update>
+      <update id="control">
+update
+  tc_kalan_empresas_gastos
+set                
+  id_gasto_estatus= 2
+where  
+  id_empresa_gasto= 1
+      </update>
     </unit>   
     <unit id="TcKalanGastosEstatusDto">
       <select id="row">
@@ -920,6 +928,14 @@ where
   and ejercicio= {ejercicio} 
   and orden{operador} 900000			
 			</select>
+      <update id="control">
+update
+  tc_kalan_empresas_movimientos
+set
+  id_empresa_movimiento= 2
+where
+  id_empresa_movimiento= 1
+      </update>
     </unit> 
     <unit id="TcKalanMovimientosBitacoraDto">
       <select id="row">

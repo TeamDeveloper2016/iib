@@ -35,4 +35,5 @@ public enum EEstatus {
   public static EEstatus fromOrdinal(Long ordinal) {
     return lookup.get(ordinal.intValue());
   }
+  
 }

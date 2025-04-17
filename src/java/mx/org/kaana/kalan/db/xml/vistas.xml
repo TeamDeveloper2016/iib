@@ -207,7 +207,7 @@ inner join
   tc_kalan_gastos_subclasificaciones on tc_kalan_empresas_gastos.id_gasto_subclasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_subclasificacion
 inner join
   tc_mantic_proveedores on tc_kalan_empresas_gastos.id_proveedor= tc_mantic_proveedores.id_proveedor
-inner join
+left join
   tc_kalan_empresas_cuentas on tc_kalan_empresas_gastos.id_empresa_cuenta= tc_kalan_empresas_cuentas.id_empresa_cuenta
 inner join 
   tc_kalan_gastos_estatus on tc_kalan_empresas_gastos.id_gasto_estatus= tc_kalan_gastos_estatus.id_gasto_estatus

@@ -8,8 +8,13 @@ package mx.org.kaana.jobs;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
+import java.util.Collections;
 import mx.org.kaana.jobs.comun.IBaseJob;
 import mx.org.kaana.kajool.control.bean.Portal;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kalan.db.dto.TcKalanEmpresasControlesDto;
+import mx.org.kaana.kalan.db.dto.TcKalanEmpresasGastosDto;
+import mx.org.kaana.kalan.db.dto.TcKalanEmpresasMovimientosDto;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
@@ -26,8 +31,13 @@ public class Galeria extends IBaseJob {
 	public void procesar(JobExecutionContext jec) throws JobExecutionException {
 		try {
 			LOG.error("Cargando galería de las imagenes del portal");
-			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaCapacitacion()) 
+			if(Configuracion.getInstance().isEtapaProduccion() || Configuracion.getInstance().isEtapaCapacitacion()) {
         Portal.getInstance().reload();
+        
+        // CAMBIAR EL ESTATUS DE LAS GASTOS, LOS INGRESOS SIN FACTURAS Y LOS INGRESOS EXTRAORDINARIOS
+        DaoFactory.getInstance().updateAll(TcKalanEmpresasGastosDto.class, Collections.EMPTY_MAP, "control");
+        DaoFactory.getInstance().updateAll(TcKalanEmpresasMovimientosDto.class, Collections.EMPTY_MAP, "control");
+      } // if  
 	  } // try
 		catch (Exception e) {
 			Error.mensaje(e);

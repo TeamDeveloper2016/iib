@@ -68,7 +68,7 @@
               <p:outputLabel for="consecutivo" value="Consecutivo:"/>
               <p:inputText id="consecutivo" value="#{kalanMovimientosIngresos.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="fechaAplicacion" value="Fecha:"/>
-							<p:calendar id="fechaAplicacion" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kalanMovimientosIngresos.attrs.fechaAplicacion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaAplicacion" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanMovimientosIngresos.attrs.fechaAplicacion}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="idBanco" value="Banco:"/>
               <p:selectOneMenu id="idBanco" value="#{kalanMovimientosIngresos.attrs.idBanco}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{kalanMovimientosIngresos.doLoadCuentas}" process="@this" update="idBanco idEmpresaCuenta"/>
@@ -97,9 +97,9 @@
                 </f:facet>
               </p:autoComplete>			
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kalanMovimientosIngresos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanMovimientosIngresos.attrs.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-81" styleClass="janal-wid-100" value="#{kalanMovimientosIngresos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanMovimientosIngresos.attrs.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="idMovimientoEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idMovimientoEstatus" value="#{kalanMovimientosIngresos.attrs.idMovimientoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>

@@ -60,14 +60,9 @@
                   </p:panelGrid>
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
-                    <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-70 janal-column-left, janal-wid-30 janal-column-right">
-                      <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanMovimientosAccion.movimiento.idEmpresaCuenta}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                        <f:selectItems value="#{kalanMovimientosAccion.attrs.cuentas}"/>
-                      </p:selectOneMenu>
-                      <p:selectBooleanCheckbox itemLabel="Aplicar:" value="#{kalanMovimientosAccion.movimiento.estatus}">
-                        <p:ajax event="change" listener="#{kalanMovimientosAccion.doEstatus}"/>
-                      </p:selectBooleanCheckbox>  
-                    </p:panelGrid>  
+                    <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanMovimientosAccion.movimiento.idEmpresaCuenta}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <f:selectItems value="#{kalanMovimientosAccion.attrs.cuentas}"/>
+                    </p:selectOneMenu>
                   </p:panelGrid>
                   
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
@@ -77,7 +72,7 @@
                     </p:selectOneMenu>
                   </p:panelGrid>
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
-                    <p:outputLabel for="total" value="Cantidad:"/>
+                    <p:outputLabel for="total" value="Total:"/>
                     <p:inputNumber id="total" value="#{kalanMovimientosAccion.movimiento.total}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-center" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
                   </p:panelGrid>  
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
@@ -111,7 +106,7 @@
                     <p:inputTextarea id="observaciones" value="#{kalanMovimientosAccion.movimiento.observaciones}" styleClass="janal-wid-100-txt" rows="3"/>
                   </p:panelGrid>   
                   <p:panelGrid columns="1" styleClass="janal-wid-100" rendered="#{kalanMovimientosAccion.idTipoMovimiento eq 2}">
-                    <p:outputLabel for="justificacion" value="Justificacion:"/>
+                    <p:outputLabel for="justificacion" value="Justificación:"/>
                     <p:inputTextarea id="justificacion" value="#{kalanMovimientosAccion.movimiento.justificacion}" styleClass="janal-wid-100-txt" rows="3"/>
                   </p:panelGrid>   
                 </p:panelGrid>   

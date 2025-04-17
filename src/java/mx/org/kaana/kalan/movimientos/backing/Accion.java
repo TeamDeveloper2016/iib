@@ -99,14 +99,18 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doLoad
 
   private void toLoadEmpresas() {
-    Map<String, Object> params= new HashMap<>();
+    Map<String, Object> params = new HashMap<>();
+    List<UISelectItem> empresas= null;
     try {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      List<UISelectItem> empresas= UISelect.seleccione("TcManticEmpresasDto", "empresas", params, "idKey|titulo", EFormatoDinamicos.MAYUSCULAS);
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        empresas= UISelect.seleccione("TcManticEmpresasDto", "empresas", params, "idKey|titulo", EFormatoDinamicos.MAYUSCULAS);
+      else
+        empresas= UISelect.build("TcManticEmpresasDto", "empresas", params, "idKey|titulo", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("empresas", empresas);
       if(empresas!= null && !empresas.isEmpty()) {
         if(Objects.equals(this.accion, EAccion.AGREGAR)) 
@@ -259,9 +263,5 @@ public class Accion extends IBaseAttribute implements Serializable {
   public char getGroupCliente(UISelectEntity item) {
     return item.toString("rfc").charAt(0);
   }  
- 
-  public void doEstatus() {
-    
-  }
   
 }

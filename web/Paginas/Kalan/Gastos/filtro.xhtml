@@ -117,10 +117,13 @@
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanGastosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanGastosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kalanGastosFiltro.lazyModel.rowCount gt kalanGastosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
-            <f:facet name="header" >
+            <f:facet name="header">
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Agregar" action="#{kalanGastosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Gasto administrativo" action="#{kalanGastosFiltro.doAccion('AGREGAR', 'GASTOS_ADMINISTRATIVOS')}" icon="fa fa-apple" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Gasto compra y venta" action="#{kalanGastosFiltro.doAccion('AGREGAR', 'GASTOS_COMPRA')}" icon="fa fa-cart-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Gasto merma" action="#{kalanGastosFiltro.doAccion('AGREGAR', 'GASTOS_MERMA')}" icon="fa fa-coffee" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Gasto varios" action="#{kalanGastosFiltro.doAccion('AGREGAR', 'GASTOS_VARIOS')}" icon="fa fa-lightbulb-o" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -161,7 +164,7 @@
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center" sortBy="#{row.fechaAplicacion}">
               <f:facet name="header">
-                <h:outputText value="Fecha aplicación"/>
+                <h:outputText value="Aplicación"/>
               </f:facet>
               <h:outputText value="#{row['fechaAplicacion']}"/>
             </p:column>		
@@ -171,7 +174,7 @@
               </f:facet>
               <h:outputText value="#{row['fechaReferencia']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive" sortBy="#{row.referencia}">
+            <p:column styleClass="MarAuto Responsive janal-display-none" sortBy="#{row.referencia}">
               <f:facet name="header">
                 <h:outputText value="Referencia"/>
               </f:facet>
@@ -206,7 +209,7 @@
               <f:facet name="header">
                 <h:outputText value="..."/>
               </f:facet>
-              <p:commandButton icon="fa fa-search" process="@this" update="detalle @(.total)" actionListener="#{kalanGastosFiltro.doView(row)}" title="Ver parcialidades" rendered="#{row.idActivoProrratear.toLong() eq 1 and row.idGastoEstatus.toLong() eq 2}"/>
+              <p:commandButton icon="fa fa-search" process="@this" update="detalle @(.total)" actionListener="#{kalanGastosFiltro.doView(row)}" title="Ver parcialidades" rendered="#{row.idActivoProrratear.toLong() eq 1}"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{kalanGastosFiltro.lazyModel== null? 0: kalanGastosFiltro.lazyModel.rowCount}] registros"/>
@@ -214,65 +217,46 @@
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
             <p:menuitem value="Modificar" action="#{kalanGastosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{kalanGastosFiltro.attrs.seleccionado.idGastoEstatus eq '1'}"/>
-            <p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{kalanGastosFiltro.attrs.seleccionado.idGastoEstatus eq '1'}"/>					
+            <p:menuitem value="Eliminar" icon="fa fa-close" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{kalanGastosFiltro.attrs.seleccionado.idGastoEstatus eq '1'}"/>					
             <p:separator rendered="#{fn:contains('|1|', kalanGastosFiltro.attrs.seleccionado.idGastoEstatus)}"/>
-            <p:menuitem action="#{kalanGastosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-            <p:menuitem icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanGastosFiltro.doMovimientos}"/>
+            <p:menuitem value="Consultar" action="#{kalanGastosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+            <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanGastosFiltro.doMovimientos}"/>
             <p:separator rendered="#{fn:contains('|1|2|', kalanGastosFiltro.attrs.seleccionado.idGastoEstatus)}"/>					
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', kalanGastosFiltro.attrs.seleccionado.idGastoEstatus)}"/>					
+            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', kalanGastosFiltro.attrs.seleccionado.idGastoEstatus)}"/>					
           </p:contextMenu>			
-          
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanGastosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kalanGastosFiltro.lazyDetalle.rowCount gt kalanGastosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="detalle" rowStyleClass="#{kalanGastosFiltro.doColor(row)}"  style="display: #{kalanGastosFiltro.lazyDetalle eq null? 'none': ''}">
-            <p:column styleClass="MarAuto Responsive janal-wid-2">
+            <p:column styleClass="MarAuto Responsive janal-wid-5">
               <f:facet name="header">
                 <h:outputText value="No."/>
               </f:facet>
               <h:outputText value="#{index+ 1}.-"/>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
+            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right">
               <f:facet name="header">
                 <h:outputText value="Sub total"/>
               </f:facet>
               <h:outputText value="#{row['subtotal']}"/>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
+            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right">
               <f:facet name="header">
                 <h:outputText value="IVA"/>
               </f:facet>
               <h:outputText value="#{row['ivaCalculado']}"/>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
-              <f:facet name="header">
-                <h:outputText value="Importe"/>
-              </f:facet>
-              <h:outputText value="#{row['importe']}"/>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
-              <f:facet name="header">
-                <h:outputText value="Iva retenido"/>
-              </f:facet>
-              <h:outputText value="#{row['ivaRetenido']}"/>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center">
-              <f:facet name="header">
-                <h:outputText value="IEPS"/>
-              </f:facet>
-              <h:outputText value="#{row['iepsCalculado']}"/>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-6 janal-column-center prorrateos">
+            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right prorrateos">
               <f:facet name="header">
                 <h:outputText value="Total"/>
               </f:facet>
               <h:outputText value="#{row['total']}"/>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center">
+            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-center">
               <f:facet name="header">
                 <h:outputText value="Aplicar"/>
               </f:facet>
               <h:outputText value="#{row['fechaAplicacion']}"/>
               <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}"></i>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-8">
+            <p:column styleClass="MarAuto Responsive">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>

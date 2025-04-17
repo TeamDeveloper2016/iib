@@ -10,7 +10,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.kalan.db.dto.TcKalanEmpresasGastosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanMovimientosBitacoraDto;
 import mx.org.kaana.kalan.movimientos.beans.Movimiento;
 import mx.org.kaana.libs.formato.Fecha;

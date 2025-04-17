@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kalan.gastos.beans.Gasto;
 import mx.org.kaana.kalan.gastos.beans.Parcialidad;
+import mx.org.kaana.kalan.gastos.enums.EGastos;
 import mx.org.kaana.kalan.gastos.reglas.AdminGasto;
 import mx.org.kaana.kalan.gastos.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
@@ -27,7 +28,6 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -44,6 +44,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private Gasto gasto;
   private EAccion accion;
+  private EGastos egasto;
 
   public Gasto getGasto() {
     return gasto;
@@ -66,6 +67,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Gastos/filtro": JsfBase.getFlashAttribute("retorno"));
 			this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+			this.egasto= JsfBase.getFlashAttribute("egasto")== null? EGastos.GASTOS_ADMINISTRATIVOS: (EGastos)JsfBase.getFlashAttribute("egasto");
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));      
 //      if(JsfBase.getFlashAttribute("retorno")== null)
 //				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
@@ -173,8 +175,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   private void toLoadClasificaciones() {
     Map<String, Object> params= new HashMap<>();
     try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      List<UISelectItem> clasificaciones= UISelect.seleccione("TcKalanGastosClasificacionesDto", params, "idKey|descripcion", EFormatoDinamicos.MAYUSCULAS);
+			params.put(Constantes.SQL_CONDICION, "id_gasto_clasificacion= "+ this.egasto.getKey());
+      // List<UISelectItem> clasificaciones= UISelect.seleccione("TcKalanGastosClasificacionesDto", params, "idKey|descripcion", EFormatoDinamicos.MAYUSCULAS);
+      List<UISelectItem> clasificaciones= UISelect.build("TcKalanGastosClasificacionesDto", params, "idKey|descripcion", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("clasificaciones", clasificaciones);
       if(clasificaciones!= null && !clasificaciones.isEmpty()) {
         if(Objects.equals(this.accion, EAccion.AGREGAR)) 
@@ -257,6 +260,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar        = null;
     Transaccion transaccion= null;
     try {			
+      if(Objects.equals(this.gasto.getIdEmpresaCuenta(), -1L))
+        this.gasto.setIdEmpresaCuenta(null);
+      if(Objects.equals(this.gasto.getIdGastoComprobante(), -1L))
+        this.gasto.setIdGastoComprobante(null);
       transaccion = new Transaccion(this.gasto);
 			if (transaccion.ejecutar(this.accion)) {
 			  regresar= this.doCancelar();
@@ -267,6 +274,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 				JsfBase.addMessage("Ocurrió un error al registrar el gasto !", ETipoMensaje.ALERTA);      			
       if(Objects.equals(this.gasto.getDocumento().getIdProveedor(), null))
         this.gasto.getDocumento().setIdProveedor(-1L);
+      if(Objects.equals(this.gasto.getIdEmpresaCuenta(), null))
+        this.gasto.setIdEmpresaCuenta(-1L);
+      if(Objects.equals(this.gasto.getIdGastoComprobante(), null))
+        this.gasto.setIdGastoComprobante(-1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
