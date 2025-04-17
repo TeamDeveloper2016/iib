@@ -147,7 +147,7 @@ public class Transaccion extends IBaseTnx {
               item.setConcepto(this.gasto.getConcepto());
               item.setIdEmpresa(this.gasto.getIdEmpresa());
               item.setIdProveedor(this.gasto.getIdProveedor());
-              item.setFechaAplicacion(this.gasto.getFechaAplicacion());
+              // item.setFechaAplicacion(this.gasto.getFechaAplicacion());
               item.setIdGastoClasificacion(this.gasto.getIdGastoClasificacion());
               item.setIdGastoSubclasificacion(this.gasto.getIdGastoSubclasificacion());
               item.setIdEmpresaCuenta(this.gasto.getIdEmpresaCuenta());
@@ -174,7 +174,7 @@ public class Transaccion extends IBaseTnx {
               item.setConcepto(this.gasto.getConcepto());
               item.setIdEmpresa(this.gasto.getIdEmpresa());
               item.setIdProveedor(this.gasto.getIdProveedor());
-              item.setFechaAplicacion(this.gasto.getFechaAplicacion());
+              // item.setFechaAplicacion(this.gasto.getFechaAplicacion());
               item.setIdGastoClasificacion(this.gasto.getIdGastoClasificacion());
               item.setIdGastoSubclasificacion(this.gasto.getIdGastoSubclasificacion());
               item.setIdEmpresaCuenta(this.gasto.getIdEmpresaCuenta());

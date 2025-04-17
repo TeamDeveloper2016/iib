@@ -49,6 +49,7 @@
               </p:selectOneMenu>
               <p:outputLabel for="idMes" value="Mes:"/>
               <p:selectOneMenu id="idMes" value="#{kalanGastosConsulta.attrs.idMes}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{kalanGastosConsulta.doChangeMes}" process="@this"/>
                 <f:selectItems value="#{kalanGastosConsulta.attrs.meses}"/>
               </p:selectOneMenu>
 							<p:separator/>
@@ -92,7 +93,7 @@
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-right">
               <f:facet name="header">
-                <h:outputText value="Mes actual"/>
+                <h:outputText value="#{kalanGastosConsulta.attrs.mesActual}"/>
               </f:facet>
               <h:outputText value="#{row['actual']}"/>
             </p:column>		
@@ -104,7 +105,7 @@
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-right">
               <f:facet name="header">
-                <h:outputText value="Mes anterior"/>
+                <h:outputText value="#{kalanGastosConsulta.attrs.mesAnterior}"/>
               </f:facet>
               <h:outputText value="#{row['anterior']}"/>
             </p:column>		
@@ -145,7 +146,7 @@
               </f:facet>
               <h:outputText value="#{row['clasificacion']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.subclasificacion}">
+            <p:column styleClass="MarAuto Responsive janal-wid-15 #{kalanGastosConsulta.attrs.viewColumn? '': 'janal-display-none'}" sortBy="#{row.subclasificacion}">
               <f:facet name="header">
                 <h:outputText value="Sub clasificación"/>
               </f:facet>

@@ -72,17 +72,19 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
   private Long idEmpresa;
   @Column (name="orden")
   private Long orden;
+  @Column (name="concepto")
+  private String concepto;
 
   public TcKalanEmpresasMovimientosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanEmpresasMovimientosDto(Long key) {
-    this(2L, null, -1L, 1L, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 0D, null, null, null, null, null, null);
+    this(2L, null, -1L, 1L, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 0D, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKalanEmpresasMovimientosDto(Long idAnticipo, String justificacion, Long idCliente, Long idMovimientoEstatus, Long idEmpresaMovimiento, Long idBanco, Long ejercicio, String consecutivo, Long idTipoConcepto, Date fechaAplicacion, Double total, Long idTipoMovimiento, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden) {
+  public TcKalanEmpresasMovimientosDto(Long idAnticipo, String justificacion, Long idCliente, Long idMovimientoEstatus, Long idEmpresaMovimiento, Long idBanco, Long ejercicio, String consecutivo, Long idTipoConcepto, Date fechaAplicacion, Double total, Long idTipoMovimiento, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden, String concepto) {
     setIdAnticipo(idAnticipo);
     setJustificacion(justificacion);
     setIdCliente(idCliente);
@@ -101,6 +103,7 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setOrden(orden);
+    setConcepto(concepto);
   }
 	
   public void setIdAnticipo(Long idAnticipo) {
@@ -247,6 +250,14 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
     return orden;
   }
 
+  public String getConcepto() {
+    return concepto;
+  }
+
+  public void setConcepto(String concepto) {
+    this.concepto = concepto;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -297,6 +308,8 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getConcepto());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -322,13 +335,14 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
+		regresar.put("concepto", getConcepto());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-      getIdAnticipo(), getJustificacion(), getIdCliente(), getIdMovimientoEstatus(), getIdEmpresaMovimiento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdTipoConcepto(), getFechaAplicacion(), getTotal(), getIdTipoMovimiento(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden()
+    Object[] regresar = new Object[] {
+      getIdAnticipo(), getJustificacion(), getIdCliente(), getIdMovimientoEstatus(), getIdEmpresaMovimiento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdTipoConcepto(), getFechaAplicacion(), getTotal(), getIdTipoMovimiento(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getConcepto()
     };
     return regresar;
   }

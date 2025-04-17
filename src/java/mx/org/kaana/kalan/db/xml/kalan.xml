@@ -872,6 +872,18 @@ from
 where      
   descripcion = '{descripcion}' and id_tipo_movimiento = {idTipoMovimiento}
       </select>
+      <select id="porNombre">
+select      
+  tc_kalan_tipos_conceptos.id_tipo_concepto as id_key,
+  tc_kalan_tipos_conceptos.descripcion as concepto,
+  tc_kalan_tipos_conceptos.*
+from      
+  tc_kalan_tipos_conceptos
+where 
+  id_tipo_movimiento= {idTipoMovimiento}
+  and id_activo= 1
+  and descripcion like upper('%{codigo}%')
+      </select>
     </unit>    
     <unit id="TcKalanMovimientosEstatusDto">
       <select id="row">

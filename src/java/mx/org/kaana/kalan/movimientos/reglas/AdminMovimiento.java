@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kalan.gastos.beans.Gasto;
 import mx.org.kaana.kalan.movimientos.beans.Movimiento;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Error;

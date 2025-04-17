@@ -17,7 +17,7 @@
 				'contenedorGrupos\\:idCliente'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'cliente'},
 				'contenedorGrupos\\:fechaAplicacion': {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'ingresos'},
 				'contenedorGrupos\\:idEmpresaCuenta': {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
-				'contenedorGrupos\\:idTipoConcepto' : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
+				'contenedorGrupos\\:idTipoConcepto_input': {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'ingresos'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'ingresos'},
 				'contenedorGrupos\\:justificacion'  : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'egresos'},
 				'contenedorGrupos\\:total'          : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'ingresos'}
@@ -41,7 +41,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos" widgetVar="pestanias">						
-            <p:tab title="#{kalanMovimientosAccion.attrs.concepto}">							
+            <p:tab title="#{kalanMovimientosAccion.attrs.encabezado}">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100-txt">
                 <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100">
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
@@ -64,12 +64,19 @@
                       <f:selectItems value="#{kalanMovimientosAccion.attrs.cuentas}"/>
                     </p:selectOneMenu>
                   </p:panelGrid>
-                  
+                </p:panelGrid>
+                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-60, janal-wid-15, janal-wid-25">
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="idTipoConcepto" value="Tipo concepto:"/>
-                    <p:selectOneMenu id="idTipoConcepto" value="#{kalanMovimientosAccion.movimiento.idTipoConcepto}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                      <f:selectItems value="#{kalanMovimientosAccion.attrs.conceptos}"/>
-                    </p:selectOneMenu>
+                    <p:autoComplete id="idTipoConcepto" var="concepto" placeholder="ej. AJUSTE, OTROS" itemLabel="#{concepto.concepto}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{concepto}" value="#{kalanMovimientosAccion.attrs.concepto}" completeMethod="#{kalanMovimientosAccion.doCompleteConcepto}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                      <p:ajax event="itemSelect" listener="#{kalanMovimientosAccion.doUpdateConcepto()}" process="@this" update="@(.hola)" />
+                      <f:facet name="itemtip">
+                        <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                          <h:outputText value="Nombre:" />
+                          <h:outputText value="#{concepto.concepto}" />
+                        </h:panelGrid>
+                      </f:facet>
+                    </p:autoComplete>			
                   </p:panelGrid>
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="total" value="Total:"/>

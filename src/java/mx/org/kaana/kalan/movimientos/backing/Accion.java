@@ -9,6 +9,8 @@ import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -21,7 +23,6 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -57,9 +58,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Movimientos/ingreso": JsfBase.getFlashAttribute("retorno"));
 			this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));      
-      if(JsfBase.getFlashAttribute("retorno")== null)
-				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.attrs.put("concepto", JsfBase.getFlashAttribute("pagina")== null? "Ingreso": Cadena.letraCapital((String)JsfBase.getFlashAttribute("pagina")));
+//      if(JsfBase.getFlashAttribute("retorno")== null)
+//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.attrs.put("encabezado", JsfBase.getFlashAttribute("pagina")== null? "Ingreso": Cadena.letraCapital((String)JsfBase.getFlashAttribute("pagina")));
       this.attrs.put("pagina", JsfBase.getFlashAttribute("pagina")== null? "ingreso": JsfBase.getFlashAttribute("pagina"));
       this.attrs.put("titulo", JsfBase.getFlashAttribute("titulo")== null? " ingreso sin factura": JsfBase.getFlashAttribute("titulo"));
       this.attrs.put("idEmpresaMovimiento", JsfBase.getFlashAttribute("idEmpresaMovimiento")== null? -1L: JsfBase.getFlashAttribute("idEmpresaMovimiento"));
@@ -67,7 +68,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.doLoad();
       this.toLoadEmpresas();
       this.doLoadBancos();
-      this.toLoadConceptos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -77,6 +77,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
   public void doLoad() {
     Map<String, Object> params= new HashMap<>();
+    Entity concepto           = null;
     try {      
       AdminMovimiento admin= new AdminMovimiento((Long)this.attrs.get("idEmpresaMovimiento"));
       switch(this.accion) {
@@ -88,6 +89,9 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.movimiento= admin.getMovimiento();
           break;
       } // switch
+      concepto= new Entity(Objects.equals(this.movimiento.getIdTipoConcepto(), null)? -1L: this.movimiento.getIdTipoConcepto());
+      concepto.put("concepto", new Value("concepto", this.movimiento.getConcepto()));
+      this.attrs.put("concepto", new UISelectEntity(concepto));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -211,32 +215,62 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   }  
   
-  private void toLoadConceptos() {
-    Map<String, Object> params= new HashMap<>();
+  public List<UISelectEntity> doCompleteConcepto(String codigo) {
+ 		List<Columna> columns        = new ArrayList<>();
+    Map<String, Object> params   = new HashMap<>();
+    List<UISelectEntity> regresar= null;
     try {
+      columns.add(new Columna("concepto", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idTipoMovimiento", this.idTipoMovimiento);
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      List<UISelectItem> conceptos= UISelect.seleccione("TcKalanTiposConceptosDto", params, "idKey|descripcion", EFormatoDinamicos.MAYUSCULAS);
-      this.attrs.put("conceptos", conceptos);
-      this.attrs.put("idTipoConcepto", -1L);
-      if(conceptos!= null && !conceptos.isEmpty()) 
-        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
-          this.movimiento.setIdTipoConcepto((Long)conceptos.get(0).getValue());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+      regresar= UIEntity.build("TcKalanTiposConceptosDto", "porNombre", params, columns, 40L); 
+      this.attrs.put("conceptos", regresar);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
     finally {
+      Methods.clean(columns);
       Methods.clean(params);
-    } // finally
-  }  
+    }// finally
+    return regresar;
+  } 
+  
+  public void doUpdateConcepto() {
+    List<UISelectEntity> conceptos= (List<UISelectEntity>)this.attrs.get("conceptos");
+    UISelectEntity concepto       = (UISelectEntity)this.attrs.get("concepto");
+    try {
+      if(!Objects.equals(conceptos, null)) {
+        int index= conceptos.indexOf(concepto);
+        if(index>= 0) {
+          concepto= conceptos.get(index);
+          this.attrs.put("concepto", concepto);
+          this.movimiento.setConcepto(concepto.toString("concepto"));
+          this.movimiento.setIdTipoConcepto(concepto.getKey());
+        } // if  
+        else
+          this.movimiento.setIdTipoConcepto(null);
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  }
   
   public String doAceptar() {  
     String regresar        = null;
     Transaccion transaccion= null;
     try {			
       this.movimiento.setIdTipoMovimiento(this.idTipoMovimiento);
+      this.movimiento.setConcepto(JsfBase.getParametro("contenedorGrupos:idTipoConcepto_input"));
       transaccion = new Transaccion(this.movimiento);
 			if (transaccion.ejecutar(this.accion)) {
 			  regresar= this.doCancelar();

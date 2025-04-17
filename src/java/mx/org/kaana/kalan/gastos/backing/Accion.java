@@ -168,7 +168,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 		return (List<UISelectEntity>)this.attrs.get("proveedores");
 	}	
   

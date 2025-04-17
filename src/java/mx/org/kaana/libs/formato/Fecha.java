@@ -63,7 +63,7 @@ public class Fecha {
 
   public static String getNombreDiaCorto(int dia) {
     String nombreDia[] = { "DO", "LU", "MA", "MI", "JU", "VI", "SA" };
-    return nombreDia[dia - 1];
+    return nombreDia[dia- 1];
   } // getNombreDiaCorto
 
   public static String getNombreMes(int mes) {

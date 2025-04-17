@@ -77,7 +77,9 @@ public class Consulta extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.toLoadCatalog();
+      this.attrs.put("mesActual", "Mes actual");
+      this.attrs.put("mesAnterior", "Mes anterior");
+			this.toLoadCatalogos();
 		  this.doLoad();
     } // try
     catch (Exception e) {
@@ -133,6 +135,7 @@ public class Consulta extends IBaseFilter implements Serializable {
       } // if  
       UIBackingUtilities.resetDataTable();
       this.lazyModel= null;
+      this.doChangeMes();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -167,6 +170,7 @@ public class Consulta extends IBaseFilter implements Serializable {
     Calendar calendar= new GregorianCalendar(year== null || year== -1L? Fecha.getAnioActual(): year.intValue(), month== null || month== -1L? Fecha.getMesActual(): month.intValue()- 1, 1);
     int actual= calendar.get(Calendar.MONTH)+ 1;
     regresar.put("actual", calendar.get(Calendar.YEAR)+ Constantes.SEPARADOR+ (actual< 10? "0": "")+ actual);
+    
     calendar.add(Calendar.MONTH, -1);
     int anterior= calendar.get(Calendar.MONTH)+ 1;
     regresar.put("anterior", calendar.get(Calendar.YEAR)+ Constantes.SEPARADOR+ (anterior< 10? "0": "")+ anterior);
@@ -177,7 +181,7 @@ public class Consulta extends IBaseFilter implements Serializable {
 		return regresar;
 	}
 	
-	private void toLoadCatalog() {
+	private void toLoadCatalogos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -312,6 +316,7 @@ public class Consulta extends IBaseFilter implements Serializable {
         mes= Integer.valueOf(fecha.substring(fecha.indexOf(Constantes.SEPARADOR)+ 1));
       this.attrs.put("titulo", row.toString("clasificacion"));
       this.attrs.put("mes", Fecha.getNombreMes(mes- 1).toUpperCase());
+      this.attrs.put("viewColumn", !Objects.equals(row.toLong("idKey"), 998L));
       UIBackingUtilities.resetDataTable("detalle");
     } // try
     catch (Exception e) {
@@ -324,6 +329,25 @@ public class Consulta extends IBaseFilter implements Serializable {
     } // finally	  
   }
 
+  public void doChangeMes() {
+    String actual           = "...";
+    String anterior         = "...";
+    try {
+      String ejercicio= Objects.equals(JsfBase.getParametro("ejercicio_input"), null)? String.valueOf(Fecha.getAnioActual()): JsfBase.getParametro("ejercicio_input");
+      Long month      = (Long)this.attrs.get("idMes");      
+      if(month> 0) {
+        actual  = Fecha.getNombreMesCorto(month.intValue()- 1);
+        anterior= Fecha.getNombreMesCorto(Objects.equals(month, 1L)? 11: month.intValue()- 2);
+      } // if  
+      this.attrs.put("mesActual", ejercicio.concat("-").concat(actual));
+      this.attrs.put("mesAnterior", ejercicio.concat("-").concat(anterior));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch      
+  }
+  
   public String doColor(Entity row) {
     return Objects.equals(row.toLong("idKey"), 997L)? "janal-tr-diferencias": Objects.equals(row.toLong("idKey"), 999L)? "janal-tr-yellow": "";
   }
