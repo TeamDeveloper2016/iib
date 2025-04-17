@@ -82,7 +82,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresaGastoProcess", JsfBase.getFlashAttribute("idEmpresaGastoProcess"));
-			this.toLoadCatalog();
+			this.toLoadCatalogos();
       if(this.attrs.get("idEmpresaGastoProcess")!= null) 
 			  this.doLoad();
     } // try
@@ -180,10 +180,6 @@ public class Filtro extends IBaseFilter implements Serializable {
   		sb.append("(tc_kalan_empresas_gastos.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
 		if(!Cadena.isVacio(this.attrs.get("referencia")))
   		sb.append("(tc_kalan_empresas_gastos.referencia like '%").append(this.attrs.get("referencia")).append("%') and ");
-//		if(!Cadena.isVacio(this.attrs.get("fechaAplicacion")))
-//		  sb.append("(date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaAplicacion"))).append("') and ");	
-//		if(!Cadena.isVacio(this.attrs.get("fechaReferencia")))
-//		  sb.append("(date_format(tc_kalan_empresas_gastos.fecha_referencia, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaReferencia"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_kalan_empresas_gastos.fechaAplicacion, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
@@ -207,7 +203,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	}
 	
-	private void toLoadCatalog() {
+	private void toLoadCatalogos() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -321,9 +317,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       );
 			transaccion= new Transaccion(gasto, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al cambio de estatus", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

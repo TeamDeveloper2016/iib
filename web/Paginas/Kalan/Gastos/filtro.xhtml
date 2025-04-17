@@ -127,15 +127,15 @@
                   <p:separator/>
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:separator rendered="false"/>
-                  <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
                 <p:commandButton action="#{kalanGastosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                 <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar"  rendered="false"/>
+                <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
@@ -225,6 +225,20 @@
             <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', kalanGastosFiltro.attrs.seleccionado.idGastoEstatus)}"/>					
           </p:contextMenu>			
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanGastosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kalanGastosFiltro.lazyDetalle.rowCount gt kalanGastosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="detalle" rowStyleClass="#{kalanGastosFiltro.doColor(row)}"  style="display: #{kalanGastosFiltro.lazyDetalle eq null? 'none': ''}">
+            <f:facet name="header">
+              <div class="lg-pantalla">
+                <p:outputLabel value="Calendarización del gasto prorrateado" styleClass="janal-color-white janal-align-left"/>
+                <p:menuButton value="Opciones">
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
+              </div>  
+            </f:facet>	            
             <p:column styleClass="MarAuto Responsive janal-wid-5">
               <f:facet name="header">
                 <h:outputText value="No."/>
@@ -308,7 +322,7 @@
 				<p:inputTextarea id="justificacion" value="#{kalanGastosFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla detalle" value="Aceptar" action="#{kalanGastosFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear();"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla detalle" value="Aceptar" action="#{kalanGastosFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear()"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>

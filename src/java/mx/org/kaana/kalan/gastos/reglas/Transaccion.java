@@ -105,10 +105,33 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-            params.put("idGastoEmpresa", this.gasto.getIdEmpresaGasto());
-            params.put("idGastoEstatus", this.gasto.getIdGastoEstatus());
+            params.put("idEmpresaGasto", this.gasto.getIdEmpresaGasto());
+            params.put("idGastoEstatus", this.bitacora.getIdGastoEstatus());
 						this.gasto.setIdGastoEstatus(this.bitacora.getIdGastoEstatus());
-            DaoFactory.getInstance().updateAll(sesion, TcKalanEmpresasGastosDto.class, params);						
+            // VERIFICAR SI ES EL GASTO ES EL PRINCIPAL CANCELAR TODOS LOS PAGOS Y AJUSTAR EL TOTAL
+            if(!Objects.equals(this.gasto.getIdFuente(), 1L) && Objects.equals(this.gasto.getIdGastoEstatus(), 3L)) {
+              TcKalanEmpresasGastosDto total= (TcKalanEmpresasGastosDto)DaoFactory.getInstance().toEntity(TcKalanEmpresasGastosDto.class, "VistaEmpresasGastosDto", "fuente", params);
+              if(!Objects.equals(total, null)) {
+                if(Objects.equals(total.getIdProveedor(), -1L))
+                  total.setIdProveedor(null);
+                if(Objects.equals(total.getIdEmpresaCuenta(), -1L))
+                  total.setIdEmpresaCuenta(null);
+                if(Objects.equals(total.getIdGastoComprobante(), -1L))
+                  total.setIdGastoComprobante(null);
+                total.setSubtotal(total.getSubtotal()- this.gasto.getSubtotal());
+                total.setIvaCalculado(total.getIvaCalculado()- this.gasto.getIvaCalculado());
+                total.setImporte(total.getImporte()- this.gasto.getImporte());
+                total.setTotal(total.getTotal()- this.gasto.getTotal());
+                DaoFactory.getInstance().update(sesion, total);
+              } // if
+            } // if
+            DaoFactory.getInstance().updateAll(sesion, TcKalanEmpresasGastosDto.class, params);		
+            if(Objects.equals(this.gasto.getIdProveedor(), -1L))
+              this.gasto.setIdProveedor(null);
+            if(Objects.equals(this.gasto.getIdEmpresaCuenta(), -1L))
+              this.gasto.setIdEmpresaCuenta(null);
+            if(Objects.equals(this.gasto.getIdGastoComprobante(), -1L))
+              this.gasto.setIdGastoComprobante(null);
             regresar= DaoFactory.getInstance().update(sesion, this.gasto)>= 1L;
 					} // if
 					break;

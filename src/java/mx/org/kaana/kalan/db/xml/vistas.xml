@@ -260,6 +260,21 @@ where
   tc_kalan_empresas_controles.id_empresa_gasto= {idEmpresaGasto}
 {sortOrder}                
       </select>  
+      <select id="fuente">  
+select
+  tc_kalan_empresas_gastos.id_empresa_gasto as id_key,
+  tc_kalan_empresas_gastos.*
+from
+  tc_kalan_empresas_gastos
+inner join ( 
+  select
+    tc_kalan_empresas_controles.id_empresa_gasto
+  from  
+    tc_kalan_empresas_controles 
+  where  
+    tc_kalan_empresas_controles.id_gasto_control= {idEmpresaGasto}
+) as tt_kalan_empresas_controles on tc_kalan_empresas_gastos.id_empresa_gasto= tt_kalan_empresas_controles.id_empresa_gasto        
+      </select>  
       <select id="acumulados">
 select
 	tc_kalan_gastos_clasificaciones.id_gasto_clasificacion as id_key,
