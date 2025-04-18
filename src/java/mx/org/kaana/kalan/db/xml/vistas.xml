@@ -192,6 +192,7 @@ select
 	tc_kalan_empresas_gastos.concepto,
 	tc_kalan_empresas_gastos.observaciones,
 	tc_kalan_empresas_gastos.total,
+	tc_kalan_empresas_gastos.pago,
 	tc_kalan_empresas_gastos.pagos,
 	tc_kalan_empresas_cuentas.nombre as cuenta,
 	tc_kalan_gastos_estatus.id_gasto_estatus,
@@ -281,7 +282,7 @@ inner join (
 select
 	tc_kalan_gastos_clasificaciones.id_gasto_clasificacion as id_key,
   tc_kalan_gastos_clasificaciones.id_gasto_clasificacion,
-	tc_mantic_empresas.nombre as empresa,
+	tc_mantic_empresas.titulo as empresa,
 	tc_kalan_gastos_clasificaciones.descripcion as clasificacion,
 	'{anterior}' as fecha_anterior,
 	sum(if(date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y|%m')= '{anterior}', tc_kalan_empresas_gastos.total, 0)) as anterior,

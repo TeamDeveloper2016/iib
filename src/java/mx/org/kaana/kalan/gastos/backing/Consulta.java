@@ -213,8 +213,13 @@ public class Consulta extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       List<UISelectItem> ejercicios= UISelect.build("TcKalanEmpresasGastosDto", "ejercicios", params, "idKey|ejercicio", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("ejercicios", ejercicios);
-      if(ejercicios!= null && !ejercicios.isEmpty()) 
-        this.attrs.put("ejercicio", ejercicios.get(0).getValue());
+      if(ejercicios!= null && !ejercicios.isEmpty()) {
+        int index= ejercicios.indexOf(new UISelectItem(new Long(Fecha.getAnioActual())));
+        if(index>= 0)
+          this.attrs.put("ejercicio", ejercicios.get(index).getValue());
+        else
+          this.attrs.put("ejercicio", ejercicios.get(0).getValue());
+      } // if  
       else
         this.attrs.put("ejercicio", new Long(Fecha.getAnioActual()));
       this.doLoadMeses();
@@ -236,8 +241,13 @@ public class Consulta extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       List<UISelectItem> meses= UISelect.build("TcKalanEmpresasGastosDto", "meses", params, "idKey|nombre", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("meses", meses);
-      if(meses!= null && !meses.isEmpty()) 
-        this.attrs.put("idMes", meses.get(0).getValue());
+      if(meses!= null && !meses.isEmpty()) {
+        int index= meses.indexOf(new UISelectItem(new Long(Fecha.getMesActual())));
+        if(index>= 0)
+          this.attrs.put("idMes", meses.get(index).getValue());
+        else
+          this.attrs.put("idMes", meses.get(0).getValue());
+      } // if  
       else
         this.attrs.put("idMes", new Long(Fecha.getMesActual()));
     } // try

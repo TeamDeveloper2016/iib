@@ -377,7 +377,7 @@ where
 			</select>
 			<select id="ejercicios">
 select
-  ejercicio as id_key,
+  cast(date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y') as UNSIGNED) as id_key,
   date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y') as ejercicio
 from 
   tc_kalan_empresas_gastos
@@ -395,7 +395,7 @@ from
 inner join
   tc_janal_meses on month(fecha_aplicacion)= tc_janal_meses.id_mes
 where
-  tc_kalan_empresas_gastos.ejercicio= {ejercicio}
+  date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y')= '{ejercicio}'
 group by
   tc_janal_meses.id_mes
 order by

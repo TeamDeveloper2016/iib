@@ -1,9 +1,11 @@
 package mx.org.kaana.libs.archivo;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import jxl.Workbook;
 import jxl.write.Label;
@@ -12,10 +14,14 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.page.LinkPage;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +30,8 @@ import org.apache.commons.logging.LogFactory;
 public class Xls extends XlsBase {
 
 	private static final long serialVersionUID = 7676537739920483322L;
+	private static final Log LOG= LogFactory.getLog(Xls.class);
+  
 	protected List<IBaseDto> registros;
 	private Modelo definicion;  
   private int totalColumnas;
@@ -31,23 +39,29 @@ public class Xls extends XlsBase {
   protected String campos;
 	private String nombreArchivo;
   private Monitoreo monitoreo;
-	private static final Log LOG= LogFactory.getLog(Xls.class);
+  private List<Columna> columns;
   
-  public Xls(String nombreArchivo, Modelo definicion, String campos) {    
+  public Xls(String nombreArchivo, Modelo definicion, String campos) {
+    this(nombreArchivo, definicion, campos, new ArrayList<>());
+  } 
+  
+  public Xls(String nombreArchivo, Modelo definicion, String campos, List<Columna> columns) {    
 		this.nombreArchivo= nombreArchivo;
-		this.definicion= definicion;
-		this.campos= campos;  
+		this.definicion   = definicion;
+		this.campos       = campos;  
+    this.columns      = columns;
 		this.init();
   }
 
   public Xls(String nombreArchivo, String campos) {    
 		this.nombreArchivo= nombreArchivo;
-		this.campos= campos;  
+		this.campos       = campos;  
+    this.columns      = new ArrayList<>();
 		this.init();
   }
   
   public Xls(String archivo, Modelo definicion) {
-    this(archivo, definicion, null);    
+    this(archivo, definicion, null, new ArrayList<>());    
   }
   
 	private void init(){
@@ -105,14 +119,12 @@ public class Xls extends XlsBase {
 	}
   	
   protected Map convertirHashMap(IBaseDto registro) throws Exception {
-    Map columna             = null;    
+    Map columna             = new HashMap();    
     Map registroMap         = null;
-    String [] nombreColumnas= null;
+    String [] nombreColumnas= this.campos.split(",");
     try  {            
       registroMap= registro.toMap();            
-      nombreColumnas= this.campos.split(",");
-      columna= new HashMap();
-      for (int i=0; i< getColumnasInformacion(); i++) {        
+      for (int i= 0; i< getColumnasInformacion(); i++) {        
         columna.put("col"+ String.valueOf(i), registroMap.get(Cadena.toBeanName(nombreColumnas[i])));
       } // for  
     } // try 
@@ -129,11 +141,11 @@ public class Xls extends XlsBase {
 		Set<String> fields		= null;		
     try {               
 			fields= this.registros.get(0).toMap().keySet();
-			for(String field : fields) {
+			for(String field: fields) {
 				columnas.append(field);
 				columnas.append(",");
 			} // for x    
-			columnas = columnas.delete(columnas.length() -1, columnas.length());
+			columnas= columnas.delete(columnas.length() -1, columnas.length());
 			regresar= columnas.toString();      
     }
     catch (Exception e) {
@@ -148,14 +160,27 @@ public class Xls extends XlsBase {
   }
 
 	private void detail(List<IBaseDto> registros) throws Exception {
-		Map columna    = null;
-		int fila       = 1;
+		Map columna = null;
+    Object value= null;
+		int fila    = 1;
 		try {						
+      String[] names= this.campos.split(",");
 			for (IBaseDto registro: registros) {
         columna= this.convertirHashMap(registro);
         for (int x= 0; x < columna.size(); x++) {
-          LOG.info("[generarRegistros]  registro: "+ fila+ " celda: "+ columna.get("col"+ String.valueOf(x)));
-          Label label= new Label(getPosicionColumna()+ x, getPosicionFila()+ fila, columna.get("col"+String.valueOf(x))== null? "": columna.get("col"+ String.valueOf(x)).toString());         
+          if(Objects.equals(columna.get("col"+ String.valueOf(x)), null))
+            value= "";
+          else {
+            int index= this.columns.indexOf(new Columna(Cadena.toBeanName(names[x])));
+            if(index>= 0) {
+              Columna column= this.columns.get(index);
+              value= Global.format(column.getFormat(), columna.get("col"+ String.valueOf(x)));
+            } // if
+            else
+              value= columna.get("col"+ String.valueOf(x)).toString();
+          } // if  
+          LOG.info("Fila: "+ fila+ " celda: "+ value);
+          Label label= new Label(getPosicionColumna()+ x, getPosicionFila()+ fila, value.toString());         
           hoja.addCell(label);
         } // for x
         columna.clear();
@@ -173,36 +198,36 @@ public class Xls extends XlsBase {
 	
 	@Override
   public boolean generarRegistros(boolean titulo) throws Exception {
-    boolean termino	= true; 			
-		int top					= new Long(Constantes.SQL_TODOS_REGISTROS).intValue();
+    boolean termino= Boolean.FALSE; 			
+		int top				= new Long(Constantes.SQL_TODOS_REGISTROS).intValue();
     try {			
+      this.libro= Workbook.createWorkbook(new File(this.nombreArchivo));
+      this.hoja = this.libro.createSheet("IMOX", 0);
+      if (!isAlgunos())
+        this.campos= getNombresColumnas();		
+      if (titulo)
+        this.procesarEncabezado(this.campos);   
+      this.setTotalColumnas();
 			PageRecords pages= DaoFactory.getInstance().toEntityPage(getDefinicion().getProceso(), getDefinicion().getIdXml(), getDefinicion().getParams(), 0, top);
-			if ((pages!= null) && (!pages.getList().isEmpty())) {				
+			if(!Objects.equals(pages, null) && !Objects.equals(pages.getList(), null) && pages.getList().size()> 0) {				
         this.monitoreo.comenzar(DaoFactory.getInstance().toSize(getDefinicion().getProceso(), getDefinicion().getIdXml(), getDefinicion().getParams()));
-				libro= Workbook.createWorkbook(new File(this.nombreArchivo));
-				hoja = libro.createSheet("IMOX", 0);
 				this.registros= pages.getList();
-				if (!isAlgunos())
-					this.campos= getNombresColumnas();		
-				if (titulo)
-					procesarEncabezado(this.campos);   
-				setTotalColumnas();
 				pages.calculate(true);
 				List<LinkPage> list= pages.getPages();								
-				detail((List)pages.getList());
+				this.detail((List)pages.getList());
 				for(LinkPage page: list) {
 					PageRecords values= DaoFactory.getInstance().toEntityPage(getDefinicion().getProceso(), getDefinicion().getIdXml(), getDefinicion().getParams(), (int)(page.getIndex()* top), top);
-					detail((List)values.getList());
+					this.detail((List)values.getList());
 				} // for				
+        termino= Boolean.TRUE;
 			} // if
     } // try
     catch (Exception e) {
-			termino= false;
       Error.mensaje(e);
     } // catch
 		finally {
-  	  getLibro().write();
-      getLibro().close();
+  	  this.libro.write();
+      this.libro.close();
     } // finally
     return termino;
   }
@@ -236,7 +261,7 @@ public class Xls extends XlsBase {
   } 
   
   public boolean procesar() throws Exception {        
-    return generarRegistros(true);
+    return this.generarRegistros(true);
   } 
 
   public boolean procesar(int posColumna, int posFila, boolean colocarTitulo) throws Exception {    

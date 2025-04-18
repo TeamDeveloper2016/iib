@@ -115,7 +115,7 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
           if(filters!=null && filters.size()> 0)
             this.params.put("filters", " and (".concat(this.toFilters(filters)).concat(")"));
           LOG.info("Lazy params: "+ this.getParams());
-          page=DaoFactory.getInstance().toEntityPage(this.idFuenteDato, this.proceso, this.idXml, this.params, first, pageSize);
+          page= DaoFactory.getInstance().toEntityPage(this.idFuenteDato, this.proceso, this.idXml, this.params, first, pageSize);
           this.setWrappedData((List<T>) page.getList());
           this.setRowCount(page.getCount());
           if(this.getRowCount()>0) {

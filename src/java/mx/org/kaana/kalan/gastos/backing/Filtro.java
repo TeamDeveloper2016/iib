@@ -57,6 +57,7 @@ import org.primefaces.model.StreamedContent;
 public class Filtro extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID=1361701967796774746L;
+  private static final String FILE_COLUMN_XLS= "EMPRESA,CONSECUTIVO,CLASIFICACION,SUBCLASIFICACION,CONCEPTO,FECHA_APLICACION,TOTAL,ESTATUS,FECHA_REFERENCIA,REFERENCIA,PROVEEDOR,OBSERVACIONES,REGISTRO";
   
   private FormatLazyModel lazyDetalle;
   private Reporte reporte;
@@ -68,7 +69,17 @@ public class Filtro extends IBaseFilter implements Serializable {
   public FormatLazyModel getLazyDetalle() {
     return lazyDetalle;
   }
-	
+
+  public Boolean getIsAdmin() {
+		try {
+      return JsfBase.isEncargado();
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);			
+		} // catch		
+    return Boolean.FALSE;
+  }
+  
   public String getTotal() {
     double sum  = 0D;
     String value= null;
@@ -91,11 +102,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Xls xls                   = null;
 		String template           = "GASTOS";
 		Map<String, Object> params= this.toPrepare();
+    List<Columna> columns     = new ArrayList<>();
 		try {
-      params.put("sortOrder", "order by tc_kalan_empresas_gastos.consecutivo desc");
+      params.put("sortOrder", "order by tc_kalan_empresas_gastos.id_empresa, tc_kalan_empresas_gastos.consecutivo desc");
+      columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("fechaReferencia", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      Modelo modelo  = new Modelo(params, "VistaEmpresasGastosDto", "lazy", template);
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
-      xls= new Xls(fileName, new Modelo(params, "VistaEmpresasGastosDto", "lazy", template), "EMPRESA,CONSECUTIVO,CLASIFICACION,SUBCLASIFICACION,CONCEPTO,FECHA_APLICACION,TOTAL,PAGOS,ESTATUS,FECHA_REFERENCIA,REFERENCIA,PROVEEDOR,OBSERVACIONES,REGISTRO");	
+      xls= new Xls(fileName, modelo, FILE_COLUMN_XLS, columns);	
 			if(xls.procesar()) {
 				Zip zip       = new Zip();
 				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());
@@ -105,14 +125,17 @@ public class Filtro extends IBaseFilter implements Serializable {
         InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(zipName));  
 		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase()));
 			} // if
+      else 
+        JsfBase.addMessage("Exportar", "No existen registros que exportar !");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-		finally {
+    finally {
 			Methods.clean(params);
-		} // finally
+      Methods.clean(columns);
+    } // finally		
     return regresar;
   }	
   
@@ -138,7 +161,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_kalan_empresas_gastos.consecutivo desc");
+      params.put("sortOrder", "order by tc_kalan_empresas_gastos.id_empresa, tc_kalan_empresas_gastos.consecutivo desc");
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));

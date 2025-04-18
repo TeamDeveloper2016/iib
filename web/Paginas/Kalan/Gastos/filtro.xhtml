@@ -142,7 +142,7 @@
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
-                  <p:menuitem icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                  <p:menuitem icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
                     <p:fileDownload value="#{kalanGastosFiltro.archivo}"/>
                   </p:menuitem>	
                   <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
@@ -152,7 +152,7 @@
                 <p:commandButton action="#{kalanGastosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                 <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                <p:commandButton icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
                   <p:fileDownload value="#{kalanGastosFiltro.archivo}"/>
                 </p:commandButton>	
                 <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
@@ -260,7 +260,7 @@
             <p:menuitem value="Consultar" action="#{kalanGastosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
             <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanGastosFiltro.doMovimientos}"/>
             <p:separator rendered="#{fn:contains('|1|2|', kalanGastosFiltro.attrs.seleccionado.idGastoEstatus)}"/>					
-            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', kalanGastosFiltro.attrs.seleccionado.idGastoEstatus)}"/>					
+            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', kalanGastosFiltro.attrs.seleccionado.idGastoEstatus) and kalanGastosFiltro.isAdmin}"/>
           </p:contextMenu>			
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanGastosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kalanGastosFiltro.lazyDetalle.rowCount gt kalanGastosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="detalle" rowStyleClass="#{kalanGastosFiltro.doColor(row)}"  style="display: #{kalanGastosFiltro.lazyDetalle eq null? 'none': ''}">
             <f:facet name="header">
@@ -323,7 +323,7 @@
               <f:facet name="header">
                 <h:outputText value="..."/>
               </f:facet>
-              <p:commandButton icon="fa fa-remove" process="@this" actionListener="#{kalanGastosFiltro.doLoadDetalle(row)}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" title="Cancelar" rendered="#{row.idGastoEstatus.toLong() eq 2}"/>
+              <p:commandButton icon="fa fa-trash" process="@this" actionListener="#{kalanGastosFiltro.doLoadDetalle(row)}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" title="Cancelar" rendered="#{row.idGastoEstatus.toLong() eq 2 and kalanGastosFiltro.isAdmin}"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{kalanGastosFiltro.lazyModel== null? 0: kalanGastosFiltro.lazyModel.rowCount}] registros" styleClass="total janal-icons-header"/>

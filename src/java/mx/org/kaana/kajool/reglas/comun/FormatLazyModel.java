@@ -28,7 +28,7 @@ public class FormatLazyModel<T extends IBaseDto> extends EntityLazyModel<T> impl
 	private List<Columna> fields;
 
 	public FormatLazyModel(String proceso, List<Columna> fields) {
-		this(proceso,Collections.EMPTY_MAP, fields);		
+		this(proceso, Collections.EMPTY_MAP, fields);		
 	}
 	
 	public FormatLazyModel(String proceso, Map<String, Object> params, List<Columna> fields) {
@@ -36,27 +36,27 @@ public class FormatLazyModel<T extends IBaseDto> extends EntityLazyModel<T> impl
 	}
 	
 	public FormatLazyModel(String proceso, String idXml, List<Columna> fields) {
-		this(proceso,idXml,Collections.EMPTY_MAP, fields,-1L);		
+		this(proceso, idXml, Collections.EMPTY_MAP, fields, -1L);		
 	}		
 	
 	public FormatLazyModel(String proceso, String idXml, Map<String, Object> params, List<Columna> fields) {		
-		this(proceso, idXml, params,fields,-1L);		
+		this(proceso, idXml, params, fields, -1L);		
 	}	
 	
 	public FormatLazyModel(String proceso, Map<String, Object> params, List<Columna> fields, Long idFuenteDato) {
-	  this(proceso,Constantes.DML_SELECT,params,fields,idFuenteDato);			
+	  this(proceso, Constantes.DML_SELECT, params, fields, idFuenteDato);			
 	}	
 	
 	public FormatLazyModel(Class<? extends IBaseDto> proceso, List<Columna> fields) {
-		this(proceso,fields,-1L);
+		this(proceso, fields, -1L);
 	}
 	
 	public FormatLazyModel(Class<? extends IBaseDto> proceso, List<Columna> fields, Long idFuenteDato) {
-		this(proceso.getSimpleName(),Constantes.DML_SELECT,Collections.EMPTY_MAP, fields,idFuenteDato);		
+		this(proceso.getSimpleName(), Constantes.DML_SELECT, Collections.EMPTY_MAP, fields,idFuenteDato);		
 	}
 	
 	public FormatLazyModel(String proceso, String idXml, Map<String, Object> params, List<Columna> fields, Long idFuenteDato) {
-		super( proceso, idXml, params,idFuenteDato);	
+		super( proceso, idXml, params, idFuenteDato);	
 		this.fields= new ArrayList<>(fields);
 	}		
 
