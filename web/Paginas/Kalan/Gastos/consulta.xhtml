@@ -79,7 +79,7 @@
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
-                  <p:menuitem icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
+                  <p:menuitem icon="fa fa-file-excel-o" value="Reporte" process="@this panelBusqueda" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
                     <p:fileDownload value="#{kalanGastosConsulta.archivo}"/>
                   </p:menuitem>	
                 </p:menuButton>
@@ -88,7 +88,7 @@
                 <p:commandButton action="#{kalanGastosConsulta.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar gasto" onstart="return janal.bloquear()"/>						
                 <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
+                <p:commandButton icon="fa fa-file-excel-o" value="Reporte" process="@this panelBusqueda" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
                   <p:fileDownload value="#{kalanGastosConsulta.archivo}"/>
                 </p:commandButton>	
                 <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosConsulta.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>

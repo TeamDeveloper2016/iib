@@ -103,7 +103,7 @@ public class Consolidado extends XlsBase implements Serializable {
     List<Entity> gastos       = null;
     try {      
       TcManticEmpresasDto empresa= (TcManticEmpresasDto)DaoFactory.getInstance().findById(TcManticEmpresasDto.class, this.idEmpresa);
-      regresar= Archivo.toFormatNameOutFile(Constantes.ARCHIVO_PATRON_NOMBRE, "RESUMEN-".concat(this.tactual).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
+      regresar= Archivo.toFormatNameOutFile(Constantes.ARCHIVO_PATRON_NOMBRE, (Objects.equals(empresa.getNombre(), null)? "": empresa.getNombre()).concat("-RESUMEN-").concat(this.tactual).concat(".").concat(EFormatos.XLS.name().toLowerCase()));
       this.posicionFila   = 0;
       this.posicionColumna= 0;
       this.libro= Workbook.createWorkbook(new File(this.path.concat(regresar)));
@@ -146,12 +146,12 @@ public class Consolidado extends XlsBase implements Serializable {
       if(regresar!= null && !regresar.isEmpty()) {
         Entity pivot  = null;
         Double vigente= 0D; Double  atras   = 0D;
-        Double tactual= 0D; Double tanterior= 0D;
+        Double vactual= 0D; Double vanterior= 0D;
         for (Entity item: regresar) {
           vigente  += item.toDouble("actual");
           atras    += item.toDouble("anterior");
-          tactual  += item.toDouble("actual");
-          tanterior+= item.toDouble("anterior");
+          vactual  += item.toDouble("actual");
+          vanterior+= item.toDouble("anterior");
           pivot= item;
         } // for
         Entity subtotal= pivot.clone();
@@ -173,8 +173,8 @@ public class Consolidado extends XlsBase implements Serializable {
         total.get("idKey").setData(999L);
         total.get("empresa").setData("");
         total.get("clasificacion").setData("TOTAL");
-        total.put("actual", new Value("actual", tactual- ingresos.toDouble("actual")));
-        total.put("anterior", new Value("anterior", tanterior- ingresos.toDouble("anterior")));
+        total.put("actual", new Value("actual", vactual- ingresos.toDouble("actual")));
+        total.put("anterior", new Value("anterior", vanterior- ingresos.toDouble("anterior")));
         regresar.add(total);
       } //if  
     } // try

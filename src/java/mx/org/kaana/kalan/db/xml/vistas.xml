@@ -320,9 +320,9 @@ from
 inner join
   tc_mantic_empresas on tc_kalan_empresas_gastos.id_empresa= tc_mantic_empresas.id_empresa
 inner join
-  tc_kalan_gastos_clasificaciones	on tc_kalan_empresas_gastos.id_gasto_clasificacion= tc_kalan_gastos_clasificaciones.id_gasto_clasificacion
+  tc_kalan_gastos_clasificaciones	on tc_kalan_empresas_gastos.id_gasto_clasificacion= tc_kalan_gastos_clasificaciones.id_gasto_clasificacion and tc_kalan_gastos_clasificaciones.id_activo= 1
 inner join
-  tc_kalan_gastos_subclasificaciones on tc_kalan_gastos_clasificaciones.id_gasto_clasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_clasificacion
+  tc_kalan_gastos_subclasificaciones on tc_kalan_empresas_gastos.id_gasto_clasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_clasificacion and tc_kalan_empresas_gastos.id_gasto_subclasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_subclasificacion and tc_kalan_gastos_subclasificaciones.id_activo= 1
 where
   tc_kalan_empresas_gastos.id_empresa= {idEmpresa}
 	and (tc_kalan_empresas_gastos.id_fuente= 2 or (tc_kalan_empresas_gastos.id_activo_prorratear= 2 and tc_kalan_empresas_gastos.id_fuente= 1))
