@@ -153,6 +153,18 @@ from
 where      
   clave = '{clave}'
       </select>
+      <select id="lazy">
+select      
+  tc_kalan_gastos_clasificaciones.id_gasto_clasificacion as id_key,        
+  if(tc_kalan_gastos_clasificaciones.id_activo= 1, 'SI', 'NO') as activo,
+  tc_kalan_gastos_clasificaciones.*
+from      
+  tc_kalan_gastos_clasificaciones
+where 
+  id_activo= 1
+  and {condicion} 
+{sortOrder}
+      </select>
     </unit>   
     <unit id="TcKalanGastosSubclasificacionesDto">
       <select id="row">
@@ -175,6 +187,21 @@ from
   tc_kalan_gastos_subclasificaciones
 where      
   clave = '{clave}' and id_gasto_clasificacion = {idGastoClasificacion}
+      </select>
+      <select id="lazy">
+select      
+  tc_kalan_gastos_subclasificaciones.id_gasto_subclasificacion as id_key,        
+  if(tc_kalan_gastos_subclasificaciones.id_activo= 1, 'SI', 'NO') as activo,
+  tc_kalan_gastos_clasificaciones.descripcion as clasificacion,
+  tc_kalan_gastos_subclasificaciones.*
+from      
+  tc_kalan_gastos_subclasificaciones
+inner join        
+  tc_kalan_gastos_clasificaciones on tc_kalan_gastos_clasificaciones.id_gasto_clasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_clasificacion
+where 
+  tc_kalan_gastos_subclasificaciones.id_activo= 1
+  and {condicion} 
+{sortOrder}
       </select>
     </unit>    
     <unit id="TcKalanEmpresasCuentasDto">

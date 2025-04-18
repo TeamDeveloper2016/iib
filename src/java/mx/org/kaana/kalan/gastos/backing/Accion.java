@@ -28,6 +28,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -69,8 +70,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.egasto= JsfBase.getFlashAttribute("egasto")== null? EGastos.GASTOS_ADMINISTRATIVOS: (EGastos)JsfBase.getFlashAttribute("egasto");
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));      
-//      if(JsfBase.getFlashAttribute("retorno")== null)
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      if(JsfBase.getFlashAttribute("retorno")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("idEmpresaGasto", JsfBase.getFlashAttribute("idEmpresaGasto")== null? -1L: JsfBase.getFlashAttribute("idEmpresaGasto"));
       this.attrs.put("total", 0D);
 			this.doLoad();

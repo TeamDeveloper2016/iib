@@ -23,6 +23,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -58,8 +59,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Kalan/Movimientos/ingreso": JsfBase.getFlashAttribute("retorno"));
 			this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));      
-//      if(JsfBase.getFlashAttribute("retorno")== null)
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      if(JsfBase.getFlashAttribute("retorno")== null)
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("encabezado", JsfBase.getFlashAttribute("pagina")== null? "Ingreso": Cadena.letraCapital((String)JsfBase.getFlashAttribute("pagina")));
       this.attrs.put("pagina", JsfBase.getFlashAttribute("pagina")== null? "ingreso": JsfBase.getFlashAttribute("pagina"));
       this.attrs.put("titulo", JsfBase.getFlashAttribute("titulo")== null? " ingreso sin factura": JsfBase.getFlashAttribute("titulo"));

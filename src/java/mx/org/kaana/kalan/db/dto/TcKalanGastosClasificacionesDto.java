@@ -52,7 +52,7 @@ public class TcKalanGastosClasificacionesDto implements IBaseDto, Serializable {
   }
 
   public TcKalanGastosClasificacionesDto(Long key) {
-    this(null, null, null, new Long(-1L));
+    this(null, null, 1L, new Long(-1L));
     setKey(key);
   }
 
