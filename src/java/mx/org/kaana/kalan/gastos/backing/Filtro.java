@@ -1,5 +1,6 @@
 package mx.org.kaana.kalan.gastos.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -8,12 +9,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -36,11 +41,16 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.kalan.gastos.reglas.Transaccion;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Xls;
+import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "kalanGastosFiltro")
 @ViewScoped
@@ -76,12 +86,43 @@ public class Filtro extends IBaseFilter implements Serializable {
     return Numero.formatear(Numero.MONEDA_CON_DECIMALES, Numero.toRedondearSat(sum));
   }
   
+	public StreamedContent getArchivo() {
+		StreamedContent regresar  = null;
+		Xls xls                   = null;
+		String template           = "GASTOS";
+		Map<String, Object> params= this.toPrepare();
+		try {
+      params.put("sortOrder", "order by tc_kalan_empresas_gastos.consecutivo desc");
+			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
+  		String fileName= JsfBase.getRealPath("").concat(salida);
+      xls= new Xls(fileName, new Modelo(params, "VistaEmpresasGastosDto", "lazy", template), "EMPRESA,CONSECUTIVO,CLASIFICACION,SUBCLASIFICACION,CONCEPTO,FECHA_APLICACION,TOTAL,ESTATUS,FECHA_REFERENCIA,REFERENCIA,PROVEEDOR,OBSERVACIONES,REGISTRO");	
+			if(xls.procesar()) {
+				Zip zip       = new Zip();
+				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());
+				zip.setEliminar(true);
+				zip.compactar(JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()).concat(zipName), JsfBase.getRealPath("").concat(EFormatos.XLS.toPath()), "*".concat(template.concat(".").concat(EFormatos.XLS.name().toLowerCase())));
+		    String contentType= EFormatos.ZIP.getContent();
+        InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(zipName));  
+		    regresar          = new DefaultStreamedContent(stream, contentType, Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase()));
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+    return regresar;
+  }	
+  
   @PostConstruct
   @Override
   protected void init() {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresaGastoProcess", JsfBase.getFlashAttribute("idEmpresaGastoProcess"));
+      this.attrs.put("idFuente", 2L);
 			this.toLoadCatalogos();
       if(this.attrs.get("idEmpresaGastoProcess")!= null) 
 			  this.doLoad();
@@ -196,6 +237,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+    regresar.put("idFuente", this.attrs.get("idFuente"));
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	

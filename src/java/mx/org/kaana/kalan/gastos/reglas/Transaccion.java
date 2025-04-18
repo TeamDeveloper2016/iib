@@ -58,6 +58,8 @@ public class Transaccion extends IBaseTnx {
           this.gasto.setOrden(consecutivo.getOrden());
           if(Objects.equals(this.gasto.getIdActivoProrratear(), 1L)) 
             this.gasto.setPago(0L);
+          else
+            this.gasto.setPagos(0L);
           regresar= DaoFactory.getInstance().insert(sesion, this.gasto)> 0L;
           if(Objects.equals(this.gasto.getIdActivoCheque(), 1L)) {
             this.gasto.getDocumento().setIdEmpresaGasto(this.gasto.getIdEmpresaGasto());
@@ -170,14 +172,12 @@ public class Transaccion extends IBaseTnx {
               item.setConcepto(this.gasto.getConcepto());
               item.setIdEmpresa(this.gasto.getIdEmpresa());
               item.setIdProveedor(this.gasto.getIdProveedor());
-              // item.setFechaAplicacion(this.gasto.getFechaAplicacion());
               item.setIdGastoClasificacion(this.gasto.getIdGastoClasificacion());
               item.setIdGastoSubclasificacion(this.gasto.getIdGastoSubclasificacion());
               item.setIdEmpresaCuenta(this.gasto.getIdEmpresaCuenta());
               item.setIdGastoComprobante(this.gasto.getIdGastoComprobante());
               item.setReferencia(this.gasto.getReferencia());
               item.setFechaReferencia(this.gasto.getFechaReferencia());
-              item.setObservaciones(this.gasto.getObservaciones());
               item.setIdActivoCheque(2L);
               item.setIdActivoProrratear(2L);
               item.setIdFuente(2L);
@@ -197,14 +197,12 @@ public class Transaccion extends IBaseTnx {
               item.setConcepto(this.gasto.getConcepto());
               item.setIdEmpresa(this.gasto.getIdEmpresa());
               item.setIdProveedor(this.gasto.getIdProveedor());
-              // item.setFechaAplicacion(this.gasto.getFechaAplicacion());
               item.setIdGastoClasificacion(this.gasto.getIdGastoClasificacion());
               item.setIdGastoSubclasificacion(this.gasto.getIdGastoSubclasificacion());
               item.setIdEmpresaCuenta(this.gasto.getIdEmpresaCuenta());
               item.setIdGastoComprobante(this.gasto.getIdGastoComprobante());
               item.setReferencia(this.gasto.getReferencia());
               item.setFechaReferencia(this.gasto.getFechaReferencia());
-              item.setObservaciones(this.gasto.getObservaciones());
               item.setIdActivoCheque(2L);
               item.setIdActivoProrratear(2L);
               item.setIdFuente(2L);

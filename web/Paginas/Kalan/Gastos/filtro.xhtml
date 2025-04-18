@@ -37,6 +37,15 @@
 				} // if
 				return ok;
 			} // justifica
+      //<![CDATA[
+				function start() {
+					janal.bloquear();
+				}
+
+				function stop() {
+					janal.desbloquear();
+				}
+      //]]>
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -104,6 +113,11 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+              <p:outputLabel for="idFuente" value="Desglosado:"/>
+              <p:selectOneMenu id="idFuente" value="#{kalanGastosFiltro.attrs.idFuente}" converter="javax.faces.Long" styleClass="janal-wid-100-txt">
+                <f:selectItem itemLabel="SI" itemValue="2"/>
+                <f:selectItem itemLabel="NO" itemValue="1"/>
+              </p:selectOneMenu>								
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
@@ -128,14 +142,20 @@
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
-                  <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                  <p:menuitem icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                    <p:fileDownload value="#{kalanGastosFiltro.archivo}"/>
+                  </p:menuitem>	
+                  <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
                 <p:commandButton action="#{kalanGastosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                 <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:commandButton icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+                  <p:fileDownload value="#{kalanGastosFiltro.archivo}"/>
+                </p:commandButton>	
+                <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
               </div>  
             </f:facet>	            
             <p:column styleClass="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
@@ -156,11 +176,24 @@
               </f:facet>
               <h:outputText value="#{row['clasificacion']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.subclasificacion}">
+            <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.subclasificacion}" exportable="false">
               <f:facet name="header">
                 <h:outputText value="Sub clasificación"/>
               </f:facet>
               <h:outputText value="#{row['subclasificacion']}"/>
+              <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Concepto: #{row['concepto']}"></i>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Sub clasificación"/>
+              </f:facet>
+              <h:outputText value="#{row['subclasificacion']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Concepto"/>
+              </f:facet>
+              <h:outputText value="#{row['concepto']}"/>
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center" sortBy="#{row.fechaAplicacion}">
               <f:facet name="header">
@@ -168,18 +201,17 @@
               </f:facet>
               <h:outputText value="#{row['fechaAplicacion']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-center janal-display-none" sortBy="#{row.fechaReferencia}">
+            <p:column styleClass="MarAuto Responsive janal-wid-1 janal-column-center janal-display-none">
               <f:facet name="header">
                 <h:outputText value="Fecha referencia"/>
               </f:facet>
               <h:outputText value="#{row['fechaReferencia']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-display-none" sortBy="#{row.referencia}">
+            <p:column styleClass="MarAuto Responsive janal-display-none">
               <f:facet name="header">
                 <h:outputText value="Referencia"/>
               </f:facet>
               <h:outputText value="#{row['referencia']}"/>
-              <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}"></i>
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-display-none" sortBy="#{row.proveedor}">
               <f:facet name="header">
@@ -204,6 +236,12 @@
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-display-none">
+              <f:facet name="header">
+                <h:outputText value="Observaciones"/>
+              </f:facet>
+              <h:outputText value="#{row['observaciones']}"/>
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5" exportable="false">
               <f:facet name="header">
@@ -245,32 +283,37 @@
               </f:facet>
               <h:outputText value="#{index+ 1}.-"/>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right">
+            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right">
               <f:facet name="header">
                 <h:outputText value="Sub total"/>
               </f:facet>
               <h:outputText value="#{row['subtotal']}"/>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right">
+            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right">
               <f:facet name="header">
                 <h:outputText value="IVA"/>
               </f:facet>
               <h:outputText value="#{row['ivaCalculado']}"/>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-right prorrateos">
+            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right prorrateos">
               <f:facet name="header">
                 <h:outputText value="Total"/>
               </f:facet>
               <h:outputText value="#{row['total']}"/>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-center">
+            <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center">
               <f:facet name="header">
                 <h:outputText value="Aplicar"/>
               </f:facet>
               <h:outputText value="#{row['fechaAplicacion']}"/>
-              <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}"></i>
             </p:column>					
             <p:column styleClass="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Observaciones"/>
+              </f:facet>
+              <h:outputText value="#{row['observaciones']}"/>
+            </p:column>					
+            <p:column styleClass="MarAuto Responsive janal-wid-8">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>

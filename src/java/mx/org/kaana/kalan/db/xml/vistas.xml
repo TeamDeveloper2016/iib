@@ -189,6 +189,7 @@ select
 	tc_kalan_empresas_gastos.fecha_referencia,
 	tc_kalan_empresas_gastos.referencia,
 	tc_mantic_proveedores.razon_social as proveedor,
+	tc_kalan_empresas_gastos.concepto,
 	tc_kalan_empresas_gastos.observaciones,
 	tc_kalan_empresas_gastos.total,
 	tc_kalan_empresas_cuentas.nombre as cuenta,
@@ -213,7 +214,7 @@ inner join
   tc_kalan_gastos_estatus on tc_kalan_empresas_gastos.id_gasto_estatus= tc_kalan_gastos_estatus.id_gasto_estatus
 where
   tc_kalan_empresas_gastos.id_empresa in ({idEmpresa})        
-	and tc_kalan_empresas_gastos.id_fuente= 1
+	and (tc_kalan_empresas_gastos.id_fuente= {idFuente} or (tc_kalan_empresas_gastos.pagos= 0 and tc_kalan_empresas_gastos.pago= 1))
   and {condicion}
 {sortOrder}
       </select>
