@@ -1,18 +1,18 @@
-package mx.org.kaana.kalan.catalogos.subclasificaciones.reglas;
+package mx.org.kaana.kalan.catalogos.conceptos.reglas;
 
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
-import mx.org.kaana.kalan.db.dto.TcKalanGastosSubclasificacionesDto;
+import mx.org.kaana.kalan.db.dto.TcKalanTiposConceptosDto;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
-	private TcKalanGastosSubclasificacionesDto subclasificacion;	
+	private TcKalanTiposConceptosDto concepto;	
 	private String messageError;
 
-	public Transaccion(TcKalanGastosSubclasificacionesDto subclasificacion) {
-		this.subclasificacion= subclasificacion;		
+	public Transaccion(TcKalanTiposConceptosDto concepto) {
+		this.concepto= concepto;		
 	}
 
 	public String getMessageError() {
@@ -23,16 +23,16 @@ public class Transaccion extends IBaseTnx {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar= false;
 		try {
-			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro del sub clasificador");
+			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro del concepto");
 			switch(accion){
 				case AGREGAR:
-					regresar= DaoFactory.getInstance().insert(sesion, this.subclasificacion)>= 1L;
+					regresar= DaoFactory.getInstance().insert(sesion, this.concepto)>= 1L;
 					break;
 				case MODIFICAR:
-					regresar= DaoFactory.getInstance().update(sesion, this.subclasificacion)>= 1L;
+					regresar= DaoFactory.getInstance().update(sesion, this.concepto)>= 1L;
 					break;				
 				case ELIMINAR:
-					regresar= DaoFactory.getInstance().delete(sesion, this.subclasificacion)>= 1L;
+					regresar= DaoFactory.getInstance().delete(sesion, this.concepto)>= 1L;
 					break;
 			} // switch
 			if(!regresar)

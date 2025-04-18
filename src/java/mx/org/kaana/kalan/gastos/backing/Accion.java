@@ -261,6 +261,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar        = null;
     Transaccion transaccion= null;
     try {			
+      if(Objects.equals(this.gasto.getIdProveedor(), -1L))
+        this.gasto.setIdProveedor(null);
       if(Objects.equals(this.gasto.getIdEmpresaCuenta(), -1L))
         this.gasto.setIdEmpresaCuenta(null);
       if(Objects.equals(this.gasto.getIdGastoComprobante(), -1L))
@@ -275,6 +277,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 				JsfBase.addMessage("Ocurrió un error al registrar el gasto !", ETipoMensaje.ALERTA);      			
       if(Objects.equals(this.gasto.getDocumento().getIdProveedor(), null))
         this.gasto.getDocumento().setIdProveedor(-1L);
+      if(Objects.equals(this.gasto.getIdProveedor(), null))
+        this.gasto.setIdProveedor(-1L);
       if(Objects.equals(this.gasto.getIdEmpresaCuenta(), null))
         this.gasto.setIdEmpresaCuenta(-1L);
       if(Objects.equals(this.gasto.getIdGastoComprobante(), null))
@@ -288,7 +292,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } 
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idEmpresaGastoProcess", this.attrs.get("idEmpresaGasto"));
+  	JsfBase.setFlashAttribute("idEmpresaGastoProcess", this.gasto.getIdEmpresaGasto());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 	

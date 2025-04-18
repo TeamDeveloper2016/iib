@@ -864,7 +864,8 @@ where
     <unit id="TcKalanTiposMovimientosDto">
       <select id="row">
 select      
-  *
+  tc_kalan_tipos_movimientos.id_tipo_movimiento as id_key,        
+  tc_kalan_tipos_movimientos.*
 from      
   tc_kalan_tipos_movimientos
 where 
@@ -920,6 +921,21 @@ where
   id_tipo_movimiento= {idTipoMovimiento}
   and id_activo= 1
   and descripcion like upper('%{codigo}%')
+      </select>
+      <select id="lazy">
+select      
+  tc_kalan_tipos_conceptos.id_tipo_concepto as id_key,        
+  if(tc_kalan_tipos_conceptos.id_activo= 1, 'SI', 'NO') as activo,
+  tc_kalan_tipos_movimientos.descripcion as movimiento,
+  tc_kalan_tipos_conceptos.*
+from      
+  tc_kalan_tipos_conceptos
+inner join        
+  tc_kalan_tipos_movimientos on tc_kalan_tipos_conceptos.id_tipo_movimiento= tc_kalan_tipos_movimientos.id_tipo_movimiento
+where 
+  tc_kalan_tipos_conceptos.id_activo= 1
+  and {condicion} 
+{sortOrder}
       </select>
     </unit>    
     <unit id="TcKalanMovimientosEstatusDto">
