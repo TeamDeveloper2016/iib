@@ -1,4 +1,4 @@
-package mx.org.kaana.kalan.catalogos.subclasificacion.backing;
+package mx.org.kaana.kalan.catalogos.clasificaciones.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -26,10 +26,8 @@ import mx.org.kaana.kalan.catalogos.clasificaciones.reglas.Transaccion;
 import mx.org.kaana.kalan.db.dto.TcKalanGastosClasificacionesDto;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.pagina.UISelect;
-import mx.org.kaana.libs.pagina.UISelectItem;
 
-@Named(value = "kalanCatalogosSubClasificacionFiltro")
+@Named(value = "kalanCatalogosClasificacionesFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
@@ -40,9 +38,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idActivo", 1L);
-      this.toLoadClasificaciones();
-      if(!Objects.equals(JsfBase.getFlashAttribute("idGastoSubclasificacion"), null)) {
-        this.attrs.put("idGastoSubclasificacion", JsfBase.getFlashAttribute("idGastoSubclasificacion"));
+      if(!Objects.equals(JsfBase.getFlashAttribute("idGastoClasificacion"), null)) {
+        this.attrs.put("idGastoClasificacion", JsfBase.getFlashAttribute("idGastoClasificacion"));
         this.doLoad();
       } // if  
     } // try
@@ -57,12 +54,11 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns    = new ArrayList<>();
     Map<String, Object> params= this.toPrepare();
     try {
-      params.put("sortOrder", "order by tc_kalan_gastos_clasificaciones.descripcion, tc_kalan_gastos_subclasificaciones.descripcion");
-      columns.add(new Columna("clasificacion", EFormatoDinamicos.MAYUSCULAS));
+      params.put("sortOrder", "order by tc_kalan_gastos_clasificaciones.descripcion");
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));      
-      this.lazyModel = new FormatCustomLazy("TcKalanGastosSubclasificacionesDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("TcKalanGastosClasificacionesDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -78,21 +74,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idGastoSubclasificacion")) && !this.attrs.get("idGastoSubclasificacion").toString().equals("-1")) {
-  		sb.append("(tc_kalan_gastos_subclasificaciones.id_gasto_subclasificacion=").append(this.attrs.get("idGastoSubclasificacion")).append(") and ");
-      this.attrs.put("idGastoSubclasificacion", null);
+		if(!Cadena.isVacio(this.attrs.get("idGastoClasificacion")) && !this.attrs.get("idGastoClasificacion").toString().equals("-1")) {
+  		sb.append("(tc_kalan_gastos_clasificaciones.id_gasto_clasificacion=").append(this.attrs.get("idGastoClasificacion")).append(") and ");
+      this.attrs.put("idGastoClasificacion", null);
     } // if  
-		if(!Cadena.isVacio(this.attrs.get("idGastoClasificacion")) && !Objects.equals(this.attrs.get("idGastoClasificacion").toString(), "-1"))
-  		sb.append("(tc_kalan_gastos_subclasificaciones.id_gasto_clasificacion= ").append(this.attrs.get("idGastoClasificacion")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
-  		sb.append("(tc_kalan_gastos_subclasificaciones.clave like '%").append(this.attrs.get("clave")).append("%') and ");
+  		sb.append("(tc_kalan_gastos_clasificaciones.clave like '%").append(this.attrs.get("clave")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("descripcion")))
-  		sb.append("(tc_kalan_gastos_subclasificaciones.descripcion like '%").append(this.attrs.get("descripcion")).append("%') and ");
+  		sb.append("(tc_kalan_gastos_clasificaciones.descripcion like '%").append(this.attrs.get("descripcion")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_kalan_gastos_subclasificaciones.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_kalan_gastos_clasificaciones.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_kalan_gastos_subclasificaciones.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		sb.append("(tc_kalan_gastos_subclasificaciones.id_activo= ").append(this.attrs.get("idActivo")).append(") and ");
+		  sb.append("(date_format(tc_kalan_gastos_clasificaciones.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		sb.append("(tc_kalan_gastos_clasificaciones.id_activo= ").append(this.attrs.get("idActivo")).append(") and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
@@ -105,14 +99,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/SubClasificacion/filtro");		
-			JsfBase.setFlashAttribute("idGastoSubclasificacion", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/Clasificaciones/filtro");		
+			JsfBase.setFlashAttribute("idGastoClasificacion", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Kalan/Catalogos/SubClasificacion/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Kalan/Catalogos/Clasificaciones/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public void doEliminar() {
@@ -122,31 +116,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion(new TcKalanGastosClasificacionesDto(seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "El sub clasificador se eliminó correctamente", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La clasificación se eliminó correctamente", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el sub clasificador", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la clasificación", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
   } // doEliminar	
- 
-  private void toLoadClasificaciones() {
-    Map<String, Object> params= new HashMap<>();
-    try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      List<UISelectItem> clasificaciones= UISelect.seleccione("TcKalanGastosClasificacionesDto", params, "idKey|descripcion", EFormatoDinamicos.MAYUSCULAS);
-      this.attrs.put("clasificaciones", clasificaciones);
-      this.attrs.put("idGastoClasificacion", UIBackingUtilities.toFirstKeySelectItem(clasificaciones));
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    finally {
-      Methods.clean(params);
-    } // finally
-  }    
   
 }

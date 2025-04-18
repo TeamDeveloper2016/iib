@@ -29,14 +29,14 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-	private TcKalanGastosSubclasificacionesDto clasificador;
+	private TcKalanGastosSubclasificacionesDto subclasificacion;
 
-  public TcKalanGastosSubclasificacionesDto getClasificador() {
-    return clasificador;
+  public TcKalanGastosSubclasificacionesDto getSubclasificacion() {
+    return subclasificacion;
   }
 
-  public void setClasificador(TcKalanGastosSubclasificacionesDto clasificador) {
-    this.clasificador = clasificador;
+  public void setSubclasificacion(TcKalanGastosSubclasificacionesDto subclasificacion) {
+    this.subclasificacion = subclasificacion;
   }
 
 	@PostConstruct
@@ -64,16 +64,16 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
-          this.clasificador= new TcKalanGastosSubclasificacionesDto();
+          this.subclasificacion= new TcKalanGastosSubclasificacionesDto();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
           idGastoSubclasificacion= (Long)this.attrs.get("idGastoSubclasificacion");
-          this.clasificador= (TcKalanGastosSubclasificacionesDto)DaoFactory.getInstance().findById(TcKalanGastosSubclasificacionesDto.class, idGastoSubclasificacion);
+          this.subclasificacion= (TcKalanGastosSubclasificacionesDto)DaoFactory.getInstance().findById(TcKalanGastosSubclasificacionesDto.class, idGastoSubclasificacion);
           break;
       } // switch
       this.toLoadClasificaciones();
-    } // try
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
@@ -86,14 +86,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion)this.attrs.get("accion");
-			transaccion = new Transaccion(this.clasificador);
+			transaccion = new Transaccion(this.subclasificacion);
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.doCancelar();
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro !"), ETipoMensaje.INFORMACION);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el sub clasificador", ETipoMensaje.ERROR);      			
-    } // try
+				JsfBase.addMessage("Ocurrió un error al registrar el sub clasificacion", ETipoMensaje.ERROR);      			
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
@@ -102,7 +102,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-    JsfBase.setFlashAttribute("idGastoSubclasificacion", this.clasificador.getIdGastoSubclasificacion());
+    JsfBase.setFlashAttribute("idGastoSubclasificacion", this.subclasificacion.getIdGastoSubclasificacion());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
@@ -113,8 +113,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       List<UISelectItem> clasificaciones= UISelect.seleccione("TcKalanGastosClasificacionesDto", params, "idKey|descripcion", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("clasificaciones", clasificaciones);
       if(Objects.equals((EAccion)this.attrs.get("accion"), EAccion.AGREGAR))
-        this.clasificador.setIdGastoClasificacion((Long)clasificaciones.get(0).getValue());
-    } // try
+        this.subclasificacion.setIdGastoClasificacion((Long)clasificaciones.get(0).getValue());
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);

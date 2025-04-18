@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{kalanCatalogosSubClasificacionAccion.attrs.nombreAccion} al catálogo de sub clasificadores" />
+	<ui:param name="titulo" value="#{kalanCatalogosSubClasificacionAccion.attrs.nombreAccion} al catálogo de sub clasificaciones" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -28,15 +28,15 @@
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
                 <p:outputLabel for="idGastoClasificacion" value="Clasificación:"/>
-                <p:selectOneMenu id="idGastoClasificacion" value="#{kalanCatalogosSubClasificacionAccion.clasificador.idGastoClasificacion}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idGastoClasificacion" value="#{kalanCatalogosSubClasificacionAccion.subclasificacion.idGastoClasificacion}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{kalanCatalogosSubClasificacionAccion.attrs.clasificaciones}"/>
                 </p:selectOneMenu>
 								<p:outputLabel for="clave" value="Clave:"/>
-								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{kalanCatalogosSubClasificacionAccion.clasificador.clave}"/>                    
+								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{kalanCatalogosSubClasificacionAccion.subclasificacion.clave}"/>                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
-								<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{kalanCatalogosSubClasificacionAccion.clasificador.descripcion}"/>                    
+								<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{kalanCatalogosSubClasificacionAccion.subclasificacion.descripcion}"/>                    
   							<p:outputLabel for="idActivo" value="Activo:"/>
-	  						<p:selectOneMenu id="idActivo" value="#{kalanCatalogosSubClasificacionAccion.clasificador.idActivo}" styleClass="janal-wid-100-txt">									
+	  						<p:selectOneMenu id="idActivo" value="#{kalanCatalogosSubClasificacionAccion.subclasificacion.idActivo}" styleClass="janal-wid-100-txt">									
 		  						<f:selectItem itemLabel="SI" itemValue="1"/>
 			  					<f:selectItem itemLabel="NO" itemValue="2"/>
 				  			</p:selectOneMenu>								

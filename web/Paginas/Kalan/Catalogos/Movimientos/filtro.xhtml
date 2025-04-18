@@ -7,13 +7,12 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-	<ui:param name="titulo" value="Catálogo de clasificadores" />
+	<ui:param name="titulo" value="Catálogo de tipos movimientos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				clave       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				descripcion : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				idActivo    : {validaciones: 'libre', mascara: 'libre'},
         fechaInicio : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino: {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
 			};
@@ -41,43 +40,38 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="clave" value="Clave:"/>
-              <p:inputText id="clave" value="#{kalanCatalogosClasificadorFiltro.attrs.clave}" styleClass="janal-wid-100-txt"/>              			                            
+              <p:inputText id="clave" value="#{kalanCatalogosMovimientosFiltro.attrs.clave}" styleClass="janal-wid-100-txt"/>              			                            
 							<p:outputLabel for="descripcion" value="Nombre:"/>							
-              <p:inputText id="descripcion" value="#{kalanCatalogosClasificadorFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/>              			                            
+              <p:inputText id="descripcion" value="#{kalanCatalogosMovimientosFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCatalogosClasificadorFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCatalogosMovimientosFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCatalogosClasificadorFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
-							<p:outputLabel for="idActivo" value="Activo:"/>
-              <p:selectOneMenu id="idActivo" value="#{kalanCatalogosClasificadorFiltro.attrs.idActivo}" styleClass="janal-wid-100-txt">									
-                <f:selectItem itemLabel="SI" itemValue="1"/>
-                <f:selectItem itemLabel="NO" itemValue="2"/>
-              </p:selectOneMenu>								
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCatalogosMovimientosFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
 							<p:separator/>
 						</p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{kalanCatalogosClasificadorFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.execute(true);" process="@form" actionListener="#{kalanCatalogosClasificadorFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@form" actionListener="#{kalanCatalogosMovimientosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b" icon="fa fa-filter" onstart="return janal.execute(true);" process="@form" actionListener="#{kalanCatalogosMovimientosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 						</div>
 					</p:panel>
 				</div>
 				<p:spacer width="5px"/>
 				<div id="collapse-content" class="ui-grid-col-9">
 					<div class="ui-grid-row janal-grid-row">
-						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosClasificadorFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosClasificadorFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCatalogosClasificadorFiltro.lazyModel.rowCount gt kalanCatalogosClasificadorFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosMovimientosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosMovimientosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCatalogosMovimientosFiltro.lazyModel.rowCount gt kalanCatalogosMovimientosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 							<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 							<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 							<f:facet name="header">
 								<div class="lg-pantalla">
 									<p:menuButton value="Opciones">
-										<p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar articulo" action="#{kalanCatalogosClasificadorFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+										<p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar articulo" action="#{kalanCatalogosMovimientosFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
 										<p:separator/>
 										<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 										<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</p:menuButton>
 								</div>	
 								<div class="xs-pantalla">
-									<p:commandButton icon="fa fa-plus" title="Agregar articulo" action="#{kalanCatalogosClasificadorFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+									<p:commandButton icon="fa fa-plus" title="Agregar articulo" action="#{kalanCatalogosMovimientosFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
 									<p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</div>	
@@ -107,12 +101,12 @@
 								<h:outputText value="#{row['registro']}"/>
 							</p:column>					
 							<f:facet name="footer">
-								Total [#{kalanCatalogosClasificadorFiltro.lazyModel== null? 0: kalanCatalogosClasificadorFiltro.lazyModel.rowCount}] registros
+								Total [#{kalanCatalogosMovimientosFiltro.lazyModel== null? 0: kalanCatalogosMovimientosFiltro.lazyModel.rowCount}] registros
 							</f:facet>
 						</p:dataTable>
 						<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-							<p:menuitem action="#{kalanCatalogosClasificadorFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-							<p:menuitem action="#{kalanCatalogosClasificadorFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+							<p:menuitem action="#{kalanCatalogosMovimientosFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+							<p:menuitem action="#{kalanCatalogosMovimientosFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
 							<p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
 						</p:contextMenu>		
 					</div>	
@@ -121,14 +115,14 @@
 		</div>		           				
 	</ui:define>    
 	<ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar ?" />
-	<ui:param name="accionConfirmacion" value="#{kalanCatalogosClasificadorFiltro}"/>
+	<ui:param name="accionConfirmacion" value="#{kalanCatalogosMovimientosFiltro}"/>
 	<ui:param name="updateComponent" value="tabla"/>
 	<ui:param name="eventoConfirmacion" value="doEliminar"	/>	
 	<ui:param name="renderedConfirmacion" value="true"/>	
 	<ui:define name="detalleConfirmacion">
 		<h:panelGrid columns="2">
 			<p:outputLabel value="Clasificador: "/>
-			<p:outputLabel value="#{kalanCatalogosClasificadorFiltro.attrs.seleccionado.descripcion}"/>
+			<p:outputLabel value="#{kalanCatalogosMovimientosFiltro.attrs.seleccionado.descripcion}"/>
 		</h:panelGrid>			
 	</ui:define>
 </ui:composition>

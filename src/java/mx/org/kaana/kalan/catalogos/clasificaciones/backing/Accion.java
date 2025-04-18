@@ -1,4 +1,4 @@
-package mx.org.kaana.kalan.catalogos.clasificador.backing;
+package mx.org.kaana.kalan.catalogos.clasificaciones.backing;
 
 import java.io.Serializable;
 import javax.annotation.PostConstruct;
@@ -13,22 +13,22 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.kalan.catalogos.clasificador.reglas.Transaccion;
+import mx.org.kaana.kalan.catalogos.clasificaciones.reglas.Transaccion;
 import mx.org.kaana.kalan.db.dto.TcKalanGastosClasificacionesDto;
 
-@Named(value = "kalanCatalogosClasificadorAccion")
+@Named(value = "kalanCatalogosClasificacionesAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-	private TcKalanGastosClasificacionesDto clasificador;
+	private TcKalanGastosClasificacionesDto clasificacion;
 
-  public TcKalanGastosClasificacionesDto getClasificador() {
-    return clasificador;
+  public TcKalanGastosClasificacionesDto getClasificacion() {
+    return clasificacion;
   }
 
-  public void setClasificador(TcKalanGastosClasificacionesDto clasificador) {
-    this.clasificador = clasificador;
+  public void setClasificacion(TcKalanGastosClasificacionesDto clasificacion) {
+    this.clasificacion = clasificacion;
   }
 
 	@PostConstruct
@@ -38,7 +38,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       if(JsfBase.getFlashAttribute("accion")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idGastoClasificador", JsfBase.getFlashAttribute("idGastoClasificador"));
+      this.attrs.put("idGastoClasificacion", JsfBase.getFlashAttribute("idGastoClasificacion"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			this.doLoad();
     } // try
@@ -50,21 +50,21 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doLoad() {
     EAccion eaccion         = null;
-    Long idGastoClasificador= -1L;
+    Long idGastoClasificacion= -1L;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
-          this.clasificador= new TcKalanGastosClasificacionesDto();
+          this.clasificacion= new TcKalanGastosClasificacionesDto();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-          idGastoClasificador= (Long)this.attrs.get("idGastoClasificador");
-          this.clasificador= (TcKalanGastosClasificacionesDto)DaoFactory.getInstance().findById(TcKalanGastosClasificacionesDto.class, idGastoClasificador);
+          idGastoClasificacion= (Long)this.attrs.get("idGastoClasificacion");
+          this.clasificacion= (TcKalanGastosClasificacionesDto)DaoFactory.getInstance().findById(TcKalanGastosClasificacionesDto.class, idGastoClasificacion);
           break;
       } // switch
-    } // try
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
@@ -77,14 +77,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
-			transaccion = new Transaccion(this.clasificador);
+			transaccion = new Transaccion(this.clasificacion);
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.doCancelar();
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el registro !"), ETipoMensaje.INFORMACION);
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el clasificador", ETipoMensaje.ERROR);      			
-    } // try
+				JsfBase.addMessage("Ocurrió un error al registrar el clasificacion", ETipoMensaje.ERROR);      			
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
@@ -93,7 +93,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-    JsfBase.setFlashAttribute("idGastoClasificador", this.clasificador.getIdGastoClasificacion());
+    JsfBase.setFlashAttribute("idGastoClasificacion", this.clasificacion.getIdGastoClasificacion());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	

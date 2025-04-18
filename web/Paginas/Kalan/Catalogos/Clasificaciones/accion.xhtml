@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{kalanCatalogosClasificadorAccion.attrs.nombreAccion} al catálogo de clasificadores" />
+	<ui:param name="titulo" value="#{kalanCatalogosClasificacionesAccion.attrs.nombreAccion} al catálogo de clasificaciones" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -16,7 +16,7 @@
 				'contenedorGrupos\\:idActivo'   : {validaciones: 'requerido', mascara: 'libre'}				
 			};						
 			
-			$(document).ready(function(){janal.readingMode('#{kalanCatalogosClasificadorAccion.attrs.nombreAccion}');});
+			$(document).ready(function(){janal.readingMode('#{kalanCatalogosClasificacionesAccion.attrs.nombreAccion}');});
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -27,11 +27,11 @@
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
 								<p:outputLabel for="clave" value="Clave:"/>
-								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{kalanCatalogosClasificadorAccion.clasificador.clave}"/>                    
+								<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{kalanCatalogosClasificacionesAccion.clasificacion.clave}"/>                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
-								<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{kalanCatalogosClasificadorAccion.clasificador.descripcion}"/>                    
+								<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{kalanCatalogosClasificacionesAccion.clasificacion.descripcion}"/>                    
   							<p:outputLabel for="idActivo" value="Activo:"/>
-	  						<p:selectOneMenu id="idActivo" value="#{kalanCatalogosClasificadorAccion.clasificador.idActivo}" styleClass="janal-wid-100-txt">									
+	  						<p:selectOneMenu id="idActivo" value="#{kalanCatalogosClasificacionesAccion.clasificacion.idActivo}" styleClass="janal-wid-100-txt">									
 		  						<f:selectItem itemLabel="SI" itemValue="1"/>
 			  					<f:selectItem itemLabel="NO" itemValue="2"/>
 				  			</p:selectOneMenu>								
@@ -44,12 +44,12 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanCatalogosClasificadorAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanCatalogosClasificadorAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanCatalogosClasificacionesAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanCatalogosClasificacionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCatalogosClasificadorAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanCatalogosClasificadorAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCatalogosClasificacionesAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanCatalogosClasificacionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

@@ -878,6 +878,16 @@ from
 where      
   clave = '{clave}'
       </select>
+      <select id="lazy">
+select      
+  tc_kalan_tipos_movimientos.id_tipo_movimiento as id_key,        
+  tc_kalan_tipos_movimientos.*
+from      
+  tc_kalan_tipos_movimientos
+where 
+  {condicion} 
+{sortOrder}
+      </select>
     </unit>    
     <unit id="TcKalanTiposConceptosDto">
       <select id="row">
