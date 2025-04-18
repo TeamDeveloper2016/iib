@@ -10,11 +10,21 @@
   <ui:param name="titulo" value="Resumen de gastos por mes" />
   <ui:define name="librerias">
     <script type="text/javascript">
+//<![CDATA[
       Janal.Control.fields = {
         'idEmpresa': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'ejercicio': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'idMes'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };
+      
+      function start() {
+        janal.bloquear();
+      }
+
+      function stop() {
+        janal.desbloquear();
+      }
+//]]>
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -68,14 +78,19 @@
                 <p:menuButton value="Opciones">
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-                  <p:separator rendered="false"/>
-                  <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosConsulta.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
+                    <p:fileDownload value="#{kalanGastosConsulta.archivo}"/>
+                  </p:menuitem>	
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
                 <p:commandButton action="#{kalanGastosConsulta.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar gasto" onstart="return janal.bloquear()"/>						
                 <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:commandButton icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
+                  <p:fileDownload value="#{kalanGastosConsulta.archivo}"/>
+                </p:commandButton>	
                 <p:commandButton icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosConsulta.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
               </div>  
             </f:facet>	            

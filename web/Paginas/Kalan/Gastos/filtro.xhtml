@@ -10,6 +10,7 @@
   <ui:param name="titulo" value="Gastos registrados" />
   <ui:define name="librerias">
     <script type="text/javascript">
+//<![CDATA[
       Janal.Control.fields = {
         'idEmpresa'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'consecutivo'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
@@ -37,15 +38,15 @@
 				} // if
 				return ok;
 			} // justifica
-      //<![CDATA[
-				function start() {
-					janal.bloquear();
-				}
+      
+      function start() {
+        janal.bloquear();
+      }
 
-				function stop() {
-					janal.desbloquear();
-				}
-      //]]>
+      function stop() {
+        janal.desbloquear();
+      }
+//]]>
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {

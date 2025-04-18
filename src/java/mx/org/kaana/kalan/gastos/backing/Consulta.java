@@ -1,5 +1,6 @@
 package mx.org.kaana.kalan.gastos.backing;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -9,17 +10,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.kalan.gastos.reglas.Consolidado;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -37,6 +42,8 @@ import mx.org.kaana.mantic.catalogos.reportes.reglas.Parametros;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "kalanGastosConsulta")
 @ViewScoped
@@ -54,6 +61,22 @@ public class Consulta extends IBaseFilter implements Serializable {
 	public Reporte getReporte() {
 		return reporte;
 	}	
+
+	public StreamedContent getArchivo() {
+		StreamedContent regresar= null;		
+    Consolidado consolidado = null;
+		try {
+	  	consolidado= new Consolidado();
+      String name= consolidado.execute();
+      String contentType= EFormatos.XLS.getContent();
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
+      regresar          = new DefaultStreamedContent(stream, contentType, name);				
+		} // try 
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch		
+    return regresar;		
+  }	
   
   public String getTotal() {
     double sum  = 0D;
