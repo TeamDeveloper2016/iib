@@ -1,4 +1,4 @@
-package mx.org.kaana.kalan.catalogos.subclasificacion.backing;
+package mx.org.kaana.kalan.catalogos.subclasificaciones.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -29,7 +29,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 
-@Named(value = "kalanCatalogosSubClasificacionFiltro")
+@Named(value = "kalanCatalogosSubClasificacionesFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 

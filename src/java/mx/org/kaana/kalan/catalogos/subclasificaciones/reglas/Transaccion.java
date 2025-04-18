@@ -1,4 +1,4 @@
-package mx.org.kaana.kalan.catalogos.subclasificacion.reglas;
+package mx.org.kaana.kalan.catalogos.subclasificaciones.reglas;
 
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;

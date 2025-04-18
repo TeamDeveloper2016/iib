@@ -1,4 +1,4 @@
-package mx.org.kaana.kalan.catalogos.subclasificacion.backing;
+package mx.org.kaana.kalan.catalogos.subclasificaciones.backing;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -18,13 +18,13 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.kalan.catalogos.subclasificacion.reglas.Transaccion;
+import mx.org.kaana.kalan.catalogos.subclasificaciones.reglas.Transaccion;
 import mx.org.kaana.kalan.db.dto.TcKalanGastosSubclasificacionesDto;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 
-@Named(value = "kalanCatalogosSubClasificacionAccion")
+@Named(value = "kalanCatalogosSubClasificacionesAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
