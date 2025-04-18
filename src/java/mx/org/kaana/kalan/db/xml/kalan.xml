@@ -378,14 +378,14 @@ where
 			<select id="ejercicios">
 select
   ejercicio as id_key,
-  ejercicio 
+  date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y') as ejercicio
 from 
   tc_kalan_empresas_gastos
 group by
-  tc_kalan_empresas_gastos.ejercicio
+  date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y')
 order by
-  tc_kalan_empresas_gastos.ejercicio desc		        
-			</select>
+  date_format(tc_kalan_empresas_gastos.fecha_aplicacion, '%Y') desc        
+      </select>
 			<select id="meses">
 select
   tc_janal_meses.id_mes as id_key,

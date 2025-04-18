@@ -95,7 +95,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("sortOrder", "order by tc_kalan_empresas_gastos.consecutivo desc");
 			String salida  = EFormatos.XLS.toPath().concat(Archivo.toFormatNameFile(template).concat(".")).concat(EFormatos.XLS.name().toLowerCase());
   		String fileName= JsfBase.getRealPath("").concat(salida);
-      xls= new Xls(fileName, new Modelo(params, "VistaEmpresasGastosDto", "lazy", template), "EMPRESA,CONSECUTIVO,CLASIFICACION,SUBCLASIFICACION,CONCEPTO,FECHA_APLICACION,TOTAL,ESTATUS,FECHA_REFERENCIA,REFERENCIA,PROVEEDOR,OBSERVACIONES,REGISTRO");	
+      xls= new Xls(fileName, new Modelo(params, "VistaEmpresasGastosDto", "lazy", template), "EMPRESA,CONSECUTIVO,CLASIFICACION,SUBCLASIFICACION,CONCEPTO,FECHA_APLICACION,TOTAL,PAGOS,ESTATUS,FECHA_REFERENCIA,REFERENCIA,PROVEEDOR,OBSERVACIONES,REGISTRO");	
 			if(xls.procesar()) {
 				Zip zip       = new Zip();
 				String zipName= Archivo.toFormatNameFile(template).concat(".").concat(EFormatos.ZIP.name().toLowerCase());

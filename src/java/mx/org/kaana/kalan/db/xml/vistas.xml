@@ -192,6 +192,7 @@ select
 	tc_kalan_empresas_gastos.concepto,
 	tc_kalan_empresas_gastos.observaciones,
 	tc_kalan_empresas_gastos.total,
+	tc_kalan_empresas_gastos.pagos,
 	tc_kalan_empresas_cuentas.nombre as cuenta,
 	tc_kalan_gastos_estatus.id_gasto_estatus,
 	tc_kalan_gastos_estatus.nombre as estatus,
