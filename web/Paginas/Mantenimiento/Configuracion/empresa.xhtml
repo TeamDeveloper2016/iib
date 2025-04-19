@@ -18,7 +18,7 @@
 			<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{kajoolMantenimientoConfiguracionEmpresa.attrs.isMatriz}"/>
 			<p:selectOneMenu id="idEmpresa" value="#{kajoolMantenimientoConfiguracionEmpresa.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 				<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-				<f:selectItems value="#{kajoolMantenimientoConfiguracionEmpresa.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
+				<f:selectItems value="#{kajoolMantenimientoConfiguracionEmpresa.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.titulo}"/>
 				<p:column headerText="Clave">
 					<h:outputText value="#{item.clave}"/>
 				</p:column>   

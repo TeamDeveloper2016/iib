@@ -44,7 +44,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:"/>
               <p:selectOneMenu id="idEmpresa" value="#{kalanGastosConsulta.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{kalanGastosConsulta.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} | #{element.nombre}"/>
+                <f:selectItems value="#{kalanGastosConsulta.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   

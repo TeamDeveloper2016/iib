@@ -108,7 +108,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     List<UISelectItem> empresas= null;
     try {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+        params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			else
 				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())

@@ -55,7 +55,7 @@
               <p:outputLabel for="idEmpresa" value="Sucursal:"/>
               <p:selectOneMenu id="idEmpresa" value="#{kalanMovimientosEgresos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <p:ajax event="change" listener="#{kalanMovimientosEgresos.doLoadBancos}" process="@this" update="idBanco idEmpresaCuenta"/>
-                <f:selectItems value="#{kalanMovimientosEgresos.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} | #{element.nombre}"/>
+                <f:selectItems value="#{kalanMovimientosEgresos.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   

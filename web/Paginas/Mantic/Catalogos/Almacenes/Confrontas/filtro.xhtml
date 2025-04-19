@@ -58,7 +58,7 @@
 							<p:outputLabel for="idEmpresa" value="Sucursal:"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
 								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{manticCatalogosAlmacenesConfrontasFiltro.doAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -68,7 +68,7 @@
               </p:selectOneMenu>
               <p:outputLabel for="idAlmacen" value="Almacen:"/>
               <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '-'} #{element.nombre}"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesConfrontasFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
