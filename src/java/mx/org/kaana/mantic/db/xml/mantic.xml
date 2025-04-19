@@ -6015,15 +6015,15 @@ where
 				  clave
       </select>
       <select id="empresas">
-        select      
-				  tc_mantic_empresas.id_empresa as id_key,
-          tc_mantic_empresas.*
-        from      
-          tc_mantic_empresas
-        where 
-          id_empresa in ({sucursales})
-				order by
-				  clave
+select      
+  tc_mantic_empresas.id_empresa as id_key,
+  tc_mantic_empresas.*
+from      
+  tc_mantic_empresas
+where 
+  id_empresa in ({sucursales})
+order by
+  clave
       </select>
     </unit>
 	  <unit id="TcManticManufacturasDto">

@@ -166,16 +166,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private void toLoadCatalog() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
+    List<UISelectEntity> empresas= null;
     try {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+        params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      List<UISelectEntity> empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        empresas= (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
+      else
+        empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
       this.attrs.put("empresas", empresas);
 			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity(empresas));
 			this.attrs.put("idCliente", new UISelectEntity("-1"));
