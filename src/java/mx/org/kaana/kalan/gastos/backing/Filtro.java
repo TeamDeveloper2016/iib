@@ -202,7 +202,10 @@ public class Filtro extends IBaseFilter implements Serializable {
     EGastos egasto     = null; 
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-	    egasto = EGastos.valueOf(gasto.toUpperCase());
+      if(eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR))
+	      egasto= EGastos.fromOrdinal(seleccionado.toLong("idGastoClasificacion"));
+      else
+	      egasto= EGastos.valueOf(gasto.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("egasto", egasto);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Gastos/filtro");		

@@ -105,14 +105,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/SubClasificacion/filtro");		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Catalogos/SubClasificaciones/filtro");		
 			JsfBase.setFlashAttribute("idGastoSubclasificacion", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey(): -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Kalan/Catalogos/SubClasificacion/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Kalan/Catalogos/SubClasificaciones/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public void doEliminar() {

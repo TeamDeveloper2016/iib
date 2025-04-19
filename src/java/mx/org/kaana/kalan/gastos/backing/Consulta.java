@@ -184,23 +184,29 @@ public class Consulta extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch
 		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
-  } // doAccion  
+  } 
 	
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-    Long year = (Long)this.attrs.get("ejercicio");
-    Long month= (Long)this.attrs.get("idMes");
-    Calendar calendar= new GregorianCalendar(year== null || year== -1L? Fecha.getAnioActual(): year.intValue(), month== null || month== -1L? Fecha.getMesActual(): month.intValue()- 1, 1);
-    int actual= calendar.get(Calendar.MONTH)+ 1;
-    regresar.put("actual", calendar.get(Calendar.YEAR)+ Constantes.SEPARADOR+ (actual< 10? "0": "")+ actual);
-    
-    calendar.add(Calendar.MONTH, -1);
-    int anterior= calendar.get(Calendar.MONTH)+ 1;
-    regresar.put("anterior", calendar.get(Calendar.YEAR)+ Constantes.SEPARADOR+ (anterior< 10? "0": "")+ anterior);
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+    if(!Objects.equals(this.attrs.get("ejercicio"), null)) {
+      Long year = (Long)this.attrs.get("ejercicio");
+      Long month= (Long)this.attrs.get("idMes");
+      Calendar calendar= new GregorianCalendar(year== null || year== -1L? Fecha.getAnioActual(): year.intValue(), month== null || month== -1L? Fecha.getMesActual(): month.intValue()- 1, 1);
+      int actual= calendar.get(Calendar.MONTH)+ 1;
+      regresar.put("actual", calendar.get(Calendar.YEAR)+ Constantes.SEPARADOR+ (actual< 10? "0": "")+ actual);
+
+      calendar.add(Calendar.MONTH, -1);
+      int anterior= calendar.get(Calendar.MONTH)+ 1;
+      regresar.put("anterior", calendar.get(Calendar.YEAR)+ Constantes.SEPARADOR+ (anterior< 10? "0": "")+ anterior);
+    } // if  
+    else {
+      regresar.put("actual", "9999|99");
+      regresar.put("anterior", "9999|99");
+    } // else
+    if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+      regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+    else
+      regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
 		return regresar;
 	}
 	
@@ -366,14 +372,16 @@ public class Consulta extends IBaseFilter implements Serializable {
     String actual           = "...";
     String anterior         = "...";
     try {
-      String ejercicio= Objects.equals(JsfBase.getParametro("ejercicio_input"), null)? String.valueOf(Fecha.getAnioActual()): JsfBase.getParametro("ejercicio_input");
-      Long month      = (Long)this.attrs.get("idMes");      
-      if(month> 0) {
-        actual  = Fecha.getNombreMesCorto(month.intValue()- 1);
-        anterior= Fecha.getNombreMesCorto(Objects.equals(month, 1L)? 11: month.intValue()- 2);
+      if(!Objects.equals(this.attrs.get("ejercicio"), null)) {
+        String ejercicio= Objects.equals(JsfBase.getParametro("ejercicio_input"), null)? String.valueOf(Fecha.getAnioActual()): JsfBase.getParametro("ejercicio_input");
+        Long month      = (Long)this.attrs.get("idMes");      
+        if(month> 0) {
+          actual  = Fecha.getNombreMesCorto(month.intValue()- 1);
+          anterior= Fecha.getNombreMesCorto(Objects.equals(month, 1L)? 11: month.intValue()- 2);
+        } // if  
+        this.attrs.put("mesActual", ejercicio.concat("-").concat(actual));
+        this.attrs.put("mesAnterior", ejercicio.concat("-").concat(anterior));
       } // if  
-      this.attrs.put("mesActual", ejercicio.concat("-").concat(actual));
-      this.attrs.put("mesAnterior", ejercicio.concat("-").concat(anterior));
     } // try
     catch (Exception e) {
       Error.mensaje(e);

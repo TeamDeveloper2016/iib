@@ -23,17 +23,17 @@
 				'contenedorGrupos\\:referencia'     : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:fechaReferencia': {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:subtotal'     : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:ivaCalculado' : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:total'        : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:pagos'        : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":1})', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:folio'        : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'cheque'},
-				'contenedorGrupos\\:fecha'        : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'cheque'},
-				'contenedorGrupos\\:conceptoAF'   : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'cheque'},
-				'contenedorGrupos\\:beneficiario' : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'cheque'},
-				'contenedorGrupos\\:idProveedorAF': {validaciones: 'requerido', mascara: 'libre', grupo: 'proveedor'},
-        'contenedorGrupos\\:prorrateos'   : {validaciones: 'requerido|entero|mayor({"cuanto":0})', mascara: 'libre', mensaje: 'Se requiere al menos dos pagos', grupo: 'prorrateo'}        
+				'contenedorGrupos\\:subtotal'       : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:ivaCalculado'   : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:importe'        : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:total'          : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:pagos'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":1})', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:folio'          : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'cheque'},
+				'contenedorGrupos\\:fecha'          : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'cheque'},
+				'contenedorGrupos\\:conceptoAF'     : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'cheque'},
+				'contenedorGrupos\\:beneficiario'   : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'cheque'},
+				'contenedorGrupos\\:idProveedorAF'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'proveedor'},
+        'contenedorGrupos\\:prorrateos'     : {validaciones: 'requerido|entero|mayor({"cuanto":0})', mascara: 'libre', mensaje: 'Se requiere al menos dos pagos', grupo: 'prorrateo'}        
 			};
 
       function execute() {
@@ -270,11 +270,13 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanGastosAccion.doAceptar}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanGastosAccion.doAceptar}" onstart="return execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-lock" accesskey="p"  process="@form" action="#{kalanGastosAccion.doAplicar}" onstart="return execute()" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanGastosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanGastosAccion.doAceptar}" onstart="return execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicarIcon" value="Aplicar" icon="fa fa-lock"  process="@form" action="#{kalanGastosAccion.doAplicar}" onstart="return execute()" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanGastosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

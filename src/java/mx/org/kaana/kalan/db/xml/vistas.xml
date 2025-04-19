@@ -181,6 +181,7 @@ where
 select
 	tc_kalan_empresas_gastos.id_empresa_gasto as id_key,
 	tc_kalan_empresas_gastos.id_empresa_gasto,
+  tc_kalan_gastos_clasificaciones.id_gasto_clasificacion,
 	tc_mantic_empresas.nombre as empresa,
   tc_kalan_empresas_gastos.consecutivo,
 	tc_kalan_gastos_clasificaciones.descripcion as clasificacion,

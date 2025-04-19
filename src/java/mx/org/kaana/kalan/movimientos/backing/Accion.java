@@ -265,6 +265,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
   }
+
+  public String doAplicar() {  
+    this.movimiento.setIdMovimientoEstatus(2L);
+    return this.doAceptar();
+  }
   
   public String doAceptar() {  
     String regresar        = null;
@@ -291,7 +296,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } 
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idEmpresaMovimientoProcess", this.attrs.get("idEmpresaMovimiento"));
+  	JsfBase.setFlashAttribute("idEmpresaMovimientoProcess", this.movimiento.getIdEmpresaMovimiento());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 	

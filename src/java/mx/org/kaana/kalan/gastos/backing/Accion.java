@@ -256,6 +256,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     } // finally
   }  
+ 
+  public String doAplicar() {  
+    this.gasto.setIdGastoEstatus(2L);
+    return this.doAceptar();
+  }
   
   public String doAceptar() {  
     String regresar        = null;
@@ -320,12 +325,14 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
  
   public void doProrratear() {
+    this.gasto.setPagos(this.gasto.getProrratear() && Objects.equals(this.gasto.getPagos(), 0L)? 12L: 0L);
     if(this.gasto.getProrratear())
       this.doParcialidades(); 
     else {
       this.clean(0);
       this.attrs.put("total", 0D);
-    } // if  
+    } // if 
+    UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:pagos', {validaciones: 'requerido|flotante|mayor-igual({\"cuanto\":".concat(this.gasto.getProrratear()? "1": "0").concat("})', mascara: 'libre', grupo: 'general'});"));
   }
   
   private void clean(int start) {
