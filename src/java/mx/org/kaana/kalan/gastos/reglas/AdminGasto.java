@@ -51,7 +51,10 @@ public class AdminGasto implements Serializable {
         if(regresar!= null) {
           params.put("idProveedor", regresar.getIdProveedor());
           proveedor= (Entity)DaoFactory.getInstance().toEntity("TcManticProveedoresDto", "igual", params);
-          regresar.setIkProveedor(new UISelectEntity(proveedor));
+          if(Objects.equals(proveedor, null))
+            regresar.setIkProveedor(new UISelectEntity(new Entity(-1L)));
+          else
+            regresar.setIkProveedor(new UISelectEntity(proveedor));
           if(Objects.equals(regresar.getIdActivoCheque(), 1L)) {
             Cheque documento= (Cheque)DaoFactory.getInstance().toEntity(Cheque.class, "TcKalanEmpresasChequesDto", "cheques", params);
             if(documento!= null) {

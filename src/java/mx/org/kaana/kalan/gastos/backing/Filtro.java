@@ -13,6 +13,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -200,23 +201,37 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado= (Entity) this.attrs.get("seleccionado");
     EAccion eaccion    = null;
     EGastos egasto     = null; 
+    Long idEmpresaGasto= -1L;
+    Map<String, Object> params= new HashMap<>();
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-      if(eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR))
+      if(eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) {
+        if(Objects.equals(seleccionado.toLong("idFuente"), 2L)) {
+          params.put("idEmpresaGasto", seleccionado.getKey());
+          Entity principal= (Entity)DaoFactory.getInstance().toEntity("VistaEmpresasGastosDto", "fuente", params);
+          if(!Objects.equals(principal, null) && !principal.isEmpty()) 
+            idEmpresaGasto= principal.getKey();
+        } // if
+        else
+          idEmpresaGasto= seleccionado.getKey();
 	      egasto= EGastos.fromOrdinal(seleccionado.toLong("idGastoClasificacion"));
+      } // if  
       else
 	      egasto= EGastos.valueOf(gasto.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("egasto", egasto);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Kalan/Gastos/filtro");		
-			JsfBase.setFlashAttribute("idEmpresaGasto", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? seleccionado.getKey(): -1L);
+			JsfBase.setFlashAttribute("idEmpresaGasto", idEmpresaGasto);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
+    finally {
+      Methods.clean(params);
+    } // finally
 		return regresar.concat(Constantes.REDIRECIONAR);
-  } // doAccion  
+  } 
 	
   public void doEliminar() {
 		Transaccion transaccion = null;
