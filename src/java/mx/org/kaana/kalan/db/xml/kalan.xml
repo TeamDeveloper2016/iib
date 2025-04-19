@@ -352,10 +352,17 @@ where
   id_empresa_gasto = {idEmpresaGasto}
       </select>
       <delete id="control">
-delete from tc_kalan_empresas_controles where id_empresa_gasto= {idEmpresaGasto} and id_gasto_control= {idGastoControl}
+delete from 
+  tc_kalan_empresas_controles 
+where 
+  id_empresa_gasto= {idEmpresaGasto} 
+  and id_gasto_control= {idGastoControl}
       </delete>
       <delete id="rows">
-delete from tc_kalan_empresas_controles where id_empresa_gasto= {idEmpresaGasto}
+delete from 
+  tc_kalan_empresas_controles 
+where 
+  id_empresa_gasto= {idEmpresaGasto}
       </delete>
     </unit>    
     <unit id="TcKalanEmpresasGastosDto">
@@ -388,10 +395,14 @@ select
   tc_kalan_empresas_gastos.*
 from      
   tc_kalan_empresas_gastos
-inner join
-  tc_kalan_empresas_controles on tc_kalan_empresas_gastos.id_empresa_gasto= tc_kalan_empresas_controles.id_empresa_gasto
-where      
-  tc_kalan_empresas_controles.id_empresa_gasto = {idEmpresaGasto}
+inner join (
+  select
+    tc_kalan_empresas_controles.id_gasto_control
+  from  
+    tc_kalan_empresas_controles
+  where      
+    tc_kalan_empresas_controles.id_empresa_gasto= {idEmpresaGasto}
+) as tt_kalan_empresas_controles on tc_kalan_empresas_gastos.id_empresa_gasto= tt_kalan_empresas_controles.id_gasto_control
       </select>
 			<select id="siguiente">
 select

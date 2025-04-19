@@ -73,6 +73,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       if(JsfBase.getFlashAttribute("retorno")== null)
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.attrs.put("idEmpresaGasto", JsfBase.getFlashAttribute("idEmpresaGasto")== null? -1L: JsfBase.getFlashAttribute("idEmpresaGasto"));
+      this.attrs.put("idEmpresaGastoProcess", JsfBase.getFlashAttribute("idEmpresaGastoProcess"));
       this.attrs.put("total", 0D);
 			this.doLoad();
       this.toLoadEmpresas();
@@ -298,7 +299,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   } 
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idEmpresaGastoProcess", this.gasto.getIdEmpresaGasto());
+    if(!Objects.equals(this.attrs.get("idEmpresaGastoProcess"), null))
+  	  JsfBase.setFlashAttribute("idEmpresaGastoProcess", this.attrs.get("idEmpresaGastoProcess"));
+    else
+  	  JsfBase.setFlashAttribute("idEmpresaGastoProcess", this.gasto.getIdEmpresaGasto());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 	
@@ -377,7 +381,12 @@ public class Accion extends IBaseAttribute implements Serializable {
     // VERIFICAR SI HAY MENOS PAGOS DE LOS YA REGISTRADOS ENTONCES MARCAR COMO ELIMINADOS O DEPURARLOS
     if(count> this.gasto.getPagos()) 
       this.clean(this.gasto.getPagos().intValue());
-    this.attrs.put("total", Numero.toRedondear(sum));
+    Double diferencia= Numero.toRedondear(this.gasto.getTotal()- Numero.toRedondear(sum));
+    if(!Objects.equals(diferencia, 0D) && this.gasto.getPagos()> 1L) {
+      Double total= this.gasto.getParcialidades().get(this.gasto.getParcialidades().size()- 1).getTotal();
+      this.gasto.getParcialidades().get(this.gasto.getParcialidades().size()- 1).setTotal(Numero.toRedondear(total+ diferencia));
+    } // if
+    this.attrs.put("total", Numero.toRedondear(this.gasto.getTotal()));
     this.toFormatPago();
   }
 
@@ -410,7 +419,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(params);
     } // finally
- 
   }
 
   public String doColor(Parcialidad row) {

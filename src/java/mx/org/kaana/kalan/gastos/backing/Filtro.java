@@ -206,11 +206,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
       if(eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) {
+  			JsfBase.setFlashAttribute("idEmpresaGastoProcess", seleccionado.getKey());
         if(Objects.equals(seleccionado.toLong("idFuente"), 2L)) {
           params.put("idEmpresaGasto", seleccionado.getKey());
           Entity principal= (Entity)DaoFactory.getInstance().toEntity("VistaEmpresasGastosDto", "fuente", params);
           if(!Objects.equals(principal, null) && !principal.isEmpty()) 
             idEmpresaGasto= principal.getKey();
+          else 
+            idEmpresaGasto= seleccionado.getKey();
         } // if
         else
           idEmpresaGasto= seleccionado.getKey();

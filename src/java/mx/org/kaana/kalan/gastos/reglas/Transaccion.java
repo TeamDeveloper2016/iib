@@ -184,7 +184,7 @@ public class Transaccion extends IBaseTnx {
               regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
               break;
             case DELETE:
-              params.put("idGastoEmpresa", this.gasto.getIdEmpresaGasto());
+              params.put("idEmpresaGasto", this.gasto.getIdEmpresaGasto());
               params.put("idGastoControl", item.getIdEmpresaGasto());
               DaoFactory.getInstance().deleteAll(sesion, TcKalanEmpresasControlesDto.class, "control", params);
               regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
