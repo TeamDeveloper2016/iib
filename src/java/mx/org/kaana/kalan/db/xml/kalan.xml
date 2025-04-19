@@ -345,7 +345,8 @@ where
       </select>
       <select id="control">
 select      
-  tc_kalan_empresas_controles.id_gasto_control as id_key
+  tc_kalan_empresas_controles.id_gasto_control as id_key,
+  tc_kalan_empresas_controles.id_gasto_control
 from      
   tc_kalan_empresas_controles
 where      

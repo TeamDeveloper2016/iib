@@ -330,12 +330,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
  
   public void doProrratear() {
-    if(this.gasto.getProrratear()) {
-      if(Objects.equals(this.gasto.getPagos(), 0L))
-        this.gasto.setPagos(12L);
-    } // if
-    else
-      this.gasto.setPagos(0L);
+    if(this.gasto.getProrratear() && Objects.equals(this.gasto.getPagos(), 0L))
+      this.gasto.setPagos(12L);
     if(this.gasto.getProrratear())
       this.doParcialidades(); 
     else {

@@ -80,6 +80,12 @@ public class Transaccion extends IBaseTnx {
 				case MODIFICAR:
           if(Objects.equals(this.gasto.getIdActivoProrratear(), 1L)) 
             this.gasto.setPago(0L);
+          else {
+            // SI CAMBIO DE PRORRATEAR A NO ENTONCES LIMPIAR LAS PARCIALIDADES
+            this.gasto.setPago(1L);
+            this.gasto.setPagos(0L);
+            this.gasto.setObservaciones("");
+          } // if  
           regresar= DaoFactory.getInstance().update(sesion, this.gasto)> 0L;
           if(Objects.equals(this.gasto.getIdActivoCheque(), 1L)) {
             if(Objects.equals(this.gasto.getDocumento().getIdActivoProveedor(), 2L)) 
@@ -99,10 +105,10 @@ public class Transaccion extends IBaseTnx {
           regresar= DaoFactory.getInstance().insert(sesion, this.bitacora)> 0L;
 					break;				
 				case ELIMINAR:
-          params.put("idGastoEmpresa", this.gasto.getIdEmpresaGasto());
+          params.put("idEmpresaGasto", this.gasto.getIdEmpresaGasto());
           DaoFactory.getInstance().deleteAll(sesion, TcKalanGastosBitacoraDto.class, params);
 					this.clean(sesion);
-          regresar= DaoFactory.getInstance().delete(sesion, this.gasto.getDocumento())> 0L;
+          DaoFactory.getInstance().delete(sesion, this.gasto.getDocumento());
           regresar= DaoFactory.getInstance().delete(sesion, this.gasto)> 0L;
 					break;
 				case JUSTIFICAR:
@@ -161,7 +167,7 @@ public class Transaccion extends IBaseTnx {
     TcKalanEmpresasControlesDto control= null;
     int count                 = 1;
     try {
-      if(Objects.equals(this.gasto.getIdActivoProrratear(), 1L)) {
+      if(!Objects.equals(this.gasto.getParcialidades(), null)) {
         for (Parcialidad item: this.gasto.getParcialidades()) {
           item.setIdUsuario(JsfBase.getIdUsuario());
           item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -234,12 +240,15 @@ public class Transaccion extends IBaseTnx {
 	private void clean(Session sesion) throws Exception {
     Map<String, Object> params= new HashMap<>();
     try {
-      params.put("idGastoEmpresa", this.gasto.getIdEmpresaGasto());
+      params.put("idEmpresaGasto", this.gasto.getIdEmpresaGasto());
       List<Entity> items= DaoFactory.getInstance().toEntitySet(sesion, "TcKalanEmpresasControlesDto", "control", params);
       if(items!= null && !items.isEmpty()) {
         DaoFactory.getInstance().deleteAll(sesion, TcKalanEmpresasControlesDto.class, params);
-        for (Entity item: items) 
+        for (Entity item: items) {
+          params.put("idEmpresaGasto", item.toLong("idGastoControl"));
+          DaoFactory.getInstance().deleteAll(sesion, TcKalanGastosBitacoraDto.class, params);
           DaoFactory.getInstance().delete(sesion, TcKalanEmpresasGastosDto.class, item.toLong("idGastoControl"));
+        } // for  
       } // if
     } // try
     catch (Exception e) {

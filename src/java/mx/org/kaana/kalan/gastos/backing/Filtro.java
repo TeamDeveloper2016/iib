@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.reportes.beans.Modelo;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -26,6 +27,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.kalan.db.dto.TcKalanGastosBitacoraDto;
 import mx.org.kaana.kalan.gastos.beans.Gasto;
+import mx.org.kaana.kalan.gastos.beans.Parcialidad;
 import mx.org.kaana.kalan.gastos.enums.EGastos;
 import mx.org.kaana.kalan.gastos.reglas.AdminGasto;
 import mx.org.kaana.libs.Constantes;
@@ -237,11 +239,22 @@ public class Filtro extends IBaseFilter implements Serializable {
   } 
 	
   public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = (Entity) this.attrs.get("seleccionado");
+		Transaccion transaccion   = null;
+		Entity seleccionado       = (Entity) this.attrs.get("seleccionado");
+    Map<String, Object> params= new HashMap<>();
 		try {
-      AdminGasto admin= new AdminGasto(seleccionado.getKey());
+      Long idEmpresaGasto= seleccionado.getKey();
+      if(Objects.equals(seleccionado.toLong("idFuente"), 2L)) {
+        params.put("idEmpresaGasto", seleccionado.getKey());
+        Entity principal= (Entity)DaoFactory.getInstance().toEntity("VistaEmpresasGastosDto", "fuente", params);
+        if(!Objects.equals(principal, null) && !principal.isEmpty()) 
+          idEmpresaGasto= principal.getKey();
+      } // if
+      AdminGasto admin= new AdminGasto(idEmpresaGasto);
       Gasto gasto     = admin.getGasto();
+      gasto.getParcialidades().forEach((item) -> {
+        item.setSql(ESql.DELETE);
+      }); // for
 			transaccion     = new Transaccion(gasto);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "El gasto se ha eliminado correctamente", ETipoMensaje.ERROR);
@@ -252,7 +265,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
-  } // doEliminar
+    finally {
+      Methods.clean(params);
+    } // finally
+  } 
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
