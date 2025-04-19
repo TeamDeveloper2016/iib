@@ -215,10 +215,9 @@ public class Consulta extends IBaseFilter implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+        params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
 			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));

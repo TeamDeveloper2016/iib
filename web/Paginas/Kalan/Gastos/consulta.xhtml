@@ -42,8 +42,8 @@
           <p:panel id="panelBusqueda" header="Búsqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
-              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{kalanGastosConsulta.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{kalanGastosConsulta.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+              <p:selectOneMenu id="idEmpresa" value="#{kalanGastosConsulta.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{kalanGastosConsulta.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} | #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
