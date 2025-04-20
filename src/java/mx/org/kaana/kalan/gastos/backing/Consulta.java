@@ -134,6 +134,7 @@ public class Consulta extends IBaseFilter implements Serializable {
         } // for
         Entity subtotal= pivot.clone();
         subtotal.get("idKey").setData(997L);
+        subtotal.get("empresa").setData("");
         subtotal.get("clasificacion").setData("SUB TOTAL");
         subtotal.put("actual", new Value("actual", actual));
         subtotal.put("anterior", new Value("anterior", anterior));
