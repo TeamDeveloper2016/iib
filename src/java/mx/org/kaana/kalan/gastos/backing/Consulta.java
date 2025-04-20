@@ -372,14 +372,14 @@ public class Consulta extends IBaseFilter implements Serializable {
     String anterior         = "...";
     try {
       if(!Objects.equals(this.attrs.get("ejercicio"), null)) {
-        String ejercicio= Objects.equals(JsfBase.getParametro("ejercicio_input"), null)? String.valueOf(Fecha.getAnioActual()): JsfBase.getParametro("ejercicio_input");
-        Long month      = (Long)this.attrs.get("idMes");      
-        if(month> 0) {
-          actual  = Fecha.getNombreMesCorto(month.intValue()- 1);
-          anterior= Fecha.getNombreMesCorto(Objects.equals(month, 1L)? 11: month.intValue()- 2);
-        } // if  
-        this.attrs.put("mesActual", ejercicio.concat("-").concat(actual));
-        this.attrs.put("mesAnterior", ejercicio.concat("-").concat(anterior));
+        Long year = (Long)this.attrs.get("ejercicio");
+        Long month= (Long)this.attrs.get("idMes");
+        Calendar calendar= new GregorianCalendar(year== null || year== -1L? Fecha.getAnioActual(): year.intValue(), month== null || month== -1L? Fecha.getMesActual(): month.intValue()- 1, 1);
+        int mes= calendar.get(Calendar.MONTH)+ 1;
+        this.attrs.put("mesActual", calendar.get(Calendar.YEAR)+ "-"+ (mes< 10? "0": "")+ mes);
+        calendar.add(Calendar.MONTH, -1);
+        mes= calendar.get(Calendar.MONTH)+ 1;
+        this.attrs.put("mesAnterior", calendar.get(Calendar.YEAR)+ "-"+ (mes< 10? "0": "")+ mes);
       } // if  
     } // try
     catch (Exception e) {

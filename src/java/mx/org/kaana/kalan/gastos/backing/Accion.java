@@ -260,6 +260,9 @@ public class Accion extends IBaseAttribute implements Serializable {
  
   public String doAplicar() {  
     this.gasto.setIdGastoEstatus(2L);
+    this.gasto.getParcialidades().stream().filter((item) -> (Objects.equals(item.getIdGastoEstatus(), 1L))).forEachOrdered((item) -> {
+      item.setIdGastoEstatus(2L);
+    }); // for
     return this.doAceptar();
   }
   

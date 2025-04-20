@@ -82,7 +82,7 @@ select
 	tc_kalan_movimientos_estatus.estatus_asociados,
   tc_kalan_empresas_movimientos.id_anticipo,
   tc_janal_booleanos.descripcion as anticipo,
-  tc_kalan_tipos_conceptos.descripcion as concepto,
+  tc_kalan_empresas_movimientos.concepto,
 	tc_kalan_empresas_movimientos.registro
 from      
   tc_kalan_empresas_movimientos
@@ -94,7 +94,7 @@ inner join
   tc_kalan_empresas_cuentas on tc_kalan_empresas_movimientos.id_empresa_cuenta= tc_kalan_empresas_cuentas.id_empresa_cuenta
 inner join 
   tc_kalan_movimientos_estatus on tc_kalan_empresas_movimientos.id_movimiento_estatus= tc_kalan_movimientos_estatus.id_movimiento_estatus
-inner join 
+left join 
   tc_kalan_tipos_conceptos on tc_kalan_empresas_movimientos.id_tipo_concepto= tc_kalan_tipos_conceptos.id_tipo_concepto
 inner join  
   tc_janal_booleanos on tc_kalan_empresas_movimientos.id_anticipo= tc_janal_booleanos.id_booleano
@@ -156,8 +156,8 @@ group by
 select
 	tc_kalan_empresas_movimientos.id_empresa_movimiento as id_key,
   tc_kalan_empresas_movimientos.consecutivo,
-	tc_kalan_tipos_conceptos.descripcion as clasificacion,
-	' ' as subclasificacion,
+  tc_kalan_empresas_movimientos.concepto as clasificacion,
+  ' ' as subclasificacion,
 	tc_kalan_empresas_movimientos.fecha_aplicacion,
 	tc_kalan_empresas_movimientos.observaciones,
 	tc_kalan_empresas_movimientos.total,
@@ -165,7 +165,7 @@ select
 	tc_kalan_empresas_movimientos.registro
 from
 	tc_kalan_empresas_movimientos
-inner join 
+left join 
   tc_kalan_tipos_conceptos on tc_kalan_empresas_movimientos.id_tipo_concepto= tc_kalan_tipos_conceptos.id_tipo_concepto
 inner join 
   tc_kalan_movimientos_estatus on tc_kalan_empresas_movimientos.id_movimiento_estatus= tc_kalan_movimientos_estatus.id_movimiento_estatus
