@@ -35,8 +35,11 @@ public class Galeria extends IBaseJob {
         Portal.getInstance().reload();
         
         // CAMBIAR EL ESTATUS DE LAS GASTOS, LOS INGRESOS SIN FACTURAS Y LOS INGRESOS EXTRAORDINARIOS
-        DaoFactory.getInstance().updateAll(TcKalanEmpresasGastosDto.class, Collections.EMPTY_MAP, "control");
-        DaoFactory.getInstance().updateAll(TcKalanEmpresasMovimientosDto.class, Collections.EMPTY_MAP, "control");
+        Long gastos  = DaoFactory.getInstance().updateAll(TcKalanEmpresasGastosDto.class, Collections.EMPTY_MAP, "control");
+        Long ingresos= DaoFactory.getInstance().updateAll(TcKalanEmpresasMovimientosDto.class, Collections.EMPTY_MAP, "control");
+  			LOG.error("SOLICITUDES DE GASTOS QUE FUERON CAMBIADAS DE ESTATUS: "+ gastos);
+  			LOG.error("SOLICITUDES DE INGRESOS QUE FUERON CAMBIADOS DE ESTATUS: "+ ingresos);
+        
       } // if  
 	  } // try
 		catch (Exception e) {

@@ -187,7 +187,7 @@
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{kalanGastosConsulta.lazyModel== null? 0: kalanGastosConsulta.lazyModel.rowCount}] registros" styleClass="janal-icons-header"/>
-              <p:outputLabel value="&lt;span class='calculos janal-color-blue'&gt;SALDO: &lt;strong&gt;#{kalanGastosConsulta.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="detalle" escape="false"/>              
+              <p:outputLabel value="&lt;span class='calculos janal-color-blue'&gt;SALDO: &lt;strong&gt;#{kalanGastosConsulta.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="detalle janal-display-none" escape="false"/>              
             </f:facet>
           </p:dataTable>    
           <h:commandLink id="detallePdf">

@@ -264,6 +264,7 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("ejercicio", this.getCurrentYear());			
+			params.put("idEmpresa", this.gasto.getIdEmpresa());			
 			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanEmpresasGastosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)

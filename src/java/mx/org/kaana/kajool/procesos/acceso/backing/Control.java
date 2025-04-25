@@ -118,5 +118,5 @@ public class Control extends IBaseAttribute implements Serializable {
     } // catch   
     return regresar;
   } // enviarCorreo
-
+ 
 }

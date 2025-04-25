@@ -113,6 +113,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params.put("idTipoMovimiento", this.movimiento.getIdTipoMovimiento());			
 			params.put("ejercicio", this.getCurrentYear());			
+			params.put("idEmpresa", this.movimiento.getIdEmpresa());			
 			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanEmpresasMovimientosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)

@@ -412,6 +412,7 @@ from
   tc_kalan_empresas_gastos
 where
   ejercicio= {ejercicio} 
+  and id_empresa= {idEmpresa}	
   and orden{operador} 900000			
 			</select>
 			<select id="ejercicios">
@@ -1003,15 +1004,16 @@ from
 where
   id_tipo_movimiento= {idTipoMovimiento}
   and ejercicio= {ejercicio} 
+  and id_empresa= {idEmpresa}	
   and orden{operador} 900000			
 			</select>
       <update id="control">
 update
   tc_kalan_empresas_movimientos
 set
-  id_empresa_movimiento= 2
+  id_movimiento_estatus= 2
 where
-  id_empresa_movimiento= 1
+  id_movimiento_estatus= 1
       </update>
     </unit> 
     <unit id="TcKalanMovimientosBitacoraDto">
