@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javafx.scene.paint.Color;
 import jxl.Workbook;
 import jxl.format.Alignment;
 import jxl.format.Colour;
@@ -50,6 +49,7 @@ public class Consolidado extends XlsBase implements Serializable {
   private String tactual;
   private String tanterior;  
   private String path;
+  private Boolean desglosado;
 
   public Consolidado() throws Exception {
     this(-1L);  
@@ -60,10 +60,15 @@ public class Consolidado extends XlsBase implements Serializable {
   }
 
   public Consolidado(Long idEmpresa, Long ejercicio, Long mes) throws Exception {
-    this.idEmpresa= idEmpresa;
-    this.ejercicio= ejercicio== null || ejercicio== -1L? Fecha.getAnioActual(): ejercicio;
-    this.mes      = mes== null || mes== -1L? Fecha.getMesActual(): mes;
-    this.path     = "";
+    this(idEmpresa, ejercicio, mes, Boolean.FALSE);
+  }
+  
+  public Consolidado(Long idEmpresa, Long ejercicio, Long mes, Boolean desglosado) throws Exception {
+    this.idEmpresa = idEmpresa;
+    this.ejercicio = ejercicio== null || ejercicio== -1L? Fecha.getAnioActual(): ejercicio;
+    this.mes       = mes== null || mes== -1L? Fecha.getMesActual(): mes;
+    this.path      = "";
+    this.desglosado= desglosado;
     this.init();
   }
 
@@ -219,16 +224,16 @@ public class Consolidado extends XlsBase implements Serializable {
   private void toNameTitle() throws Exception {
     try {
       Calendar calendar= new GregorianCalendar(this.ejercicio.intValue(), this.mes.intValue()- 1, 1);
-      int mesActual= calendar.get(Calendar.MONTH)+ 1;
-      this.actual  = calendar.get(Calendar.YEAR)+ Constantes.SEPARADOR+ (mesActual< 10? "0": "")+ mesActual;
+      int mesActual = calendar.get(Calendar.MONTH)+ 1;
+      this.actual   = calendar.get(Calendar.YEAR)+ Constantes.SEPARADOR+ (mesActual< 10? "0": "")+ mesActual;
+      String mactual= Fecha.getNombreMesCorto(this.mes.intValue()- 1);
+      this.tactual  = calendar.get(Calendar.YEAR)+ "-".concat(mactual);
+
       calendar.add(Calendar.MONTH, -1);
-      int mesAnterior= calendar.get(Calendar.MONTH)+ 1;
-      this.anterior  = calendar.get(Calendar.YEAR)+ Constantes.SEPARADOR+ (mesAnterior< 10? "0": "")+ mesAnterior;
-      
-      String mactual  = Fecha.getNombreMesCorto(this.mes.intValue()- 1);
+      int mesAnterior = calendar.get(Calendar.MONTH)+ 1;
+      this.anterior   = calendar.get(Calendar.YEAR)+ Constantes.SEPARADOR+ (mesAnterior< 10? "0": "")+ mesAnterior;
       String manterior= Fecha.getNombreMesCorto(Objects.equals(this.mes, 1L)? 11: this.mes.intValue()- 2);
-      this.tactual    = this.ejercicio+ "-".concat(mactual);
-      this.tanterior  = this.ejercicio+ "-".concat(manterior);
+      this.tanterior  = calendar.get(Calendar.YEAR)+ "-".concat(manterior);
     } // try
     catch (Exception e) {
       throw e;
@@ -236,13 +241,24 @@ public class Consolidado extends XlsBase implements Serializable {
   }
 
   private void toLoadIndividuales(TcManticEmpresasDto empresa) throws Exception {
-    Map<String, Object> params= new HashMap<>();
+    Map<String, Object> params  = new HashMap<>();
+    List<Entity> clasificaciones   = null;
+    List<Entity> subclasificaciones= null;
     try {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);      
-      List<Entity> clasificaciones= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKalanGastosClasificacionesDto", params);
+      clasificaciones= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKalanGastosClasificacionesDto", params);
       int index= 0;
       for (Entity item: clasificaciones) {
         this.toWriteGastoIndividual(empresa, item, ++index);
+        params.put("idGastoClasificacion", item.toLong("idGastoClasificacion"));      
+        if(this.desglosado) {
+          ++index;
+          subclasificaciones= (List<Entity>)DaoFactory.getInstance().toEntitySet("TcKalanGastosSubclasificacionesDto", params);
+          for (Entity sub: subclasificaciones) {
+            if(this.toWriteGastoDetail(empresa, item, sub, index))
+              index++;
+          } // for  
+        } // if
       } // for
     } // try
     catch (Exception e) {
@@ -264,7 +280,7 @@ public class Consolidado extends XlsBase implements Serializable {
       this.addCell(this.posicionColumna, this.posicionFila++, "SUCURSAL: [".concat(empresa.getNombre()).concat("] ").concat(empresa.getTitulo()));
       this.addCell(this.posicionColumna, this.posicionFila++, "AÑO: "+ this.ejercicio);
       this.addCell(this.posicionColumna, this.posicionFila++, "MES: ".concat(Fecha.getNombreMes(this.mes.intValue()- 1).toUpperCase()));
-      this.addCell(this.posicionColumna, this.posicionFila++, "CLASIFICADOR: ".concat(clasificacion.toString("descripcion")));
+      this.addCell(this.posicionColumna, this.posicionFila++, "CLASIFICACION: ".concat(clasificacion.toString("descripcion")));
       
       this.posicionFila++;
       this.addCellColor(this.posicionColumna,    this.posicionFila, "CLASIFICACION", Alignment.CENTRE, Colour.LIGHT_ORANGE);
@@ -307,6 +323,67 @@ public class Consolidado extends XlsBase implements Serializable {
     } // finally
   } 
   
+  private Boolean toWriteGastoDetail(TcManticEmpresasDto empresa, Entity clasificacion, Entity subclasificacion, int index) throws Exception {
+    Boolean regresar= Boolean.FALSE;
+    Double total    = 0D;
+    Map<String, Object> params= new HashMap<>();
+    try {
+      this.posicionFila   = 0;
+      this.posicionColumna= 0;
+      params.put("idEmpresa", empresa.getIdEmpresa());
+      params.put("fecha", this.actual);
+      params.put("idEmpresa", empresa.getIdEmpresa());
+      params.put("idGastoClasificacion", clasificacion.toLong("idGastoClasificacion"));
+      params.put("idGastoSubclasificacion", subclasificacion.toLong("idGastoSubclasificacion"));
+      List<Entity> detalle= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEmpresasGastosDto", "desglosado", params);
+      if(!Objects.equals(detalle, null) && !detalle.isEmpty()) {
+        this.hoja = this.libro.createSheet(clasificacion.toString("clave").concat(" - ").concat(subclasificacion.toString("descripcion")), index);
+        this.addCell(this.posicionColumna, this.posicionFila++, "SUCURSAL: [".concat(empresa.getNombre()).concat("] ").concat(empresa.getTitulo()));
+        this.addCell(this.posicionColumna, this.posicionFila++, "AÑO: "+ this.ejercicio);
+        this.addCell(this.posicionColumna, this.posicionFila++, "MES: ".concat(Fecha.getNombreMes(this.mes.intValue()- 1).toUpperCase()));
+        this.addCell(this.posicionColumna, this.posicionFila++, "CLASIFICACION: ".concat(clasificacion.toString("descripcion")));
+        this.addCell(this.posicionColumna, this.posicionFila++, "SUB CLASIFICACION: ".concat(subclasificacion.toString("descripcion")));
+
+        this.posicionFila++;
+        this.addCellColor(this.posicionColumna,    this.posicionFila, "CONSECUTIVO", Alignment.CENTRE, Colour.LIGHT_ORANGE);
+        this.addCellColor(this.posicionColumna+ 1, this.posicionFila, "FECHA APLICACION", Alignment.CENTRE, Colour.LIGHT_ORANGE);
+        this.addCellColor(this.posicionColumna+ 2, this.posicionFila, "PROVEEDOR", Alignment.CENTRE, Colour.LIGHT_ORANGE);
+        this.addCellColor(this.posicionColumna+ 3, this.posicionFila, "CONCEPTO", Alignment.CENTRE, Colour.LIGHT_ORANGE);
+        this.addCellColor(this.posicionColumna+ 4, this.posicionFila, "OBSERVACIONES", Alignment.CENTRE, Colour.LIGHT_ORANGE);
+        this.addCellColor(this.posicionColumna+ 5, this.posicionFila++, "TOTAL", Alignment.CENTRE, Colour.LIGHT_ORANGE);
+        LOG.info("------------------------[".concat(clasificacion.toString("clave")).concat(" - ").concat(subclasificacion.toString("descripcion")).concat(" ]-------------------------------"));
+        for (Entity item: detalle) {
+          this.addCell(this.posicionColumna,    this.posicionFila, item.toString("consecutivo"));
+          this.addCell(this.posicionColumna+ 1, this.posicionFila, Fecha.formatear(Fecha.FECHA_CORTA, item.toDate("fechaAplicacion")));
+          this.addCell(this.posicionColumna+ 2, this.posicionFila, item.toString("proveedor"));
+          this.addCell(this.posicionColumna+ 3, this.posicionFila, item.toString("concepto"));
+          this.addCell(this.posicionColumna+ 4, this.posicionFila, item.toString("observaciones"));
+          this.addCellCosto(this.posicionColumna+ 5, this.posicionFila++, Numero.formatear(Numero.MILES_SAT_DECIMALES, item.toDouble("total")), Alignment.RIGHT);
+          total+= item.toDouble("total");
+        } // for
+        this.addCellColor(this.posicionColumna+ 4, this.posicionFila, "TOTAL:", Alignment.RIGHT, Colour.LIME);
+        this.addCellNegritasColor(this.posicionColumna+ 5, this.posicionFila++, Numero.formatear(Numero.MILES_SAT_DECIMALES, total), Alignment.RIGHT, Colour.LIME);
+        LOG.info("-----------------------------------------------------------------------");
+        this.toAddView(0, 15);
+        this.toAddView(1, 20);
+        this.toAddView(2, 30);
+        this.toAddView(3, 40);
+        this.toAddView(4, 40);
+        this.toAddView(5, 20);
+        regresar= Boolean.TRUE;
+      } // if
+//      else
+//        this.addCell(this.posicionColumna, this.posicionFila++, "NO EXISTEN GASTOS REGISTRADOS PARA ESTE CLASIFICADOR");
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch      
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  } 
+  
   @Override
   public void finalize() {
 //    Methods.clean(this.resumen);
@@ -314,7 +391,7 @@ public class Consolidado extends XlsBase implements Serializable {
   }
   
   public static void main(String ... args) throws Exception {
-    Consolidado gastos= new Consolidado(1L, 2025L, 4L);
+    Consolidado gastos= new Consolidado(2L, 2025L, 1L, Boolean.TRUE);
     LOG.info(gastos.local());
   }
   

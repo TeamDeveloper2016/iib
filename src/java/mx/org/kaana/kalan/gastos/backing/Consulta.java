@@ -62,11 +62,19 @@ public class Consulta extends IBaseFilter implements Serializable {
 		return reporte;
 	}	
 
+	public StreamedContent getDesglosado() {
+    return this.toArchivo(Boolean.TRUE);
+  }
+  
 	public StreamedContent getArchivo() {
+    return this.toArchivo(Boolean.FALSE);
+  }
+  
+	public StreamedContent toArchivo(Boolean desglosado) {
 		StreamedContent regresar= null;		
     Consolidado consolidado = null;
 		try {
-	  	consolidado= new Consolidado(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), (Long)this.attrs.get("ejercicio"), (Long)this.attrs.get("idMes"));
+	  	consolidado= new Consolidado(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), (Long)this.attrs.get("ejercicio"), (Long)this.attrs.get("idMes"), desglosado);
       String name= consolidado.execute();
       String contentType= EFormatos.XLS.getContent();
       InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(EFormatos.XLS.toPath().concat(name));  
