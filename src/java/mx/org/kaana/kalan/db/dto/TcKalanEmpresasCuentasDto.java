@@ -1,9 +1,6 @@
 package mx.org.kaana.kalan.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -50,6 +44,8 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
   private String nombre;
   @Column (name="id_banco")
   private Long idBanco;
+  @Column (name="id_activo")
+  private Long idActivo;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -58,11 +54,11 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
   }
 
   public TcKalanEmpresasCuentasDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, 1L);
     setKey(key);
   }
 
-  public TcKalanEmpresasCuentasDto(Long idEmpresaCuenta, Long idUsuario, String cuenta, Long idPrincipal, Long idEmpresa, String nombre, Long idBanco) {
+  public TcKalanEmpresasCuentasDto(Long idEmpresaCuenta, Long idUsuario, String cuenta, Long idPrincipal, Long idEmpresa, String nombre, Long idBanco, Long idActivo) {
     setIdEmpresaCuenta(idEmpresaCuenta);
     setIdUsuario(idUsuario);
     setCuenta(cuenta);
@@ -70,6 +66,7 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setNombre(nombre);
     setIdBanco(idBanco);
+    setIdActivo(idActivo);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -129,6 +126,14 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
     return idBanco;
   }
 
+  public Long getIdActivo() {
+    return idActivo;
+  }
+
+  public void setIdActivo(Long idActivo) {
+    this.idActivo = idActivo;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -166,6 +171,8 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdBanco());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdActivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -181,6 +188,7 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("nombre", getNombre());
 		regresar.put("idBanco", getIdBanco());
+		regresar.put("idActivo", getIdActivo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -188,7 +196,7 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdEmpresaCuenta(), getIdUsuario(), getCuenta(), getIdPrincipal(), getIdEmpresa(), getNombre(), getIdBanco(), getRegistro()
+      getIdEmpresaCuenta(), getIdUsuario(), getCuenta(), getIdPrincipal(), getIdEmpresa(), getNombre(), getIdBanco(), getIdActivo(), getRegistro()
     };
     return regresar;
   }

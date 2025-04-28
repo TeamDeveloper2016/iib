@@ -260,6 +260,21 @@ group by
 order by
   tc_kalan_empresas_cuentas.nombre        
       </select>
+      <select id="lazy">
+select      
+  tc_kalan_empresas_cuentas.id_empresa_cuenta as id_key,        
+  if(tc_kalan_empresas_cuentas.id_activo= 1, 'SI', 'NO') as activo,
+  tc_mantic_bancos.nombre as banco,
+  tc_kalan_empresas_cuentas.*
+from      
+  tc_kalan_empresas_cuentas
+inner join        
+  tc_mantic_bancos on tc_kalan_empresas_cuentas.id_banco= tc_mantic_bancos.id_banco
+where 
+  tc_kalan_empresas_cuentas.id_empresa in ({idEmpresa})
+  and {condicion} 
+{sortOrder}
+      </select>
     </unit>     
     <unit id="TcKalanGastosComprobantesDto">
       <select id="row">
