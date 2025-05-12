@@ -265,9 +265,12 @@ select
   tc_kalan_empresas_cuentas.id_empresa_cuenta as id_key,        
   if(tc_kalan_empresas_cuentas.id_activo= 1, 'SI', 'NO') as activo,
   tc_mantic_bancos.nombre as banco,
+  tc_mantic_empresas.nombre as empresa,  
   tc_kalan_empresas_cuentas.*
 from      
   tc_kalan_empresas_cuentas
+inner join 
+  tc_mantic_empresas on tc_kalan_empresas_cuentas.id_empresa= tc_mantic_empresas.id_empresa
 inner join        
   tc_mantic_bancos on tc_kalan_empresas_cuentas.id_banco= tc_mantic_bancos.id_banco
 where 

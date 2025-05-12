@@ -4706,6 +4706,20 @@ group by
 			</select>
 		</unit>
 		<unit id="VistaVentasDto">
+			<select id="impresion">
+select
+  tc_mantic_ventas.id_venta as id_key,
+  tc_mantic_ventas.id_venta,
+  tc_mantic_ventas.id_empresa,
+  tc_mantic_empresas.titulo as nombre,
+  tc_mantic_empresas.nombre as nombre_corto
+from
+  tc_mantic_ventas
+inner join
+  tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa     
+where        
+  tc_mantic_ventas.id_venta= {idVenta}
+      </select>  
 			<select id="autorizar">
         select
 					tc_mantic_ventas.id_venta as id_key,

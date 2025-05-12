@@ -253,7 +253,7 @@
               <p:outputLabel value="Total [#{kalanGastosFiltro.lazyModel== null? 0: kalanGastosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
-          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
             <p:menuitem value="Modificar" action="#{kalanGastosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{kalanGastosFiltro.attrs.seleccionado.idGastoEstatus eq '1'}"/>
             <p:menuitem value="Eliminar" icon="fa fa-close" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{kalanGastosFiltro.attrs.seleccionado.idGastoEstatus eq '1'}"/>					
             <p:separator rendered="#{fn:contains('|1|', kalanGastosFiltro.attrs.seleccionado.idGastoEstatus)}"/>

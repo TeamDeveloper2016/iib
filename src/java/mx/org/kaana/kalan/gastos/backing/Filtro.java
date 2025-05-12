@@ -379,7 +379,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			rc.execute("generalHide();");		
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
-	} // doVerificarReporte		
+	} 		
 
 	public void doLoadEstatus() {
 		Entity seleccionado          = (Entity)this.attrs.get("seleccionado");

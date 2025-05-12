@@ -49,12 +49,13 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable {
 		EReportes reporteSeleccion   = EReportes.TICKET_VENTA_CREDITO;
     Encriptar encriptado         = new Encriptar();
 		try{				
-			this.reporte= JsfBase.toReporte();
+			this.reporte  = JsfBase.toReporte();
 			params.put("idVenta", idVenta);
-      Parametros comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      Entity empresa= (Entity)DaoFactory.getInstance().toEntity("VistaVentasDto", "impresion", params);
+      Parametros comunes= new Parametros(empresa.toLong("idEmpresa"));
 			parametros= comunes.getComunes();
-			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
-		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+			parametros.put("REPORTE_EMPRESA", empresa.toString("nombreCorto"));
+		  parametros.put("ENCUESTA", empresa.toString("nombreCorto"));
 			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
 			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));		
 			parametros.put("REPORTE_DNS", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));		
