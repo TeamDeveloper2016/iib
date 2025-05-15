@@ -155,16 +155,20 @@ group by
       <select id="detalle"> 
 select
 	tc_kalan_empresas_movimientos.id_empresa_movimiento as id_key,
+  tc_mantic_empresas.nombre as empresa,
   tc_kalan_empresas_movimientos.consecutivo,
-  tc_kalan_empresas_movimientos.concepto as clasificacion,
+  ' ' as clasificacion,
   ' ' as subclasificacion,
 	tc_kalan_empresas_movimientos.fecha_aplicacion,
+  tc_kalan_empresas_movimientos.concepto,
 	tc_kalan_empresas_movimientos.observaciones,
 	tc_kalan_empresas_movimientos.total,
 	tc_kalan_movimientos_estatus.id_movimiento_estatus as id_gasto_estatus,
 	tc_kalan_empresas_movimientos.registro
 from
 	tc_kalan_empresas_movimientos
+inner join  
+  tc_mantic_empresas on tc_kalan_empresas_movimientos.id_empresa= tc_mantic_empresas.id_empresa
 left join 
   tc_kalan_tipos_conceptos on tc_kalan_empresas_movimientos.id_tipo_concepto= tc_kalan_tipos_conceptos.id_tipo_concepto
 inner join 
@@ -225,16 +229,20 @@ where
       <select id="detalle">
 select
 	tc_kalan_empresas_gastos.id_empresa_gasto as id_key,
+  tc_mantic_empresas.nombre as empresa,
   tc_kalan_empresas_gastos.consecutivo,
 	tc_kalan_gastos_clasificaciones.descripcion as clasificacion,
 	tc_kalan_gastos_subclasificaciones.descripcion as subclasificacion,
 	tc_kalan_empresas_gastos.fecha_aplicacion,
+  tc_kalan_empresas_gastos.concepto,
 	tc_kalan_empresas_gastos.observaciones,
 	tc_kalan_empresas_gastos.total,
 	tc_kalan_gastos_estatus.id_gasto_estatus,
 	tc_kalan_empresas_gastos.registro
 from
 	tc_kalan_empresas_gastos
+inner join  
+  tc_mantic_empresas on tc_kalan_empresas_gastos.id_empresa= tc_mantic_empresas.id_empresa
 inner join
   tc_kalan_gastos_clasificaciones	on tc_kalan_empresas_gastos.id_gasto_clasificacion= tc_kalan_gastos_clasificaciones.id_gasto_clasificacion
 inner join

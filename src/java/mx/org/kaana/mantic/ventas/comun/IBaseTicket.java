@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.ventas.comun;
+ package mx.org.kaana.mantic.ventas.comun;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
