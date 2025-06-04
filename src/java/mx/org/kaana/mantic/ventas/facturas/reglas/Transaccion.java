@@ -110,6 +110,11 @@ public class Transaccion extends TransaccionFactura {
 							venta= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.orden.getIdVenta());
 							venta.setIdCliente(this.orden.getIdCliente());
 							venta.setIdClienteDomicilio(this.orden.getIdClienteDomicilio());
+							venta.setIdTipoMedioPago(this.orden.getIdTipoMedioPago());
+							venta.setIdTipoPago(this.orden.getIdTipoPago());
+							venta.setIdBanco(this.orden.getIdBanco());
+							venta.setReferencia(this.orden.getReferencia());
+							venta.setIdUsoCfdi(this.orden.getIdUsoCfdi());
 							DaoFactory.getInstance().update(sesion, venta);
 						} // if
 						else{							
@@ -266,6 +271,9 @@ public class Transaccion extends TransaccionFactura {
 			factura.setCliente(gestor.toClienteCfdiVenta(sesion));
 			factura.getCliente().setIdFactura(idFactura);
 			factura.getCliente().setMetodoPago(ETipoPago.fromIdTipoPago(this.orden.getIdTipoPago()).getClave());
+      // SE AJUSTO EL 28/05/2025 AL SELECCIONAR PAGO POR DEFINIR (PPD) SIEMPRE SU MEDIO DE PAGO SERA 99
+      if(Objects.equals(this.orden.getIdTipoPago(), 2L) && !Objects.equals(factura.getCliente().getMedioPago(), "99"))
+        factura.getCliente().setMedioPago("99");
 			regresar= factura.generarCfdi(sesion);				
 		} // try
 		catch (Exception e) {			

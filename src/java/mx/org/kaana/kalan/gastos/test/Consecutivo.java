@@ -19,7 +19,7 @@ public class Consecutivo {
     Long idEmpresa    = -1L;
     int count         = 1;
     String consecutivo= "";
-    List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("select id_empresa_gasto, id_empresa, consecutivo, orden from tc_kalan_empresas_gastos order by id_empresa, id_empresa_gasto", Constantes.SQL_TODOS_REGISTROS);
+    List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("select id_empresa_gasto, id_empresa, consecutivo, orden from tc_kalan_empresas_gastos order by id_empresa, orden", Constantes.SQL_TODOS_REGISTROS);
     for (Entity item: items) {
       if(!Objects.equals(item.toLong("idEmpresa"), idEmpresa)) {
         idEmpresa= item.toLong("idEmpresa");

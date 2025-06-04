@@ -400,6 +400,7 @@ from
   tc_kalan_empresas_gastos
 where      
   consecutivo = '{consecutivo}'
+  and id_empresa= {idEmpresa}	
       </select>
       <select id="igual">
 select      
@@ -1003,7 +1004,9 @@ select
 from      
   tc_kalan_empresas_movimientos
 where      
-  consecutivo= '{consecutivo}' and id_tipo_movimiento= {idTipoMovimiento}
+  consecutivo= '{consecutivo}' 
+  and id_tipo_movimiento= {idTipoMovimiento}
+  and id_empresa= {idEmpresa}	
       </select>
       <select id="igual">
 select      
