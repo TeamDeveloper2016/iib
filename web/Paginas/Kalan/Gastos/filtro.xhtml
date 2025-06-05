@@ -134,7 +134,7 @@
             <f:facet name="header">
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Gasto administrativo" action="#{kalanGastosFiltro.doAccion('AGREGAR', 'GASTOS_ADMINISTRATIVOS')}" icon="fa fa-apple" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Gasto administración" action="#{kalanGastosFiltro.doAccion('AGREGAR', 'GASTOS_ADMINISTRATIVOS')}" icon="fa fa-apple" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:menuitem value="Gasto compra y venta" action="#{kalanGastosFiltro.doAccion('AGREGAR', 'GASTOS_COMPRA')}" icon="fa fa-cart-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:menuitem value="Gasto merma" action="#{kalanGastosFiltro.doAccion('AGREGAR', 'GASTOS_MERMA')}" icon="fa fa-coffee" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:menuitem value="Gasto varios" action="#{kalanGastosFiltro.doAccion('AGREGAR', 'GASTOS_VARIOS')}" icon="fa fa-lightbulb-o" title="Agregar" onstart="return janal.bloquear()"/>						
@@ -250,6 +250,7 @@
               <p:commandButton icon="fa fa-search" process="@this" update="detalle @(.total)" actionListener="#{kalanGastosFiltro.doView(row)}" title="Ver parcialidades" rendered="#{row.idActivoProrratear.toLong() eq 1}"/>
             </p:column>		
             <f:facet name="footer">
+              <p:outputLabel style="float: left;" value="#{kalanGastosFiltro.general}" styleClass="detalle" escape="false"/>
               <p:outputLabel value="Total [#{kalanGastosFiltro.lazyModel== null? 0: kalanGastosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
@@ -326,8 +327,8 @@
               <p:commandButton icon="fa fa-trash" process="@this" actionListener="#{kalanGastosFiltro.doLoadDetalle(row)}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" title="Cancelar" rendered="#{row.idGastoEstatus.toLong() eq 2 and kalanGastosFiltro.isAdmin}"/>
             </p:column>		
             <f:facet name="footer">
+              <p:outputLabel style="float: left;" value="&lt;span class='janal-color-blue'&gt;SALDO: &lt;strong&gt;#{kalanGastosFiltro.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="detalle" escape="false"/>
               <p:outputLabel value="Total [#{kalanGastosFiltro.lazyModel== null? 0: kalanGastosFiltro.lazyModel.rowCount}] registros" styleClass="total janal-icons-header"/>
-              <p:outputLabel value="&lt;span class='janal-color-blue'&gt;SALDO: &lt;strong&gt;#{kalanGastosFiltro.total}&lt;/strong&gt;&lt;/span&gt;" styleClass="detalle" escape="false"/>              
             </f:facet>
           </p:dataTable>    
           <h:commandLink id="detallePdf">

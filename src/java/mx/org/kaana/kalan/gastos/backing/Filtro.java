@@ -15,6 +15,7 @@ import javax.inject.Named;
 import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -80,6 +81,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
     return Boolean.FALSE;
+  }
+  
+  public String getGeneral() {
+    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
+    return "Suma total: <strong>"+ total+ "</strong>";  
   }
   
   public String getTotal() {
@@ -148,6 +154,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresaGastoProcess", JsfBase.getFlashAttribute("idEmpresaGastoProcess"));
       this.attrs.put("idFuente", 2L);
+      this.attrs.put("general", this.toEmptyTotales());
 			this.toLoadCatalogos();
       if(this.attrs.get("idEmpresaGastoProcess")!= null) 
 			  this.doLoad();
@@ -172,6 +179,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("fechaReferencia", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaEmpresasGastosDto", params, columns);
+      this.attrs.put("general", this.toTotales("VistaEmpresasGastosDto", "general", params));
       UIBackingUtilities.resetDataTable();
       this.lazyDetalle= null;
     } // try
@@ -556,4 +564,24 @@ public class Filtro extends IBaseFilter implements Serializable {
     return Objects.equals(row.toLong("idGastoEstatus"), 3L)? "janal-tr-yellow": "";
   }
 
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+  
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.put("total", new Value("total", 0D));
+    return regresar;
+  }
+  
 }

@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -22,6 +24,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -48,12 +51,18 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected String titulo;
   protected String pagina;
   
+  public String getGeneral() {
+    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
+    return "Suma total: <strong>"+ total+ "</strong>";  
+  }
+  
   @PostConstruct
   @Override
   protected void init() {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idEmpresaMovimientoProcess", JsfBase.getFlashAttribute("idEmpresaMovimientoProcess"));
+      this.attrs.put("general", this.toEmptyTotales());
 			this.toLoadCatalog();
       if(this.attrs.get("idEmpresaMovimientoProcess")!= null) 
 			  this.doLoad();
@@ -79,6 +88,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaEmpresasMovimientosDto", params, columns);
+      this.attrs.put("general", this.toTotales("VistaEmpresasMovimientosDto", "general", params));
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -138,12 +148,10 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // if  
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_kalan_empresas_movimientos.consecutivo= '").append(this.attrs.get("consecutivo")).append("') and ");
-		if(!Cadena.isVacio(this.attrs.get("fecha")))
-		  sb.append("(date_format(tc_kalan_empresas_movimientos.fecha, '%Y%m%d')= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fecha"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_kalan_empresas_movimientos.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_kalan_empresas_movimientos.fecha_aplicacion, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_kalan_empresas_movimientos.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		  sb.append("(date_format(tc_kalan_empresas_movimientos.fecha_aplicacion, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
   		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idTipoConcepto")) && !this.attrs.get("idTipoConcepto").toString().equals("-1"))
@@ -364,6 +372,26 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   public String doColor(Entity row) {
     return Objects.equals(row.toLong("idMovimientoEstatus"), 3L)? "janal-tr-yellow": "";
+  }
+
+  private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
+    Entity regresar= null;
+    try {      
+      regresar= (Entity)DaoFactory.getInstance().toEntity(proceso, idXml, params);
+      if(Objects.equals(regresar, null) || regresar.isEmpty()) 
+        regresar= this.toEmptyTotales();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    return regresar;
+  }
+  
+  private Entity toEmptyTotales() {
+    Entity regresar= new Entity(-1L);
+    regresar.put("total", new Value("total", 0D));
+    return regresar;
   }
   
 }

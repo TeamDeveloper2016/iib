@@ -165,6 +165,7 @@
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
             <f:facet name="footer">
+              <p:outputLabel style="float: left;" value="#{kalanMovimientosEgresos.general}" styleClass="detalle" escape="false"/>
               <p:outputLabel value="Total [#{kalanMovimientosEgresos.lazyModel== null? 0: kalanMovimientosEgresos.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
