@@ -142,10 +142,10 @@
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
-                  <p:menuitem icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)">
+                  <p:menuitem icon="fa fa-file-excel-o" value="Reporte" process="@this tabla" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)" rendered="false">
                     <p:fileDownload value="#{kalanGastosFiltro.archivo}"/>
                   </p:menuitem>	
-                  <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanGastosFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar" rendered="false"/>
+                  <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this panelBusqueda" actionListener="#{kalanGastosFiltro.doReporte()}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              

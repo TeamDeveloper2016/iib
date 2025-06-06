@@ -312,9 +312,43 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;
 	}
 	
+	private void toParameters(Map<String, Object> parameters) {
+    String inicio          = " - ";
+    String termino         = " - ";
+    String clasificacion   = "TODAS";
+    String subClasificacion= "TODOS";
+    String sucursal        = "TODAS";
+		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+		  inicio= Fecha.formatear(Fecha.FECHA_CORTA, (Date)this.attrs.get("fechaInicio"));	
+		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+		  termino= Fecha.formatear(Fecha.FECHA_CORTA, (Date)this.attrs.get("fechaTermino"));	
+    parameters.put("REPORTE_PERIODO", inicio.concat("  AL  ").concat(termino));
+		if(!Cadena.isVacio(this.attrs.get("idGastoClasificacion")) && !Objects.equals((Long)this.attrs.get("idGastoClasificacion"), -1L)) {
+      List<UISelectItem> clasificaciones= (List<UISelectItem>)this.attrs.get("clasificaciones");
+  		int index= clasificaciones.indexOf(new UISelectItem((Long)this.attrs.get("idGastoClasificacion")));
+      if(index>= 0)
+        clasificacion= clasificaciones.get(index).getLabel();
+    } // if  
+    parameters.put("REPORTE_CLASIFICACION", clasificacion);
+		if(!Cadena.isVacio(this.attrs.get("idGastoSubclasificacion")) && !Objects.equals((Long)this.attrs.get("idGastoSubclasificacion"), -1L)) {
+      List<UISelectItem> subClasificaciones= (List<UISelectItem>)this.attrs.get("subclasificaciones");
+  		int index= subClasificaciones.indexOf(new UISelectItem((Long)this.attrs.get("idGastoSubclasificacion")));
+      if(index>= 0)
+        subClasificacion= subClasificaciones.get(index).getLabel();
+    } // if  
+    parameters.put("REPORTE_SUBCLASIFICACION", subClasificacion);
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L)) {
+      List<UISelectEntity> sucursales= (List<UISelectEntity>)this.attrs.get("empresas");
+  		int index= sucursales.indexOf((UISelectEntity)this.attrs.get("idEmpresa"));
+      if(index>= 0)
+        sucursal= sucursales.get(index).toString("nombre");
+    } // if  
+    parameters.put("REPORTE_SUCURSAL", sucursal);
+	}
+	
 	private void toLoadCatalogos() {
-		List<Columna> columns     = new ArrayList<>();
-    Map<String, Object> params= new HashMap<>();
+		List<Columna> columns        = new ArrayList<>();
+    Map<String, Object> params   = new HashMap<>();
     List<UISelectEntity> empresas= null;
     try {
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
@@ -345,29 +379,20 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 	}
   
-  public void doReporte(String nombre) throws Exception{
-    Parametros comunes           = null;
+  public void doReporte() throws Exception {
+    Parametros comunes           = new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
-		EReportes reporteSeleccion   = null;
-    Entity seleccionado          = null;
-		try{		
+		EReportes reporteSeleccion   = EReportes.GASTOS_DETALLE;
+		try {		
       params= this.toPrepare();
-      seleccionado = ((Entity)this.attrs.get("seleccionado"));
-      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
-      params.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_entradas.ejercicio, tc_mantic_notas_entradas.orden");
-      reporteSeleccion= EReportes.valueOf(nombre);
-      if(!reporteSeleccion.equals(EReportes.NOTAS_ENTRADA)){
-        params.put("idNotaEntrada", seleccionado.getKey());	
-        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idProveedor"), -1L);
-      }
-      else
-        comunes= new Parametros(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      params.put("sortOrder", "order by tc_kalan_empresas_gastos.id_empresa, tc_kalan_empresas_gastos.consecutivo desc");
       this.reporte= JsfBase.toReporte();	
       parametros= comunes.getComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.toParameters(parametros);
       this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
       this.doVerificarReporte();
       this.reporte.doAceptar();			
@@ -376,7 +401,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
-} // doReporte
+  } 
 	
 	public void doVerificarReporte() {
 		RequestContext rc= UIBackingUtilities.getCurrentInstance();
