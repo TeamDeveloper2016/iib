@@ -12,7 +12,7 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:articulos' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
-				'contenedorGrupos\\:terminado' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
+				'contenedorGrupos\\:terminado' : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:restos'    : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'cantidad'                     : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
 				'porcentaje'                   : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": 100})', mascara: 'libre', grupo: 'general'},
