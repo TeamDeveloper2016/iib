@@ -7,6 +7,78 @@
   </model>
 
   <dml>
+    <unit id="TcKalanAcreedoresDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_acreedores
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_acreedores
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+    </unit>    
+    <unit id="TcKalanAcreedoresEstatusDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_acreedores_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_acreedores_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKalanAcreedoresBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_acreedores_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_acreedores_bitacora
+where      
+  id_acreedor_bitacora = {idAcreedorBitacora}
+      </select>
+    </unit>  
+    <unit id="TcKalanAcreedoresPagosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_acreedores_pagos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_acreedores_pagos
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+    </unit>        
     <unit id="TcKalanValesEstatusDto">
       <select id="row">
 select      
@@ -25,7 +97,7 @@ from
 where      
   nombre = '{nombre}'
       </select>
-    </unit>    
+    </unit>  
     <unit id="TcKalanValesBitacoraDto">
       <select id="row">
 select      

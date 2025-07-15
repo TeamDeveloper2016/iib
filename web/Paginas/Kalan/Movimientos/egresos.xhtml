@@ -138,12 +138,24 @@
               </f:facet>
               <h:outputText value="#{row['cuenta']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.concepto}">
+            <p:column styleClass="MarAuto Responsive janal-wid-15" sortBy="#{row.concepto}" exportable="false">
               <f:facet name="header">
                 <h:outputText value="Concepto"/>
               </f:facet>
               <h:outputText value="#{row['concepto']}"/>
               <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}"></i>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-display-none janal-wid-1">
+              <f:facet name="header">
+                <h:outputText value="Concepto"/>
+              </f:facet>
+              <h:outputText value="#{row['concepto']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-display-none janal-wid-1">
+              <f:facet name="header">
+                <h:outputText value="Observaciones"/>
+              </f:facet>
+              <h:outputText value="#{row['observaciones']}"/>
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fechaAplicacion}">
               <f:facet name="header">
@@ -151,6 +163,18 @@
               </f:facet>
               <h:outputText value="#{row['fechaAplicacion']}"/>
               <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Justificación: #{row['justificacion']}"></i>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-display-none janal-wid-1">
+              <f:facet name="header">
+                <h:outputText value="Aplicación"/>
+              </f:facet>
+              <h:outputText value="#{row['fechaAplicacion']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-display-none janal-wid-1">
+              <f:facet name="header">
+                <h:outputText value="justificación"/>
+              </f:facet>
+              <h:outputText value="#{row['justificacion']}"/>
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">
               <f:facet name="header">

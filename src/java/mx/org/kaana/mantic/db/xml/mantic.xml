@@ -7,6 +7,207 @@
   </model>
 
   <dml>
+    <unit id="TcManticAcreedoresDto">
+      <select id="row">
+select      
+  tc_mantic_acreedores.id_acreedor as id_key,
+  tc_mantic_acreedores.*
+from      
+  tc_mantic_acreedores
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_acreedores
+where      
+  id_empresa= {idEmpresa} and rfc= '{rfc}'
+      </select>
+      <select id="key">
+select      
+  *
+from      
+  tc_mantic_acreedores
+where      
+  id_acreedor= {idAcreedor}
+      </select>   
+      <select id="igual">
+select      
+  tc_mantic_acreedores.id_acreedor as id_key,
+  tc_mantic_acreedores.*
+from      
+  tc_mantic_acreedores
+where      
+  id_acreedor= {idAcreedor}
+      </select>
+			<select id="porCodigo">			
+select      
+  tc_mantic_acreedores.id_proveedor as id_key,
+  tc_mantic_acreedores.*
+from      
+  tc_mantic_acreedores
+where 
+  id_empresa in ({sucursales})
+  and upper(clave) regexp '.*{codigo}.*'
+order by
+  clave
+			</select>
+			<select id="porNombre">			
+select      
+  tc_mantic_acreedores.id_acreedor as id_key,
+  tc_mantic_acreedores.*
+from      
+  tc_mantic_acreedores
+where 
+  id_empresa in ({sucursales})
+  and (
+    upper(razon_social) regexp '.*{codigo}.*'
+    or
+    upper(rfc) regexp '.*{codigo}.*'
+  )
+order by
+  razon_social
+			</select>
+			<select id="sucursales">
+select      
+  tc_mantic_acreedores.id_acreedor as id_key,
+  tc_mantic_acreedores.*
+from      
+  tc_mantic_acreedores
+where 
+  tc_mantic_acreedores.id_empresa in ({sucursales})
+order by
+  tc_mantic_acreedores.clave
+      </select>      
+      <select id="duplicados">
+select      
+  id_acreedor as id_key,
+  rfc,
+  razon_social
+from      
+  tc_mantic_acreedores
+where      
+  rfc= '{rfc}' and id_acreedor!= {idAcreedor}
+      </select>
+      <select id="proveedor">
+select      
+  *
+from      
+  tc_mantic_acreedores
+where      
+  rfc= '{rfc}' and id_empresa in ({sucursales})
+      </select>
+    </unit>    
+    <unit id="TcManticAcreedoresBancosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_acreedores_bancos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_acreedores_bancos
+where      
+  convenio_cuenta = '{convenioCuenta}' and id_tipo_cuenta = {idTipoCuenta} and clabe_referencia = '{clabeReferencia}' and id_acreedor = {idAcreedor}      
+      </select>
+    </unit>    
+    <unit id="TcManticAcreedoresPortalesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_acreedores_portales
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_acreedores_portales
+where      
+  pagina = '{pagina}' and cuenta = '{cuenta}' and id_acreedor = {idAcreedor}
+      </select>
+    </unit>    
+    <unit id="TcManticTiposAcreedoresDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_mantic_tipos_acreedores
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_mantic_tipos_acreedores
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>   
+    <unit id="TrManticAcreedorAgenteDto">
+      <select id="row">
+select      
+  *
+from      
+  tr_mantic_acreedor_agente
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tr_mantic_acreedor_agente
+where      
+  id_principal = {idPrincipal} and id_agente = {idAgente} and id_acreedor = {idAcreedor}
+      </select>
+    </unit>     
+    <unit id="TrManticAcreedorDomicilioDto">
+      <select id="row">
+select      
+  *
+from      
+  tr_mantic_acreedor_domicilio
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tr_mantic_acreedor_domicilio
+where      
+  id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal} and id_acreedor = {idAcreedor}
+      </select>
+    </unit>    
+    <unit id="TrManticAcreedorTipoContactoDto">
+      <select id="row">
+select      
+  *
+from      
+  tr_mantic_acreedor_tipo_contacto
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tr_mantic_acreedor_tipo_contacto
+where      
+  valor = '{valor}' and id_tipo_contacto = {idTipoContacto} and id_acreedor = {idAcreedor}
+      </select>
+    </unit>    
     <unit id="TcManticLotesTerminadosDto">
       <select id="row">
 select      
@@ -5046,95 +5247,95 @@ group by
     </unit>
 		<unit id="TcManticProveedoresDto">
       <select id="row">
-        select      
-          tc_mantic_proveedores.id_proveedor as id_key,
-          tc_mantic_proveedores.*
-        from      
-          tc_mantic_proveedores
-        where 
-          {condicion} 
+select      
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_proveedores.*
+from      
+  tc_mantic_proveedores
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_proveedores
-        where      
-          rfc = '{rfc}' and id_empresa= {idEmpresa}
+select      
+  *
+from      
+  tc_mantic_proveedores
+where      
+  rfc = '{rfc}' and id_empresa= {idEmpresa}
       </select>
       <select id="key">
-        select      
-          *
-        from      
-          tc_mantic_proveedores
-        where      
-          id_proveedor= {idProveedor}
+select      
+  *
+from      
+  tc_mantic_proveedores
+where      
+  id_proveedor= {idProveedor}
       </select>   
       <select id="igual">
-        select      
-          tc_mantic_proveedores.id_proveedor as id_key,
-          tc_mantic_proveedores.*
-        from      
-          tc_mantic_proveedores
-        where      
-          id_proveedor= {idProveedor}
+select      
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_proveedores.*
+from      
+  tc_mantic_proveedores
+where      
+  id_proveedor= {idProveedor}
       </select>
 			<select id="porCodigo">			
-        select      
-					tc_mantic_proveedores.id_proveedor as id_key,
-          tc_mantic_proveedores.*
-        from      
-          tc_mantic_proveedores
-        where 
-          id_empresa in ({sucursales})
-          and upper(clave) regexp '.*{codigo}.*'
-				order by
-				  clave
+select      
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_proveedores.*
+from      
+  tc_mantic_proveedores
+where 
+  id_empresa in ({sucursales})
+  and upper(clave) regexp '.*{codigo}.*'
+order by
+  clave
 			</select>
 			<select id="porNombre">			
-        select      
-					tc_mantic_proveedores.id_proveedor as id_key,
-          tc_mantic_proveedores.*
-        from      
-          tc_mantic_proveedores
-        where 
-          id_empresa in ({sucursales})
-          and (
-				    upper(razon_social) regexp '.*{codigo}.*'
-				    or
-				    upper(rfc) regexp '.*{codigo}.*'
-				  )
-				order by
-				  razon_social
+select      
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_proveedores.*
+from      
+  tc_mantic_proveedores
+where 
+  id_empresa in ({sucursales})
+  and (
+    upper(razon_social) regexp '.*{codigo}.*'
+    or
+    upper(rfc) regexp '.*{codigo}.*'
+  )
+order by
+  razon_social
 			</select>
 			<select id="sucursales">
-        select      
-					tc_mantic_proveedores.id_proveedor as id_key,
-          tc_mantic_proveedores.*
-        from      
-          tc_mantic_proveedores
-        where 
-          tc_mantic_proveedores.id_empresa in ({sucursales})
-				order by
-				  tc_mantic_proveedores.clave
+select      
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_proveedores.*
+from      
+  tc_mantic_proveedores
+where 
+  tc_mantic_proveedores.id_empresa in ({sucursales})
+order by
+  tc_mantic_proveedores.clave
       </select>      
       <select id="duplicados">
-        select      
-          id_proveedor as id_key,
-				  rfc,
-				  razon_social
-        from      
-          tc_mantic_proveedores
-        where      
-          rfc = '{rfc}' and id_proveedor!= {idProveedor}
+select      
+  id_proveedor as id_key,
+  rfc,
+  razon_social
+from      
+  tc_mantic_proveedores
+where      
+  rfc = '{rfc}' and id_proveedor!= {idProveedor}
       </select>
       <select id="proveedor">
-        select      
-          *
-        from      
-          tc_mantic_proveedores
-        where      
-          rfc = '{rfc}' and id_empresa in ({sucursales})
+select      
+  *
+from      
+  tc_mantic_proveedores
+where      
+  rfc = '{rfc}' and id_empresa in ({sucursales})
       </select>
     </unit>
 		<unit id="TcManticClientesDto">

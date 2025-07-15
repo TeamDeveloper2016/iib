@@ -437,7 +437,6 @@ public class Accion extends IBaseVenta implements Serializable {
 					else
 						UIBackingUtilities.addCallbackParam("facturacionOk", false);
 					tipoTicket= ventaFinalizada.getApartado() ? "APARTADO": (ventaFinalizada.isFacturar()? "FACTURA": (ventaFinalizada.isCredito()? "CREDITO": "VENTA DE MOSTRADOR"));
-          // if(ventaFinalizada.isCredito() && Objects.equals(Configuracion.getInstance().getEmpresa(), "iib")) {
           if(ventaFinalizada.isCredito()) {
             this.toPrintTicket(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), ((TicketVenta)this.getAdminOrden().getOrden()).getRegistro());
           } // if

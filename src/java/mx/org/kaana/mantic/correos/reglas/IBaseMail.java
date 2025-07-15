@@ -28,6 +28,7 @@ import javax.mail.internet.MimeMultipart;
 import mx.org.kaana.libs.correo.SMTPAuthenticator;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.TcConfiguraciones;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.correos.beans.Attachment;
 import org.apache.commons.logging.Log;
@@ -151,15 +152,19 @@ public class IBaseMail implements Serializable {
     Multipart multipart  = null;    
 		List<BodyPart> items = new ArrayList<>();
     try {
-      properties.put("mail.smtp.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
-      properties.put("mail.smtp.ssl.enable", "true");
-      properties.put("mail.smtp.ssl.trust", "*");
-      properties.put("mail.smtp.starttls.enable", "true");
+      properties= new Properties();
+      properties.put("mail.host", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
       properties.put("mail.transport.protocol", "smtp");
       properties.put("mail.smtp.auth", "true");
+      properties.put("mail.smtp.ssl.enable", "true");
       properties.put("mail.smtp.port", Configuracion.getInstance().getPropiedadServidor("mail.smtp.port"));			
-			session    = Session.getInstance(properties, this.authenticator);            
+      properties.put("mail.smtp.ssl.trust", Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"));
+      properties.setProperty("mail.smtp.ssl.protocols", "TLSv1.1 TLSv1.2");
+      LOG.info("AUTENTICACION EN EL SERVIDOR DE CORREOS");
+			session= Session.getDefaultInstance(properties, null);
+      session.setDebug(true);
       message= new MimeMessage(session);
+      LOG.error("alias: ".concat(this.alias).concat("> from: ").concat(this.from).concat("> to: ").concat(this.to).concat(" subject ").concat(this.subject));
 			if(Cadena.isVacio(this.alias))
         message.setFrom(new InternetAddress(this.from));
 			else
@@ -202,8 +207,15 @@ public class IBaseMail implements Serializable {
       } // if
 			else
   			message.setContent(Cadena.toCharSet(content), "text/html");
-      Transport.send(message);
-      LOG.info("Correo ["+ content+ "]");
+      Transport transport= session.getTransport("smtp");
+      transport.connect(
+        Configuracion.getInstance().getPropiedadServidor("mail.smtp.server"), 
+        TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.user"), 
+        TcConfiguraciones.getInstance().getPropiedadServidor("correo.admin.pass")
+      );
+      transport.sendMessage(message, message.getAllRecipients());
+      transport.close();      
+      // Transport.send(message);
       LOG.info("Correo enviado al buzon de: "+ this.to);
 		} // try
     finally {

@@ -2505,17 +2505,15 @@ select
   avg(tc_mantic_ventas_detalles.precio) as precio,
   avg(tc_mantic_ventas_detalles.costo) as costo,
   sum(tc_mantic_ventas_detalles.iva) as iva,
-  sum(tc_mantic_ventas_detalles.cantidad) as cantidad,
+  round(sum(tc_mantic_ventas_detalles.peso_estimado* tc_mantic_ventas_detalles.cantidad), 2) as cantidad,
   sum(tc_mantic_ventas_detalles.importe) as importe,
   tc_mantic_articulos.menudeo,
   tc_mantic_articulos.medio_mayoreo,
   tc_mantic_articulos.mayoreo,
-  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 limit 0, 1) as propio,
+  tc_mantic_ventas_detalles.codigo as propio,
   count(tc_mantic_articulos.id_articulo) as ventas
 from 
   tc_mantic_articulos
-inner join
-  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 inner join
   tc_mantic_ventas_detalles on tc_mantic_articulos.id_articulo = tc_mantic_ventas_detalles.id_articulo
 inner join
@@ -2647,13 +2645,11 @@ select
   ifnull(avg(tc_mantic_ventas_detalles.precio), 0) as precio,
   ifnull(avg(tc_mantic_ventas_detalles.costo), 0) as costo,
   ifnull(sum(tc_mantic_ventas_detalles.iva), 0) as iva,
-  ifnull(sum(tc_mantic_ventas_detalles.cantidad), 0) as cantidad,
+  round(ifnull(sum(tc_mantic_ventas_detalles.peso_estimado* tc_mantic_ventas_detalles.cantidad), 0), 2) as cantidad,
   ifnull(sum(tc_mantic_ventas_detalles.importe), 0) as importe,
   count(tc_mantic_articulos.id_articulo) as ventas
 from 
   tc_mantic_articulos
-inner join
-  tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1
 inner join
   tc_mantic_ventas_detalles on tc_mantic_articulos.id_articulo = tc_mantic_ventas_detalles.id_articulo
 inner join

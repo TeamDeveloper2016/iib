@@ -1,8 +1,5 @@
 package mx.org.kaana.mantic.catalogos.comun;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,12 +27,11 @@ public abstract class IBasePagos extends mx.org.kaana.mantic.inventarios.comun.I
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
 			this.attrs.put("mostrarBanco", false);			
-			setFile(new Importado());
+			this.setFile(new Importado());
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_IDENTIFICACION);
 			this.attrs.put("xml", ""); 
 			this.attrs.put("file", ""); 
-			if(JsfBase.isAdminEncuestaOrAdmin())
-				this.loadSucursales();							
+			this.loadSucursales();							
 			this.doLoadCajas();
 			this.loadTiposPagos();
 			this.loadBancos();
@@ -70,7 +66,10 @@ public abstract class IBasePagos extends mx.org.kaana.mantic.inventarios.comun.I
 		Map<String, Object>params      = new HashMap<>();
 		List<Columna> columns          = new ArrayList<>();
 		try {
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(JsfBase.isAdminEncuestaOrAdmin())
+  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      else
+  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
@@ -81,7 +80,7 @@ public abstract class IBasePagos extends mx.org.kaana.mantic.inventarios.comun.I
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // loadSucursales
+	} 
 	
 	public void doLoadCajas() {
 		List<UISelectEntity> cajas= null;

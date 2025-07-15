@@ -525,7 +525,6 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
 					else
 						UIBackingUtilities.addCallbackParam("facturacionOk", false);
 					tipoTicket= ventaFinalizada.getApartado() ? "APARTADO" : (ventaFinalizada.isFacturar() ? "FACTURA" : (ventaFinalizada.isCredito() ? "CREDITO" : "VENTA DE MOSTRADOR"));
-          // if(ventaFinalizada.isCredito() && Objects.equals(Configuracion.getInstance().getEmpresa(), "iib")) {
           if(ventaFinalizada.isCredito()) {
             this.toPrintTicket(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), ((TicketVenta)this.getAdminOrden().getOrden()).getRegistro());
           } // if
@@ -538,8 +537,8 @@ public class Accion extends mx.org.kaana.mantic.ventas.caja.backing.Accion imple
               else
                 ticket= new CreateTicket(((AdminEspecial)this.getAdminOrden()), (Pago)this.attrs.get("pago"), tipoTicket, seleccionado.toString("razonSocial"), this.toCajero(((AdminEspecial)this.getAdminOrden()).getOrden().getKey()));
             // SE QUITA ESTO DE FORMA TEMPORAL QUE LANCE EL TICKET E INVESTIAR PORQUE SE BLOQUEA EL NAVEGADOR
-            // UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminEspecial)this.getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
-            // UIBackingUtilities.execute("jsTicket.clicTicket();");
+             UIBackingUtilities.execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminEspecial)this.getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
+             UIBackingUtilities.execute("jsTicket.clicTicket();");
           } // if  
 					JsfBase.addMessage("Se finalizó el pago del ticket de venta", ETipoMensaje.INFORMACION);
           this.toSaveCostoCliente(ventaFinalizada);

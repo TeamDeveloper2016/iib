@@ -395,6 +395,72 @@ public final class Bonanza implements Serializable {
       LOG.error("[doSendProveedor] No se envio el mensaje ["+ this.celular+ "]");
   }
 
+  public void doSendAcreedor(Session sesion) {
+    if(Objects.equals(this.celular.length(), LENGTH_CELL_PHONE) || this.celular.contains("@")) {
+      Message message= null;
+      Value value    = null; 
+      Map<String, Object> params = new HashMap<>();        
+      try {
+        params.put("nombre", this.nombre);
+        params.put("celular", this.celular);
+        params.put("saludo", this.toSaludo());
+        params.put("empresa", Cadena.letraCapital(Configuracion.getInstance().getEmpresa("titulo")));
+        params.put("host", Configuracion.getInstance().getPropiedadServidor("sistema.dns"));
+        params.put("correo", Configuracion.getInstance().getEmpresa("ventas"));
+        params.put("notifica", Configuracion.getInstance().getEmpresa("celular"));
+        params.put("idTipoMensaje", ETypeMessage.BIENVENIDA.getId());
+        if(sesion!= null)
+          value= (Value)DaoFactory.getInstance().toField(sesion, "TcManticMensajesDto", "existe", params, "idKey");
+        else
+          value= (Value)DaoFactory.getInstance().toField("TcManticMensajesDto", "existe", params, "idKey");
+        if(value== null) {
+          if(!Objects.equals(Configuracion.getInstance().getPropiedadServidor("sistema.notificar").toLowerCase(), "si"))
+            LOG.warn(params.toString()+ " {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
+          else {  
+            HttpResponse<String> response = Unirest.post("https://api.wassenger.com/v1/messages")
+            .header("Content-Type", "application/json")
+            .header("Token", this.token)
+            .body("{"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}")
+            .asString();
+            LOG.error("Enviado: "+ response.getBody());
+            if(Objects.equals(response.getStatus(), 201)) {
+              Gson gson= new Gson();
+              message  = gson.fromJson(response.getBody(), Message.class);
+              if(message!= null)
+                message.init();
+              else
+                message= new Message();
+            } // if  
+            else {
+              LOG.error("[doSendAcreedor] No se envio el mensaje ["+ this.celular+ "] "+ response.getStatusText()+ "\n"+ response.getBody());
+              message= new Message();
+              message.setMessage(" {"+ Cadena.replaceParams(BODY_PROVEEDOR, params, true)+ "}");
+            } // else  
+            message.setTelefono(this.celular);
+            message.setIdSendStatus(new Long(response.getStatus()));
+            message.setSendStatus(response.getStatusText());
+            message.setIdTipoMensaje(ETypeMessage.BIENVENIDA.getId());
+            message.setIdUsuario(JsfBase.getIdUsuario());
+            if(sesion!= null)
+              DaoFactory.getInstance().insert(sesion, message);
+            else
+              DaoFactory.getInstance().insert(message);
+          } // else  
+        } // if  
+        else 
+          LOG.warn("[doSendAcreedor] Ya había sido notificado este celular por whatsapp ["+ this.celular+ "]");
+      } // try
+      catch(Exception e) {
+        Error.mensaje(e);
+      } // catch
+      finally {
+        Methods.clean(params);
+      } // finally
+    } // if
+    else 
+      LOG.error("[doSendAcreedor] No se envio el mensaje ["+ this.celular+ "]");
+  }
+
   public void doSendCorteNomina(Session sesion) {
     Message message= null;
     Map<String, Object> params = new HashMap<>();        

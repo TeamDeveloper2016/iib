@@ -1,8 +1,7 @@
-package mx.org.kaana.mantic.catalogos.proveedores.reglas;
+package mx.org.kaana.kalan.catalogos.acreedores.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +10,8 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import org.apache.commons.logging.Log;
@@ -26,7 +22,7 @@ public class Gestor implements Serializable {
   private static final Log LOG = LogFactory.getLog(Gestor.class);
   private static final long serialVersionUID = 4918891922274546780L;
 
-  private List<UISelectEntity> tiposProveedores;
+  private List<UISelectEntity> tiposAcreedores;
   private List<UISelectEntity> entidades;
   private List<UISelectEntity> municipios;
   private List<UISelectEntity> localidades;
@@ -34,7 +30,7 @@ public class Gestor implements Serializable {
   private List<Domicilio> direcciones;
 
   public Gestor() {
-    this.tiposProveedores = new ArrayList();
+    this.tiposAcreedores = new ArrayList();
     this.entidades = new ArrayList();
     this.municipios = new ArrayList();
     this.localidades = new ArrayList();
@@ -58,8 +54,8 @@ public class Gestor implements Serializable {
     return detalleCalles;
   }
 
-  public List<UISelectEntity> getTiposProveedores() {
-    return tiposProveedores;
+  public List<UISelectEntity> getTiposAcreedores() {
+    return tiposAcreedores;
   }
 
   public List<Domicilio> getDirecciones() {
@@ -84,11 +80,11 @@ public class Gestor implements Serializable {
       if (incluyeItemTodos) {
         entityDefault.put("idKey", new Value("idKey", -1L, "id_key"));
         entityDefault.put("nombre", new Value("nombre", "TODOS", "nombre"));
-        this.tiposProveedores.add(0, new UISelectEntity(entityDefault));
+        this.tiposAcreedores.add(0, new UISelectEntity(entityDefault));
       } // if
       formatos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       formatos.add(new Columna("dias", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      this.tiposProveedores.addAll(UIEntity.build("TcManticTiposProveedoresDto", params, formatos));
+      this.tiposAcreedores.addAll(UIEntity.build("TcManticTiposAcreedoresDto", params, formatos));
     } // try
     catch (Exception e) {
       throw e;
@@ -99,15 +95,4 @@ public class Gestor implements Serializable {
     } // finally
   }
 
-  public List<UISelectItem> toTiposPagos() throws Exception {
-    List<UISelectItem> regresar = null;
-    try {
-      regresar = UISelect.build("VistaProveedoresDto", "proveedorCondicionPago", Collections.emptyMap(), Cadena.toList("clave|nombrePago|nombre"), " ", EFormatoDinamicos.MAYUSCULAS);
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-    return regresar;
-  }
-  
 }

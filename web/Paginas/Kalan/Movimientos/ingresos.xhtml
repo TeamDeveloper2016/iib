@@ -159,19 +159,43 @@
               </f:facet>
               <h:outputText value="#{row['concepto']}"/>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fechaAplicacion}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fechaAplicacion}" exportable="false">
               <f:facet name="header">
                 <h:outputText value="Aplicación"/>
               </f:facet>
               <h:outputText value="#{row['fechaAplicacion']}"/>
               <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message" title="Observaciones: #{row['observaciones']}"></i>
             </p:column>		
-            <p:column styleClass="MarAuto Responsive janal-display-none" sortBy="#{row.anticipo}">
+            <p:column styleClass="MarAuto Responsive janal-display-none janal-wid-1">
+              <f:facet name="header">
+                <h:outputText value="Aplicación"/>
+              </f:facet>
+              <h:outputText value="#{row['fechaAplicacion']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-display-none janal-wid-1">
+              <f:facet name="header">
+                <h:outputText value="Observaciones"/>
+              </f:facet>
+              <h:outputText value="#{row['observaciones']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-display-none" sortBy="#{row.anticipo}" exportable="false">
               <f:facet name="header">
                 <h:outputText value="Anticipo"/>
               </f:facet>
               <h:outputText value="#{row['anticipo']}"/>
               <i class="fa fa-fw fa-user janal-color-orange janal-icons-message" title="Cliente: #{row['cliente']}"></i>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-display-none janal-wid-1">
+              <f:facet name="header">
+                <h:outputText value="Anticipo"/>
+              </f:facet>
+              <h:outputText value="#{row['anticipo']}"/>
+            </p:column>		
+            <p:column styleClass="MarAuto Responsive janal-display-none janal-wid-1">
+              <f:facet name="header">
+                <h:outputText value="Cliente"/>
+              </f:facet>
+              <h:outputText value="#{row['cliente']}"/>
             </p:column>		
             <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.total}">
               <f:facet name="header">
