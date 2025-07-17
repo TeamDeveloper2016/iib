@@ -6418,7 +6418,7 @@ group by
 					 tc_mantic_proveedores
 				inner join
 					 tc_mantic_tipos_proveedores on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
-				inner  join
+				inner join
 					 tc_mantic_tipos_dias on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia   
 				left join
 					 tr_mantic_proveedor_tipo_contacto on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_tipo_contacto.id_proveedor and id_tipo_contacto &lt;= 1 and orden =1
@@ -6447,25 +6447,22 @@ group by
 				 from   
 					 tc_mantic_proveedores
 				 inner join
-					 tc_mantic_tipos_proveedores   on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
-				 inner  join
+					 tc_mantic_tipos_proveedores on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
+				 inner join
 					 tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
 				 where
 					 upper(tc_mantic_proveedores.razon_social) like upper('%{codigo}%')
-					or
-					 (upper(tc_mantic_proveedores.rfc) like upper('%{codigo}%') or upper(tc_mantic_proveedores.rfc is null))
-					or
-					 upper(tc_mantic_proveedores.clave like '%{codigo}%')
-					and
-						tc_mantic_proveedores.id_empresa in ({sucursales})
+					 or (upper(tc_mantic_proveedores.rfc) like upper('%{codigo}%') or upper(tc_mantic_proveedores.rfc is null))
+					 or upper(tc_mantic_proveedores.clave like '%{codigo}%')
+					 and tc_mantic_proveedores.id_empresa in ({sucursales})
 			</select>
 			<select id="proveedorCondicionPago">
 				select 
-						tc_mantic_tipos_pagos.id_tipo_pago,
-						tc_mantic_tipos_pagos.id_tipo_pago as id_key,            
-						tc_mantic_tipos_pagos.nombre as nombre_pago,
-						tc_mantic_tipos_formas_pagos.clave,
-						tc_mantic_tipos_formas_pagos.nombre
+          tc_mantic_tipos_pagos.id_tipo_pago,
+          tc_mantic_tipos_pagos.id_tipo_pago as id_key,            
+          tc_mantic_tipos_pagos.nombre as nombre_pago,
+          tc_mantic_tipos_formas_pagos.clave,
+          tc_mantic_tipos_formas_pagos.nombre
 				from 
 					tc_mantic_tipos_pagos
 				inner join 

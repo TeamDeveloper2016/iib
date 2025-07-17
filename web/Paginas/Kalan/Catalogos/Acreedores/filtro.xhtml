@@ -11,9 +11,10 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'clave'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-        'rfc'        : {validaciones: 'rfc', mascara: 'fiscal', formatos: 'cambiar-mayusculas'},      
-        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+        clave       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        rfc         : {validaciones: 'rfc', mascara: 'fiscal', formatos: 'cambiar-mayusculas'},      
+        razonSocial : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        tipoAcreedor: {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
   </ui:define>
@@ -44,9 +45,9 @@
 									</h:panelGrid>
 								</f:facet>
 							</p:autoComplete>			
-              <p:outputLabel for="tipoProveedor"  value="Tipo acreedor:"/>
-              <p:selectOneMenu id="tipoProveedor" value="#{kalanCatalogosAcreedoresFiltro.attrs.idTipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
-                <f:selectItems value="#{kalanCatalogosAcreedoresFiltro.attrs.tiposProveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+              <p:outputLabel for="tipoAcreedor" value="Tipo acreedor:"/>
+              <p:selectOneMenu id="tipoAcreedor" value="#{kalanCatalogosAcreedoresFiltro.attrs.idTipoAcreedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
+                <f:selectItems value="#{kalanCatalogosAcreedoresFiltro.attrs.tiposAcreedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column>
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
@@ -54,13 +55,13 @@
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this clave razonSocial rfc tipoProveedor" actionListener="#{kalanCatalogosAcreedoresFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this clave razonSocial rfc tipoProveedor" actionListener="#{kalanCatalogosAcreedoresFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this clave razonSocial rfc tipoAcreedor" actionListener="#{kalanCatalogosAcreedoresFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this clave razonSocial rfc tipoAcreedor" actionListener="#{kalanCatalogosAcreedoresFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 						</div>
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosAcreedoresFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosAcreedoresFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCatalogosAcreedoresFiltro.lazyModel.rowCount gt kalanCatalogosAcreedoresFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCatalogosAcreedoresFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCatalogosAcreedoresFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCatalogosAcreedoresFiltro.lazyModel.rowCount gt kalanCatalogosAcreedoresFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
             <f:facet name="header" >
 							<div class="janal-icons-header">
 								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-acreedores.xls" title="Plantilla de acreedores XLS">
@@ -68,8 +69,8 @@
 								</h:outputLink>
 							</div>	
               <div class="lg-pantalla">
-                <p:menuButton   value="Opciones">
-                  <p:menuitem  value="Agregar" action="#{kalanCatalogosAcreedoresFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Agregar" action="#{kalanCatalogosAcreedoresFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 									<p:separator/>
 									<p:menuitem icon="fa fa-history" value="Importar" title="Carga masiva" action="#{kalanCatalogosAcreedoresFiltro.doMasivo()}" onstart="return janal.bloquear()"/>						
                   <p:separator/>

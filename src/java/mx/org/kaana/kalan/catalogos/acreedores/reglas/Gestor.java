@@ -62,16 +62,16 @@ public class Gestor implements Serializable {
     return direcciones;
   }
 
-  public void loadTiposProveedores() throws Exception {
+  public void loadTiposAcreedores() throws Exception {
     try {
-      loadTiposProveedores(true);
+      this.loadTiposAcreedores(true);
     } // try
     catch (Exception e) {
       throw e;
     } // catch   
   }
 
-  public void loadTiposProveedores(boolean incluyeItemTodos) throws Exception {
+  public void loadTiposAcreedores(boolean incluyeItemTodos) throws Exception {
     Entity entityDefault      = new Entity();
     List<Columna> formatos    = new ArrayList<>();
     Map<String, Object> params= new HashMap();
