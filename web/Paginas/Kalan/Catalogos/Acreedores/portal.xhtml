@@ -25,7 +25,7 @@
         <div class="ui-grid-col-12">
 					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100">
 						<p:outputLabel for="codigo" value="Razón social:"/>
-						<p:autoComplete id="codigo" var="custom" placeholder="ejemplo: SANTANDER S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCatalogosAcreedoresPortal.attrs.acreedor}" completeMethod="#{kalanCatalogosAcreedoresPortal.doCompleteAcreedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+						<p:autoComplete id="codigo" var="custom" placeholder="Ej: SANTANDER S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCatalogosAcreedoresPortal.attrs.acreedor}" completeMethod="#{kalanCatalogosAcreedoresPortal.doCompleteAcreedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 							<p:ajax event="itemSelect" listener="#{kalanCatalogosAcreedoresPortal.doLoad}" process="@this" update="pagina cuenta contrasenia tabla tablaTransferencia" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<f:facet name="itemtip">
 								<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">

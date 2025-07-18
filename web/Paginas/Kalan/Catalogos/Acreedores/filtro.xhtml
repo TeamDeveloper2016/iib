@@ -33,7 +33,7 @@
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{kalanCatalogosAcreedoresFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCatalogosAcreedoresFiltro.attrs.acreedor}" completeMethod="#{kalanCatalogosAcreedoresFiltro.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+							<p:autoComplete id="razonSocial" var="custom" placeholder="Ej: SANTANDER S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCatalogosAcreedoresFiltro.attrs.acreedor}" completeMethod="#{kalanCatalogosAcreedoresFiltro.doCompleteAcreedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<h:outputText value="Clave:" />

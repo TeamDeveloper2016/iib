@@ -296,7 +296,7 @@ select
 	tc_kalan_empresas_gastos.fecha_aplicacion,
 	tc_kalan_empresas_gastos.fecha_referencia,
 	tc_kalan_empresas_gastos.referencia,
-	tc_mantic_acreedores.razon_social as proveedor,
+	tc_mantic_proveedores.razon_social as proveedor,
 	tc_kalan_empresas_gastos.concepto,
 	tc_kalan_empresas_gastos.observaciones,
 	tc_kalan_empresas_gastos.total,
@@ -317,7 +317,7 @@ inner join
 inner join
   tc_kalan_gastos_subclasificaciones on tc_kalan_empresas_gastos.id_gasto_subclasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_subclasificacion
 left join
-  tc_mantic_acreedores on tc_kalan_empresas_gastos.id_acreedor= tc_mantic_acreedores.id_acreedor
+  tc_mantic_proveedores on tc_kalan_empresas_gastos.id_proveedor= tc_mantic_proveedores.id_proveedor
 left join
   tc_kalan_empresas_cuentas on tc_kalan_empresas_gastos.id_empresa_cuenta= tc_kalan_empresas_cuentas.id_empresa_cuenta
 inner join 
@@ -341,7 +341,7 @@ inner join
 inner join
   tc_kalan_gastos_subclasificaciones on tc_kalan_empresas_gastos.id_gasto_subclasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_subclasificacion
 left join
-  tc_mantic_acreedores on tc_kalan_empresas_gastos.id_acreedor= tc_mantic_acreedores.id_acreedor
+  tc_mantic_proveedores on tc_kalan_empresas_gastos.id_proveedor= tc_mantic_proveedores.id_proveedor
 left join
   tc_kalan_empresas_cuentas on tc_kalan_empresas_gastos.id_empresa_cuenta= tc_kalan_empresas_cuentas.id_empresa_cuenta
 inner join 
@@ -476,7 +476,7 @@ select
 	tc_kalan_empresas_gastos.id_empresa_gasto as id_key,
 	tc_mantic_empresas.titulo as empresa,
 	tc_kalan_empresas_gastos.consecutivo,
-	tc_mantic_acreedores.razon_social as proveedor,
+	tc_mantic_proveedores.razon_social as proveedor,
 	tc_kalan_empresas_gastos.fecha_aplicacion,
 	tc_kalan_empresas_gastos.concepto,
 	tc_kalan_empresas_gastos.observaciones,
@@ -490,7 +490,7 @@ inner join
 inner join
   tc_kalan_gastos_subclasificaciones on tc_kalan_empresas_gastos.id_gasto_clasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_clasificacion and tc_kalan_empresas_gastos.id_gasto_subclasificacion= tc_kalan_gastos_subclasificaciones.id_gasto_subclasificacion and tc_kalan_gastos_subclasificaciones.id_activo= 1
 left join
-  tc_mantic_acreedores on tc_kalan_empresas_gastos.id_acreedor= tc_mantic_acreedores.id_acreedor
+  tc_mantic_proveedores on tc_kalan_empresas_gastos.id_proveedor= tc_mantic_proveedores.id_proveedor
 where
   tc_kalan_empresas_gastos.id_empresa= {idEmpresa}
 	and (tc_kalan_empresas_gastos.id_fuente= 2 or (tc_kalan_empresas_gastos.id_activo_prorratear= 2 and tc_kalan_empresas_gastos.id_fuente= 1))
@@ -506,20 +506,20 @@ order by
       </select>
       <select id="proveedores">
 select
-  tc_mantic_acreedores.id_acreedor as id_key,
-  tc_mantic_acreedores.clave,  
-  tc_mantic_acreedores.razon_social as nombre,
-  tc_mantic_acreedores.dias_entrega
+  tc_mantic_proveedores.id_proveedor as id_key,
+  tc_mantic_proveedores.clave,  
+  tc_mantic_proveedores.razon_social as nombre,
+  tc_mantic_proveedores.dias_entrega
 from 
   tc_kalan_empresas_gastos
 inner join
-  tc_mantic_acreedores on tr_mantic_acreedor_pago.id_acreedor= tc_mantic_acreedores.id_acreedor       
+  tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor       
 where 		
   tc_kalan_empresas_gastos.id_empresa in ({sucursales})
 group by
-  tc_mantic_acreedores.id_acreedor			
+  tc_mantic_proveedores.id_proveedor		
 order by
-  tc_mantic_acreedores.clave
+  tc_mantic_proveedores.clave
 			</select>      
 			<select id="movimientos">
 select
@@ -1011,7 +1011,7 @@ select
 from
   tc_mantic_articulos
 inner join  
-  tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and tc_mantic_articulos_codigos.id_acreedor is null
+  tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and tc_mantic_articulos_codigos.id_proveedor is null
 where  
   tc_mantic_articulos.id_articulo_tipo in ({idArticuloTipo})
   and {condicion}
@@ -1029,7 +1029,7 @@ from
 inner join  
   tc_mantic_articulos on tc_kalan_citas_detalles.id_articulo= tc_mantic_articulos.id_articulo
 inner join  
-  tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and tc_mantic_articulos_codigos.id_acreedor is null
+  tc_mantic_articulos_codigos on tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and tc_mantic_articulos_codigos.id_proveedor is null
 where  
   tc_kalan_citas_detalles.id_cita= {idCita}
 			</select>		

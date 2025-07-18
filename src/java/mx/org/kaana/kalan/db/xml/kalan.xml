@@ -78,7 +78,7 @@ from
 where      
   consecutivo = '{consecutivo}'
       </select>
-    </unit>        
+    </unit>    
     <unit id="TcKalanValesEstatusDto">
       <select id="row">
 select      

@@ -61,7 +61,7 @@
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
           <p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
-            <p:ajax event="tabChange" process="@this" update="tablaTipoPago tablaContactos" oncomplete="janal.refresh();"/>
+            <p:ajax event="tabChange" process="@this" update="tablaContactos" oncomplete="janal.refresh();"/>
             <p:tab id="general" title="General">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="clave" value="Clave"/>
@@ -199,35 +199,6 @@
                   </p:selectBooleanCheckbox>
                 </p:panelGrid>
               </p:panelGrid>
-            </p:tab>
-            <p:tab id="tabTipoPago" title="Condiciones de pago">
-              <p:panelGrid id="panelTablaTipoPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-                <p:dataTable id="tablaTipoPago" rowIndexVar="index" var="tipoPago" value="#{kalanCatalogosAcreedoresAccion.registroAcreedor.acreedoresCondicionPago}" rows="6" paginator="false" reflow="true" rowKey="#{tipoPago.key}" emptyMessage=" " styleClass="paginated">																					
-                  <p:column headerText="Clave" styleClass="janal-wid-30 llave">		
-                    <p:inputText id="llave#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.clave}" disabled="#{!tipoPago.nuevo}" onblur="simpleProcess();"/>                    																																			
-                  </p:column>
-									<p:column headerText="Tipo de pago">										
-                    <p:selectOneMenu id="tipoPago#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.idTipoPago}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{!tipoPago.nuevo}" onblur="simpleProcess();">
-                      <!--p:ajax listener="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doValidaTipoPago(tipoPago)}" process="@this tablaTipoPago" update="tablaTipoPago" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/-->
-											<f:selectItems value="#{kalanCatalogosAcreedoresAccion.attrs.tiposPago}"/>
-                    </p:selectOneMenu> 				
-                  </p:column>	
-                  <p:column headerText="Descuento adicional" styleClass="janal-wid-30 extra">		
-                    <p:inputText id="extra#{tipoPago.key}" styleClass="janal-wid-100-txt janal-column-right" value="#{tipoPago.descuento}" disabled="#{!tipoPago.nuevo}" onblur="simpleProcess();"/>                    																																			
-                  </p:column>
-                  <p:column headerText="Plazo" styleClass="janal-wid-5 plazo">		
-                    <p:inputNumber decimalPlaces="0" id="plazo#{tipoPago.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{tipoPago.plazo}" disabled="#{!tipoPago.nuevo}" onblur="simpleProcess();"/>
-                  </p:column>
-                  <p:column style="width:32px;text-align: center">
-                    <p:commandButton update="tablaTipoPago" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doEliminarAcreedorCondicionPago}">
-                      <f:setPropertyActionListener value="#{tipoPago}" target="#{kalanCatalogosAcreedoresAccion.registroAcreedor.acreedorCondicionPagoSeleccion}" />
-                    </p:commandButton>
-                  </p:column>
-                  <f:facet name="footer">
-                    <p:commandButton actionListener="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doAgregarAcreedorCondicionPago}" process="@this tablaTipoPago" update="tablaTipoPago" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
-                  </f:facet>
-                </p:dataTable>	
-              </p:panelGrid>	
             </p:tab>
             <p:tab id="tabTablaContactos" title="Contacto">
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
@@ -379,7 +350,7 @@
               </p:panelGrid>
             </p:tab>
           </p:tabView>
-					<p:remoteCommand name="simpleProcess" process="@this contenedorGrupos:tablaContactos contenedorGrupos:tablaTipoPago"/>
+					<p:remoteCommand name="simpleProcess" process="@this contenedorGrupos:tablaContactos"/>
         </div>
       </div>
     </div>	

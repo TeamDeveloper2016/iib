@@ -83,7 +83,6 @@ public class Gestor implements Serializable {
         this.tiposAcreedores.add(0, new UISelectEntity(entityDefault));
       } // if
       formatos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      formatos.add(new Columna("dias", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       this.tiposAcreedores.addAll(UIEntity.build("TcManticTiposAcreedoresDto", params, formatos));
     } // try
     catch (Exception e) {

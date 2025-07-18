@@ -64,8 +64,7 @@ where
   id_empresa in ({sucursales})
   and (
     upper(razon_social) regexp '.*{codigo}.*'
-    or
-    upper(rfc) regexp '.*{codigo}.*'
+    or upper(rfc) regexp '.*{codigo}.*'
   )
 order by
   razon_social
@@ -103,7 +102,8 @@ where
     <unit id="TcManticAcreedoresBancosDto">
       <select id="row">
 select      
-  *
+  tc_mantic_acreedores_bancos.id_proveedor_banca as id_key,
+  tc_mantic_acreedores_bancos.*
 from      
   tc_mantic_acreedores_bancos
 where 
@@ -117,11 +117,21 @@ from
 where      
   convenio_cuenta = '{convenioCuenta}' and id_tipo_cuenta = {idTipoCuenta} and clabe_referencia = '{clabeReferencia}' and id_acreedor = {idAcreedor}      
       </select>
+			<select id="maximo">
+select      
+  max(id_acreedor_banco) maximo
+from      
+  tc_mantic_acreedores_bancos
+      </select>
+			<delete id="rows">
+delete from tc_mantic_acreedores_bancos where id_acreedor={idAcreedor} 
+      </delete>
     </unit>    
     <unit id="TcManticAcreedoresPortalesDto">
       <select id="row">
 select      
-  *
+  tc_mantic_acreedores_portales.id_proveedor_portal as id_key,
+  tc_mantic_acreedores_portales.*
 from      
   tc_mantic_acreedores_portales
 where 
@@ -135,11 +145,21 @@ from
 where      
   pagina = '{pagina}' and cuenta = '{cuenta}' and id_acreedor = {idAcreedor}
       </select>
+			<select id="maximo">
+select      
+  max(id_acreedor_portal) maximo
+from      
+  tc_mantic_acreedores_portales
+      </select>
+			<delete id="rows">
+delete from tc_mantic_acreedores_portales where id_acreedor={idAcreedor} 
+      </delete>
     </unit>    
     <unit id="TcManticTiposAcreedoresDto">
       <select id="row">
 select      
-  *
+  tc_mantic_tipos_acreedores.id_tipo_acreedor as id_key,
+  tc_mantic_tipos_acreedores.*
 from      
   tc_mantic_tipos_acreedores
 where 
@@ -5961,13 +5981,13 @@ where
     </unit>
 		<unit id="TcManticProveedoresBancosDto">
       <select id="row">
-        select     
-					tc_mantic_proveedores_bancos.id_proveedor_banca as id_key,
-					tc_mantic_proveedores_bancos.*
-        from      
-          tc_mantic_proveedores_bancos
-        where 
-          {condicion} 
+select     
+  tc_mantic_proveedores_bancos.id_proveedor_banca as id_key,
+  tc_mantic_proveedores_bancos.*
+from      
+  tc_mantic_proveedores_bancos
+where 
+  {condicion} 
       </select>
       <select id="identically">
         select      
@@ -5989,13 +6009,13 @@ where
     </unit>
 		<unit id="TcManticProveedoresPortalesDto">
       <select id="row">
-        select      
-					tc_mantic_proveedores_portales.id_proveedor_portal as id_key,
-          tc_mantic_proveedores_portales.*
-        from      
-          tc_mantic_proveedores_portales
-        where 
-          {condicion} 
+select      
+  tc_mantic_proveedores_portales.id_proveedor_portal as id_key,
+  tc_mantic_proveedores_portales.*
+from      
+  tc_mantic_proveedores_portales
+where 
+  {condicion} 
       </select>
       <select id="identically">
         select      

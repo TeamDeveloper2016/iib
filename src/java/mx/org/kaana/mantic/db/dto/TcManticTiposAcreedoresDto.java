@@ -30,7 +30,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_tipos_acreedores")
+@Table(name="Tc_Mantic_Tipos_Acreedores")
 public class TcManticTiposAcreedoresDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
