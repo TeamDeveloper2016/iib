@@ -7,6 +7,118 @@
   </model>
 
   <dml>
+    <unit id="TcKalanPrestamosDto">
+      <select id="row">
+select      
+  tc_kalan_prestamos.id_prestamo as id_key,
+  tc_kalan_prestamos.*
+from      
+  tc_kalan_prestamos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_prestamos
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+      <select id="siguiente">
+select
+  max(tc_kalan_prestamos.orden)+ 1 as siguiente
+from 
+  tc_kalan_prestamos
+where
+  tc_kalan_prestamos.ejercicio= {ejercicio} 
+  and tc_kalan_prestamos.orden {operador} 900000		
+			</select>		
+    </unit>    
+    <unit id="TcKalanPrestamosBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_prestamos_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_prestamos_bitacora
+where      
+  id_prestamo_bitacora = {idPrestamoBitacora}
+      </select>
+      <delete id="rows">
+delete from      
+  tc_kalan_prestamos_bitacora
+where      
+  id_prestamo= {idPrestamo}
+      </delete>
+    </unit> 
+    <unit id="TcKalanPrestamosEstatusDto">
+      <select id="row">
+select      
+  tc_kalan_prestamos_estatus.id_prestamo_estatus as id_key,
+  tc_kalan_prestamos_estatus.*
+from      
+  tc_kalan_prestamos_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_prestamos_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcKalanPrestamosPagosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_prestamos_pagos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_prestamos_pagos
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+      <select id="pagos">
+select      
+  ifnull(sum(if(id_tipo_afectacion= 2, importe, -1* importe)), 0) as total
+from      
+  tc_kalan_prestamos_pagos
+where      
+  id_prestamo= {idPrestamo}
+      </select>
+      <select id="siguiente">
+select
+  max(tc_kalan_prestamos_pagos.orden)+ 1 as siguiente
+from 
+  tc_kalan_prestamos_pagos
+where
+  tc_kalan_prestamos_pagos.ejercicio= {ejercicio} 
+  and tc_kalan_prestamos_pagos.orden {operador} 900000		
+			</select>		
+      <delete id="rows">
+delete from      
+  tc_kalan_prestamos_pagos
+where      
+  id_prestamo= {idPrestamo}
+      </delete>
+    </unit>           
     <unit id="TcKalanCreditosDto">
       <select id="row">
 select      

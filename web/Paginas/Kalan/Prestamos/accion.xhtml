@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="#{kalanPrestamosAccion.attrs.nombreAccion} el prestamo del empleado" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields= {
+        'contenedorGrupos\\:idEmpresa'       : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:idEmpresaPersona': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:nombre'       : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:plazo'        : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:tasa'         : {validaciones: 'flotante|mayor-igual({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:pagos'        : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:limite'       : {validaciones: 'requerido|fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+      };      
+			
+			$(document).ready(function(){janal.readingMode('#{kalanPrestamosAccion.attrs.nombreAccion}');});
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">
+          <p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" process="@this" update="contenedorGrupos" oncomplete="janal.refresh()"/>
+            <p:tab title="General">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel for="idEmpresaPersona" value="Empleado:"/>
+                <p:selectOneMenu id="idEmpresaPersona" value="#{kalanPrestamosAccion.prestamo.ikEmpresaPersona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{kalanPrestamosAccion.attrs.empleados}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.nombre or element.nombre eq ''? '': ' | '}#{element.nombre}"/>
+                  <p:column styleClass="janal-column-left janal-wid-10">
+                    <h:outputText value="#{item.rfc}"/>
+                  </p:column>   										
+                  <p:column styleClass="janal-column-left janal-wid-20">
+                    <h:outputText value="#{item.curp}"/>
+                  </p:column>   										
+                  <p:column styleClass="janal-column-left">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>                
+                <p:outputLabel for="nombre" value="Nombre:"/>
+                <p:inputText id="nombre" value="#{kalanPrestamosAccion.prestamo.nombre}" styleClass="janal-wid-100-txt"/>
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="importe" value="Importe:"/>
+                  <p:inputNumber id="importe" value="#{kalanPrestamosAccion.prestamo.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                </p:panelGrid>  
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                  <p:outputLabel for="plazo" value="Plazo (meses):"/>
+                  <p:inputNumber id="plazo" value="#{kalanPrestamosAccion.prestamo.plazo}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="0" decimalSeparator="." thousandSeparator="," converter="javax.faces.Long">
+                    <p:ajax event="change" listener="#{kalanPrestamosAccion.doUpdateLimite()}" process="@this limite" update="limite"/>
+                  </p:inputNumber>
+                </p:panelGrid>  
+                <p:outputLabel for="limite" value="Limite:"/>
+                <p:calendar id="limite" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanPrestamosAccion.prestamo.limite}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>                
+              </p:panelGrid>
+            </p:tab>						
+            <p:tab title="Observaciones">
+              <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{kalanPrestamosAccion.prestamo.observaciones}"/>  
+            </p:tab>
+          </p:tabView>
+        </div>
+      </div>
+    </div>	
+  </ui:define>    	
+  <ui:define name="acciones">
+    <div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanPrestamosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aplicar" value="Aplicar" icon="fa fa-lock" accesskey="p"  process="@form" action="#{kalanPrestamosAccion.doAplicar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" rendered="#{kalanPrestamosAccion.aplicar}"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanPrestamosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+    <div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanPrestamosAccion.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicarIcon" value="Aplicar" icon="fa fa-lock"  process="@form" action="#{kalanPrestamosAccion.doAplicar}" onstart="return execute()" oncomplete="janal.desbloquear()" rendered="#{kalanPrestamosAccion.aplicar}"/>
+      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanPrestamosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+  </ui:define>
+</ui:composition> 

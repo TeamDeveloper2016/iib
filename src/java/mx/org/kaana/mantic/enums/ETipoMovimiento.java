@@ -23,7 +23,9 @@ public enum ETipoMovimiento {
   INGRESOS("ingreso(s)", "tc_kalan_movimientos_bitacoras", "idEmpresaMovimiento", "VistaEmpresasMovimientosDto"),
   EGRESOS("egreso(s)", "tc_kalan_movimientos_bitacoras", "idEmpresaMovimiento", "VistaEmpresasMovimientosDto"),
   LOTES("lote(s)", "tc_mantic_lotes_bitacora", "idLote", "VistaLotesDto"),
-  CREDITOS("credito(s)", "tc_kalan_creditos_bitacoras", "idCredito", "VistaCreditosDto");
+  CREDITOS("credito(s)", "tc_kalan_creditos_bitacoras", "idCredito", "VistaCreditosDto"),
+  PRESTAMOS("prestamo(s)", "tc_kalan_prestamos_bitacoras", "idPrestamo", "VistaPrestamosDto"),
+  AHORROS("ahorro(s)", "tc_kalan_ahorros_bitacoras", "idAhorro", "VistaAhorrosDto");
 	 
 	private final String title;
 	private final String table;

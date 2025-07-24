@@ -1,4 +1,4 @@
-package mx.org.kaana.kalan.creditos.backing;
+package mx.org.kaana.kalan.prestamos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -16,35 +16,35 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kalan.creditos.beans.Credito;
+import mx.org.kaana.kalan.prestamos.beans.Prestamo;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.kalan.creditos.reglas.Transaccion;
+import mx.org.kaana.kalan.prestamos.reglas.Transaccion;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@Named(value = "kalanCreditosAccion")
+@Named(value = "kalanPrestamosAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
-  private static final long serialVersionUID = 327393488565631361L;
+  private static final long serialVersionUID = 327393488565631311L;
   private static final Log LOG = LogFactory.getLog(Accion.class);
   
   private EAccion accion;
-  private Credito credito;
-  private Long idCredito;
+  private Prestamo prestamo;
+  private Long idPrestamo;
 
-  public Credito getCredito() {
-    return credito;
+  public Prestamo getPrestamo() {
+    return prestamo;
   }
 
-  public void setCredito(Credito credito) {
-    this.credito = credito;
+  public void setPrestamo(Prestamo prestamo) {
+    this.prestamo = prestamo;
   }
   
   public Boolean getAplicar() {
@@ -55,11 +55,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   public void init() {
     try {
-      this.accion   = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.idCredito= Objects.equals(JsfBase.getFlashAttribute("idCredito"), null)? -1L: (Long)JsfBase.getFlashAttribute("idCredito");
-      this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Creditos/filtro": JsfBase.getFlashAttribute("retorno"));
-      this.toLoadEmpresas();
-      this.toLoadAcreedores();
+      this.accion    = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.idPrestamo= Objects.equals(JsfBase.getFlashAttribute("idPrestamo"), null)? -1L: (Long)JsfBase.getFlashAttribute("idPrestamo");
+      this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Prestamos/filtro": JsfBase.getFlashAttribute("retorno"));
+      this.toLoadEmpleados();
       this.doLoad(); 
     } // try
     catch (Exception e) {
@@ -69,19 +68,18 @@ public class Accion extends IBaseAttribute implements Serializable {
   } 
 	
   public void doLoad() {
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-      params.put(Constantes.SQL_CONDICION, "id_credito= "+ this.idCredito);      
+      params.put(Constantes.SQL_CONDICION, "id_prestamo= "+ this.idPrestamo);      
       switch (this.accion) {
         case AGREGAR:
-          this.credito= new Credito();
+          this.prestamo= new Prestamo();
           break;
         case MODIFICAR:
         case CONSULTAR:
-          this.credito= (Credito)DaoFactory.getInstance().toEntity(Credito.class, "TcKalanCreditosDto", params);
-          this.credito.setIkEmpresa(new UISelectEntity(this.credito.getIdEmpresa()));
-          this.credito.setIkAcreedor(new UISelectEntity(this.credito.getIdAcreedor()));
+          this.prestamo= (Prestamo)DaoFactory.getInstance().toEntity(Prestamo.class, "TcKalanPrestamosDto", params);
+          this.prestamo.setIkEmpresaPersona(new UISelectEntity(this.prestamo.getIdEmpresaPersona()));
           break;
       } // switch      
     } // try // try
@@ -115,13 +113,13 @@ public class Accion extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {
-      transaccion= new Transaccion(this.credito);
+      transaccion= new Transaccion(this.prestamo);
       if(transaccion.ejecutar(this.accion)) {
         regresar= this.doCancelar();
-        JsfBase.addMessage("Se registro el crédito de forma correcta", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro el prestamo de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else 
-        JsfBase.addMessage("Ocurrió un error al registrar el crédito", ETipoMensaje.ERROR);      
+        JsfBase.addMessage("Ocurrió un error al registrar el prestamo", ETipoMensaje.ERROR);      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -131,20 +129,21 @@ public class Accion extends IBaseAttribute implements Serializable {
   } 
 
   public String doCancelar() {
-		JsfBase.setFlashAttribute("idCreditoProcess", this.credito.getIdCredito());
+		JsfBase.setFlashAttribute("idPrestamoProcess", this.prestamo.getIdPrestamo());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
   
-	private void toLoadAcreedores() {
+	private void toLoadEmpleados() {
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
  			params.put(Constantes.SQL_CONDICION, "id_activo= 1");
-  		this.attrs.put("acreedores", UIEntity.seleccione("TcManticAcreedoresDto", "row", params, columns, "clave"));
+  		this.attrs.put("empleados", UIEntity.seleccione("VistaPrestamosDto", "empleados", params, columns, "clave"));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -156,38 +155,11 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 	}
 
-	private void toLoadEmpresas() {
-		List<Columna> columns        = new ArrayList<>();
-    Map<String, Object> params   = new HashMap<>();
-    List<UISelectEntity> empresas= null;
-    try {
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			else
-				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        empresas= (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
-      else
-        empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
-      this.attrs.put("empresas", empresas);
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    } // finally
-	}
-
   public void doUpdateLimite() {
     try {      
       Calendar calendar= Calendar.getInstance();
-      calendar.add(Calendar.MONTH, this.credito.getPlazo().intValue());
-      this.credito.getLimite().setTime(calendar.getTimeInMillis());
+      calendar.add(Calendar.MONTH, this.prestamo.getPlazo().intValue());
+      this.prestamo.getLimite().setTime(calendar.getTimeInMillis());
     } // try
     catch (Exception e) {
       Error.mensaje(e);

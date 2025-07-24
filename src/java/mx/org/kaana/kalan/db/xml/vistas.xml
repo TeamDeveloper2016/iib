@@ -4,6 +4,159 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaPrestamosDto">
+			<select id="porCodigo">			
+select      
+  tr_mantic_empresa_personal.id_empresa_persona as id_key,
+  tr_mantic_empresa_personal.clave,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+from      
+  tr_mantic_empresa_personal
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where 
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and upper(tr_mantic_empresa_personal.clave) regexp '.*{codigo}.*'
+  and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+order by
+  tr_mantic_empresa_personal.clave
+			</select>
+			<select id="porNombre">			
+select      
+  tr_mantic_empresa_personal.id_empresa_persona as id_key,
+  tr_mantic_empresa_personal.clave,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+from      
+  tr_mantic_empresa_personal
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where 
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*{codigo}.*'
+  and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+order by
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))
+			</select>
+			<select id="empleados">			
+select      
+  tr_mantic_empresa_personal.id_empresa_persona as id_key,
+  tr_mantic_empresa_personal.clave,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as nombre
+from      
+  tr_mantic_empresa_personal
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where 
+  tr_mantic_empresa_personal.id_empresa in ({sucursales})
+  and tr_mantic_empresa_personal.id_empresa_persona&gt; 2
+  and {condicion}
+order by
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))
+			</select>
+      <select id="lazy">
+select 
+  tc_kalan_prestamos.id_prestamo as id_key,
+  tc_kalan_prestamos.id_prestamo,
+  tc_kalan_prestamos.id_prestamo_estatus,
+  tc_mantic_empresas.nombre as empresa,
+  tc_kalan_prestamos.consecutivo,
+  tr_mantic_empresa_personal.clave,
+  tc_mantic_personas.rfc,
+  tc_mantic_personas.curp,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empledo,
+  tc_kalan_prestamos.nombre,
+  tc_kalan_prestamos.importe,
+  tc_kalan_prestamos.saldo,
+  tc_kalan_prestamos_estatus.nombre as estatus,
+  tc_kalan_prestamos_estatus.estatus_asociados,
+  tc_kalan_prestamos.registro
+from   
+  tc_kalan_prestamos
+inner join  
+  tr_mantic_empresa_personal on tc_kalan_prestamos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+inner join
+  tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_kalan_prestamos_estatus on tc_kalan_prestamos.id_prestamo_estatus= tc_kalan_prestamos_estatus.id_prestamo_estatus
+where
+  tr_mantic_empresa_personal.id_empresa in ({idEmpresa})    
+  and {condicion}        
+{sortOrder}
+      </select>  
+      <select id="general">
+select 
+  tc_kalan_prestamos.id_prestamo as id_key,
+  ifnull(sum(tc_kalan_prestamos.importe), 0) as total,
+  ifnull(sum(tc_kalan_prestamos.saldo), 0) as saldo
+from   
+  tc_kalan_prestamos
+inner join  
+  tr_mantic_empresa_personal on tc_kalan_prestamos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+inner join
+  tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_kalan_prestamos_estatus on tc_kalan_prestamos.id_prestamo_estatus= tc_kalan_prestamos_estatus.id_prestamo_estatus
+where
+  tr_mantic_empresa_personal.id_empresa in ({idEmpresa})    
+  and {condicion}        
+      </select>  
+      <select id="pagos">
+select 
+  tc_kalan_prestamos_pagos.id_prestamo_pago as id_key,
+  tc_kalan_prestamos_pagos.consecutivo,
+  tc_kalan_prestamos_pagos.importe,
+  tc_kalan_prestamos_pagos.observaciones,
+  tc_kalan_prestamos_pagos.id_tipo_afectacion,
+  tc_kalan_tipos_afectaciones.nombre as afectacion,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
+  tc_kalan_prestamos_pagos.registro
+from   
+  tc_kalan_prestamos_pagos
+inner join
+  tc_kalan_tipos_afectaciones on tc_kalan_prestamos_pagos.id_tipo_afectacion= tc_kalan_tipos_afectaciones.id_tipo_afectacion
+inner join
+	tc_janal_usuarios on tc_kalan_prestamos_pagos.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+	tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+where
+  tc_kalan_prestamos_pagos.id_prestamo= {idPrestamo}
+{sortOrder}        
+      </select>  
+			<select id="movimientos">
+select
+  tc_kalan_prestamos_bitacora.id_prestamo_bitacora as id_key,
+  tc_kalan_prestamos.consecutivo,
+  0 as importe,
+  tc_kalan_prestamos_bitacora.justificacion,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+  tc_kalan_prestamos_estatus.nombre as estatus,
+  tc_kalan_prestamos_bitacora.registro
+from 
+  tc_kalan_prestamos_bitacora
+inner join
+  tc_kalan_prestamos on tc_kalan_prestamos_bitacora.id_prestamo= tc_kalan_prestamos.id_prestamo
+inner join
+  tc_kalan_prestamos_estatus on tc_kalan_prestamos_bitacora.id_prestamo_estatus= tc_kalan_prestamos_estatus.id_prestamo_estatus
+inner join
+  tc_janal_usuarios on tc_kalan_prestamos_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+where
+  tc_kalan_prestamos.id_prestamo= {idPrestamo}
+order by
+  tc_kalan_prestamos.registro desc				
+			</select>		
+    </unit>  
 		<unit id="VistaCreditosDto">
       <select id="lazy">
 select 
@@ -15,6 +168,7 @@ select
   tc_mantic_acreedores.clave,
   tc_mantic_acreedores.rfc,
   tc_mantic_acreedores.razon_social,
+  tc_kalan_creditos.nombre,
   tc_kalan_creditos.importe,
   tc_kalan_creditos.saldo,
   tc_kalan_creditos_estatus.nombre as estatus,

@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="Agregar un cargo o abono al crédito" />
+  <ui:param name="titulo" value="Agregar un cargo o abono al prestamo" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields= {
@@ -18,7 +18,7 @@
 				'contenedorGrupos\\:observaciones'   : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };      
 			
-			$(document).ready(function(){janal.readingMode('#{kalanCreditosAfectaciones.attrs.nombreAccion}');});
+			$(document).ready(function(){janal.readingMode('#{kalanPrestamosAfectaciones.attrs.nombreAccion}');});
     </script>
   </ui:define>
   <ui:define name="contenido">
@@ -28,40 +28,40 @@
           <p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" process="@this" update="contenedorGrupos" oncomplete="janal.refresh()"/>
             <p:tab title="General">
-              <p:panel widgetVar="credito" header="Crédito" toggleable="true" closable="true" toggleSpeed="500" closeSpeed="500" style="margin-bottom:20px">
+              <p:panel widgetVar="prestamo" header="Prestamo" toggleable="true" closable="true" toggleSpeed="500" closeSpeed="500" style="margin-bottom:20px">
                 <f:facet name="options">
                   <p:menu>
                     <p:submenu label="Configuración">
-                      <p:menuitem value="Toggle" url="#" icon="ui-icon-newwin" onclick="PF('credito').toggle()" />
-                      <p:menuitem value="Remove" url="#" icon="ui-icon-close" onclick="PF('credito').close()" />
+                      <p:menuitem value="Toggle" url="#" icon="ui-icon-newwin" onclick="PF('prestamo').toggle()" />
+                      <p:menuitem value="Remove" url="#" icon="ui-icon-close" onclick="PF('prestamo').close()" />
                     </p:submenu>
                   </p:menu>
                 </f:facet>                
                 <p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-50, janal-wid-15, janal-wid-15">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="consecutivo" value="Consecutivo:"/>
-                    <p:inputText id="consecutivo" value="#{kalanCreditosAfectaciones.credito.consecutivo}" styleClass="janal-wid-100-txt janal-column-center janal-color-blue" readonly="true"/>
+                    <p:inputText id="consecutivo" value="#{kalanPrestamosAfectaciones.prestamo.consecutivo}" styleClass="janal-wid-100-txt janal-column-center janal-color-blue" readonly="true"/>
                   </p:panelGrid>
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="nombre" value="Nombre:"/>
-                    <p:inputText id="nombre" value="#{kalanCreditosAfectaciones.credito.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>
+                    <p:inputText id="nombre" value="#{kalanPrestamosAfectaciones.prestamo.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>
                   </p:panelGrid>
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="total" value="Importe:"/>
-                    <p:inputText value="#{kalanCreditosAfectaciones.credito.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+                    <p:inputText value="#{kalanPrestamosAfectaciones.prestamo.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
                   </p:panelGrid>
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="saldo" value="Saldo:"/>
-                    <p:inputText id="saldo" value="#{kalanCreditosAfectaciones.credito.saldo}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+                    <p:inputText id="saldo" value="#{kalanPrestamosAfectaciones.prestamo.saldo}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
                   </p:panelGrid>
                 </p:panelGrid>  
               </p:panel>  
-              <p:inputText id="total" value="#{kalanCreditosAfectaciones.attrs.total}" styleClass="janal-wid-100-txt janal-display-none" readonly="true"/>
+              <p:inputText id="total" value="#{kalanPrestamosAfectaciones.attrs.total}" styleClass="janal-wid-100-txt janal-display-none" readonly="true"/>
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idTipoAfectacion" value="Tipo:"/>
-                <p:selectOneMenu id="idTipoAfectacion" value="#{kalanCreditosAfectaciones.afectacion.ikTipoAfectacion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" listener="#{kalanCreditosAfectaciones.doCheckImporte()}" process="@this" update="importe"/>
-                  <f:selectItems value="#{kalanCreditosAfectaciones.attrs.afectaciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:selectOneMenu id="idTipoAfectacion" value="#{kalanPrestamosAfectaciones.afectacion.ikTipoAfectacion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{kalanPrestamosAfectaciones.doCheckImporte()}" process="@this" update="importe"/>
+                  <f:selectItems value="#{kalanPrestamosAfectaciones.attrs.afectaciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Clave" styleClass="janal-wid-30">
                     <h:outputText value="#{item.clave}"/>
                   </p:column>   
@@ -70,9 +70,9 @@
                   </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="importe" value="Importe:"/>
-                <p:inputNumber id="importe" value="#{kalanCreditosAfectaciones.afectacion.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                <p:inputNumber id="importe" value="#{kalanPrestamosAfectaciones.afectacion.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
                 <p:outputLabel for="observaciones" value="Observaciones:"/>
-                <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{kalanCreditosAfectaciones.afectacion.observaciones}"/>  
+                <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{kalanPrestamosAfectaciones.afectacion.observaciones}"/>  
               </p:panelGrid>
             </p:tab>						
           </p:tabView>
@@ -82,12 +82,12 @@
   </ui:define>    	
   <ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanCreditosAfectaciones.doAceptar}"   onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
-      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanCreditosAfectaciones.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanPrestamosAfectaciones.doAceptar}"   onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanPrestamosAfectaciones.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
     <div class="xs-pantalla">
-      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCreditosAfectaciones.doAceptar}"   onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
-      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanCreditosAfectaciones.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanPrestamosAfectaciones.doAceptar}"   onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
+      <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanPrestamosAfectaciones.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
   </ui:define>
 </ui:composition> 

@@ -8,7 +8,7 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Listado de créditos de los acreedor(es)" />
+  <ui:param name="titulo" value="Listado de prestamos de los empleado(s)" />
   <ui:define name="librerias">
     <script type="text/javascript">
 //<![CDATA[
@@ -16,10 +16,10 @@
         idEmpresa       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         nombre          : {validaciones: 'texto', mascara: 'fiscal', formatos: 'cambiar-mayusculas', grupo: 'general'},
         rfc             : {validaciones: 'rfc',   mascara: 'fiscal', formatos: 'cambiar-mayusculas', grupo: 'general'},
-        razonSocial     : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        empleado        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         fechaInicio     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        idCreditoEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+        idPrestamoEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
       
 			fields= {
@@ -57,8 +57,8 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idEmpresa" value="Sucursal:"/>
-              <p:selectOneMenu id="idEmpresa" value="#{kalanCreditosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{kalanCreditosFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{kalanPrestamosFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{kalanPrestamosFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -66,30 +66,30 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="nombre" value="Crédito:"/>
-              <p:inputText id="nombre" value="#{kalanCreditosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>              			                            
+              <p:outputLabel for="nombre" value="Prestamo:"/>
+              <p:inputText id="nombre" value="#{kalanPrestamosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{kalanCreditosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
-              <p:outputLabel for="razonSocial" value="Razón social:"/>
-							<p:autoComplete id="razonSocial" var="custom" placeholder="Ej: SANTANDER S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCreditosFiltro.attrs.idAcreedor}" completeMethod="#{kalanCreditosFiltro.doCompleteAcreedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+              <p:inputText id="rfc" value="#{kalanPrestamosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
+              <p:outputLabel for="empleado" value="Empleado:"/>
+							<p:autoComplete id="empleado" var="custom" placeholder="Ej: JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanPrestamosFiltro.attrs.idEmpresaPersona}" completeMethod="#{kalanPrestamosFiltro.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
-										<h:outputText value="Clave:" />
-										<h:outputText value="#{custom.clave}" />
 										<h:outputText value="RFC:" />
 										<h:outputText value="#{custom.rfc}" />
-										<h:outputText value="Razón social:" />
-										<h:outputText value="#{custom.razonSocial}" />
+										<h:outputText value="CURP:" />
+										<h:outputText value="#{custom.curp}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />
 									</h:panelGrid>
 								</f:facet>
 							</p:autoComplete>			
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCreditosFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanPrestamosFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCreditosFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="idCreditoEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idCreditoEstatus" value="#{kalanCreditosFiltro.attrs.idCreditoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                <f:selectItems value="#{kalanCreditosFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanPrestamosFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="idPrestamoEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idPrestamoEstatus" value="#{kalanPrestamosFiltro.attrs.idPrestamoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{kalanPrestamosFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
@@ -97,26 +97,26 @@
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{kalanCreditosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla detalle @(.total)"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{kalanCreditosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla detalle @(.total)" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{kalanPrestamosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla detalle @(.total)"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{kalanPrestamosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla detalle @(.total)" />
 						</div>
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCreditosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCreditosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCreditosFiltro.lazyModel.rowCount gt kalanCreditosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanPrestamosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanPrestamosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kalanPrestamosFiltro.lazyModel.rowCount gt kalanPrestamosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Agregar" action="#{kalanCreditosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Agregar" action="#{kalanPrestamosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton action="#{kalanCreditosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:commandButton action="#{kalanPrestamosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                 <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
@@ -133,15 +133,15 @@
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
             </p:column>														
-            <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.razonSocial}">
+            <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.empleado}">
               <f:facet name="header">
-                <h:outputText value="Razón social"/>
+                <h:outputText value="Empleado"/>
               </f:facet>
-              <h:outputText value="#{row['razonSocial']}"/>
-            </p:column>	    
+              <h:outputText value="#{row['empleado']}"/>
+            </p:column>	      
             <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-left" sortBy="#{row.nombre}">
               <f:facet name="header">
-                <h:outputText value="Crédito"/>
+                <h:outputText value="Prestamo"/>
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>	      
@@ -173,29 +173,29 @@
               <f:facet name="header">
                 <h:outputText value="..."/>
               </f:facet>
-              <p:commandButton icon="fa fa-search" process="@this tabla" update="detalle @(.total)" actionListener="#{kalanCreditosFiltro.doView(row)}" title="Ver pagos"/>
+              <p:commandButton icon="fa fa-search" process="@this tabla" update="detalle @(.total)" actionListener="#{kalanPrestamosFiltro.doView(row)}" title="Ver pagos"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel styleClass="detalle janal-align-left" value="#{kalanCreditosFiltro.general}" escape="false"/>
-              <p:outputLabel value="Total [#{kalanCreditosFiltro.lazyModel== null? 0: kalanCreditosFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel styleClass="detalle janal-align-left" value="#{kalanPrestamosFiltro.general}" escape="false"/>
+              <p:outputLabel value="Total [#{kalanPrestamosFiltro.lazyModel== null? 0: kalanPrestamosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="consultar" action="#{kalanCreditosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:separator rendered="#{fn:contains('|1|2|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
-            <p:menuitem id="modificar" action="#{kalanCreditosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|2|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
+						<p:menuitem id="consultar" action="#{kalanPrestamosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator rendered="#{fn:contains('|1|2|', kalanPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
+            <p:menuitem id="modificar" action="#{kalanPrestamosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', kalanPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|2|', kalanPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
             <p:separator/>
-            <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanCreditosFiltro.doMovimientos}"/>
-            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanCreditosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus) and kalanCreditosFiltro.isAdmin}"/>
-            <p:separator rendered="#{fn:contains('|2|6|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
-            <p:menuitem value="Afectación" icon="fa fa-dollar" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanCreditosFiltro.doAfectaciones}" rendered="#{fn:contains('|2|6|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
+            <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanPrestamosFiltro.doMovimientos}"/>
+            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanPrestamosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|', kalanPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus) and kalanPrestamosFiltro.isAdmin}"/>
+            <p:separator rendered="#{fn:contains('|2|6|', kalanPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
+            <p:menuitem value="Afectación" icon="fa fa-dollar" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanPrestamosFiltro.doAfectaciones}" rendered="#{fn:contains('|2|6|', kalanPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
           </p:contextMenu>
           <p:spacer height="3px"/>
-          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanCreditosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kalanCreditosFiltro.lazyDetalle.rowCount gt kalanCreditosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="detalle" style="display: #{kalanCreditosFiltro.lazyDetalle eq null? 'none': ''}">
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanPrestamosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kalanPrestamosFiltro.lazyDetalle.rowCount gt kalanPrestamosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="detalle" style="display: #{kalanPrestamosFiltro.lazyDetalle eq null? 'none': ''}">
             <f:facet name="header">
               <div class="lg-pantalla">
-                <p:outputLabel value="Pagos realizados al crédito [ #{kalanCreditosFiltro.attrs.seleccionado.consecutivo} ]" styleClass="total janal-color-white janal-align-left"/>
+                <p:outputLabel value="Pagos realizados al prestamo [ #{kalanPrestamosFiltro.attrs.seleccionado.consecutivo} ]" styleClass="total janal-color-white janal-align-left"/>
                 <p:menuButton value="Opciones">
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
@@ -249,8 +249,8 @@
               <h:outputText value="#{row['registro']}"/>
             </p:column>					
             <f:facet name="footer">
-              <p:outputLabel styleClass="detalle janal-align-left janal-color-blue" value="#{kalanCreditosFiltro.total}" escape="false"/>
-              <p:outputLabel value="Total [#{kalanCreditosFiltro.lazyDetalle== null? 0: kalanCreditosFiltro.lazyDetalle.rowCount}] registros" styleClass="total"/>
+              <p:outputLabel styleClass="detalle janal-align-left janal-color-blue" value="#{kalanPrestamosFiltro.total}" escape="false"/>
+              <p:outputLabel value="Total [#{kalanPrestamosFiltro.lazyDetalle== null? 0: kalanPrestamosFiltro.lazyDetalle.rowCount}] registros" styleClass="total"/>
             </f:facet>
           </p:dataTable>    
           <h:commandLink id="detallePdf">
@@ -263,23 +263,23 @@
       </div>
     </div>		           				
   </ui:define>    
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el crédito ?" />
-  <ui:param name="accionConfirmacion" value="#{kalanCreditosFiltro}"/>
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el prestamo ?" />
+  <ui:param name="accionConfirmacion" value="#{kalanPrestamosFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
     <h:panelGrid columns="2" columnClasses="janal-wid-30:">
       <p:outputLabel value="Consecutivo: "/>
-      <p:outputLabel value="#{kalanCreditosFiltro.attrs.seleccionado.consecutivo}"/>
+      <p:outputLabel value="#{kalanPrestamosFiltro.attrs.seleccionado.consecutivo}"/>
       <p:outputLabel value="Razón social: "/>
-      <p:outputLabel value="#{kalanCreditosFiltro.attrs.seleccionado.razonSocial}"/>
+      <p:outputLabel value="#{kalanPrestamosFiltro.attrs.seleccionado.nombre}"/>
       <p:outputLabel value="Importe: "/>
-      <p:outputLabel value="#{kalanCreditosFiltro.attrs.seleccionado.importe}"/>
+      <p:outputLabel value="#{kalanPrestamosFiltro.attrs.seleccionado.importe}"/>
       <p:outputLabel value="Saldo: "/>
-      <p:outputLabel value="#{kalanCreditosFiltro.attrs.seleccionado.saldo}"/>
+      <p:outputLabel value="#{kalanPrestamosFiltro.attrs.seleccionado.saldo}"/>
       <p:outputLabel value="Estatus: "/>
-      <p:outputLabel value="#{kalanCreditosFiltro.attrs.seleccionado.estatus}"/>
+      <p:outputLabel value="#{kalanPrestamosFiltro.attrs.seleccionado.estatus}"/>
     </h:panelGrid>			
   </ui:define>
 	<ui:define name="dialogos">
@@ -287,15 +287,15 @@
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-					<p:selectOneMenu id="estatusDlg" value="#{kalanCreditosFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
-						<f:selectItems value="#{kalanCreditosFiltro.attrs.allEstatus}"/>					
+					<p:selectOneMenu id="estatusDlg" value="#{kalanPrestamosFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
+						<f:selectItems value="#{kalanPrestamosFiltro.attrs.allEstatus}"/>					
 					</p:selectOneMenu>
 				</h:panelGrid>
 				<p:outputLabel for="justificacion" value="Justificación:"/><br/>
-				<p:inputTextarea id="justificacion" value="#{kalanCreditosFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+				<p:inputTextarea id="justificacion" value="#{kalanPrestamosFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla detalle" value="Aceptar" action="#{kalanCreditosFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear()"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla detalle" value="Aceptar" action="#{kalanPrestamosFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear()"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
