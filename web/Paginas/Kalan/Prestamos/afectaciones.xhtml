@@ -37,6 +37,10 @@
                     </p:submenu>
                   </p:menu>
                 </f:facet>                
+                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                  <p:outputLabel for="empleado" value="Empleado:"/>
+                  <p:inputText id="empleado" value="#{kalanPrestamosAfectaciones.prestamo.empleado}" styleClass="janal-wid-100-txt janal-column-center janal-color-blue" readonly="true"/>
+                </p:panelGrid>
                 <p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-50, janal-wid-15, janal-wid-15">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="consecutivo" value="Consecutivo:"/>

@@ -78,7 +78,7 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
     Map<String, Object> params = new HashMap<>();
     try {
       params.put(Constantes.SQL_CONDICION, "id_prestamo= "+ this.idPrestamo);      
-      this.prestamo= (Prestamo)DaoFactory.getInstance().toEntity(Prestamo.class, "TcKalanPrestamosDto", params);
+      this.prestamo= (Prestamo)DaoFactory.getInstance().toEntity(Prestamo.class, "TcKalanPrestamosDto", "empleado", params);
       this.prestamo.setIkEmpresaPersona(new UISelectEntity(this.prestamo.getIdEmpresaPersona()));
       this.attrs.put("total", Numero.redondear(this.prestamo.getImporte()- this.prestamo.getSaldo()));
       switch (this.accion) {

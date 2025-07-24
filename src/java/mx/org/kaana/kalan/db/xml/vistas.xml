@@ -69,7 +69,7 @@ select
   tr_mantic_empresa_personal.clave,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
-  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empledo,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
   tc_kalan_prestamos.nombre,
   tc_kalan_prestamos.importe,
   tc_kalan_prestamos.saldo,

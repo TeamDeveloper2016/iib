@@ -34,6 +34,20 @@ where
   tc_kalan_prestamos.ejercicio= {ejercicio} 
   and tc_kalan_prestamos.orden {operador} 900000		
 			</select>		
+      <select id="empleado">
+select      
+  tc_kalan_prestamos.id_prestamo as id_key,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
+  tc_kalan_prestamos.*
+from      
+  tc_kalan_prestamos
+inner join  
+  tr_mantic_empresa_personal on tc_kalan_prestamos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where 
+  {condicion} 
+      </select>
     </unit>    
     <unit id="TcKalanPrestamosBitacoraDto">
       <select id="row">
@@ -146,6 +160,18 @@ where
   tc_kalan_creditos.ejercicio= {ejercicio} 
   and tc_kalan_creditos.orden {operador} 900000		
 			</select>		
+      <select id="acreedor">
+select      
+  tc_kalan_creditos.id_credito as id_key,        
+  tc_mantic_acreedores.razon_social,
+  tc_kalan_creditos.*
+from      
+  tc_kalan_creditos
+inner join
+  tc_mantic_acreedores on tc_kalan_creditos.id_acreedor= tc_mantic_acreedores.id_acreedor
+where 
+  {condicion} 
+      </select>  
     </unit>    
     <unit id="TcKalanCreditosEstatusDto">
       <select id="row">

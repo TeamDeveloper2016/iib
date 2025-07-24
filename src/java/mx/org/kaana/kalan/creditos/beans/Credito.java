@@ -17,6 +17,7 @@ public class Credito extends TcKalanCreditosDto implements Serializable {
 
   private static final long serialVersionUID = -8794495402874168809L;
 
+  private String razonSocial;
   private UISelectEntity ikEmpresa;  
   private UISelectEntity ikAcreedor;  
 
@@ -26,6 +27,14 @@ public class Credito extends TcKalanCreditosDto implements Serializable {
     this.setIkAcreedor(new UISelectEntity(-1L));
   }
 
+  public String getRazonSocial() {
+    return razonSocial;
+  }
+
+  public void setRazonSocial(String razonSocial) {
+    this.razonSocial = razonSocial;
+  }
+  
   public UISelectEntity getIkEmpresa() {
     return ikEmpresa;
   }

@@ -16,11 +16,20 @@ public class Prestamo extends TcKalanPrestamosDto implements Serializable {
 
   private static final long serialVersionUID = -8794495402874168809L;
 
+  private String empleado;
   private UISelectEntity ikEmpresaPersona;  
 
   public Prestamo() {
     super();
     this.setIkEmpresaPersona(new UISelectEntity(-1L));
+  }
+
+  public String getEmpleado() {
+    return empleado;
+  }
+
+  public void setEmpleado(String empleado) {
+    this.empleado = empleado;
   }
 
   public UISelectEntity getIkEmpresaPersona() {
