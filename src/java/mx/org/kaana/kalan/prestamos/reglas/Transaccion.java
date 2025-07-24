@@ -115,12 +115,16 @@ public class Transaccion extends IBaseTnx {
   } 
 	
   private void toBitacora(Session sesion, Long idPrestamoEstatus) throws Exception {
+    this.toBitacora(sesion, idPrestamoEstatus, null);
+  }
+  
+  private void toBitacora(Session sesion, Long idPrestamoEstatus, String justificacion) throws Exception {
     try {
       this.bitacora= new TcKalanPrestamosBitacoraDto(
         this.prestamo.getIdPrestamo(), // Long idPrestamo
         -1L, // Long idPrestamoBitacora, 
         JsfBase.getIdUsuario(), // Long idUsuario, 
-        null, // String justificacion, 
+        justificacion, // String justificacion, 
         idPrestamoEstatus // Long idPrestamoEstatus
       );
       DaoFactory.getInstance().insert(sesion, this.bitacora);
@@ -142,7 +146,7 @@ public class Transaccion extends IBaseTnx {
         else
           this.prestamo.setIdPrestamoEstatus(6L); // PARCIAL
       regresar= DaoFactory.getInstance().update(sesion, this.prestamo)>= 0L;
-      this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus());
+      this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus(), "SE REGISTRO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
       // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
 		} // try
 		catch (Exception e) {

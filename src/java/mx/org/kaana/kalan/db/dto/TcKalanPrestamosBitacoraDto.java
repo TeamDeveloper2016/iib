@@ -42,8 +42,8 @@ public class TcKalanPrestamosBitacoraDto implements IBaseDto, Serializable {
   private Long idPrestamoBitacora;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="obervaciones")
-  private String obervaciones;
+  @Column (name="justificacion")
+  private String justificacion;
   @Column (name="id_prestamo_estatus")
   private Long idPrestamoEstatus;
   @Column (name="registro")
@@ -58,11 +58,11 @@ public class TcKalanPrestamosBitacoraDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcKalanPrestamosBitacoraDto(Long idPrestamo, Long idPrestamoBitacora, Long idUsuario, String obervaciones, Long idPrestamoEstatus) {
+  public TcKalanPrestamosBitacoraDto(Long idPrestamo, Long idPrestamoBitacora, Long idUsuario, String justificacion, Long idPrestamoEstatus) {
     setIdPrestamo(idPrestamo);
     setIdPrestamoBitacora(idPrestamoBitacora);
     setIdUsuario(idUsuario);
-    setObervaciones(obervaciones);
+    setJustificacion(justificacion);
     setIdPrestamoEstatus(idPrestamoEstatus);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
@@ -91,12 +91,12 @@ public class TcKalanPrestamosBitacoraDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setObervaciones(String obervaciones) {
-    this.obervaciones = obervaciones;
+  public void setJustificacion(String justificacion) {
+    this.justificacion = justificacion;
   }
 
-  public String getObervaciones() {
-    return obervaciones;
+  public String getJustificacion() {
+    return justificacion;
   }
 
   public void setIdPrestamoEstatus(Long idPrestamoEstatus) {
@@ -136,7 +136,7 @@ public class TcKalanPrestamosBitacoraDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObervaciones());
+		regresar.append(getJustificacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPrestamoEstatus());
 		regresar.append(Constantes.SEPARADOR);
@@ -151,7 +151,7 @@ public class TcKalanPrestamosBitacoraDto implements IBaseDto, Serializable {
 		regresar.put("idPrestamo", getIdPrestamo());
 		regresar.put("idPrestamoBitacora", getIdPrestamoBitacora());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("obervaciones", getObervaciones());
+		regresar.put("justificacion", getJustificacion());
 		regresar.put("idPrestamoEstatus", getIdPrestamoEstatus());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -160,7 +160,7 @@ public class TcKalanPrestamosBitacoraDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdPrestamo(), getIdPrestamoBitacora(), getIdUsuario(), getObervaciones(), getIdPrestamoEstatus(), getRegistro()
+    getIdPrestamo(), getIdPrestamoBitacora(), getIdUsuario(), getJustificacion(), getIdPrestamoEstatus(), getRegistro()
     };
     return regresar;
   }
