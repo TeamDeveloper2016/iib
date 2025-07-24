@@ -8,10 +8,10 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.kalan.creditos.beans.Afectacion;
 import mx.org.kaana.kalan.creditos.beans.Credito;
 import mx.org.kaana.kalan.db.dto.TcKalanCreditosPagosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanCreditosBitacoraDto;
-import mx.org.kaana.kalan.db.dto.TcKalanCreditosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -24,11 +24,17 @@ public class Transaccion extends IBaseTnx {
 
   private static final Log LOG= LogFactory.getLog(Transaccion.class);
 	private Credito credito;
+	private Afectacion afectacion;
 	private TcKalanCreditosBitacoraDto bitacora;
 	private String messageError;
 	
 	public Transaccion(Credito credito) {
 		this.credito= credito;
+	}
+	
+	public Transaccion(Credito credito, Afectacion afectacion) {
+		this.credito   = credito;
+    this.afectacion= afectacion;
 	}
 	
 	public Transaccion(Long idCredito) throws Exception {
@@ -69,10 +75,7 @@ public class Transaccion extends IBaseTnx {
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           break;
         case MODIFICAR:
-          this.credito.setSaldo(this.credito.getImporte()- this.toSaldo(sesion));
-          regresar= DaoFactory.getInstance().update(sesion, this.credito)>= 0L;
-          this.toBitacora(sesion, this.credito.getIdCreditoEstatus());
-          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          regresar= this.toCheckEstatus(sesion);
           break;
 				case ELIMINAR:
           Map<String, Object> params = new HashMap<>();
@@ -87,6 +90,14 @@ public class Transaccion extends IBaseTnx {
 						this.credito.setIdCreditoEstatus(this.bitacora.getIdCreditoEstatus());
             regresar= DaoFactory.getInstance().update(sesion, this.credito)>= 1L;
 					} // if
+					break;
+        case COMPLEMENTAR:
+          Siguiente siguiente= this.toContinuar(sesion);
+          this.afectacion.setConsecutivo(siguiente.getConsecutivo());
+          this.afectacion.setEjercicio(siguiente.getEjercicio());
+          this.afectacion.setOrden(siguiente.getOrden());
+          DaoFactory.getInstance().insert(sesion, this.afectacion);
+          regresar= this.toCheckEstatus(sesion);
 					break;
       } // switch
       if (!regresar) 
@@ -118,6 +129,27 @@ public class Transaccion extends IBaseTnx {
 			throw e;
 		} // catch
   }
+
+  private Boolean toCheckEstatus(Session sesion) throws Exception {
+    Boolean regresar= Boolean.TRUE;
+    try {
+      this.credito.setSaldo(this.credito.getImporte()- this.toSaldo(sesion));
+      if(this.credito.getSaldo()<= 0D)
+        this.credito.setIdCreditoEstatus(3L); // TERMINADO
+      else
+        if(Objects.equals(this.credito.getImporte(), this.credito.getSaldo()))
+          this.credito.setIdCreditoEstatus(2L); // ACTIVO
+        else
+          this.credito.setIdCreditoEstatus(6L); // PARCIAL
+      regresar= DaoFactory.getInstance().update(sesion, this.credito)>= 0L;
+      this.toBitacora(sesion, this.credito.getIdCreditoEstatus());
+      // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+    return regresar;
+  }
   
 	private Double toSaldo(Session sesion) throws Exception {
 		Double regresar           = 0D;
@@ -144,6 +176,27 @@ public class Transaccion extends IBaseTnx {
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("operador", this.getCurrentSign());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanCreditosDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= new Siguiente(next.toLong());
+			else
+			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}  
+
+	private Siguiente toContinuar(Session sesion) throws Exception {
+		Siguiente regresar        = null;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("ejercicio", this.getCurrentYear());
+			params.put("operador", this.getCurrentSign());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanCreditosPagosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
 			else

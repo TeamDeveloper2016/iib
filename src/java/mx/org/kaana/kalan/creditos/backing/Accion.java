@@ -17,14 +17,12 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kalan.creditos.beans.Credito;
-import mx.org.kaana.kalan.db.dto.TcKalanCreditosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.kalan.creditos.reglas.Transaccion;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -47,6 +45,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void setCredito(Credito credito) {
     this.credito = credito;
+  }
+  
+  public Boolean getAplicar() {
+    return Objects.equals(this.accion, EAccion.AGREGAR) || Objects.equals(this.accion, EAccion.MODIFICAR);
   }
   
   @PostConstruct
@@ -92,6 +94,23 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } 
 
+	public String doAplicar() {
+    String regresar = null;
+    EAccion temporal= this.accion;
+    try {      
+      this.accion= EAccion.PROCESAR;
+      regresar= this.doAceptar();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      this.accion= temporal;
+    } // finally
+    return regresar;
+  }
+
 	public String doAceptar() {
     Transaccion transaccion= null;
     String regresar        = null;
@@ -112,7 +131,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } 
 
   public String doCancelar() {
-		JsfBase.setFlashAttribute("idCreditoProcess", this.credito.getIdAcreedor());
+		JsfBase.setFlashAttribute("idCreditoProcess", this.credito.getIdCredito());
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
   

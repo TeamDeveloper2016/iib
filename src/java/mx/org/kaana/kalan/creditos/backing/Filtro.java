@@ -34,7 +34,6 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.kalan.db.dto.TcKalanCreditosBitacoraDto;
-import mx.org.kaana.kalan.db.dto.TcKalanCreditosDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 
 @Named(value = "kalanCreditosFiltro")
@@ -66,20 +65,26 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
   
   public String getTotal() {
-    double sum  = 0D;
+    double cargo= 0D;
+    double abono= 0D;
     String value= null;
 		try {
       if(!Objects.equals(this.lazyDetalle, null))
         for(Entity item: (List<Entity>)this.lazyDetalle.getWrappedData()) {
           value= item.toString("importe");
-          sum= sum+ Double.valueOf(Cadena.eliminar(value, ','));
+          if(Objects.equals(item.toLong("idTipoAfectacion"), 1L))
+            cargo= cargo+ Double.valueOf(Cadena.eliminar(value, ','));
+          if(Objects.equals(item.toLong("idTipoAfectacion"), 2L))
+            abono= abono+ Double.valueOf(Cadena.eliminar(value, ','));
         } // for  
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-    return Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(sum));
+    String cargos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(cargo));
+    String abonos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(abono));
+    return "Suma cargos: <strong>"+ cargos+ "</strong> | abonos: <strong>"+ abonos+ "</strong>";  
   }
   
   @PostConstruct
@@ -326,6 +331,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
 
+	public String doAfectaciones() {
+		JsfBase.setFlashAttribute("idCredito", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Kalan/Creditos/filtro");
+		return "afectaciones".concat(Constantes.REDIRECIONAR);
+	}
+
   public void doView(Entity row) {
     List<Columna> columns     = new ArrayList<>();
 		Map<String, Object> params= this.toPrepare();
@@ -336,6 +347,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       this.lazyDetalle= new FormatCustomLazy("VistaCreditosDto", "pagos", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
+      this.attrs.put("seleccionado", row);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

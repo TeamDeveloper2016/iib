@@ -574,6 +574,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDetalle= new FormatCustomLazy("VistaEmpresasGastosDto", "control", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
+      this.attrs.put("seleccionado", row);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -247,7 +247,7 @@
               <f:facet name="header">
                 <h:outputText value="..."/>
               </f:facet>
-              <p:commandButton icon="fa fa-search" process="@this" update="detalle @(.total)" actionListener="#{kalanGastosFiltro.doView(row)}" title="Ver parcialidades" rendered="#{row.idActivoProrratear.toLong() eq 1}"/>
+              <p:commandButton icon="fa fa-search" process="@this tabla" update="detalle @(.total)" actionListener="#{kalanGastosFiltro.doView(row)}" title="Ver parcialidades" rendered="#{row.idActivoProrratear.toLong() eq 1}"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel styleClass="detalle janal-align-left" value="#{kalanGastosFiltro.general}" escape="false"/>

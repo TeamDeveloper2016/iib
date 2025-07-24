@@ -1,9 +1,6 @@
 package mx.org.kaana.kalan.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -36,29 +30,47 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="consecutivo")
   private String consecutivo;
+  @Column (name="id_tipo_afectacion")
+  private Long idTipoAfectacion;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_credito_pago")
   private Long idCreditoPago;
+  @Column (name="id_usuario")
+  private Long idUsuario;
   @Column (name="id_credito")
   private Long idCredito;
+  @Column (name="observaciones")
+  private String observaciones;
+  @Column (name="orden")
+  private Long orden;
   @Column (name="importe")
   private Double importe;
+  @Column (name="ejercicio")
+  private Long ejercicio;
+  @Column (name="registro")
+  private Timestamp registro;
 
   public TcKalanCreditosPagosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanCreditosPagosDto(Long key) {
-    this(null, new Long(-1L), null, null);
+    this(null, 2L, new Long(-1L), null, null, null, null, 0D, null);
     setKey(key);
   }
 
-  public TcKalanCreditosPagosDto(String consecutivo, Long idCreditoPago, Long idCredito, Double importe) {
+  public TcKalanCreditosPagosDto(String consecutivo, Long idTipoAfectacion, Long idCreditoPago, Long idUsuario, Long idCredito, String observaciones, Long orden, Double importe, Long ejercicio) {
     setConsecutivo(consecutivo);
+    setIdTipoAfectacion(idTipoAfectacion);
     setIdCreditoPago(idCreditoPago);
+    setIdUsuario(idUsuario);
     setIdCredito(idCredito);
+    setObservaciones(observaciones);
+    setOrden(orden);
     setImporte(importe);
+    setEjercicio(ejercicio);
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
   public void setConsecutivo(String consecutivo) {
@@ -69,12 +81,28 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
     return consecutivo;
   }
 
+  public void setIdTipoAfectacion(Long idTipoAfectacion) {
+    this.idTipoAfectacion = idTipoAfectacion;
+  }
+
+  public Long getIdTipoAfectacion() {
+    return idTipoAfectacion;
+  }
+
   public void setIdCreditoPago(Long idCreditoPago) {
     this.idCreditoPago = idCreditoPago;
   }
 
   public Long getIdCreditoPago() {
     return idCreditoPago;
+  }
+
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
+  }
+
+  public Long getIdUsuario() {
+    return idUsuario;
   }
 
   public void setIdCredito(Long idCredito) {
@@ -85,12 +113,44 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
     return idCredito;
   }
 
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
+  }
+
+  public String getObservaciones() {
+    return observaciones;
+  }
+
+  public void setOrden(Long orden) {
+    this.orden = orden;
+  }
+
+  public Long getOrden() {
+    return orden;
+  }
+
   public void setImporte(Double importe) {
     this.importe = importe;
   }
 
   public Double getImporte() {
     return importe;
+  }
+
+  public void setEjercicio(Long ejercicio) {
+    this.ejercicio = ejercicio;
+  }
+
+  public Long getEjercicio() {
+    return ejercicio;
+  }
+
+  public void setRegistro(Timestamp registro) {
+    this.registro = registro;
+  }
+
+  public Timestamp getRegistro() {
+    return registro;
   }
 
   @Transient
@@ -110,11 +170,23 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getConsecutivo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoAfectacion());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCreditoPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCredito());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getObservaciones());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEjercicio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -123,16 +195,22 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("consecutivo", getConsecutivo());
+		regresar.put("idTipoAfectacion", getIdTipoAfectacion());
 		regresar.put("idCreditoPago", getIdCreditoPago());
+		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idCredito", getIdCredito());
+		regresar.put("observaciones", getObservaciones());
+		regresar.put("orden", getOrden());
 		regresar.put("importe", getImporte());
+		regresar.put("ejercicio", getEjercicio());
+		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdCreditoPago(), getIdCredito(), getImporte()
+    getConsecutivo(), getIdTipoAfectacion(), getIdCreditoPago(), getIdUsuario(), getIdCredito(), getObservaciones(), getOrden(), getImporte(), getEjercicio(), getRegistro()
     };
     return regresar;
   }

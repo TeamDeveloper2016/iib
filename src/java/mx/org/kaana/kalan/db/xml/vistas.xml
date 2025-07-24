@@ -54,6 +54,7 @@ select
   tc_kalan_creditos_pagos.consecutivo,
   tc_kalan_creditos_pagos.importe,
   tc_kalan_creditos_pagos.observaciones,
+  tc_kalan_creditos_pagos.id_tipo_afectacion,
   tc_kalan_tipos_afectaciones.nombre as afectacion,
   concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
   tc_kalan_creditos_pagos.registro

@@ -97,19 +97,46 @@ where
       </select>
       <select id="pagos">
 select      
-  ifnull(sum(importe), 0) as total
+  ifnull(sum(if(id_tipo_afectacion= 2, importe, -1* importe)), 0) as total
 from      
   tc_kalan_creditos_pagos
 where      
   id_credito= {idCredito}
-  and id_tipo_afectacion= 2        
       </select>
+      <select id="siguiente">
+select
+  max(tc_kalan_creditos_pagos.orden)+ 1 as siguiente
+from 
+  tc_kalan_creditos_pagos
+where
+  tc_kalan_creditos_pagos.ejercicio= {ejercicio} 
+  and tc_kalan_creditos_pagos.orden {operador} 900000		
+			</select>		
       <delete id="rows">
 delete from      
   tc_kalan_creditos_pagos
 where      
   id_credito= {idCredito}
       </delete>
+    </unit>    
+    <unit id="TcKalanTiposAfectacionesDto">
+      <select id="row">
+select      
+  tc_kalan_tipos_afectaciones.id_tipo_afectacion as id_key,
+  tc_kalan_tipos_afectaciones.*
+from      
+  tc_kalan_tipos_afectaciones
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_tipos_afectaciones
+where      
+  nombre = '{nombre}'
+      </select>
     </unit>    
     <unit id="TcKalanValesEstatusDto">
       <select id="row">

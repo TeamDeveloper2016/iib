@@ -29,7 +29,7 @@
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
           <p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" process="@this" update="contenedorGrupos" oncomplete="janal.refresh();"/>
+            <p:ajax event="tabChange" process="@this" update="contenedorGrupos" oncomplete="janal.refresh()"/>
             <p:tab title="General">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idEmpresa" value="Sucursal:"/>
@@ -91,11 +91,13 @@
   </ui:define>    	
   <ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanCreditosAccion.doAceptar}"   onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanCreditosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aplicar" value="Aplicar" icon="fa fa-lock" accesskey="p"  process="@form" action="#{kalanCreditosAccion.doAplicar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" rendered="#{kalanCreditosAccion.aplicar}"/>
       <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanCreditosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
     <div class="xs-pantalla">
-      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCreditosAccion.doAceptar}"   onstart="return janal.execute();" oncomplete="janal.desbloquear();"/>
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanCreditosAccion.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicarIcon" value="Aplicar" icon="fa fa-lock"  process="@form" action="#{kalanCreditosAccion.doAplicar}" onstart="return execute()" oncomplete="janal.desbloquear()" rendered="#{kalanCreditosAccion.aplicar}"/>
       <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanCreditosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
   </ui:define>
