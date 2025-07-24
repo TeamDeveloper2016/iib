@@ -4,6 +4,85 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaAcreedoresDto">
+			<select id="banca">
+select 
+  tc_mantic_acreedores_bancos.id_acreedor_banco as id_key,
+  tc_mantic_acreedores_bancos.convenio_cuenta,
+  tc_mantic_acreedores_bancos.clabe_referencia,
+  tc_mantic_bancos.nombre
+ from 
+   tc_mantic_acreedores_bancos
+ inner join
+   tc_mantic_bancos on tc_mantic_acreedores_bancos.id_banco = tc_mantic_bancos.id_banco
+ where 
+   tc_mantic_acreedores_bancos.id_acreedor= {idAcreedor}
+  and 
+   tc_mantic_acreedores_bancos.id_tipo_cuenta= {idTipoCuenta}
+			</select>
+			<select id="lazy">
+select 
+  tc_mantic_acreedores.id_acreedor as id_key,
+  tc_mantic_acreedores.clave,
+  tc_mantic_acreedores.rfc,
+  tc_mantic_acreedores.razon_social,
+  tc_mantic_tipos_acreedores.nombre as tipo_acreedor,
+  tr_mantic_acreedor_tipo_contacto.valor telefono,
+  concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) agente,
+  tr_mantic_persona_tipo_contacto.valor celular
+from   
+   tc_mantic_acreedores
+inner join
+   tc_mantic_tipos_acreedores on  tc_mantic_tipos_acreedores.id_tipo_acreedor= tc_mantic_acreedores.id_tipo_acreedor
+left join
+   tr_mantic_acreedor_tipo_contacto on tc_mantic_acreedores.id_acreedor = tr_mantic_acreedor_tipo_contacto.id_acreedor and id_tipo_contacto &lt;= 1 and orden =1
+left join
+  tr_mantic_acreedor_agente on tc_mantic_acreedores.id_acreedor = tr_mantic_acreedor_agente.id_acreedor and tr_mantic_acreedor_agente.id_principal= 1
+left join
+  tc_mantic_personas on tr_mantic_acreedor_agente.id_agente = tc_mantic_personas.id_persona
+left join
+  tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+where
+  tc_mantic_acreedores.id_empresa in ({idEmpresa})    
+  and tc_mantic_acreedores.id_acreedor> 0
+  and {condicion}        
+{sortOrder}
+			</select>
+			<select id="portal">
+select 
+  tc_mantic_acreedores.id_acreedor as id_key,
+  tc_mantic_acreedores.clave,
+  tc_mantic_acreedores.rfc,
+  tc_mantic_acreedores.razon_social,
+  tc_mantic_tipos_acreedores.nombre as tipo_proveedor
+ from   
+   tc_mantic_acreedores
+ inner join
+   tc_mantic_tipos_acreedores on  tc_mantic_tipos_acreedores.id_tipo_acreedor= tc_mantic_acreedores.id_tipo_acreedor
+ where
+   upper(tc_mantic_acreedores.razon_social) like upper('%{codigo}%')
+   or (upper(tc_mantic_acreedores.rfc) like upper('%{codigo}%') or upper(tc_mantic_acreedores.rfc is null))
+   or upper(tc_mantic_acreedores.clave like '%{codigo}%')
+   and tc_mantic_acreedores.id_empresa in ({sucursales})
+			</select>
+			 <select id="direccionAcreedor">
+select 
+  tc_janal_entidades.id_entidad as id_key,
+  tc_janal_entidades.id_entidad,
+  tc_janal_municipios.id_municipio,
+  tc_janal_localidades.id_localidad
+from 
+  tc_janal_entidades 
+inner join
+  tc_janal_municipios on tc_janal_municipios.id_entidad= tc_janal_entidades.id_entidad
+inner join    
+  tc_janal_localidades on tc_janal_localidades.id_municipio= tc_janal_municipios.id_municipio
+ inner join
+  tc_mantic_domicilios on tc_mantic_domicilios.id_localidad= tc_janal_localidades.id_localidad
+ where 
+  tc_mantic_domicilios.id_domicilio={idDomicilio}
+			</select>    
+		</unit> 
 		<unit id="VistaLotesDto">
 			<select id="agrupado">
 select
@@ -476,7 +555,7 @@ select
   tc_mantic_articulos_promedios.importe,
   tc_mantic_articulos_promedios.promedio,
   tc_mantic_articulos_promedios.id_usuario,
-  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
   tc_mantic_articulos_promedios.registro
 from
   tc_mantic_articulos_promedios

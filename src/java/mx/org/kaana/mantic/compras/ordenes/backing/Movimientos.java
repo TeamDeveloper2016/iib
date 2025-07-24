@@ -49,7 +49,7 @@ public class Movimientos extends IBaseFilter implements Serializable {
 	}
 	
 	public boolean getImporte() {
-	  return !ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo) && !ETipoMovimiento.MULTIPLES.equals(this.tipo) && !ETipoMovimiento.GASTOS.equals(this.tipo) && !ETipoMovimiento.LOTES.equals(this.tipo);
+	  return !ETipoMovimiento.TRANSFERENCIAS.equals(this.tipo) && !ETipoMovimiento.MULTIPLES.equals(this.tipo) && !ETipoMovimiento.GASTOS.equals(this.tipo) && !ETipoMovimiento.LOTES.equals(this.tipo) && !ETipoMovimiento.CREDITOS.equals(this.tipo);
 	}
 	
 	public String doTransporto(Entity row) {

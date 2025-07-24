@@ -3,13 +3,13 @@ package mx.org.kaana.kalan.catalogos.acreedores.beans;
 import java.util.Collections;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.libs.formato.Error;
 
 public class ContadoresListas {
 	
 	private static final Long INCREMENTO= 10000L;
 	private Long totalAcreedoresDomicilios;
 	private Long totalAcreedoresAgentes;
-	private Long totalAcreedoresPago;
 	private Long totalAcreedoresTipoContacto;	
 	private Long totalPersonasTipoContacto;	
 	private Long totalAcreedoresServicio;	
@@ -19,12 +19,11 @@ public class ContadoresListas {
 		init();
 	} // ContadoresListas
 	
-	public ContadoresListas(Long totalAcreedoresDomicilios, Long totalAcreedoresAgentes, Long totalAcreedoresTipoContacto, Long totalPersonasTipoContacto, Long totalAcreedoresPago, Long totalAcreedoresServicio, Long totalAcreedoresTransferencia) {
+	public ContadoresListas(Long totalAcreedoresDomicilios, Long totalAcreedoresAgentes, Long totalAcreedoresTipoContacto, Long totalPersonasTipoContacto, Long totalAcreedoresServicio, Long totalAcreedoresTransferencia) {
 		this.totalAcreedoresDomicilios   = totalAcreedoresDomicilios;
 		this.totalAcreedoresAgentes      = totalAcreedoresAgentes;
 		this.totalAcreedoresTipoContacto = totalAcreedoresTipoContacto;
 		this.totalPersonasTipoContacto    = totalPersonasTipoContacto;	
-		this.totalAcreedoresPago         = totalAcreedoresPago;
 		this.totalAcreedoresServicio     = totalAcreedoresServicio;
 		this.totalAcreedoresTransferencia= totalAcreedoresTransferencia;
 	} // ContadoresListas
@@ -43,14 +42,6 @@ public class ContadoresListas {
 
 	public void setTotalAcreedoresAgentes(Long totalAcreedoresAgentes) {
 		this.totalAcreedoresAgentes = totalAcreedoresAgentes;
-	}
-
-	public Long getTotalAcreedoresPago() {
-		return totalAcreedoresPago;
-	}
-
-	public void setTotalAcreedoresPago(Long totalAcreedoresPago) {
-		this.totalAcreedoresPago = totalAcreedoresPago;
 	}
 
 	public Long getTotalAcreedoresTipoContacto() {
@@ -85,44 +76,39 @@ public class ContadoresListas {
 		this.totalAcreedoresTransferencia = totalAcreedoresTransferencia;
 	}
 	
-	private void init(){
+	private void init() {
 		try {
-			this.totalAcreedoresDomicilios   = toMaxProveedorDomicilio();
-			this.totalAcreedoresAgentes      = toMaxProveedorAgentes();
-			this.totalAcreedoresTipoContacto = toMaxProveedorTiposContactos();		
-			this.totalPersonasTipoContacto    = toMaxPersonaTiposContactos();
-			this.totalAcreedoresPago         = toMaxProveedorPago();
-			this.totalAcreedoresServicio     = toMaxProveedorBanco();
-			this.totalAcreedoresTransferencia= toMaxProveedorBanco();
+			this.totalAcreedoresDomicilios   = toMaxAcreedorDomicilio();
+			this.totalAcreedoresAgentes      = toMaxAcreedorAgentes();
+			this.totalAcreedoresTipoContacto = toMaxAcreedorTiposContactos();		
+			this.totalPersonasTipoContacto   = toMaxPersonaTiposContactos();
+			this.totalAcreedoresServicio     = toMaxAcreedorBanco();
+			this.totalAcreedoresTransferencia= toMaxAcreedorBanco();
 		} // try
 		catch (Exception e) {
-			mx.org.kaana.libs.formato.Error.mensaje(e);						
+			Error.mensaje(e);						
 		} // catch		
-	} // init
+	} 
 	
-	private Long toMaxProveedorPago() throws Exception{
-		return toMax("TrManticProveedorPagoDto");
-	}
+	private Long toMaxAcreedorDomicilio() throws Exception{		
+		return toMax("TrManticAcreedorDomicilioDto");
+	} 
 	
-	private Long toMaxProveedorDomicilio() throws Exception{		
-		return toMax("TrManticProveedorDomicilioDto");
-	} // toMaxArticuloCodigo
+	private Long toMaxAcreedorAgentes() throws Exception{		
+		return toMax("TrManticAcreedorAgenteDto");
+	} 
 	
-	private Long toMaxProveedorAgentes() throws Exception{		
-		return toMax("TrManticProveedorAgenteDto");
-	} // toMaxProveedorRepresentantes
-	
-	private Long toMaxProveedorTiposContactos() throws Exception{		
-		return toMax("TrManticProveedorTipoContactoDto");
-	} // toMaxProveedorTiposContactos	
+	private Long toMaxAcreedorTiposContactos() throws Exception{		
+		return toMax("TrManticAcreedorTipoContactoDto");
+	} 
 	
 	private Long toMaxPersonaTiposContactos() throws Exception{		
 		return toMax("TrManticPersonaTipoContactoDto");
-	} // toMaxProveedorTiposContactos
+	} 
 	
-	private Long toMaxProveedorBanco() throws Exception{		
+	private Long toMaxAcreedorBanco() throws Exception{		
 		return toMax("TcManticAcreedoresBancosDto");
-	} // toMaxProveedorTiposContactos
+	} 
 	
 	private Long toMax(String vista) throws Exception{
 		Long regresar= 0L;
@@ -130,11 +116,12 @@ public class ContadoresListas {
 		try {
 			maximo= DaoFactory.getInstance().toField(vista, "maximo", Collections.EMPTY_MAP, "maximo");
 			if(maximo.getData()!= null)
-				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
+				regresar= Long.valueOf(maximo.toString())+ INCREMENTO;
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch				
 		return regresar;
-	} // toMax
+	} 
+  
 }

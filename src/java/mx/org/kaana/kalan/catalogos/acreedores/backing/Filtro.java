@@ -38,9 +38,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-      this.attrs.put("sortOrder", "order by tc_kalan_acreedores.razon_social");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.loadTiposAcreedores();
+      this.toLoadTiposAcreedores();
       if(JsfBase.getFlashAttribute("idAcreedorProcess")!= null) {
         this.attrs.put("idAcreedorProcess", JsfBase.getFlashAttribute("idAcreedorProcess"));
         this.doLoad();
@@ -53,21 +52,11 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
-  private void loadTiposAcreedores() throws Exception {
+  private void toLoadTiposAcreedores() throws Exception {
     Gestor gestor = new Gestor();
     gestor.loadTiposAcreedores();
     this.attrs.put("tiposAcreedores", gestor.getTiposAcreedores());
     this.attrs.put("tipoAcreedor", UIBackingUtilities.toFirstKeySelectEntity(gestor.getTiposAcreedores()));
-  }
-
-  private String toAllTiposAcreedores() {
-    StringBuilder regresar = new StringBuilder();
-    List<UISelectEntity> tiposAcreedores = (List<UISelectEntity>) this.attrs.get("tiposAcreedores");
-    for (UISelectEntity tipoAcreedor: tiposAcreedores) {
-      regresar.append(tipoAcreedor.getKey());
-      regresar.append(",");
-    } // for
-    return regresar.substring(0, regresar.length() - 1);
   }
 
   @Override
@@ -76,6 +65,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
+      params.put("sortOrder", "order by tc_mantic_acreedores.razon_social");
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("tipoAcreedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
@@ -90,7 +80,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
+  } 
 
   public String doAccion(String accion) {
     EAccion eaccion = null;

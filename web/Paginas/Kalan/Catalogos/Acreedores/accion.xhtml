@@ -42,11 +42,11 @@
 				'plazo': {multiple: '$', validaciones: 'requerido|porcentaje', mascara: 'libre', grupo: 'general'},
 				'llave': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'otro' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-				'agentevalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del agente'},
+				'agentevalor'  : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del agente'},
 				'bancaconvenio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del convenio'},
-				'bancavalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura de la referencia'},
-				'convenio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del convenio'},
-				'referencia': {multiple: '$', validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura de la referencia'}
+				'bancavalor'   : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura de la referencia'},
+				'convenio'     : {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del convenio'},
+				'referencia'   : {multiple: '$', validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura de la referencia'}
       };      
 			
 			fieldsDialog= {
@@ -75,8 +75,8 @@
                 <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" maxlength="255" value="#{kalanCatalogosAcreedoresAccion.registroAcreedor.acreedor.razonSocial}"/>                    
                 <p:separator/>
                 <p:outputLabel for="idTipoAcreedor"  value="Tipo acreedor:"/>
-                <p:selectOneMenu  id="idTipoAcreedor" value="#{kalanCatalogosAcreedoresAccion.attrs.tipoAcreedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
-                  <f:selectItems value="#{kalanCatalogosAcreedoresAccion.attrs.tiposAcreedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:selectOneMenu id="idTipoAcreedor" value="#{kalanCatalogosAcreedoresAccion.attrs.tipoAcreedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
+                  <f:selectItems value="#{kalanCatalogosAcreedoresAccion.attrs.tiposAcreedores}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                   <p:column>
                     <h:outputText value="#{item.nombre}"/>
                   </p:column>   
@@ -308,12 +308,12 @@
 											<p:inputText id="bancavalor#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.clabeReferencia}" disabled="#{!servicio.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">
-											<p:commandButton update="tablaServicios" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doEliminarAcreedorServicio}">
+                      <p:commandButton update="tablaServicios" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doEliminarAcreedorServicio}" oncomplete="janal.refresh()">
 												<f:setPropertyActionListener value="#{servicio}" target="#{kalanCatalogosAcreedoresAccion.registroAcreedor.acreedorServicioSeleccion}" />
 											</p:commandButton>
 										</p:column>
 										<f:facet name="footer">
-											<p:commandButton actionListener="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doAgregarAcreedorServicio}" process="@this tablaServicios" update="tablaServicios" icon="fa fa-plus"/>						
+											<p:commandButton actionListener="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doAgregarAcreedorServicio}" process="@this tablaServicios" update="tablaServicios" icon="fa fa-plus" oncomplete="janal.refresh()"/>
 										</f:facet>
 									</p:dataTable>	
 								</p:panelGrid>	
@@ -333,12 +333,12 @@
 											<p:inputText id="referencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.clabeReferencia}" disabled="#{!transferencia.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">
-											<p:commandButton update="tablaTransferencia" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doEliminarAcreedorTransferencia}">
+											<p:commandButton update="tablaTransferencia" icon="fa fa-close" title="Eliminar" action="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doEliminarAcreedorTransferencia}" oncomplete="janal.refresh()">
 												<f:setPropertyActionListener value="#{transferencia}" target="#{kalanCatalogosAcreedoresAccion.registroAcreedor.acreedorTransferenciaSeleccion}" />
 											</p:commandButton>
 										</p:column>
 										<f:facet name="footer">
-											<p:commandButton actionListener="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doAgregarAcreedorTransferencia}" process="@this tablaTransferencia" update="tablaTransferencia" icon="fa fa-plus"/>						
+											<p:commandButton actionListener="#{kalanCatalogosAcreedoresAccion.registroAcreedor.doAgregarAcreedorTransferencia}" process="@this tablaTransferencia" update="tablaTransferencia" icon="fa fa-plus" oncomplete="janal.refresh()"/>
 										</f:facet>
 									</p:dataTable>	
 								</p:panelGrid>	

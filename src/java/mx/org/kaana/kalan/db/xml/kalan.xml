@@ -7,12 +7,12 @@
   </model>
 
   <dml>
-    <unit id="TcKalanAcreedoresDto">
+    <unit id="TcKalanCreditosDto">
       <select id="row">
 select      
   *
 from      
-  tc_kalan_acreedores
+  tc_kalan_creditos
 where 
   {condicion} 
       </select>
@@ -20,17 +20,27 @@ where
 select      
   *
 from      
-  tc_kalan_acreedores
+  tc_kalan_creditos
 where      
   consecutivo = '{consecutivo}'
       </select>
+      <select id="siguiente">
+select
+  max(tc_kalan_creditos.orden)+ 1 as siguiente
+from 
+  tc_kalan_creditos
+where
+  tc_kalan_creditos.ejercicio= {ejercicio} 
+  and tc_kalan_creditos.orden {operador} 900000		
+			</select>		
     </unit>    
-    <unit id="TcKalanAcreedoresEstatusDto">
+    <unit id="TcKalanCreditosEstatusDto">
       <select id="row">
 select      
-  *
+  tc_kalan_creditos_estatus.id_credito_estatus as id_key,
+  tc_kalan_creditos_estatus.*
 from      
-  tc_kalan_acreedores_estatus
+  tc_kalan_creditos_estatus
 where 
   {condicion} 
       </select>
@@ -38,17 +48,17 @@ where
 select      
   *
 from      
-  tc_kalan_acreedores_estatus
+  tc_kalan_creditos_estatus
 where      
   nombre = '{nombre}'
       </select>
     </unit>    
-    <unit id="TcKalanAcreedoresBitacoraDto">
+    <unit id="TcKalanCreditosBitacoraDto">
       <select id="row">
 select      
   *
 from      
-  tc_kalan_acreedores_bitacora
+  tc_kalan_creditos_bitacora
 where 
   {condicion} 
       </select>
@@ -56,17 +66,23 @@ where
 select      
   *
 from      
-  tc_kalan_acreedores_bitacora
+  tc_kalan_creditos_bitacora
 where      
-  id_acreedor_bitacora = {idAcreedorBitacora}
+  id_credito_bitacora = {idCreditoBitacora}
       </select>
+      <delete id="rows">
+delete from      
+  tc_kalan_creditos_bitacora
+where      
+  id_credito= {idCredito}
+      </delete>
     </unit>  
-    <unit id="TcKalanAcreedoresPagosDto">
+    <unit id="TcKalanCreditosPagosDto">
       <select id="row">
 select      
   *
 from      
-  tc_kalan_acreedores_pagos
+  tc_kalan_creditos_pagos
 where 
   {condicion} 
       </select>
@@ -74,10 +90,25 @@ where
 select      
   *
 from      
-  tc_kalan_acreedores_pagos
+  tc_kalan_creditos_pagos
 where      
   consecutivo = '{consecutivo}'
       </select>
+      <select id="pagos">
+select      
+  ifnull(sum(importe), 0) as total
+from      
+  tc_kalan_creditos_pagos
+where      
+  id_credito= {idCredito}
+  and id_tipo_afectacion= 2        
+      </select>
+      <delete id="rows">
+delete from      
+  tc_kalan_creditos_pagos
+where      
+  id_credito= {idCredito}
+      </delete>
     </unit>    
     <unit id="TcKalanValesEstatusDto">
       <select id="row">

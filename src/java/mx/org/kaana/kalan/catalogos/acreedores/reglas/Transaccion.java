@@ -92,6 +92,7 @@ public class Transaccion extends IBaseTnx {
       if (eliminarRegistros(sesion)) {
         this.registroAcreedor.getAcreedor().setIdUsuario(JsfBase.getIdUsuario());
         this.registroAcreedor.getAcreedor().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+        this.registroAcreedor.getAcreedor().setIdActivo(1L);
         idAcreedor = DaoFactory.getInstance().insert(sesion, this.registroAcreedor.getAcreedor());
         if (this.registraDomicilios(sesion, idAcreedor)) {
           if (this.registraAcreedoresAgentes(sesion, idAcreedor)) {

@@ -102,7 +102,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-    return Numero.formatear(Numero.MONEDA_CON_DECIMALES, Numero.toRedondearSat(sum));
+    return Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(sum));
   }
   
 	public StreamedContent getArchivo() {
@@ -376,7 +376,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}
   
   public void doReporte() throws Exception {

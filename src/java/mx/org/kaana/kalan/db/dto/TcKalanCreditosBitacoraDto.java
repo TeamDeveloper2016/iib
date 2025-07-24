@@ -30,49 +30,57 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_kalan_acreedores_bitacora")
-public class TcKalanAcreedoresBitacoraDto implements IBaseDto, Serializable {
+@Table(name="tc_kalan_creditos_bitacora")
+public class TcKalanCreditosBitacoraDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="id_credito_estatus")
+  private Long idCreditoEstatus;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_acreedor_bitacora")
-  private Long idAcreedorBitacora;
+	@Column (name="id_credito_bitacora")
+  private Long idCreditoBitacora;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="obervaciones")
-  private String obervaciones;
-  @Column (name="id_acreedor")
-  private Long idAcreedor;
-  @Column (name="id_acreedor_estatus")
-  private Long idAcreedorEstatus;
+  @Column (name="justificacion")
+  private String justificacion;
+  @Column (name="id_credito")
+  private Long idCredito;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcKalanAcreedoresBitacoraDto() {
+  public TcKalanCreditosBitacoraDto() {
     this(new Long(-1L));
   }
 
-  public TcKalanAcreedoresBitacoraDto(Long key) {
-    this(new Long(-1L), null, null, null, null);
+  public TcKalanCreditosBitacoraDto(Long key) {
+    this(null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKalanAcreedoresBitacoraDto(Long idAcreedorBitacora, Long idUsuario, String obervaciones, Long idAcreedor, Long idAcreedorEstatus) {
-    setIdAcreedorBitacora(idAcreedorBitacora);
+  public TcKalanCreditosBitacoraDto(Long idCreditoEstatus, Long idCreditoBitacora, Long idUsuario, String justificacion, Long idCredito) {
+    setIdCreditoEstatus(idCreditoEstatus);
+    setIdCreditoBitacora(idCreditoBitacora);
     setIdUsuario(idUsuario);
-    setObervaciones(obervaciones);
-    setIdAcreedor(idAcreedor);
-    setIdAcreedorEstatus(idAcreedorEstatus);
+    setJustificacion(justificacion);
+    setIdCredito(idCredito);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setIdAcreedorBitacora(Long idAcreedorBitacora) {
-    this.idAcreedorBitacora = idAcreedorBitacora;
+  public void setIdCreditoEstatus(Long idCreditoEstatus) {
+    this.idCreditoEstatus = idCreditoEstatus;
   }
 
-  public Long getIdAcreedorBitacora() {
-    return idAcreedorBitacora;
+  public Long getIdCreditoEstatus() {
+    return idCreditoEstatus;
+  }
+
+  public void setIdCreditoBitacora(Long idCreditoBitacora) {
+    this.idCreditoBitacora = idCreditoBitacora;
+  }
+
+  public Long getIdCreditoBitacora() {
+    return idCreditoBitacora;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -83,28 +91,20 @@ public class TcKalanAcreedoresBitacoraDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setObervaciones(String obervaciones) {
-    this.obervaciones = obervaciones;
+  public void setJustificacion(String justificacion) {
+    this.justificacion = justificacion;
   }
 
-  public String getObervaciones() {
-    return obervaciones;
+  public String getJustificacion() {
+    return justificacion;
   }
 
-  public void setIdAcreedor(Long idAcreedor) {
-    this.idAcreedor = idAcreedor;
+  public void setIdCredito(Long idCredito) {
+    this.idCredito = idCredito;
   }
 
-  public Long getIdAcreedor() {
-    return idAcreedor;
-  }
-
-  public void setIdAcreedorEstatus(Long idAcreedorEstatus) {
-    this.idAcreedorEstatus = idAcreedorEstatus;
-  }
-
-  public Long getIdAcreedorEstatus() {
-    return idAcreedorEstatus;
+  public Long getIdCredito() {
+    return idCredito;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -118,27 +118,27 @@ public class TcKalanAcreedoresBitacoraDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdAcreedorBitacora();
+  	return getIdCreditoBitacora();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idAcreedorBitacora = key;
+  	this.idCreditoBitacora = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdAcreedorBitacora());
+		regresar.append(getIdCreditoEstatus());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCreditoBitacora());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObervaciones());
+		regresar.append(getJustificacion());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdAcreedor());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdAcreedorEstatus());
+		regresar.append(getIdCredito());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -148,19 +148,19 @@ public class TcKalanAcreedoresBitacoraDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idAcreedorBitacora", getIdAcreedorBitacora());
+		regresar.put("idCreditoEstatus", getIdCreditoEstatus());
+		regresar.put("idCreditoBitacora", getIdCreditoBitacora());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("obervaciones", getObervaciones());
-		regresar.put("idAcreedor", getIdAcreedor());
-		regresar.put("idAcreedorEstatus", getIdAcreedorEstatus());
+		regresar.put("justificacion", getJustificacion());
+		regresar.put("idCredito", getIdCredito());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdAcreedorBitacora(), getIdUsuario(), getObervaciones(), getIdAcreedor(), getIdAcreedorEstatus(), getRegistro()
+    Object[] regresar = new Object[] {
+    getIdCreditoEstatus(), getIdCreditoBitacora(), getIdUsuario(), getJustificacion(), getIdCredito(), getRegistro()
     };
     return regresar;
   }
@@ -174,8 +174,8 @@ public class TcKalanAcreedoresBitacoraDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idAcreedorBitacora~");
-    regresar.append(getIdAcreedorBitacora());
+    regresar.append("idCreditoBitacora~");
+    regresar.append(getIdCreditoBitacora());
     regresar.append("|");
     return regresar.toString();
   }
@@ -183,18 +183,18 @@ public class TcKalanAcreedoresBitacoraDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdAcreedorBitacora());
+    regresar.append(getIdCreditoBitacora());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKalanAcreedoresBitacoraDto.class;
+    return TcKalanCreditosBitacoraDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdAcreedorBitacora()!= null && getIdAcreedorBitacora()!=-1L;
+  	return getIdCreditoBitacora()!= null && getIdCreditoBitacora()!=-1L;
   }
 
   @Override
@@ -205,8 +205,8 @@ public class TcKalanAcreedoresBitacoraDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKalanAcreedoresBitacoraDto other = (TcKalanAcreedoresBitacoraDto) obj;
-    if (getIdAcreedorBitacora() != other.idAcreedorBitacora && (getIdAcreedorBitacora() == null || !getIdAcreedorBitacora().equals(other.idAcreedorBitacora))) {
+    final TcKalanCreditosBitacoraDto other = (TcKalanCreditosBitacoraDto) obj;
+    if (getIdCreditoBitacora() != other.idCreditoBitacora && (getIdCreditoBitacora() == null || !getIdCreditoBitacora().equals(other.idCreditoBitacora))) {
       return false;
     }
     return true;
@@ -215,7 +215,7 @@ public class TcKalanAcreedoresBitacoraDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdAcreedorBitacora() != null ? getIdAcreedorBitacora().hashCode() : 0);
+    hash = 67 * hash + (getIdCreditoBitacora() != null ? getIdCreditoBitacora().hashCode() : 0);
     return hash;
   }
 

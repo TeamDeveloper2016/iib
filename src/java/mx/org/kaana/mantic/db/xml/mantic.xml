@@ -90,7 +90,7 @@ from
 where      
   rfc= '{rfc}' and id_acreedor!= {idAcreedor}
       </select>
-      <select id="proveedor">
+      <select id="acreedor">
 select      
   *
 from      
@@ -102,7 +102,7 @@ where
     <unit id="TcManticAcreedoresBancosDto">
       <select id="row">
 select      
-  tc_mantic_acreedores_bancos.id_proveedor_banca as id_key,
+  tc_mantic_acreedores_bancos.id_acreedor_banco as id_key,
   tc_mantic_acreedores_bancos.*
 from      
   tc_mantic_acreedores_bancos
@@ -124,13 +124,13 @@ from
   tc_mantic_acreedores_bancos
       </select>
 			<delete id="rows">
-delete from tc_mantic_acreedores_bancos where id_acreedor={idAcreedor} 
+delete from tc_mantic_acreedores_bancos where id_acreedor= {idAcreedor} 
       </delete>
     </unit>    
     <unit id="TcManticAcreedoresPortalesDto">
       <select id="row">
 select      
-  tc_mantic_acreedores_portales.id_proveedor_portal as id_key,
+  tc_mantic_acreedores_portales.id_acreedor_portal as id_key,
   tc_mantic_acreedores_portales.*
 from      
   tc_mantic_acreedores_portales
@@ -147,7 +147,7 @@ where
       </select>
 			<select id="maximo">
 select      
-  max(id_acreedor_portal) maximo
+  max(id_acreedor_portal) as maximo
 from      
   tc_mantic_acreedores_portales
       </select>
@@ -191,6 +191,15 @@ from
 where      
   id_principal = {idPrincipal} and id_agente = {idAgente} and id_acreedor = {idAcreedor}
       </select>
+			<select id="maximo">
+select      
+  max(id_acreedor_agente) as maximo
+from      
+  tr_mantic_acreedor_agente
+      </select>	
+      <delete id="rows">
+delete from tr_mantic_acreedor_agente where id_acreedor= {idAcreedor}
+      </delete>  
     </unit>     
     <unit id="TrManticAcreedorDomicilioDto">
       <select id="row">
@@ -209,6 +218,15 @@ from
 where      
   id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal} and id_acreedor = {idAcreedor}
       </select>
+			<select id="maximo">
+select      
+  max(id_acreedor_domicilio) as maximo
+from      
+  tr_mantic_acreedor_domicilio
+      </select>	
+      <delete id="rows">
+delete from tr_mantic_acreedor_domicilio where id_acreedor= {idAcreedor}
+      </delete>  
     </unit>    
     <unit id="TrManticAcreedorTipoContactoDto">
       <select id="row">
@@ -227,6 +245,50 @@ from
 where      
   valor = '{valor}' and id_tipo_contacto = {idTipoContacto} and id_acreedor = {idAcreedor}
       </select>
+      <select id="correos">
+select      
+  *
+from      
+  tr_mantic_acreedor_tipo_contacto
+where      
+  id_acreedor= {idAcreedor}
+  and id_tipo_contacto in (9, 10, 11, 15, 16, 17, 18)
+  and id_preferido= 1
+order by
+  id_tipo_contacto
+      </select>      
+			<select id="maximo">
+select      
+  max(id_acreedor_tipo_contacto) as maximo
+from      
+  tr_mantic_acreedor_tipo_contacto
+      </select>
+      <select id="contacto">
+select      
+  tr_mantic_acreedor_tipo_contacto.*
+from      
+  tr_mantic_acreedor_tipo_contacto
+where 
+  tr_mantic_acreedor_tipo_contacto.id_acreedor= {idAcreedor}
+union all
+select      
+  tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_acreedor_tipo_contacto,
+  tr_mantic_persona_tipo_contacto.id_persona as id_acreedor,
+  tr_mantic_persona_tipo_contacto.id_tipo_contacto,
+  tr_mantic_persona_tipo_contacto.valor,
+  tr_mantic_persona_tipo_contacto.orden,
+  tr_mantic_persona_tipo_contacto.observaciones,
+  tr_mantic_persona_tipo_contacto.id_preferido,
+  tr_mantic_persona_tipo_contacto.id_usuario,
+  tr_mantic_persona_tipo_contacto.registro
+from
+  tr_mantic_persona_tipo_contacto
+inner join
+  tr_mantic_acreedor_agente on tr_mantic_persona_tipo_contacto.id_persona= tr_mantic_acreedor_agente.id_agente and tr_mantic_acreedor_agente.id_agente= {idAcreedor}
+      </select>
+      <delete id="rows">
+delete from tr_mantic_acreedor_tipo_contacto where id_acreedor= {idAcreedor}
+      </delete>  
     </unit>    
     <unit id="TcManticLotesTerminadosDto">
       <select id="row">
@@ -4783,29 +4845,29 @@ where
     
      <unit id="TrManticProveedorDomicilioDto">
       <select id="row">
-        select      
-          *
-        from      
-          tr_mantic_proveedor_domicilio
-        where 
-          {condicion} 
+select      
+  *
+from      
+  tr_mantic_proveedor_domicilio
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tr_mantic_proveedor_domicilio
-        where      
-          id_proveedor = {idProveedor} and id_proveedor_domicilio = {idProveedorDomicilio} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+select      
+  *
+from      
+  tr_mantic_proveedor_domicilio
+where      
+  id_proveedor = {idProveedor} and id_proveedor_domicilio = {idProveedorDomicilio} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
       </select>
 			<select id="maximo">
-        select      
-          max(id_proveedor_domicilio) maximo
-        from      
-          tr_mantic_proveedor_domicilio
+select      
+  max(id_proveedor_domicilio) as maximo
+from      
+  tr_mantic_proveedor_domicilio
       </select>	
       <delete id="rows">
-         delete from tr_mantic_proveedor_domicilio where id_proveedor = {idProveedor}
+delete from tr_mantic_proveedor_domicilio where id_proveedor = {idProveedor}
       </delete>  
     </unit>
     <unit id="TrManticProveedorPagoDto">
@@ -4854,61 +4916,61 @@ where
     </unit>
     <unit id="TrManticProveedorTipoContactoDto">
       <select id="row">
-        select      
-          *
-        from      
-          tr_mantic_proveedor_tipo_contacto
-        where 
-          {condicion} 
+select      
+  *
+from      
+  tr_mantic_proveedor_tipo_contacto
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tr_mantic_proveedor_tipo_contacto
-        where      
-          id_proveedor = {idProveedor} and id_proveedor_tipo_contacto = {idProveedorTipoContacto} and id_tipo_contacto = {idTipoContacto}
+select      
+  *
+from      
+  tr_mantic_proveedor_tipo_contacto
+where      
+  id_proveedor = {idProveedor} and id_proveedor_tipo_contacto = {idProveedorTipoContacto} and id_tipo_contacto = {idTipoContacto}
       </select>
       <select id="correos">
-        select      
-          *
-        from      
-          tr_mantic_proveedor_tipo_contacto
-        where      
-          id_proveedor= {idProveedor} 
-          and id_tipo_contacto in (9, 10, 11, 15, 16, 17, 18)
-          and id_preferido= 1
-        order by
-          id_tipo_contacto
+select      
+  *
+from      
+  tr_mantic_proveedor_tipo_contacto
+where      
+  id_proveedor= {idProveedor} 
+  and id_tipo_contacto in (9, 10, 11, 15, 16, 17, 18)
+  and id_preferido= 1
+order by
+  id_tipo_contacto
       </select>      
 			<select id="maximo">
-        select      
-          max(id_proveedor_tipo_contacto) maximo
-        from      
-          tr_mantic_proveedor_tipo_contacto
+select      
+  max(id_proveedor_tipo_contacto) as maximo
+from      
+  tr_mantic_proveedor_tipo_contacto
       </select>
       <select id="contacto">
-        select      
-          tr_mantic_proveedor_tipo_contacto.*
-        from      
-          tr_mantic_proveedor_tipo_contacto
-        where 
-          tr_mantic_proveedor_tipo_contacto.id_proveedor= {idProveedor}
-        union all
-        select      
-          tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_proveedor_tipo_contacto,
-          tr_mantic_persona_tipo_contacto.id_persona as id_proveedor,
-          tr_mantic_persona_tipo_contacto.id_tipo_contacto,
-          tr_mantic_persona_tipo_contacto.valor,
-          tr_mantic_persona_tipo_contacto.orden,
-          tr_mantic_persona_tipo_contacto.observaciones,
-          tr_mantic_persona_tipo_contacto.id_preferido,
-          tr_mantic_persona_tipo_contacto.id_usuario,
-          tr_mantic_persona_tipo_contacto.registro
-        from
-          tr_mantic_persona_tipo_contacto
-        inner join
-          tr_mantic_proveedor_agente on tr_mantic_persona_tipo_contacto.id_persona= tr_mantic_proveedor_agente.id_agente and tr_mantic_proveedor_agente.id_agente= {idProveedor}        
+select      
+  tr_mantic_proveedor_tipo_contacto.*
+from      
+  tr_mantic_proveedor_tipo_contacto
+where 
+  tr_mantic_proveedor_tipo_contacto.id_proveedor= {idProveedor}
+union all
+select      
+  tr_mantic_persona_tipo_contacto.id_persona_tipo_contacto as id_proveedor_tipo_contacto,
+  tr_mantic_persona_tipo_contacto.id_persona as id_proveedor,
+  tr_mantic_persona_tipo_contacto.id_tipo_contacto,
+  tr_mantic_persona_tipo_contacto.valor,
+  tr_mantic_persona_tipo_contacto.orden,
+  tr_mantic_persona_tipo_contacto.observaciones,
+  tr_mantic_persona_tipo_contacto.id_preferido,
+  tr_mantic_persona_tipo_contacto.id_usuario,
+  tr_mantic_persona_tipo_contacto.registro
+from
+  tr_mantic_persona_tipo_contacto
+inner join
+  tr_mantic_proveedor_agente on tr_mantic_persona_tipo_contacto.id_persona= tr_mantic_proveedor_agente.id_agente and tr_mantic_proveedor_agente.id_agente= {idProveedor}        
       </select>
       <delete id="rows">
         delete from tr_mantic_proveedor_tipo_contacto  where  id_proveedor = {idProveedor}
@@ -4916,41 +4978,41 @@ where
     </unit>
     <unit id="TrManticProveedorAgenteDto">
       <select id="row">
-        select      
-					tr_mantic_proveedor_agente.id_proveedor_agente as id_key,
-          tr_mantic_proveedor_agente.*
-        from      
-          tr_mantic_proveedor_agente
-        where 
-          {condicion} 
+select      
+  tr_mantic_proveedor_agente.id_proveedor_agente as id_key,
+  tr_mantic_proveedor_agente.*
+from      
+  tr_mantic_proveedor_agente
+where 
+  {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tr_mantic_proveedor_agente
-        where      
-          id_proveedor = {idProveedor} and id_proveedor_agente = {idProveedorAgente} and id_principal = {idPrincipal} and id_agente = {idAgente}
+select      
+  *
+from      
+  tr_mantic_proveedor_agente
+where      
+  id_proveedor = {idProveedor} and id_proveedor_agente = {idProveedorAgente} and id_principal = {idPrincipal} and id_agente = {idAgente}
       </select>
 			<select id="maximo">
-        select      
-          max(id_proveedor_agente) maximo
-        from      
-          tr_mantic_proveedor_agente
+select      
+  max(id_proveedor_agente) as maximo
+from      
+  tr_mantic_proveedor_agente
       </select>	
       <delete id="rows">
-        delete from tr_mantic_proveedor_agente where id_proveedor = {idProveedor}
+delete from tr_mantic_proveedor_agente where id_proveedor = {idProveedor}
       </delete>  
     </unit>		
 		<unit id="TcManticArticulosDto">
       <select id="row">
-        select   
-					tc_mantic_articulos.id_articulo as id_key,
-          tc_mantic_articulos.*
-        from      
-          tc_mantic_articulos
-        where 
-          {condicion} 
+select   
+  tc_mantic_articulos.id_articulo as id_key,
+  tc_mantic_articulos.*
+from      
+  tc_mantic_articulos
+where 
+  {condicion} 
       </select>
       <select id="identically">
         select      
@@ -6018,21 +6080,21 @@ where
   {condicion} 
       </select>
       <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_proveedores_portales
-        where      
-          pagina = '{pagina}' and id_proveedor = {idProveedor} and cuenta = '{cuenta}'
+select      
+  *
+from      
+  tc_mantic_proveedores_portales
+where      
+  pagina = '{pagina}' and id_proveedor = {idProveedor} and cuenta = '{cuenta}'
       </select>
 			<select id="maximo">
-        select      
-          max(id_proveedor_portal) maximo
-        from      
-          tc_mantic_proveedores_portales
+select      
+  max(id_proveedor_portal) maximo
+from      
+  tc_mantic_proveedores_portales
       </select>
 			<delete id="rows">
-        delete from tc_mantic_proveedores_portales where id_proveedor={idProveedor} 
+delete from tc_mantic_proveedores_portales where id_proveedor={idProveedor} 
       </delete>
     </unit>
 	  <unit id="TcManticAlmacenesUbicacionesDto">

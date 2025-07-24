@@ -115,7 +115,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.asignaCodigoPostal();
 					if(!this.registroAcreedor.getAcreedoresDomicilio().isEmpty()) {
 						this.registroAcreedor.setAcreedorDomicilioSeleccion(this.registroAcreedor.getAcreedoresDomicilio().get(0));
-						this.doConsultarProveedorDomicilio();
+						this.doConsultarAcreedorDomicilio();
 					} // if
 					if(!this.registroAcreedor.getPersonasTiposContacto().isEmpty()) {
 						this.registroAcreedor.setPersonaTipoContacto(this.registroAcreedor.getPersonasTiposContacto().get(0));
@@ -189,7 +189,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       formatos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      formatos.add(new Columna("dias", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       tiposAcreedores= UIEntity.build("TcManticTiposAcreedoresDto", params, formatos);
 			this.attrs.put("tiposAcreedores", tiposAcreedores);
     } // try
@@ -493,7 +492,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch
   } // doLoadAtributos
 	
-	public void doAgregarProveedor() {
+	public void doAgregarAcreedor() {
     try {
       this.registroAcreedor.doAgregarAcreedorDomicilio();
       this.registroAcreedor.setDomicilio(new Domicilio());
@@ -506,7 +505,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } 
 
-  public void doConsultarProveedorDomicilio() {
+  public void doConsultarAcreedorDomicilio() {
     Domicilio domicilio       = null;
     try {
       this.registroAcreedor.doConsultarAcreedorDomicilio();

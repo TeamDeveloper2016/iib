@@ -57,8 +57,8 @@ public class RegistroAcreedor implements Serializable{
 		this.domicilioPivote          = new Domicilio();
 		this.personaTipoContactoPivote= new AcreedorContactoAgente();
 		this.personaTipoContacto      = new AcreedorContactoAgente();
-		init();
-	} // RegistroAcreedor
+		this.init();
+	} 
 
 	public RegistroAcreedor(Long idAcreedor, TcManticAcreedoresDto acreedor, AcreedorDomicilio acreedorDomicilioSeleccion, List<AcreedorTipoContacto> acreedoresTipoContacto, Domicilio domicilio, Domicilio domicilioPivote, List<AcreedorContactoAgente> personasTiposContacto, AcreedorContactoAgente personaTipoContactoPivote, AcreedorContactoAgente personaTipoContacto, List<AcreedorDomicilio> acreedoresDomicilio, TcManticAcreedoresPortalesDto portal, List<AcreedorBanca> acreedoresServicio, List<AcreedorBanca> acreedoresTransferencia) {
 		this.idAcreedor                = idAcreedor;
@@ -77,7 +77,7 @@ public class RegistroAcreedor implements Serializable{
 		this.portal                    = portal;
 		this.acreedoresServicio        = acreedoresServicio;
 		this.acreedoresTransferencia   = acreedoresTransferencia;
-	} // RegistroAcreedor	
+	} 
 
 	public Long getIdAcreedor() {
 		return idAcreedor;
@@ -229,7 +229,7 @@ public class RegistroAcreedor implements Serializable{
 			motorBusqueda= new MotorBusqueda(this.idAcreedor);
 			this.acreedor= motorBusqueda.toAcreedor();					
 			this.portal= motorBusqueda.toPortal();
-			initCollections(motorBusqueda);
+			this.initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);

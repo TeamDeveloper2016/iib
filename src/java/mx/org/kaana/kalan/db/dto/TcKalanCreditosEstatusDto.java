@@ -30,40 +30,40 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_kalan_acreedores_estatus")
-public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
+@Table(name="tc_kalan_creditos_estatus")
+public class TcKalanCreditosEstatusDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="descripcion")
   private String descripcion;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_credito_estatus")
+  private Long idCreditoEstatus;
   @Column (name="id_justificacion")
   private Long idJustificacion;
   @Column (name="estatus_asociados")
   private String estatusAsociados;
   @Column (name="nombre")
   private String nombre;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_acreedor_estatus")
-  private Long idAcreedorEstatus;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcKalanAcreedoresEstatusDto() {
+  public TcKalanCreditosEstatusDto() {
     this(new Long(-1L));
   }
 
-  public TcKalanAcreedoresEstatusDto(Long key) {
-    this(null, null, null, null, new Long(-1L));
+  public TcKalanCreditosEstatusDto(Long key) {
+    this(null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcKalanAcreedoresEstatusDto(String descripcion, Long idJustificacion, String estatusAsociados, String nombre, Long idAcreedorEstatus) {
+  public TcKalanCreditosEstatusDto(String descripcion, Long idCreditoEstatus, Long idJustificacion, String estatusAsociados, String nombre) {
     setDescripcion(descripcion);
+    setIdCreditoEstatus(idCreditoEstatus);
     setIdJustificacion(idJustificacion);
     setEstatusAsociados(estatusAsociados);
     setNombre(nombre);
-    setIdAcreedorEstatus(idAcreedorEstatus);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -73,6 +73,14 @@ public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
 
   public String getDescripcion() {
     return descripcion;
+  }
+
+  public void setIdCreditoEstatus(Long idCreditoEstatus) {
+    this.idCreditoEstatus = idCreditoEstatus;
+  }
+
+  public Long getIdCreditoEstatus() {
+    return idCreditoEstatus;
   }
 
   public void setIdJustificacion(Long idJustificacion) {
@@ -99,14 +107,6 @@ public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
     return nombre;
   }
 
-  public void setIdAcreedorEstatus(Long idAcreedorEstatus) {
-    this.idAcreedorEstatus = idAcreedorEstatus;
-  }
-
-  public Long getIdAcreedorEstatus() {
-    return idAcreedorEstatus;
-  }
-
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -118,12 +118,12 @@ public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdAcreedorEstatus();
+  	return getIdCreditoEstatus();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idAcreedorEstatus = key;
+  	this.idCreditoEstatus = key;
   }
 
   @Override
@@ -132,13 +132,13 @@ public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCreditoEstatus());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdJustificacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEstatusAsociados());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdAcreedorEstatus());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -149,10 +149,10 @@ public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
+		regresar.put("idCreditoEstatus", getIdCreditoEstatus());
 		regresar.put("idJustificacion", getIdJustificacion());
 		regresar.put("estatusAsociados", getEstatusAsociados());
 		regresar.put("nombre", getNombre());
-		regresar.put("idAcreedorEstatus", getIdAcreedorEstatus());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -160,7 +160,7 @@ public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdJustificacion(), getEstatusAsociados(), getNombre(), getIdAcreedorEstatus(), getRegistro()
+    getDescripcion(), getIdCreditoEstatus(), getIdJustificacion(), getEstatusAsociados(), getNombre(), getRegistro()
     };
     return regresar;
   }
@@ -174,8 +174,8 @@ public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idAcreedorEstatus~");
-    regresar.append(getIdAcreedorEstatus());
+    regresar.append("idCreditoEstatus~");
+    regresar.append(getIdCreditoEstatus());
     regresar.append("|");
     return regresar.toString();
   }
@@ -183,18 +183,18 @@ public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdAcreedorEstatus());
+    regresar.append(getIdCreditoEstatus());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcKalanAcreedoresEstatusDto.class;
+    return TcKalanCreditosEstatusDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdAcreedorEstatus()!= null && getIdAcreedorEstatus()!=-1L;
+  	return getIdCreditoEstatus()!= null && getIdCreditoEstatus()!=-1L;
   }
 
   @Override
@@ -205,8 +205,8 @@ public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcKalanAcreedoresEstatusDto other = (TcKalanAcreedoresEstatusDto) obj;
-    if (getIdAcreedorEstatus() != other.idAcreedorEstatus && (getIdAcreedorEstatus() == null || !getIdAcreedorEstatus().equals(other.idAcreedorEstatus))) {
+    final TcKalanCreditosEstatusDto other = (TcKalanCreditosEstatusDto) obj;
+    if (getIdCreditoEstatus() != other.idCreditoEstatus && (getIdCreditoEstatus() == null || !getIdCreditoEstatus().equals(other.idCreditoEstatus))) {
       return false;
     }
     return true;
@@ -215,7 +215,7 @@ public class TcKalanAcreedoresEstatusDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdAcreedorEstatus() != null ? getIdAcreedorEstatus().hashCode() : 0);
+    hash = 67 * hash + (getIdCreditoEstatus() != null ? getIdCreditoEstatus().hashCode() : 0);
     return hash;
   }
 
