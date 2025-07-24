@@ -70,7 +70,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params = new HashMap<>();
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-      params.put("idCredito", this.idCredito);      
+      params.put(Constantes.SQL_CONDICION, "id_credito= "+ this.idCredito);      
       switch (this.accion) {
         case AGREGAR:
           this.credito= new Credito();

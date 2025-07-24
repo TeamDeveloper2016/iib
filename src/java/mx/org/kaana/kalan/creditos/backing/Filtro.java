@@ -298,7 +298,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			bitacora    = new TcKalanCreditosBitacoraDto(
-        Long.valueOf(this.attrs.get("estatus").toString()), // Long idCreditoEstatus
+        Long.valueOf((String)this.attrs.get("estatus")), // Long idCreditoEstatus
         -1L, // Long idCreditoBitacora, 
         JsfBase.getIdUsuario(), // Long idUsuario, 
         (String)this.attrs.get("justificacion"), // String justificacion, 

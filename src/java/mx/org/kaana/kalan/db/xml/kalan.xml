@@ -10,7 +10,8 @@
     <unit id="TcKalanCreditosDto">
       <select id="row">
 select      
-  *
+  tc_kalan_creditos.id_credito as id_key,        
+  tc_kalan_creditos.*
 from      
   tc_kalan_creditos
 where 

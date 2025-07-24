@@ -9,6 +9,7 @@
 select 
   tc_kalan_creditos.id_credito as id_key,
   tc_kalan_creditos.id_credito,
+  tc_kalan_creditos.id_credito_estatus,
   tc_mantic_empresas.nombre as empresa,
   tc_kalan_creditos.consecutivo,
   tc_mantic_acreedores.clave,

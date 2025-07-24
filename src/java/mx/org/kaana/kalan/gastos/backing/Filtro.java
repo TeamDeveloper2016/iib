@@ -449,7 +449,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         JsfBase.getIdUsuario(), // Long idUsuario, 
         -1L, // Long idGastoBitacora, 
         (String)this.attrs.get("justificacion"), // String observaciones, 
-        Long.valueOf(this.attrs.get("estatus").toString()), // Long idGastoEstatus, 
+        Long.valueOf((String)this.attrs.get("estatus")), // Long idGastoEstatus, 
         seleccionado.getKey() // Long idEmpresaGasto
       );
 			transaccion= new Transaccion(gasto, bitacora);

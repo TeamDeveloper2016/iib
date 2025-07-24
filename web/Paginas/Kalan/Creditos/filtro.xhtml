@@ -68,7 +68,7 @@
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{kalanCreditosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-							<p:autoComplete id="razonSocial" var="custom" placeholder="Ej: SANTANDER S.A. DE C.V." itemLabel="#{custom.idAcreedor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCreditosFiltro.attrs.idAcreedor}" completeMethod="#{kalanCreditosFiltro.doCompleteAcreedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+							<p:autoComplete id="razonSocial" var="custom" placeholder="Ej: SANTANDER S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCreditosFiltro.attrs.idAcreedor}" completeMethod="#{kalanCreditosFiltro.doCompleteAcreedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
 										<h:outputText value="Clave:" />
@@ -101,6 +101,8 @@
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
           <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCreditosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCreditosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCreditosFiltro.lazyModel.rowCount gt kalanCreditosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
@@ -165,16 +167,16 @@
               <p:commandButton icon="fa fa-search" process="@this" update="detalle @(.total)" actionListener="#{kalanCreditosFiltro.doView(row)}" title="Ver pagos"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel style=" janal-align-left" value="#{kalanCreditosFiltro.general}" styleClass="detalle" escape="false"/>
+              <p:outputLabel styleClass="detalle janal-align-left" value="#{kalanCreditosFiltro.general}" escape="false"/>
               <p:outputLabel value="Total [#{kalanCreditosFiltro.lazyModel== null? 0: kalanCreditosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{kalanCreditosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{kalanCreditosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
-            <p:separator rendered="#{fn:contains('|1|2|6|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>					
+            <p:menuitem id="modificar" action="#{kalanCreditosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|2|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
+            <p:separator/>
             <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanCreditosFiltro.doMovimientos}"/>
             <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanCreditosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus) and kalanCreditosFiltro.isAdmin}"/>
           </p:contextMenu>
@@ -184,7 +186,6 @@
               <div class="lg-pantalla">
                 <p:outputLabel value="Pagos realizados al crédito" styleClass="janal-color-white janal-align-left"/>
                 <p:menuButton value="Opciones">
-                  <p:separator/>
                   <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
@@ -251,13 +252,13 @@
       </div>
     </div>		           				
   </ui:define>    
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el prestamo ?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el crédito ?" />
   <ui:param name="accionConfirmacion" value="#{kalanCreditosFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
-    <h:panelGrid columns="1">
+    <h:panelGrid columns="2" columnClasses="janal-wid-30:">
       <p:outputLabel value="Razón social: "/>
       <p:outputLabel value="#{kalanCreditosFiltro.attrs.seleccionado.razonSocial}"/>
       <p:outputLabel value="Importe: "/>

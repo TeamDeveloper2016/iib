@@ -12,6 +12,7 @@ import mx.org.kaana.kalan.creditos.beans.Credito;
 import mx.org.kaana.kalan.db.dto.TcKalanCreditosPagosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanCreditosBitacoraDto;
 import mx.org.kaana.kalan.db.dto.TcKalanCreditosDto;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -37,7 +38,7 @@ public class Transaccion extends IBaseTnx {
 	public Transaccion(Long idCredito, TcKalanCreditosBitacoraDto bitacora) throws Exception {
     Map<String, Object> params = new HashMap<>();
     try {      
-      params.put("idCredito", idCredito);      
+      params.put(Constantes.SQL_CONDICION, "id_credito= "+ idCredito);      
   		this.credito = (Credito)DaoFactory.getInstance().toEntity(Credito.class, "TcKalanCreditosDto", params);
       this.bitacora= bitacora;
     } // try
@@ -73,7 +74,7 @@ public class Transaccion extends IBaseTnx {
           this.toBitacora(sesion, this.credito.getIdCreditoEstatus());
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           break;
-				case DEPURAR:
+				case ELIMINAR:
           Map<String, Object> params = new HashMap<>();
           params.put("idCredito", this.credito.getIdCredito());            
           DaoFactory.getInstance().deleteAll(sesion, TcKalanCreditosBitacoraDto.class, params);
