@@ -22,6 +22,8 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.kalan.creditos.reglas.Transaccion;
+import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -38,6 +40,14 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
   private Credito credito;
   private Afectacion afectacion;
   private Long idCredito;
+
+  public Credito getCredito() {
+    return credito;
+  }
+
+  public void setCredito(Credito credito) {
+    this.credito = credito;
+  }
 
   public Afectacion getAfectacion() {
     return afectacion;
@@ -56,6 +66,7 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Creditos/filtro": JsfBase.getFlashAttribute("retorno"));
       this.toLoadAfectaciones();
       this.doLoad(); 
+      this.doCheckImporte();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -70,11 +81,12 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
       this.credito= (Credito)DaoFactory.getInstance().toEntity(Credito.class, "TcKalanCreditosDto", params);
       this.credito.setIkEmpresa(new UISelectEntity(this.credito.getIdEmpresa()));
       this.credito.setIkAcreedor(new UISelectEntity(this.credito.getIdAcreedor()));
+      this.attrs.put("total", Numero.redondear(this.credito.getImporte()- this.credito.getSaldo()));
       switch (this.accion) {
         case COMPLEMENTAR:
           this.afectacion= new Afectacion();
           this.afectacion.setIdCredito(this.idCredito);
-          this.afectacion.setIdTipoAfectacion(2L);
+          this.afectacion.setIkTipoAfectacion(new UISelectEntity(2L));
           this.afectacion.setIdUsuario(JsfBase.getIdUsuario());
           break;
       } // switch      
@@ -124,7 +136,8 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
       this.attrs.put("afectaciones", afectaciones);
     } // try
     catch (Exception e) {
-      throw e;
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
     } // catch   
     finally {
       Methods.clean(columns);
@@ -132,4 +145,15 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
     } // finally
 	}
 
+  public void doCheckImporte() {
+    try {
+      if(Objects.equals(this.afectacion.getIdTipoAfectacion(), 2L))  // ABONO
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-a({\"cual\": \"contenedorGrupos\\\\\\\\:saldo\"})', mascara: 'libre', mensaje: 'El cargo debe de ser menor o igual a lo abonado'});");
+      else 
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-a({\"cual\": \"contenedorGrupos\\\\\\\\:total\"})', mascara: 'libre', mensaje: 'El abono debe de ser menor o igual al saldo'});");
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+  }
 }

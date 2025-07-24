@@ -1,9 +1,7 @@
 package mx.org.kaana.kalan.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -38,12 +33,14 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
   private Long plazo;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-  @Column (name="id_credito")
+	@Column (name="id_credito")
   private Long idCredito;
   @Column (name="saldo")
   private Double saldo;
   @Column (name="limite")
   private Date limite;
+  @Column (name="nombre")
+  private String nombre;
   @Column (name="importe")
   private Double importe;
   @Column (name="tasa")
@@ -56,6 +53,8 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
   private Timestamp registro;
   @Column (name="consecutivo")
   private String consecutivo;
+  @Column (name="id_credito_estatus")
+  private Long idCreditoEstatus;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="observaciones")
@@ -66,35 +65,34 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="id_acreedor")
   private Long idAcreedor;
-  @Column (name="id_credito_estatus")
-  private Long idCreditoEstatus;
 
   public TcKalanCreditosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanCreditosDto(Long key) {
-    this(1L, null, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D, 1L, null, null, null, null, null, null, null, null);
+    this(null, new Long(-1L), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKalanCreditosDto(Long plazo, Long idCredito, Double saldo, Date limite, Double importe, Double tasa, Long pagos, Long ejercicio, String consecutivo, Long idUsuario, String observaciones, Long idEmpresa, Long orden, Long idAcreedor, Long idCreditoEstatus) {
+  public TcKalanCreditosDto(Long plazo, Long idCredito, Double saldo, Date limite, String nombre, Double importe, Double tasa, Long pagos, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idUsuario, String observaciones, Long idEmpresa, Long orden, Long idAcreedor) {
     setPlazo(plazo);
     setIdCredito(idCredito);
     setSaldo(saldo);
     setLimite(limite);
+    setNombre(nombre);
     setImporte(importe);
     setTasa(tasa);
     setPagos(pagos);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setConsecutivo(consecutivo);
+    setIdCreditoEstatus(idCreditoEstatus);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setOrden(orden);
     setIdAcreedor(idAcreedor);
-    setIdCreditoEstatus(idCreditoEstatus);
   }
 	
   public void setPlazo(Long plazo) {
@@ -127,6 +125,14 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
 
   public Date getLimite() {
     return limite;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public String getNombre() {
+    return nombre;
   }
 
   public void setImporte(Double importe) {
@@ -177,6 +183,14 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
     return consecutivo;
   }
 
+  public void setIdCreditoEstatus(Long idCreditoEstatus) {
+    this.idCreditoEstatus = idCreditoEstatus;
+  }
+
+  public Long getIdCreditoEstatus() {
+    return idCreditoEstatus;
+  }
+
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
   }
@@ -217,14 +231,6 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
     return idAcreedor;
   }
 
-  public void setIdCreditoEstatus(Long idCreditoEstatus) {
-    this.idCreditoEstatus = idCreditoEstatus;
-  }
-
-  public Long getIdCreditoEstatus() {
-    return idCreditoEstatus;
-  }
-
   @Transient
   @Override
   public Long getKey() {
@@ -248,6 +254,8 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getLimite());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTasa());
@@ -260,6 +268,8 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getConsecutivo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCreditoEstatus());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
@@ -269,8 +279,6 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAcreedor());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCreditoEstatus());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -282,25 +290,26 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
 		regresar.put("idCredito", getIdCredito());
 		regresar.put("saldo", getSaldo());
 		regresar.put("limite", getLimite());
+		regresar.put("nombre", getNombre());
 		regresar.put("importe", getImporte());
 		regresar.put("tasa", getTasa());
 		regresar.put("pagos", getPagos());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("consecutivo", getConsecutivo());
+		regresar.put("idCreditoEstatus", getIdCreditoEstatus());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("idAcreedor", getIdAcreedor());
-		regresar.put("idCreditoEstatus", getIdCreditoEstatus());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getPlazo(), getIdCredito(), getSaldo(), getLimite(), getImporte(), getTasa(), getPagos(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getIdAcreedor(), getIdCreditoEstatus()
+    getPlazo(), getIdCredito(), getSaldo(), getLimite(), getNombre(), getImporte(), getTasa(), getPagos(), getEjercicio(), getRegistro(), getConsecutivo(), getIdCreditoEstatus(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getIdAcreedor()
     };
     return regresar;
   }

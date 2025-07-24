@@ -13,6 +13,7 @@
       Janal.Control.fields= {
         'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido', mascara: 'libre'},
         'contenedorGrupos\\:idAcreedor'   : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:nombre'       : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:plazo'        : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:tasa'         : {validaciones: 'flotante|mayor-igual({"cuanto":0})', mascara: 'libre'},
@@ -55,6 +56,8 @@
                     <h:outputText value="#{item.razonSocial}"/>
                   </p:column>   
                 </p:selectOneMenu>                
+                <p:outputLabel for="nombre" value="Nombre:"/>
+                <p:inputText id="nombre" value="#{kalanCreditosAccion.credito.nombre}" styleClass="janal-wid-100-txt">
                 <p:panelGrid columns="2" styleClass="janal-wid-100">
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                     <p:outputLabel for="importe" value="Importe:"/>

@@ -12,6 +12,8 @@
     <script type="text/javascript">
       Janal.Control.fields= {
 				'contenedorGrupos\\:idTipoAfectacion': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:total'           : {validaciones: 'requerido|flotante', mascara: 'libre'},
+				'contenedorGrupos\\:saldo'           : {validaciones: 'requerido|flotante', mascara: 'libre'},
 				'contenedorGrupos\\:importe'         : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones'   : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };      
@@ -26,9 +28,39 @@
           <p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" process="@this" update="contenedorGrupos" oncomplete="janal.refresh()"/>
             <p:tab title="General">
+              <p:panel widgetVar="credito" header="Crédito" toggleable="true" closable="true" toggleSpeed="500" closeSpeed="500" style="margin-bottom:20px">
+                <f:facet name="options">
+                  <p:menu>
+                    <p:submenu label="Configuración">
+                      <p:menuitem value="Toggle" url="#" icon="ui-icon-newwin" onclick="PF('credito').toggle()" />
+                      <p:menuitem value="Remove" url="#" icon="ui-icon-close" onclick="PF('credito').close()" />
+                    </p:submenu>
+                  </p:menu>
+                </f:facet>                
+                <p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-50, janal-wid-15, janal-wid-15">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="consecutivo" value="Consecutivo:"/>
+                    <p:inputText id="consecutivo" value="#{kalanCreditosAfectaciones.credito.consecutivo}" styleClass="janal-wid-100-txt janal-column-center janal-color-blue" readonly="true"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="nombre" value="Nombre:"/>
+                    <p:inputText id="nombre" value="#{kalanCreditosAfectaciones.credito.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="total" value="Importe:"/>
+                    <p:inputText value="#{kalanCreditosAfectaciones.credito.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="saldo" value="Saldo:"/>
+                    <p:inputText id="saldo" value="#{kalanCreditosAfectaciones.credito.saldo}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+                  </p:panelGrid>
+                </p:panelGrid>  
+              </p:panel>  
+              <p:inputText id="total" value="#{kalanCreditosAfectaciones.attrs.total}" styleClass="janal-wid-100-txt janal-display-nones" readonly="true"/>
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idTipoAfectacion" value="Tipo:"/>
-                <p:selectOneMenu id="idTipoAfectacion" value="#{kalanCreditosAfectaciones.afectacion.ikTipoAfectacion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idTipoAfectacion" value="#{kalanCreditosAfectaciones.afectacion.ikTipoAfectacion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{kalanCreditosAfectaciones.doCheckImporte()}" process="@this" update="importe"/>
                   <f:selectItems value="#{kalanCreditosAfectaciones.attrs.afectaciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Clave" styleClass="janal-wid-30">
                     <h:outputText value="#{item.clave}"/>

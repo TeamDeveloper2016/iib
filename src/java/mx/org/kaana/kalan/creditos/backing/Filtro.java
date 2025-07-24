@@ -208,6 +208,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       sb.append("(tc_kalan_creditos.id_credito=").append(this.attrs.get("idCreditoProcess")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
   		sb.append("(tc_kalan_creditos.id_empresa= ").append(this.attrs.get("idEmpresa")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("nombre")))
+			sb.append("(tc_kalan_creditos.nombre like '%").append(this.attrs.get("nombre")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("rfc")))
 			sb.append("(tc_mantic_acreedores.rfc like '%").append(this.attrs.get("rfc")).append("%') and ");
 		if(acreedores!= null && acreedor!= null && acreedores.indexOf(acreedor)>= 0) 

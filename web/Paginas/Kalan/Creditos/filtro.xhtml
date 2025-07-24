@@ -14,6 +14,7 @@
 //<![CDATA[
       Janal.Control.fields = {
         idEmpresa        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        nombre           : {validaciones: 'rfc',   mascara: 'fiscal', formatos: 'cambiar-mayusculas', grupo: 'general'},
         rfc              : {validaciones: 'rfc',   mascara: 'fiscal', formatos: 'cambiar-mayusculas', grupo: 'general'},
         razonSocial      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         fechaInicio      : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -65,6 +66,8 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+              <p:outputLabel for="nombre" value="Crédito:"/>
+              <p:inputText id="nombre" value="#{kalanCreditosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{kalanCreditosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>
