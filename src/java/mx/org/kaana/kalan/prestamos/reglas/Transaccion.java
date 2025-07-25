@@ -26,6 +26,7 @@ public class Transaccion extends IBaseTnx {
 	private Prestamo prestamo;
 	private Afectacion afectacion;
 	private TcKalanPrestamosBitacoraDto bitacora;
+  private Long idPrestamoPago;
 	private String messageError;
 	
 	public Transaccion(Prestamo prestamo) {
@@ -55,7 +56,22 @@ public class Transaccion extends IBaseTnx {
       Methods.clean(params);
     } // finally
 	}
-	
+
+	public Transaccion(Afectacion afectacion) throws Exception {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put(Constantes.SQL_CONDICION, "id_prestamo= "+ afectacion.getIdPrestamo());      
+  		this.prestamo   = (Prestamo)DaoFactory.getInstance().toEntity(Prestamo.class, "TcKalanPrestamosDto", params);
+  		this.afectacion= afectacion;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+	}
+  
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar= Boolean.FALSE;
@@ -75,7 +91,7 @@ public class Transaccion extends IBaseTnx {
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           break;
         case MODIFICAR:
-          regresar= this.toCheckEstatus(sesion);
+          regresar= this.toCheckEstatus(sesion, Boolean.FALSE);
           break;
 				case ELIMINAR:
           Map<String, Object> params = new HashMap<>();
@@ -97,7 +113,10 @@ public class Transaccion extends IBaseTnx {
           this.afectacion.setEjercicio(siguiente.getEjercicio());
           this.afectacion.setOrden(siguiente.getOrden());
           DaoFactory.getInstance().insert(sesion, this.afectacion);
-          regresar= this.toCheckEstatus(sesion);
+          regresar= this.toCheckEstatus(sesion, Boolean.FALSE);
+					break;
+        case DEPURAR:
+          regresar= this.toDeletePago(sesion);
 					break;
       } // switch
       if (!regresar) 
@@ -134,7 +153,7 @@ public class Transaccion extends IBaseTnx {
 		} // catch
   }
 
-  private Boolean toCheckEstatus(Session sesion) throws Exception {
+  private Boolean toCheckEstatus(Session sesion, Boolean depurar) throws Exception {
     Boolean regresar= Boolean.TRUE;
     try {
       this.prestamo.setSaldo(this.prestamo.getImporte()- this.toSaldo(sesion));
@@ -146,7 +165,13 @@ public class Transaccion extends IBaseTnx {
         else
           this.prestamo.setIdPrestamoEstatus(6L); // PARCIAL
       regresar= DaoFactory.getInstance().update(sesion, this.prestamo)>= 0L;
-      this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus(), "SE REGISTRO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
+      if(Objects.equals(this.afectacion, null))
+        this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus());
+      else 
+        if(depurar)
+          this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus(), "SE ELIMINO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
+        else
+          this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus(), "SE REGISTRO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
       // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
 		} // try
 		catch (Exception e) {
@@ -215,4 +240,23 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}  
 
+  private Boolean toDeletePago(Session sesion) throws Exception {
+		Boolean regresar          = null;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idPrestamo", this.afectacion.getIdPrestamo());
+			params.put("idPrestamoPago", this.afectacion.getIdPrestamoPago());
+			regresar= DaoFactory.getInstance().deleteAll(sesion, TcKalanPrestamosPagosDto.class, "depurar", params)> 0L;
+      if(regresar) 
+        regresar= this.toCheckEstatus(sesion, Boolean.TRUE);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+  }
+  
 }

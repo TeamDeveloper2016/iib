@@ -61,6 +61,8 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
   @Override
   public void init() {
     try {
+			if(Objects.equals(JsfBase.getFlashAttribute("idPrestamo"), null))
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion   = EAccion.COMPLEMENTAR;
       this.idPrestamo= Objects.equals(JsfBase.getFlashAttribute("idPrestamo"), null)? -1L: (Long)JsfBase.getFlashAttribute("idPrestamo");
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Prestamos/filtro": JsfBase.getFlashAttribute("retorno"));
@@ -147,9 +149,9 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
   public void doCheckImporte() {
     try {
       if(Objects.equals(this.afectacion.getIdTipoAfectacion(), 2L))  // ABONO
-        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-a({\"cual\": \"contenedorGrupos\\\\\\\\:saldo\"})', mascara: 'libre', mensaje: 'El cargo debe de ser menor o igual a lo abonado'});");
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-a({\"cual\": \"contenedorGrupos\\\\\\\\:saldo\"})', mascara: 'libre', mensaje: 'El importe debe de ser menor o igual al saldo'});");
       else 
-        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-a({\"cual\": \"contenedorGrupos\\\\\\\\:total\"})', mascara: 'libre', mensaje: 'El abono debe de ser menor o igual al saldo'});");
+        UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-a({\"cual\": \"contenedorGrupos\\\\\\\\:total\"})', mascara: 'libre', mensaje: 'El importe debe de ser menor o igual a lo abonado'});");
     } // try
     catch (Exception e) {
       throw e;

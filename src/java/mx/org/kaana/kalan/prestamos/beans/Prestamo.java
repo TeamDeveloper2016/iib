@@ -20,10 +20,14 @@ public class Prestamo extends TcKalanPrestamosDto implements Serializable {
   private UISelectEntity ikEmpresaPersona;  
 
   public Prestamo() {
-    super();
-    this.setIkEmpresaPersona(new UISelectEntity(-1L));
+    this(-1L);
   }
 
+  public Prestamo(Long key) {
+    super(key);
+    this.setIkEmpresaPersona(new UISelectEntity(-1L));
+  }
+  
   public String getEmpleado() {
     return empleado;
   }

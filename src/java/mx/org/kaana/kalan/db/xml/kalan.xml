@@ -95,7 +95,8 @@ where
     <unit id="TcKalanPrestamosPagosDto">
       <select id="row">
 select      
-  *
+  tc_kalan_prestamos_pagos.id_prestamo_pago as id_key,
+  tc_kalan_prestamos_pagos.*
 from      
   tc_kalan_prestamos_pagos
 where 
@@ -131,6 +132,13 @@ delete from
   tc_kalan_prestamos_pagos
 where      
   id_prestamo= {idPrestamo}
+      </delete>
+      <delete id="depurar">
+delete from      
+  tc_kalan_prestamos_pagos
+where      
+  id_prestamo= {idPrestamo}
+  and id_prestamo_pago= {idPrestamoPago}
       </delete>
     </unit>           
     <unit id="TcKalanCreditosDto">
@@ -219,7 +227,8 @@ where
     <unit id="TcKalanCreditosPagosDto">
       <select id="row">
 select      
-  *
+  tc_kalan_creditos_pagos.id_credito_pago as id_key,      
+  tc_kalan_creditos_pagos.*
 from      
   tc_kalan_creditos_pagos
 where 
@@ -255,6 +264,13 @@ delete from
   tc_kalan_creditos_pagos
 where      
   id_credito= {idCredito}
+      </delete>
+      <delete id="depurar">
+delete from      
+  tc_kalan_creditos_pagos
+where      
+  id_credito= {idCredito}
+  and id_credito_pago= {idCreditoPago}
       </delete>
     </unit>    
     <unit id="TcKalanTiposAfectacionesDto">

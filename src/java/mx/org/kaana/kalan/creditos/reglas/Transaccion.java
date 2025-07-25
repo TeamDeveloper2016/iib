@@ -10,8 +10,8 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.kalan.creditos.beans.Afectacion;
 import mx.org.kaana.kalan.creditos.beans.Credito;
-import mx.org.kaana.kalan.db.dto.TcKalanCreditosPagosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanCreditosBitacoraDto;
+import mx.org.kaana.kalan.db.dto.TcKalanCreditosPagosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -56,6 +56,21 @@ public class Transaccion extends IBaseTnx {
     } // finally
 	}
 	
+	public Transaccion(Afectacion afectacion) throws Exception {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put(Constantes.SQL_CONDICION, "id_credito= "+ afectacion.getIdCredito());      
+  		this.credito   = (Credito)DaoFactory.getInstance().toEntity(Credito.class, "TcKalanCreditosDto", params);
+  		this.afectacion= afectacion;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+	}
+  
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar= Boolean.FALSE;
@@ -75,7 +90,7 @@ public class Transaccion extends IBaseTnx {
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           break;
         case MODIFICAR:
-          regresar= this.toCheckEstatus(sesion);
+          regresar= this.toCheckEstatus(sesion, Boolean.FALSE);
           break;
 				case ELIMINAR:
           Map<String, Object> params = new HashMap<>();
@@ -97,7 +112,10 @@ public class Transaccion extends IBaseTnx {
           this.afectacion.setEjercicio(siguiente.getEjercicio());
           this.afectacion.setOrden(siguiente.getOrden());
           DaoFactory.getInstance().insert(sesion, this.afectacion);
-          regresar= this.toCheckEstatus(sesion);
+          regresar= this.toCheckEstatus(sesion, Boolean.FALSE);
+					break;
+        case DEPURAR:
+          regresar= this.toDeletePago(sesion);
 					break;
       } // switch
       if (!regresar) 
@@ -134,7 +152,7 @@ public class Transaccion extends IBaseTnx {
 		} // catch
   }
 
-  private Boolean toCheckEstatus(Session sesion) throws Exception {
+  private Boolean toCheckEstatus(Session sesion, Boolean depurar) throws Exception {
     Boolean regresar= Boolean.TRUE;
     try {
       this.credito.setSaldo(this.credito.getImporte()- this.toSaldo(sesion));
@@ -146,7 +164,13 @@ public class Transaccion extends IBaseTnx {
         else
           this.credito.setIdCreditoEstatus(6L); // PARCIAL
       regresar= DaoFactory.getInstance().update(sesion, this.credito)>= 0L;
-      this.toBitacora(sesion, this.credito.getIdCreditoEstatus(), "SE REGISTRO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
+      if(Objects.equals(this.afectacion, null))
+        this.toBitacora(sesion, this.credito.getIdCreditoEstatus());
+      else
+        if(depurar)
+          this.toBitacora(sesion, this.credito.getIdCreditoEstatus(), "SE ELIMINO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
+        else
+          this.toBitacora(sesion, this.credito.getIdCreditoEstatus(), "SE REGISTRO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
       // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
 		} // try
 		catch (Exception e) {
@@ -215,4 +239,23 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}  
 
+  private Boolean toDeletePago(Session sesion) throws Exception {
+		Boolean regresar          = null;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idCredito", this.afectacion.getIdCredito());
+			params.put("idCreditoPago", this.afectacion.getIdCreditoPago());
+			regresar= DaoFactory.getInstance().deleteAll(sesion, TcKalanCreditosPagosDto.class, "depurar", params)> 0L;
+      if(regresar) 
+        regresar= this.toCheckEstatus(sesion, Boolean.TRUE);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+  }
+ 
 }

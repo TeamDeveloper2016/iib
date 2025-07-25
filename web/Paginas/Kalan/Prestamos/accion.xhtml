@@ -34,18 +34,18 @@
             <p:tab title="General">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idEmpresaPersona" value="Empleado:"/>
-                <p:selectOneMenu id="idEmpresaPersona" value="#{kalanPrestamosAccion.prestamo.ikEmpresaPersona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{kalanPrestamosAccion.attrs.empleados}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.nombre or element.nombre eq ''? '': ' | '}#{element.nombre}"/>
-                  <p:column styleClass="janal-column-left janal-wid-10">
-                    <h:outputText value="#{item.rfc}"/>
-                  </p:column>   										
-                  <p:column styleClass="janal-column-left janal-wid-20">
-                    <h:outputText value="#{item.curp}"/>
-                  </p:column>   										
-                  <p:column styleClass="janal-column-left">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                </p:selectOneMenu>                
+                <p:autoComplete id="idEmpresaPersona" var="custom" placeholder="Ej: JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanPrestamosAccion.prestamo.ikEmpresaPersona}" completeMethod="#{kalanPrestamosFiltro.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <h:outputText value="RFC:" />
+                      <h:outputText value="#{custom.rfc}" />
+                      <h:outputText value="CURP:" />
+                      <h:outputText value="#{custom.curp}" />
+                      <h:outputText value="Nombre:" />
+                      <h:outputText value="#{custom.nombre}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>			
                 <p:outputLabel for="nombre" value="Nombre:"/>
                 <p:inputText id="nombre" value="#{kalanPrestamosAccion.prestamo.nombre}" styleClass="janal-wid-100-txt"/>
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">

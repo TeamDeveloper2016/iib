@@ -34,6 +34,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.kalan.db.dto.TcKalanPrestamosBitacoraDto;
+import mx.org.kaana.kalan.prestamos.beans.Afectacion;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 
 @Named(value = "kalanPrestamosFiltro")
@@ -367,6 +368,33 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally	  
   }
 
+  public void doSelectDetalle(Entity row) {
+    this.attrs.put("detalle", row);
+  }
+  
+  public void doDeletePago(Entity row) {
+    List<Columna> columns     = new ArrayList<>();
+		Map<String, Object> params= this.toPrepare();
+    Afectacion afectacion     = null;
+    Transaccion transaccion   = null;
+    try {
+      params.put(Constantes.SQL_CONDICION, "id_prestamo_pago= "+ row.toLong("idPrestamoPago"));
+      afectacion = (Afectacion)DaoFactory.getInstance().toEntity(Afectacion.class, "TcKalanPrestamosPagosDto", params);
+      transaccion= new Transaccion(afectacion);
+      transaccion.ejecutar(EAccion.DEPURAR);
+      JsfBase.addMessage("Eliminar", "El movimiento se ha eliminado", ETipoMensaje.INFORMACION);
+      this.doView(row);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch      
+    finally {
+			Methods.clean(params);
+      Methods.clean(columns);
+    } // finally	  
+  }
+  
   private Entity toTotales(String proceso, String idXml, Map<String, Object> params) {
     Entity regresar= null;
     try {      

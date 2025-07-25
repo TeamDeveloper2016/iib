@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -23,6 +24,7 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.kalan.prestamos.reglas.Transaccion;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -55,10 +57,11 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   public void init() {
     try {
+			if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion    = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.idPrestamo= Objects.equals(JsfBase.getFlashAttribute("idPrestamo"), null)? -1L: (Long)JsfBase.getFlashAttribute("idPrestamo");
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Prestamos/filtro": JsfBase.getFlashAttribute("retorno"));
-      this.toLoadEmpleados();
       this.doLoad(); 
     } // try
     catch (Exception e) {
@@ -79,7 +82,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:
         case CONSULTAR:
           this.prestamo= (Prestamo)DaoFactory.getInstance().toEntity(Prestamo.class, "TcKalanPrestamosDto", params);
-          this.prestamo.setIkEmpresaPersona(new UISelectEntity(this.prestamo.getIdEmpresaPersona()));
+          this.prestamo.setIkEmpresaPersona(new UISelectEntity(this.toLoadEmpleados(this.prestamo.getIdEmpresaPersona())));
           break;
       } // switch      
     } // try // try
@@ -133,7 +136,40 @@ public class Accion extends IBaseAttribute implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
   
-	private void toLoadEmpleados() {
+	public List<UISelectEntity> doCompleteEmpleado(String codigo) {
+ 		List<Columna> columns     = new ArrayList<>();
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("empleados", UIEntity.build("VistaPrestamosDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("empleados", UIEntity.build("VistaPrestamosDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("empleados");
+	}	
+  
+	private Entity toLoadEmpleados(Long idEmpresaPersona) {
+    Entity regresar           = null;
 		List<Columna> columns     = new ArrayList<>();
     Map<String, Object> params= new HashMap<>();
     try {
@@ -142,8 +178,15 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
- 			params.put(Constantes.SQL_CONDICION, "id_activo= 1");
-  		this.attrs.put("empleados", UIEntity.seleccione("VistaPrestamosDto", "empleados", params, columns, "clave"));
+      if(Objects.equals(this.accion, EAccion.AGREGAR))
+   			params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_empresa_persona= "+ idEmpresaPersona+ " and tr_mantic_empresa_personal.id_activo= 1");
+      else    
+   			params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_empresa_persona= "+ idEmpresaPersona);
+  		regresar= (Entity)DaoFactory.getInstance().toEntity("VistaPrestamosDto", "empleados", params);
+      if(Objects.equals(regresar, null))
+        regresar= new Entity(-1L);
+      else
+        UIBackingUtilities.toFormatEntity(regresar, columns);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -153,6 +196,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
+    return regresar;
 	}
 
   public void doUpdateLimite() {

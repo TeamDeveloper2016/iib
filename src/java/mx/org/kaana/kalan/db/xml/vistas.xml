@@ -113,6 +113,8 @@ where
       <select id="pagos">
 select 
   tc_kalan_prestamos_pagos.id_prestamo_pago as id_key,
+  tc_kalan_prestamos_pagos.id_prestamo,
+  tc_kalan_prestamos_pagos.id_prestamo_pago,
   tc_kalan_prestamos_pagos.consecutivo,
   tc_kalan_prestamos_pagos.importe,
   tc_kalan_prestamos_pagos.observaciones,
@@ -205,6 +207,8 @@ where
       <select id="pagos">
 select 
   tc_kalan_creditos_pagos.id_credito_pago as id_key,
+  tc_kalan_creditos_pagos.id_credito_pago,
+  tc_kalan_creditos_pagos.id_credito,
   tc_kalan_creditos_pagos.consecutivo,
   tc_kalan_creditos_pagos.importe,
   tc_kalan_creditos_pagos.observaciones,

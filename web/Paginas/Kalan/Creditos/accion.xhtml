@@ -44,18 +44,18 @@
                   </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="idAcreedor" value="Acreedor:"/>
-                <p:selectOneMenu id="idAcreedor" value="#{kalanCreditosAccion.credito.ikAcreedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{kalanCreditosAccion.attrs.acreedores}" var="element" itemValue="#{element}" itemLabel="#{element.clave}#{empty element.razonSocial or element.razonSocial eq ''? '': ' | '}#{element.razonSocial}"/>
-                  <p:column  styleClass="janal-column-left janal-wid-20">
-                    <h:outputText value="#{item.clave}"/>
-                  </p:column>   										
-                  <p:column  styleClass="janal-column-left janal-wid-30">
-                    <h:outputText value="#{item.rfc}"/>
-                  </p:column>   										
-                  <p:column  styleClass="janal-column-left">
-                    <h:outputText value="#{item.razonSocial}"/>
-                  </p:column>   
-                </p:selectOneMenu>                
+                <p:autoComplete id="idAcreedor" var="custom" placeholder="Ej: SANTANDER S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCreditosAccion.credito.ikAcreedor}" completeMethod="#{kalanCreditosFiltro.doCompleteAcreedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <f:facet name="itemtip">
+                    <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                      <h:outputText value="Clave:" />
+                      <h:outputText value="#{custom.clave}" />
+                      <h:outputText value="RFC:" />
+                      <h:outputText value="#{custom.rfc}" />
+                      <h:outputText value="Razón social:" />
+                      <h:outputText value="#{custom.razonSocial}" />
+                    </h:panelGrid>
+                  </f:facet>
+                </p:autoComplete>			
                 <p:outputLabel for="nombre" value="Nombre:"/>
                 <p:inputText id="nombre" value="#{kalanCreditosAccion.credito.nombre}" styleClass="janal-wid-100-txt"/>
                 <p:panelGrid columns="2" styleClass="janal-wid-100">

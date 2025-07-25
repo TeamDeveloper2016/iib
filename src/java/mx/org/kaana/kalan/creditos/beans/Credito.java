@@ -22,7 +22,11 @@ public class Credito extends TcKalanCreditosDto implements Serializable {
   private UISelectEntity ikAcreedor;  
 
   public Credito() {
-    super();
+    this(-1L);
+  }
+
+  public Credito(Long idKey) {
+    super(idKey);
     this.setIkEmpresa(new UISelectEntity(-1L));
     this.setIkAcreedor(new UISelectEntity(-1L));
   }

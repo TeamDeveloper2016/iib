@@ -41,7 +41,7 @@
                   <p:outputLabel for="empleado" value="Empleado:"/>
                   <p:inputText id="empleado" value="#{kalanCreditosAfectaciones.credito.razonSocial}" styleClass="janal-wid-100-txt janal-column-center janal-color-blue" readonly="true"/>
                 </p:panelGrid>
-                <p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-50, janal-wid-15, janal-wid-15">
+                <p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-40, janal-wid-15, janal-wid-15, janal-wid-15">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="consecutivo" value="Consecutivo:"/>
                     <p:inputText id="consecutivo" value="#{kalanCreditosAfectaciones.credito.consecutivo}" styleClass="janal-wid-100-txt janal-column-center janal-color-blue" readonly="true"/>
@@ -51,16 +51,19 @@
                     <p:inputText id="nombre" value="#{kalanCreditosAfectaciones.credito.nombre}" styleClass="janal-wid-100-txt" readonly="true"/>
                   </p:panelGrid>
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                    <p:outputLabel for="total" value="Importe:"/>
+                    <p:outputLabel value="Importe:"/>
                     <p:inputText value="#{kalanCreditosAfectaciones.credito.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
                   </p:panelGrid>
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="saldo" value="Saldo:"/>
                     <p:inputText id="saldo" value="#{kalanCreditosAfectaciones.credito.saldo}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
                   </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="total" value="Abono(s):"/>
+                    <p:inputText id="total" value="#{kalanCreditosAfectaciones.attrs.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+                  </p:panelGrid>
                 </p:panelGrid>  
               </p:panel>  
-              <p:inputText id="total" value="#{kalanCreditosAfectaciones.attrs.total}" styleClass="janal-wid-100-txt janal-display-none" readonly="true"/>
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idTipoAfectacion" value="Tipo:"/>
                 <p:selectOneMenu id="idTipoAfectacion" value="#{kalanCreditosAfectaciones.afectacion.ikTipoAfectacion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
