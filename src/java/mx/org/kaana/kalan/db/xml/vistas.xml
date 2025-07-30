@@ -18,11 +18,11 @@ select
 from
   tc_kalan_prestamos
 inner join
-  tc_kalan_prestamos_pagos on tc_kalan_prestamos.id_prestamo= tc_kalan_prestamos_pagos.id_prestamo
-inner join
   tr_mantic_empresa_personal on tc_kalan_prestamos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+left join
+  tc_kalan_prestamos_pagos on tc_kalan_prestamos.id_prestamo= tc_kalan_prestamos_pagos.id_prestamo
 where
-  tc_kalan_prestamos.id_prestamo_estatus in (2, 6) 
+  tc_kalan_prestamos.id_prestamo_estatus in (1, 2, 6) 
   and tc_kalan_prestamos.id_empresa_persona= {idEmpresaPersona}
 group by   
   tc_kalan_prestamos.id_empresa_persona
@@ -116,11 +116,11 @@ left join (
 	from
 		tc_kalan_prestamos
 	inner join
-		tc_kalan_prestamos_pagos on tc_kalan_prestamos.id_prestamo= tc_kalan_prestamos_pagos.id_prestamo
-	inner join
 		tr_mantic_empresa_personal on tc_kalan_prestamos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+	left join
+		tc_kalan_prestamos_pagos on tc_kalan_prestamos.id_prestamo= tc_kalan_prestamos_pagos.id_prestamo
 	where
-		tc_kalan_prestamos.id_prestamo_estatus in (2, 6) 
+		tc_kalan_prestamos.id_prestamo_estatus in (1, 2, 6) 
 	group by   
 		tc_kalan_prestamos.id_empresa_persona
 ) as tt_kalan_prestamos on tr_mantic_empresa_personal.id_empresa_persona= tt_kalan_prestamos.id_empresa_persona
@@ -154,6 +154,7 @@ select
   tc_kalan_prestamos_pagos.id_prestamo,
   tc_kalan_prestamos_pagos.id_prestamo_pago,
   tc_kalan_prestamos_pagos.consecutivo,
+  tc_mantic_tipos_medios_pagos.nombre as medio,        
   tc_kalan_prestamos_pagos.importe,
   tc_kalan_prestamos_pagos.observaciones,
   tc_kalan_prestamos_pagos.id_tipo_afectacion,
@@ -162,6 +163,8 @@ select
   tc_kalan_prestamos_pagos.registro
 from   
   tc_kalan_prestamos_pagos
+inner join
+  tc_mantic_tipos_medios_pagos on tc_kalan_prestamos_pagos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 inner join
   tc_kalan_tipos_afectaciones on tc_kalan_prestamos_pagos.id_tipo_afectacion= tc_kalan_tipos_afectaciones.id_tipo_afectacion
 inner join
@@ -248,6 +251,7 @@ select
   tc_kalan_creditos_pagos.id_credito_pago,
   tc_kalan_creditos_pagos.id_credito,
   tc_kalan_creditos_pagos.consecutivo,
+  tc_mantic_tipos_medios_pagos.nombre as medio,
   tc_kalan_creditos_pagos.importe,
   tc_kalan_creditos_pagos.observaciones,
   tc_kalan_creditos_pagos.id_tipo_afectacion,
@@ -256,6 +260,8 @@ select
   tc_kalan_creditos_pagos.registro
 from   
   tc_kalan_creditos_pagos
+inner join
+  tc_mantic_tipos_medios_pagos on tc_kalan_creditos_pagos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 inner join
   tc_kalan_tipos_afectaciones on tc_kalan_creditos_pagos.id_tipo_afectacion= tc_kalan_tipos_afectaciones.id_tipo_afectacion
 inner join

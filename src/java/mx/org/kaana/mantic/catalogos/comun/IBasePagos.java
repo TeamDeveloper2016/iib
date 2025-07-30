@@ -113,7 +113,7 @@ public abstract class IBasePagos extends mx.org.kaana.mantic.inventarios.comun.I
 		} // catch		
 	} // loadTiposPagos
 	
-	public void doValidaTipoPago(){
+	public void doValidaTipoPago() {
 		Long tipoPago= -1L;
 		try {
 			tipoPago= Long.valueOf(this.attrs.get("tipoPago").toString());

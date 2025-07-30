@@ -18,6 +18,8 @@ public class Afectacion extends TcKalanPrestamosPagosDto implements Serializable
   private static final long serialVersionUID = -8794495402874168801L;
 
   private UISelectEntity ikTipoAfectacion;  
+  private UISelectEntity ikTipoMedioPago;  
+  private UISelectEntity ikBanco;  
 
   public Afectacion() {
     super();
@@ -32,6 +34,26 @@ public class Afectacion extends TcKalanPrestamosPagosDto implements Serializable
     this.ikTipoAfectacion = ikTipoAfectacion;
     if(ikTipoAfectacion!= null)
 			this.setIdTipoAfectacion(ikTipoAfectacion.getKey());    
+  }
+
+  public UISelectEntity getIkTipoMedioPago() {
+    return ikTipoMedioPago;
+  }
+
+  public void setIkTipoMedioPago(UISelectEntity ikTipoMedioPago) {
+    this.ikTipoMedioPago = ikTipoMedioPago;
+    if(ikTipoMedioPago!= null)
+			this.setIdTipoMedioPago(ikTipoMedioPago.getKey());    
+  }
+
+  public UISelectEntity getIkBanco() {
+    return ikBanco;
+  }
+
+  public void setIkBanco(UISelectEntity ikBanco) {
+    this.ikBanco = ikBanco;
+    if(ikBanco!= null)
+			this.setIdBanco(ikBanco.getKey());    
   }
   
   @Override

@@ -26,6 +26,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -67,6 +68,9 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
       this.idCredito= Objects.equals(JsfBase.getFlashAttribute("idCredito"), null)? -1L: (Long)JsfBase.getFlashAttribute("idCredito");
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Creditos/filtro": JsfBase.getFlashAttribute("retorno"));
       this.toLoadAfectaciones();
+      this.toLoadSucursales();
+      this.toLoadTiposMediosPagos();
+      this.toLoadBancos();
       this.doLoad(); 
       this.doCheckImporte();
     } // try
@@ -77,11 +81,12 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
   } 
 	
   public void doLoad() {
-    Map<String, Object> params = new HashMap<>();
+    Map<String, Object> params= new HashMap<>();
     try {
       params.put(Constantes.SQL_CONDICION, "id_credito= "+ this.idCredito);      
       this.credito= (Credito)DaoFactory.getInstance().toEntity(Credito.class, "TcKalanCreditosDto", "acreedor", params);
       this.credito.setIkEmpresa(new UISelectEntity(this.credito.getIdEmpresa()));
+      this.credito.setIkAcreedor(new UISelectEntity(this.credito.getIdAcreedor()));
       this.credito.setIkAcreedor(new UISelectEntity(this.credito.getIdAcreedor()));
       this.attrs.put("total", Numero.redondear(this.credito.getImporte()- this.credito.getSaldo()));
       switch (this.accion) {
@@ -89,6 +94,10 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
           this.afectacion= new Afectacion();
           this.afectacion.setIdCredito(this.idCredito);
           this.afectacion.setIkTipoAfectacion(new UISelectEntity(2L));
+          if(!Objects.equals(this.attrs.get("tiposMediosPagos"), null))
+            this.afectacion.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
+          if(!Objects.equals(this.attrs.get("bancos"), null))
+            this.afectacion.setIkBanco(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("bancos")));
           this.afectacion.setIdUsuario(JsfBase.getIdUsuario());
           break;
       } // switch      
@@ -106,6 +115,10 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {
+      if(Objects.equals(this.afectacion.getIdTipoMedioPago(), ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
+        this.afectacion.setIdBanco(null);
+        this.afectacion.setReferencia(null);
+      } // if  
       transaccion= new Transaccion(this.credito, this.afectacion);
       if(transaccion.ejecutar(this.accion)) {
         regresar= this.doCancelar();
@@ -158,4 +171,77 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
       throw e;
     } // catch   
   }
+  
+  private void toLoadSucursales() {
+		List<UISelectEntity> sucursales= null;
+		Map<String, Object>params      = new HashMap<>();
+		List<Columna> columns          = new ArrayList<>();
+		try {
+			if(JsfBase.isAdminEncuestaOrAdmin())
+  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      else
+  			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			this.attrs.put("sucursales", sucursales);
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity(sucursales));
+      this.doLoadCajas();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} 
+	
+	public void doLoadCajas() {
+		List<UISelectEntity> cajas= null;
+		Map<String, Object>params = new HashMap<>();
+		List<Columna> columns     = new ArrayList<>();
+		try {
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			cajas=(List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
+			this.attrs.put("cajas", cajas);
+			this.attrs.put("caja", UIBackingUtilities.toFirstKeySelectEntity(cajas));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+	}
+	
+	private void toLoadTiposMediosPagos() {
+		List<UISelectEntity> tiposMediosPagos= null;
+		Map<String, Object>params            = new HashMap<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja= 1");
+			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} 
+  
+	private void toLoadBancos() {
+		List<UISelectEntity> bancos= null;
+		Map<String, Object> params = new HashMap<>();
+		List<Columna> columns      = new ArrayList<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("bancos", bancos);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} 
+  
 }

@@ -1,6 +1,9 @@
 package mx.org.kaana.kalan.db.dto;
 
 import java.io.Serializable;
+import java.sql.Blob;
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -10,6 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -28,59 +34,63 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcKalanPrestamosPagosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="consecutivo")
-  private String consecutivo;
   @Column (name="id_tipo_afectacion")
   private Long idTipoAfectacion;
-  @Column (name="id_prestamo")
-  private Long idPrestamo;
-  @Column (name="id_usuario")
-  private Long idUsuario;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_prestamo_pago")
   private Long idPrestamoPago;
-  @Column (name="observaciones")
-  private String observaciones;
-  @Column (name="orden")
-  private Long orden;
   @Column (name="importe")
   private Double importe;
+  @Column (name="id_banco")
+  private Long idBanco;
+  @Column (name="fecha_pago")
+  private Date fechaPago;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="consecutivo")
+  private String consecutivo;
+  @Column (name="id_prestamo")
+  private Long idPrestamo;
+  @Column (name="id_usuario")
+  private Long idUsuario;
+  @Column (name="observaciones")
+  private String observaciones;
+  @Column (name="orden")
+  private Long orden;
+  @Column (name="referencia")
+  private String referencia;
 
   public TcKalanPrestamosPagosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanPrestamosPagosDto(Long key) {
-    this(null, 2L, null, null, new Long(-1L), null, null, 0D, null);
+    this(1L, null, new Long(-1L), 0D, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKalanPrestamosPagosDto(String consecutivo, Long idTipoAfectacion, Long idPrestamo, Long idUsuario, Long idPrestamoPago, String observaciones, Long orden, Double importe, Long ejercicio) {
-    setConsecutivo(consecutivo);
+  public TcKalanPrestamosPagosDto(Long idTipoAfectacion, Long idTipoMedioPago, Long idPrestamoPago, Double importe, Long idBanco, Date fechaPago, Long ejercicio, String consecutivo, Long idPrestamo, Long idUsuario, String observaciones, Long orden, String referencia) {
     setIdTipoAfectacion(idTipoAfectacion);
-    setIdPrestamo(idPrestamo);
-    setIdUsuario(idUsuario);
+    setIdTipoMedioPago(idTipoMedioPago);
     setIdPrestamoPago(idPrestamoPago);
-    setObservaciones(observaciones);
-    setOrden(orden);
     setImporte(importe);
+    setIdBanco(idBanco);
+    setFechaPago(fechaPago);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setConsecutivo(consecutivo);
+    setIdPrestamo(idPrestamo);
+    setIdUsuario(idUsuario);
+    setObservaciones(observaciones);
+    setOrden(orden);
+    setReferencia(referencia);
   }
 	
-  public void setConsecutivo(String consecutivo) {
-    this.consecutivo = consecutivo;
-  }
-
-  public String getConsecutivo() {
-    return consecutivo;
-  }
-
   public void setIdTipoAfectacion(Long idTipoAfectacion) {
     this.idTipoAfectacion = idTipoAfectacion;
   }
@@ -89,20 +99,12 @@ public class TcKalanPrestamosPagosDto implements IBaseDto, Serializable {
     return idTipoAfectacion;
   }
 
-  public void setIdPrestamo(Long idPrestamo) {
-    this.idPrestamo = idPrestamo;
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
   }
 
-  public Long getIdPrestamo() {
-    return idPrestamo;
-  }
-
-  public void setIdUsuario(Long idUsuario) {
-    this.idUsuario = idUsuario;
-  }
-
-  public Long getIdUsuario() {
-    return idUsuario;
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
   }
 
   public void setIdPrestamoPago(Long idPrestamoPago) {
@@ -113,28 +115,28 @@ public class TcKalanPrestamosPagosDto implements IBaseDto, Serializable {
     return idPrestamoPago;
   }
 
-  public void setObservaciones(String observaciones) {
-    this.observaciones = observaciones;
-  }
-
-  public String getObservaciones() {
-    return observaciones;
-  }
-
-  public void setOrden(Long orden) {
-    this.orden = orden;
-  }
-
-  public Long getOrden() {
-    return orden;
-  }
-
   public void setImporte(Double importe) {
     this.importe = importe;
   }
 
   public Double getImporte() {
     return importe;
+  }
+
+  public void setIdBanco(Long idBanco) {
+    this.idBanco = idBanco;
+  }
+
+  public Long getIdBanco() {
+    return idBanco;
+  }
+
+  public void setFechaPago(Date fechaPago) {
+    this.fechaPago = fechaPago;
+  }
+
+  public Date getFechaPago() {
+    return fechaPago;
   }
 
   public void setEjercicio(Long ejercicio) {
@@ -153,6 +155,54 @@ public class TcKalanPrestamosPagosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public void setConsecutivo(String consecutivo) {
+    this.consecutivo = consecutivo;
+  }
+
+  public String getConsecutivo() {
+    return consecutivo;
+  }
+
+  public void setIdPrestamo(Long idPrestamo) {
+    this.idPrestamo = idPrestamo;
+  }
+
+  public Long getIdPrestamo() {
+    return idPrestamo;
+  }
+
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
+  }
+
+  public Long getIdUsuario() {
+    return idUsuario;
+  }
+
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
+  }
+
+  public String getObservaciones() {
+    return observaciones;
+  }
+
+  public void setOrden(Long orden) {
+    this.orden = orden;
+  }
+
+  public Long getOrden() {
+    return orden;
+  }
+
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
+  }
+
+  public String getReferencia() {
+    return referencia;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -168,25 +218,33 @@ public class TcKalanPrestamosPagosDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getConsecutivo());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoAfectacion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdPrestamoPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImporte());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdBanco());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEjercicio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getConsecutivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPrestamo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPrestamoPago());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getImporte());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getEjercicio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
+		regresar.append(getReferencia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -194,23 +252,27 @@ public class TcKalanPrestamosPagosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idTipoAfectacion", getIdTipoAfectacion());
-		regresar.put("idPrestamo", getIdPrestamo());
-		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
 		regresar.put("idPrestamoPago", getIdPrestamoPago());
-		regresar.put("observaciones", getObservaciones());
-		regresar.put("orden", getOrden());
 		regresar.put("importe", getImporte());
+		regresar.put("idBanco", getIdBanco());
+		regresar.put("fechaPago", getFechaPago());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
+		regresar.put("consecutivo", getConsecutivo());
+		regresar.put("idPrestamo", getIdPrestamo());
+		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("observaciones", getObservaciones());
+		regresar.put("orden", getOrden());
+		regresar.put("referencia", getReferencia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdTipoAfectacion(), getIdPrestamo(), getIdUsuario(), getIdPrestamoPago(), getObservaciones(), getOrden(), getImporte(), getEjercicio(), getRegistro()
+    getIdTipoAfectacion(), getIdTipoMedioPago(), getIdPrestamoPago(), getImporte(), getIdBanco(), getFechaPago(), getEjercicio(), getRegistro(), getConsecutivo(), getIdPrestamo(), getIdUsuario(), getObservaciones(), getOrden(), getReferencia()
     };
     return regresar;
   }

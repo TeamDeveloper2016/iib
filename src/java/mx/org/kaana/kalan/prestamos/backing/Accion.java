@@ -219,8 +219,14 @@ public class Accion extends IBaseAttribute implements Serializable {
       Entity saldo= (Entity)DaoFactory.getInstance().toEntity("VistaPrestamosDto", "disponible", params);
       if(!Objects.equals(saldo, null) && !saldo.isEmpty()) 
         this.attrs.put("disponible", saldo.toDouble("disponible"));
-      else 
-        this.attrs.put("disponible", 0D);
+      else {
+        params.put(Constantes.SQL_CONDICION, "id_empresa_persona= "+ this.prestamo.getIkEmpresaPersona().getKey());      
+        saldo= (Entity)DaoFactory.getInstance().toEntity("TrManticEmpresaPersonalDto", params);
+        if(!Objects.equals(saldo, null) && !saldo.isEmpty()) 
+          this.attrs.put("disponible", saldo.toDouble("limite"));
+        else
+          this.attrs.put("disponible", 0D);
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
