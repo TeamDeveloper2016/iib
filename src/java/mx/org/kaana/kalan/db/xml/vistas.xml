@@ -9,6 +9,7 @@
 select
   tc_kalan_prestamos.id_empresa_persona as id_key,
   tc_kalan_prestamos.id_empresa_persona,
+  ifnull(count(distinct(tc_kalan_prestamos.id_prestamo)), 0) as cantidad,
   ifnull(sum(tc_kalan_prestamos.importe), 0) as prestamos,
   ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 1, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0) as abonado,
   (ifnull(sum(tc_kalan_prestamos.importe), 0)- ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 1, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0)) as saldo,

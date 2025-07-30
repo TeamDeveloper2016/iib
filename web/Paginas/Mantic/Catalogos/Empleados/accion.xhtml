@@ -436,7 +436,7 @@
               </p:panelGrid>	
             </p:tab>
 						<p:tab title="Crédito">
-              <p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-20, janal-wid-20, janal-wid-20, janal-wid-20, janal-wid-20">
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-70, janal-wid-30">
                 <p:panelGrid columns="1" styleClass="janal-wid-100">
 								  <p:outputLabel for="limite" value="Limite:"/>
 								  <p:inputNumber id="limite" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" value="#{manticCatalogosPersonasAccion.registroPersona.empresaPersona.limite}" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" minValue="0" thousandSeparator=",">
@@ -444,22 +444,30 @@
                   </p:inputNumber>  
                 </p:panelGrid>	
                 <p:panelGrid columns="1" styleClass="janal-wid-100">
-								  <p:outputLabel for="prestamos" value="Prestamos:"/>
-								  <p:inputNumber id="prestamos" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" value="#{manticCatalogosPersonasAccion.attrs.prestamos}" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" minValue="0" thousandSeparator="," readonly="true"/>
-                </p:panelGrid>	
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
-								  <p:outputLabel for="abonado" value="Abonado:"/>
-								  <p:inputNumber id="abonado" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" value="#{manticCatalogosPersonasAccion.attrs.abonado}" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" minValue="0" thousandSeparator="," readonly="true"/>
-                </p:panelGrid>	
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
-								  <p:outputLabel for="saldo" value="Saldo:"/>
-								  <p:inputNumber id="saldo" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" value="#{manticCatalogosPersonasAccion.attrs.saldo}" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" minValue="0" thousandSeparator="," readonly="true"/>
-                </p:panelGrid>	
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
 								  <p:outputLabel for="disponible" value="Disponible:"/>
                   <p:inputNumber id="disponible" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" value="#{manticCatalogosPersonasAccion.attrs.disponible}" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" minValue="0" thousandSeparator="," readonly="true"/>
                 </p:panelGrid>	
               </p:panelGrid>	
+              <p:panel header="Prestamos activos">
+                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="cantidad" value="Prestamos:"/>
+                    <p:inputNumber id="cantidad" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" value="#{manticCatalogosPersonasAccion.attrs.cantidad}" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" minValue="0" thousandSeparator="," readonly="true"/>
+                  </p:panelGrid>	
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="prestamos" value="Importe:"/>
+                    <p:inputNumber id="prestamos" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" value="#{manticCatalogosPersonasAccion.attrs.prestamos}" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" minValue="0" thousandSeparator="," readonly="true"/>
+                  </p:panelGrid>	
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="abonado" value="Abonado:"/>
+                    <p:inputNumber id="abonado" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" value="#{manticCatalogosPersonasAccion.attrs.abonado}" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" minValue="0" thousandSeparator="," readonly="true"/>
+                  </p:panelGrid>	
+                  <p:panelGrid columns="1" styleClass="janal-wid-100">
+                    <p:outputLabel for="saldo" value="Saldo:"/>
+                    <p:inputNumber id="saldo" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" value="#{manticCatalogosPersonasAccion.attrs.saldo}" converter="javax.faces.Double" decimalPlaces="2" emptyValue="0.0" minValue="0" thousandSeparator="," readonly="true"/>
+                  </p:panelGrid>	
+                </p:panelGrid>	
+              </p:panel>  
             </p:tab>
 						<p:tab title="Bitacora" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarBitacora}">
               <p:panelGrid id="panelTablaBitacora" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
