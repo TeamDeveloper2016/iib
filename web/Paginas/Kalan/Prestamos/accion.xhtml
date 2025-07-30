@@ -14,7 +14,8 @@
         'contenedorGrupos\\:idEmpresa'       : {validaciones: 'requerido', mascara: 'libre'},
         'contenedorGrupos\\:idEmpresaPersona': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:nombre'       : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-a({"cual":\"contenedorGrupos\\\\:disponible\"})', mascara: 'libre'},
+				'contenedorGrupos\\:disponible'   : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:plazo'        : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:tasa'         : {validaciones: 'flotante|mayor-igual({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:pagos'        : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
@@ -35,6 +36,7 @@
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idEmpresaPersona" value="Empleado:"/>
                 <p:autoComplete id="idEmpresaPersona" var="custom" placeholder="Ej: JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanPrestamosAccion.prestamo.ikEmpresaPersona}" completeMethod="#{kalanPrestamosFiltro.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                  <p:ajax event="itemSelect" listener="#{kalanPrestamosAccion.doUpdateSaldo()}" process="@this" update="disponible" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                   <f:facet name="itemtip">
                     <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
                       <h:outputText value="RFC:" />
@@ -48,9 +50,15 @@
                 </p:autoComplete>			
                 <p:outputLabel for="nombre" value="Nombre:"/>
                 <p:inputText id="nombre" value="#{kalanPrestamosAccion.prestamo.nombre}" styleClass="janal-wid-100-txt"/>
-                <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                  <p:outputLabel for="importe" value="Importe:"/>
-                  <p:inputNumber id="importe" value="#{kalanPrestamosAccion.prestamo.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-70, janal-wid-30">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="importe" value="Importe:"/>
+                    <p:inputNumber id="importe" value="#{kalanPrestamosAccion.prestamo.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                  </p:panelGrid>  
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="disponible" value="Disponible:"/>
+                    <p:inputNumber id="disponible" value="#{kalanPrestamosAccion.attrs.disponible}" styleClass="janal-wid-100-txt" inputStyleClass="janal-color-black janal-font-bold janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" readonly="true"/>
+                  </p:panelGrid>
                 </p:panelGrid>  
                 <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                   <p:outputLabel for="plazo" value="Plazo (meses):"/>

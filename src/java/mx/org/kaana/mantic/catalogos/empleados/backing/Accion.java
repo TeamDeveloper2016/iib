@@ -9,7 +9,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 
-@Named(value = "manticCatalogosEmpleadosAccion")
+@Named(value= "manticCatalogosEmpleadosAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
@@ -25,7 +25,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // init
+  } 
 
   public void doLoad() {
     EAccion eaccion= null;
@@ -35,7 +35,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // doLoad
+  } 
 
   public String doAceptar() {
     String regresar= null;
@@ -46,11 +46,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAccion
+  } 
 
   public String doCancelar() {
     return "filtro";
-  } // doAccion
+  } 
 
- 
 }

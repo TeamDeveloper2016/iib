@@ -5,6 +5,27 @@
 <process>
 	<dml> 
 		<unit id="VistaPrestamosDto">
+			<select id="disponible">			
+select
+  tc_kalan_prestamos.id_empresa_persona as id_key,
+  tc_kalan_prestamos.id_empresa_persona,
+  ifnull(sum(tc_kalan_prestamos.importe), 0) as prestamos,
+  ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 1, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0) as abonado,
+  (ifnull(sum(tc_kalan_prestamos.importe), 0)- ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 1, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0)) as saldo,
+  tr_mantic_empresa_personal.limite,
+  (tr_mantic_empresa_personal.limite- ifnull(sum(tc_kalan_prestamos.importe), 0)+ ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 1, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0)) as disponible
+from
+  tc_kalan_prestamos
+inner join
+  tc_kalan_prestamos_pagos on tc_kalan_prestamos.id_prestamo= tc_kalan_prestamos_pagos.id_prestamo
+inner join
+  tr_mantic_empresa_personal on tc_kalan_prestamos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+where
+  tc_kalan_prestamos.id_prestamo_estatus in (2, 6) 
+  and tc_kalan_prestamos.id_empresa_persona= {idEmpresaPersona}
+group by   
+  tc_kalan_prestamos.id_empresa_persona
+      </select>  
 			<select id="porCodigo">			
 select      
   tr_mantic_empresa_personal.id_empresa_persona as id_key,
@@ -75,6 +96,7 @@ select
   tc_kalan_prestamos.saldo,
   tc_kalan_prestamos_estatus.nombre as estatus,
   tc_kalan_prestamos_estatus.estatus_asociados,
+  ifnull(tt_kalan_prestamos.disponible, tr_mantic_empresa_personal.limite) as disponible,        
   tc_kalan_prestamos.registro
 from   
   tc_kalan_prestamos
@@ -86,6 +108,21 @@ inner join
   tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa= tc_mantic_empresas.id_empresa
 inner join
   tc_kalan_prestamos_estatus on tc_kalan_prestamos.id_prestamo_estatus= tc_kalan_prestamos_estatus.id_prestamo_estatus
+left join (
+	select
+		tc_kalan_prestamos.id_empresa_persona,
+		(tr_mantic_empresa_personal.limite- ifnull(sum(tc_kalan_prestamos.importe), 0)+ ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 1, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0)) as disponible
+	from
+		tc_kalan_prestamos
+	inner join
+		tc_kalan_prestamos_pagos on tc_kalan_prestamos.id_prestamo= tc_kalan_prestamos_pagos.id_prestamo
+	inner join
+		tr_mantic_empresa_personal on tc_kalan_prestamos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+	where
+		tc_kalan_prestamos.id_prestamo_estatus in (2, 6) 
+	group by   
+		tc_kalan_prestamos.id_empresa_persona
+) as tt_kalan_prestamos on tr_mantic_empresa_personal.id_empresa_persona= tt_kalan_prestamos.id_empresa_persona
 where
   tr_mantic_empresa_personal.id_empresa in ({idEmpresa})    
   and {condicion}        

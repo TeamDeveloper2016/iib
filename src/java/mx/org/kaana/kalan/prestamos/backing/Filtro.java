@@ -119,6 +119,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       this.lazyModel= new FormatCustomLazy("VistaPrestamosDto", params, columns);

@@ -157,6 +157,12 @@
               </f:facet>
               <h:outputText value="#{row['saldo']}"/>
             </p:column>														
+						<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.disponible}">
+              <f:facet name="header">
+                <h:outputText value="Disponible"/>
+              </f:facet>
+              <h:outputText value="#{row['disponible']}"/>
+            </p:column>														
 						<p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>

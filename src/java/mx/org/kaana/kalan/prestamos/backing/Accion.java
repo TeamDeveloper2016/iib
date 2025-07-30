@@ -63,6 +63,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.idPrestamo= Objects.equals(JsfBase.getFlashAttribute("idPrestamo"), null)? -1L: (Long)JsfBase.getFlashAttribute("idPrestamo");
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Prestamos/filtro": JsfBase.getFlashAttribute("retorno"));
       this.doLoad(); 
+      this.doUpdateSaldo();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -209,6 +210,25 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
+  }
+
+  public void doUpdateSaldo() {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idEmpresaPersona", this.prestamo.getIkEmpresaPersona().getKey());      
+      Entity saldo= (Entity)DaoFactory.getInstance().toEntity("VistaPrestamosDto", "disponible", params);
+      if(!Objects.equals(saldo, null) && !saldo.isEmpty()) 
+        this.attrs.put("disponible", saldo.toDouble("disponible"));
+      else 
+        this.attrs.put("disponible", 0D);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
   }
   
 }

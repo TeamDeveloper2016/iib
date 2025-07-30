@@ -25,6 +25,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -99,6 +100,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.attrs.put("catalogo", Cadena.reemplazarCaracter(tipoPersona.name().toLowerCase(), '_' , ' '));
 			} // for			
 			this.doLoad();						
+      this.doUpdateSaldo();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -1093,6 +1095,34 @@ public class Accion extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+ 
+  public void doUpdateSaldo() {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idEmpresaPersona", this.registroPersona.getEmpresaPersona().getIdEmpresaPersona());      
+      Entity saldo= (Entity)DaoFactory.getInstance().toEntity("VistaPrestamosDto", "disponible", params);
+      if(!Objects.equals(saldo, null) && !saldo.isEmpty()) {
+        Double calculo= Numero.toRedondearSat(saldo.toDouble("prestamos")- saldo.toDouble("abonado"));
+        this.attrs.put("prestamos", saldo.toDouble("prestamos"));
+        this.attrs.put("abonado", saldo.toDouble("abonado"));
+        this.attrs.put("saldo", calculo);
+        this.attrs.put("disponible", Numero.toRedondearSat(this.registroPersona.getEmpresaPersona().getLimite()- saldo.toDouble("prestamos")+ saldo.toDouble("abonado")));
+      } // if
+      else {
+        this.attrs.put("prestamos", 0D);
+        this.attrs.put("abonado", 0D);
+        this.attrs.put("saldo", 0D);
+        this.attrs.put("disponible", Numero.toRedondearSat(this.registroPersona.getEmpresaPersona().getLimite()));
+      } // else
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
     } // catch	
     finally {
       Methods.clean(params);

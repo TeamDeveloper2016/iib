@@ -715,7 +715,8 @@ public class Transaccion extends TransaccionFactura {
           2L, // Long idNomina, 
           2L, // Long idSeguro, 
           0.0D, // Double sobreSueldo, 
-          2L // Long idLimpiar
+          2L, // Long idLimpiar
+          10000D // Double limite
         );        
         this.registrar(sesion, empleado);
       } // if  
