@@ -1108,7 +1108,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       Entity saldo= (Entity)DaoFactory.getInstance().toEntity("VistaPrestamosDto", "disponible", params);
       if(!Objects.equals(saldo, null) && !saldo.isEmpty()) {
         Double calculo= Numero.toRedondearSat(saldo.toDouble("prestamos")- saldo.toDouble("abonado"));
-        this.attrs.put("cantidad", saldo.toDouble("cantidad"));
+        this.attrs.put("cantidad", saldo.toLong("cantidad"));
         this.attrs.put("prestamos", saldo.toDouble("prestamos"));
         this.attrs.put("abonado", saldo.toDouble("abonado"));
         this.attrs.put("saldo", calculo);

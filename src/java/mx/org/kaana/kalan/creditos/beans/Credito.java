@@ -19,6 +19,7 @@ public class Credito extends TcKalanCreditosDto implements Serializable {
 
   private String razonSocial;
   private UISelectEntity ikEmpresa;  
+  private UISelectEntity ikEmpresaCuenta;  
   private UISelectEntity ikAcreedor;  
 
   public Credito() {
@@ -28,6 +29,7 @@ public class Credito extends TcKalanCreditosDto implements Serializable {
   public Credito(Long idKey) {
     super(idKey);
     this.setIkEmpresa(new UISelectEntity(-1L));
+    this.setIkEmpresaCuenta(new UISelectEntity(-1L));
     this.setIkAcreedor(new UISelectEntity(-1L));
   }
 
@@ -48,7 +50,16 @@ public class Credito extends TcKalanCreditosDto implements Serializable {
     if(ikEmpresa!= null)
 			this.setIdEmpresa(ikEmpresa.getKey());    
   }
-  
+
+  public UISelectEntity getIkEmpresaCuenta() {
+    return ikEmpresaCuenta;
+  }
+
+  public void setIkEmpresaCuenta(UISelectEntity ikEmpresaCuenta) {
+    this.ikEmpresaCuenta = ikEmpresaCuenta;
+    if(ikEmpresaCuenta!= null)
+			this.setIdEmpresaCuenta(ikEmpresaCuenta.getKey());    
+  }
   
   public UISelectEntity getIkAcreedor() {
     return ikAcreedor;

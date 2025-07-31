@@ -113,7 +113,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params= null;
     try {
       params= this.toPrepare();	
-      params.put("sortOrder", "order by tc_kalan_creditos.registro desc");
+      params.put("sortOrder", "order by tc_kalan_creditos.fecha_aplicacion desc");
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -121,7 +121,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_HORA));
       this.lazyModel= new FormatCustomLazy("VistaCreditosDto", params, columns);
       this.attrs.put("general", this.toTotales("VistaCreditosDto", "general", params));
       UIBackingUtilities.resetDataTable();
@@ -220,12 +220,12 @@ public class Filtro extends IBaseFilter implements Serializable {
  		  if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
 			  sb.append("(tc_mantic_acreedores.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_kalan_creditos.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_kalan_creditos.fecha_aplicacion, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_kalan_creditos.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		  sb.append("(date_format(tc_kalan_creditos.fecha_aplicacion, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idCreditoEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idCreditoEstatus")).getKey(), -1L))
       if(Objects.equals(((UISelectEntity)this.attrs.get("idCreditoEstatus")).getKey(), Constantes.TOP_OF_ITEMS))
-  		  sb.append("(tc_kalan_creditos.id_credito_estatus in (2,6)) and ");
+  		  sb.append("(tc_kalan_creditos.id_credito_estatus in (1, 2,6)) and ");
       else 
   		  sb.append("(tc_kalan_creditos.id_credito_estatus= ").append(this.attrs.get("idCreditoEstatus")).append(") and ");
 	  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());

@@ -340,7 +340,7 @@
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
 					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla detalle" value="Aceptar" actionListener="#{kalanPrestamosFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear()"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagos').hide(); return true" oncomplete="janal.desbloquear()"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide()"/>
 				</div>
 			</h:form>
 		</p:dialog>

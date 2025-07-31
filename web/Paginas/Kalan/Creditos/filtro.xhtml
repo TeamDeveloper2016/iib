@@ -163,11 +163,11 @@
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
             </p:column>														
-						<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.registro}">
+						<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fechaAplicacion}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
-              <h:outputText value="#{row['registro']}"/>
+              <h:outputText value="#{row['fechaAplicacion']}"/>
             </p:column>							
             <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5" exportable="false">
               <f:facet name="header">
@@ -255,11 +255,11 @@
               </f:facet>
               <h:outputText value="#{row['observaciones']}"/>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-center" sortBy="#{row.registro}">
+            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-center" sortBy="#{row.fechaAplicacion}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
-              <h:outputText value="#{row['registro']}"/>
+              <h:outputText value="#{row['fechaAplicacion']}"/>
             </p:column>			
             <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5" exportable="false" rendered="#{kalanPrestamosFiltro.isAdmin}">
               <f:facet name="header">
@@ -334,7 +334,7 @@
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
 					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla detalle" value="Aceptar" action="#{kalanCreditosFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear()"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide(); return true" oncomplete="janal.desbloquear()"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide()"/>
 				</div>
 			</h:form>
 		</p:dialog>

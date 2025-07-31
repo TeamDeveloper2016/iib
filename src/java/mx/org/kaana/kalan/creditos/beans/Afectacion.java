@@ -17,15 +17,41 @@ public class Afectacion extends TcKalanCreditosPagosDto implements Serializable 
 
   private static final long serialVersionUID = -8794495402874168801L;
 
+  private UISelectEntity ikEmpresa;  
+  private UISelectEntity ikEmpresaCuenta;  
   private UISelectEntity ikTipoAfectacion;  
   private UISelectEntity ikTipoMedioPago;  
   private UISelectEntity ikBanco;  
 
   public Afectacion() {
     super();
+    this.setIkEmpresa(new UISelectEntity(-1L));
+    this.setIkEmpresaCuenta(new UISelectEntity(-1L));
     this.setIkTipoAfectacion(new UISelectEntity(-1L));
+    this.setIkTipoMedioPago(new UISelectEntity(-1L));
+    this.setIkBanco(new UISelectEntity(-1L));
   }
 
+  public UISelectEntity getIkEmpresa() {
+    return ikEmpresa;
+  }
+
+  public void setIkEmpresa(UISelectEntity ikEmpresa) {
+    this.ikEmpresa = ikEmpresa;
+    if(ikEmpresa!= null)
+			this.setIdEmpresa(ikEmpresa.getKey());    
+  }
+
+  public UISelectEntity getIkEmpresaCuenta() {
+    return ikEmpresaCuenta;
+  }
+
+  public void setIkEmpresaCuenta(UISelectEntity ikEmpresaCuenta) {
+    this.ikEmpresaCuenta = ikEmpresaCuenta;
+    if(ikEmpresaCuenta!= null)
+			this.setIdEmpresaCuenta(ikEmpresaCuenta.getKey());    
+  }
+    
   public UISelectEntity getIkTipoAfectacion() {
     return ikTipoAfectacion;
   }

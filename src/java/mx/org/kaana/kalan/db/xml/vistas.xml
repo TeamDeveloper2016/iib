@@ -9,18 +9,25 @@
 select
   tc_kalan_prestamos.id_empresa_persona as id_key,
   tc_kalan_prestamos.id_empresa_persona,
+  tr_mantic_empresa_personal.limite,
   ifnull(count(distinct(tc_kalan_prestamos.id_prestamo)), 0) as cantidad,
   ifnull(sum(tc_kalan_prestamos.importe), 0) as prestamos,
-  ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 1, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0) as abonado,
-  (ifnull(sum(tc_kalan_prestamos.importe), 0)- ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 1, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0)) as saldo,
-  tr_mantic_empresa_personal.limite,
-  (tr_mantic_empresa_personal.limite- ifnull(sum(tc_kalan_prestamos.importe), 0)+ ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 1, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0)) as disponible
+  ifnull(tt_kalan_prestamos_pagos.abonado, 0) as abonado,
+  ifnull(sum(tc_kalan_prestamos.importe)- tt_kalan_prestamos_pagos.abonado, 0) as saldo,
+  ifnull(tr_mantic_empresa_personal.limite- tt_kalan_prestamos_pagos.abonado, 0) as disponible
 from
   tc_kalan_prestamos
 inner join
   tr_mantic_empresa_personal on tc_kalan_prestamos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
-left join
-  tc_kalan_prestamos_pagos on tc_kalan_prestamos.id_prestamo= tc_kalan_prestamos_pagos.id_prestamo
+left join (
+  select
+    tc_kalan_prestamos_pagos.id_prestamo,
+    ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 2, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0) as abonado
+  from
+    tc_kalan_prestamos_pagos
+  group by  
+    tc_kalan_prestamos_pagos.id_prestamo
+) as tt_kalan_prestamos_pagos on tc_kalan_prestamos.id_prestamo= tt_kalan_prestamos_pagos.id_prestamo
 where
   tc_kalan_prestamos.id_prestamo_estatus in (1, 2, 6) 
   and tc_kalan_prestamos.id_empresa_persona= {idEmpresaPersona}
@@ -98,7 +105,7 @@ select
   tc_kalan_prestamos_estatus.nombre as estatus,
   tc_kalan_prestamos_estatus.estatus_asociados,
   ifnull(tt_kalan_prestamos.disponible, tr_mantic_empresa_personal.limite) as disponible,        
-  tc_kalan_prestamos.registro
+  tc_kalan_prestamos.fecha_aplicacion
 from   
   tc_kalan_prestamos
 inner join  
@@ -112,13 +119,11 @@ inner join
 left join (
 	select
 		tc_kalan_prestamos.id_empresa_persona,
-		(tr_mantic_empresa_personal.limite- ifnull(sum(tc_kalan_prestamos.importe), 0)+ ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 1, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0)) as disponible
+		tr_mantic_empresa_personal.limite- sum(tc_kalan_prestamos.saldo) as disponible
 	from
 		tc_kalan_prestamos
 	inner join
 		tr_mantic_empresa_personal on tc_kalan_prestamos.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
-	left join
-		tc_kalan_prestamos_pagos on tc_kalan_prestamos.id_prestamo= tc_kalan_prestamos_pagos.id_prestamo
 	where
 		tc_kalan_prestamos.id_prestamo_estatus in (1, 2, 6) 
 	group by   
@@ -160,7 +165,7 @@ select
   tc_kalan_prestamos_pagos.id_tipo_afectacion,
   tc_kalan_tipos_afectaciones.nombre as afectacion,
   concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
-  tc_kalan_prestamos_pagos.registro
+  tc_kalan_prestamos_pagos.fecha_aplicacion
 from   
   tc_kalan_prestamos_pagos
 inner join
@@ -216,7 +221,7 @@ select
   tc_kalan_creditos.saldo,
   tc_kalan_creditos_estatus.nombre as estatus,
   tc_kalan_creditos_estatus.estatus_asociados,
-  tc_kalan_creditos.registro
+  tc_kalan_creditos.fecha_aplicacion
 from   
   tc_kalan_creditos
 inner join
@@ -257,7 +262,7 @@ select
   tc_kalan_creditos_pagos.id_tipo_afectacion,
   tc_kalan_tipos_afectaciones.nombre as afectacion,
   concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
-  tc_kalan_creditos_pagos.registro
+  tc_kalan_creditos_pagos.fecha_aplicacion
 from   
   tc_kalan_creditos_pagos
 inner join

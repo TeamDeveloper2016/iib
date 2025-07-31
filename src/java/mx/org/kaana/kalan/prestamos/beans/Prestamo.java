@@ -17,6 +17,8 @@ public class Prestamo extends TcKalanPrestamosDto implements Serializable {
   private static final long serialVersionUID = -8794495402874168809L;
 
   private String empleado;
+  private UISelectEntity ikEmpresa;  
+  private UISelectEntity ikEmpresaCuenta;  
   private UISelectEntity ikEmpresaPersona;  
 
   public Prestamo() {
@@ -25,6 +27,8 @@ public class Prestamo extends TcKalanPrestamosDto implements Serializable {
 
   public Prestamo(Long key) {
     super(key);
+    this.setIkEmpresa(new UISelectEntity(-1L));
+    this.setIkEmpresaCuenta(new UISelectEntity(-1L));
     this.setIkEmpresaPersona(new UISelectEntity(-1L));
   }
   
@@ -36,6 +40,26 @@ public class Prestamo extends TcKalanPrestamosDto implements Serializable {
     this.empleado = empleado;
   }
 
+  public UISelectEntity getIkEmpresa() {
+    return ikEmpresa;
+  }
+
+  public void setIkEmpresa(UISelectEntity ikEmpresa) {
+    this.ikEmpresa = ikEmpresa;
+    if(ikEmpresa!= null)
+			this.setIdEmpresa(ikEmpresa.getKey());    
+  }
+
+  public UISelectEntity getIkEmpresaCuenta() {
+    return ikEmpresaCuenta;
+  }
+
+  public void setIkEmpresaCuenta(UISelectEntity ikEmpresaCuenta) {
+    this.ikEmpresaCuenta = ikEmpresaCuenta;
+    if(ikEmpresaCuenta!= null)
+			this.setIdEmpresaCuenta(ikEmpresaCuenta.getKey());    
+  }
+  
   public UISelectEntity getIkEmpresaPersona() {
     return ikEmpresaPersona;
   }

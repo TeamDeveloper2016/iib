@@ -1,7 +1,9 @@
 package mx.org.kaana.kalan.db.dto;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -11,6 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -35,6 +40,8 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
   private Double saldo;
   @Column (name="limite")
   private Date limite;
+  @Column (name="fecha_aplicacion")
+  private Date fechaAplicacion;
   @Column (name="nombre")
   private String nombre;
   @Column (name="importe")
@@ -51,12 +58,16 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_prestamo")
   private Long idPrestamo;
+  @Column (name="id_empresa_cuenta")
+  private Long idEmpresaCuenta;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_empresa_persona")
   private Long idEmpresaPersona;
   @Column (name="observaciones")
   private String observaciones;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
   @Column (name="orden")
   private Long orden;
 
@@ -65,11 +76,11 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
   }
 
   public TcKalanPrestamosDto(Long key) {
-    this(1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, null, null, null, new Long(-1L), null, null, null, null);
+    this(1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, null, null, null, new Long(-1L), null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
     setKey(key);
   }
 
-  public TcKalanPrestamosDto(Long plazo, Double saldo, Date limite, String nombre, Double importe, Long idPrestamoEstatus, Long ejercicio, String consecutivo, Long idPrestamo, Long idUsuario, Long idEmpresaPersona, String observaciones, Long orden) {
+  public TcKalanPrestamosDto(Long plazo, Double saldo, Date limite, String nombre, Double importe, Long idPrestamoEstatus, Long ejercicio, String consecutivo, Long idPrestamo, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, Long orden, Date fechaAplicacion) {
     setPlazo(plazo);
     setSaldo(saldo);
     setLimite(limite);
@@ -80,10 +91,13 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setConsecutivo(consecutivo);
     setIdPrestamo(idPrestamo);
+    setIdEmpresaCuenta(idEmpresaCuenta);
     setIdUsuario(idUsuario);
     setIdEmpresaPersona(idEmpresaPersona);
     setObservaciones(observaciones);
+    setIdEmpresa(idEmpresa);
     setOrden(orden);
+    setFechaAplicacion(fechaAplicacion);
   }
 	
   public void setPlazo(Long plazo) {
@@ -166,6 +180,14 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
     return idPrestamo;
   }
 
+  public void setIdEmpresaCuenta(Long idEmpresaCuenta) {
+    this.idEmpresaCuenta = idEmpresaCuenta;
+  }
+
+  public Long getIdEmpresaCuenta() {
+    return idEmpresaCuenta;
+  }
+
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
   }
@@ -190,12 +212,28 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
   public void setOrden(Long orden) {
     this.orden = orden;
   }
 
   public Long getOrden() {
     return orden;
+  }
+
+  public Date getFechaAplicacion() {
+    return fechaAplicacion;
+  }
+
+  public void setFechaAplicacion(Date fechaAplicacion) {
+    this.fechaAplicacion = fechaAplicacion;
   }
 
   @Transient
@@ -233,13 +271,19 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPrestamo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresaCuenta());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresaPersona());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaAplicacion());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -253,21 +297,24 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
 		regresar.put("nombre", getNombre());
 		regresar.put("importe", getImporte());
 		regresar.put("idPrestamoEstatus", getIdPrestamoEstatus());
-		regresar.put("ejericio", getEjercicio());
+		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idPrestamo", getIdPrestamo());
+		regresar.put("idEmpresaCuenta", getIdEmpresaCuenta());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idEmpresaPersona", getIdEmpresaPersona());
 		regresar.put("observaciones", getObservaciones());
+		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
+		regresar.put("fechaAplicacion", getFechaAplicacion());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getPlazo(), getSaldo(), getLimite(), getNombre(), getImporte(), getIdPrestamoEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getIdPrestamo(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getOrden()
+      getPlazo(), getSaldo(), getLimite(), getNombre(), getImporte(), getIdPrestamoEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getIdPrestamo(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getOrden(), getFechaAplicacion()
     };
     return regresar;
   }
@@ -306,7 +353,7 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null) { 
+    if (obj == null) {
       return false;
     }
     if (getClass() != obj.getClass()) {

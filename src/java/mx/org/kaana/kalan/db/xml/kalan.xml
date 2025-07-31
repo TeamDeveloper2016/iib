@@ -503,7 +503,7 @@ where
   tc_kalan_empresas_cuentas.id_empresa= {idEmpresa}      
   and {condicion} 
 order by
-  nombre        
+  tc_kalan_empresas_cuentas.nombre        
       </select>
       <select id="identically">
 select      

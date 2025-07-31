@@ -62,8 +62,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.accion   = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.idCredito= Objects.equals(JsfBase.getFlashAttribute("idCredito"), null)? -1L: (Long)JsfBase.getFlashAttribute("idCredito");
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Creditos/filtro": JsfBase.getFlashAttribute("retorno"));
-      this.toLoadEmpresas();
       this.doLoad(); 
+      this.toLoadEmpresas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -84,7 +84,9 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:
           this.credito= (Credito)DaoFactory.getInstance().toEntity(Credito.class, "TcKalanCreditosDto", params);
           this.credito.setIkEmpresa(new UISelectEntity(this.credito.getIdEmpresa()));
+          this.credito.setIkEmpresaCuenta(new UISelectEntity(this.credito.getIdEmpresaCuenta()));
           this.credito.setIkAcreedor(new UISelectEntity(this.toLoadAcreedores(this.credito.getIdAcreedor())));
+          this.doLoadCuentas();
           break;
       } // switch      
     } // try // try
@@ -221,6 +223,12 @@ public class Accion extends IBaseAttribute implements Serializable {
       else
         empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
       this.attrs.put("empresas", empresas);
+      if(empresas!= null && !empresas.isEmpty()) {
+        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+          this.credito.setIkEmpresa(UIBackingUtilities.toFirstKeySelectEntity(empresas));
+      } // if
+      if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+        this.doLoadCuentas();
     } // try
     catch (Exception e) {
       throw e;
@@ -231,9 +239,31 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 	}
 
+  public void doLoadCuentas() {
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put("idEmpresa", this.credito.getIdEmpresa());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      List<UISelectEntity> empresaCuentas= UIEntity.build("TcKalanEmpresasCuentasDto", params);
+      this.attrs.put("empresaCuentas", empresaCuentas);
+      if(empresaCuentas!= null && !empresaCuentas.isEmpty()) {
+        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+          this.credito.setIkEmpresaCuenta(UIBackingUtilities.toFirstKeySelectEntity(empresaCuentas));
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+  }  
+  
   public void doUpdateLimite() {
     try {      
       Calendar calendar= Calendar.getInstance();
+      calendar.setTimeInMillis(this.credito.getFechaAplicacion().getTime());
       calendar.add(Calendar.MONTH, this.credito.getPlazo().intValue());
       this.credito.getLimite().setTime(calendar.getTimeInMillis());
     } // try
