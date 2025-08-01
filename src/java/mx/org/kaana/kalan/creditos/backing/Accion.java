@@ -240,11 +240,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}
 
   public void doLoadCuentas() {
-    Map<String, Object> params= new HashMap<>();
+    List<UISelectEntity> empresaCuentas= null;
+    Map<String, Object> params         = new HashMap<>();
     try {
 			params.put("idEmpresa", this.credito.getIdEmpresa());
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      List<UISelectEntity> empresaCuentas= UIEntity.build("TcKalanEmpresasCuentasDto", params);
+      if(Objects.equals(this.credito.getIdEmpresa(), -1L))
+        empresaCuentas= UIEntity.seleccione("TcKalanEmpresasCuentasDto", params, "banco");
+      else
+        empresaCuentas= UIEntity.build("TcKalanEmpresasCuentasDto", params);
       this.attrs.put("empresaCuentas", empresaCuentas);
       if(empresaCuentas!= null && !empresaCuentas.isEmpty()) {
         if(Objects.equals(this.accion, EAccion.AGREGAR)) 

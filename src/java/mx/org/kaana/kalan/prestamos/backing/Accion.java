@@ -57,12 +57,13 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   public void init() {
     try {
-			if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
+  		if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion    = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.idPrestamo= Objects.equals(JsfBase.getFlashAttribute("idPrestamo"), null)? -1L: (Long)JsfBase.getFlashAttribute("idPrestamo");
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Prestamos/filtro": JsfBase.getFlashAttribute("retorno"));
       this.doLoad(); 
+      this.toLoadEmpresas();
       this.doUpdateSaldo();
     } // try
     catch (Exception e) {
@@ -83,7 +84,10 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:
         case CONSULTAR:
           this.prestamo= (Prestamo)DaoFactory.getInstance().toEntity(Prestamo.class, "TcKalanPrestamosDto", params);
+          this.prestamo.setIkEmpresa(new UISelectEntity(this.prestamo.getIdEmpresa()));
+          this.prestamo.setIkEmpresaCuenta(new UISelectEntity(this.prestamo.getIdEmpresaCuenta()));
           this.prestamo.setIkEmpresaPersona(new UISelectEntity(this.toLoadEmpleados(this.prestamo.getIdEmpresaPersona())));
+          this.doLoadCuentas();
           break;
       } // switch      
     } // try // try
@@ -200,9 +204,68 @@ public class Accion extends IBaseAttribute implements Serializable {
     return regresar;
 	}
 
+	private void toLoadEmpresas() {
+		List<Columna> columns        = new ArrayList<>();
+    Map<String, Object> params   = new HashMap<>();
+    List<UISelectEntity> empresas= null;
+    try {
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        empresas= (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
+      else
+        empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+      this.attrs.put("empresas", empresas);
+      if(empresas!= null && !empresas.isEmpty()) {
+        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+          this.prestamo.setIkEmpresa(UIBackingUtilities.toFirstKeySelectEntity(empresas));
+      } // if
+      if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+        this.doLoadCuentas();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+
+  public void doLoadCuentas() {
+    List<UISelectEntity> empresaCuentas= null;
+    Map<String, Object> params         = new HashMap<>();
+    try {
+			params.put("idEmpresa", this.prestamo.getIdEmpresa());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      if(Objects.equals(this.prestamo.getIdEmpresa(), -1L))
+        empresaCuentas= UIEntity.seleccione("TcKalanEmpresasCuentasDto", params, "banco");
+      else
+        empresaCuentas= UIEntity.build("TcKalanEmpresasCuentasDto", params);
+      this.attrs.put("empresaCuentas", empresaCuentas);
+      if(empresaCuentas!= null && !empresaCuentas.isEmpty()) {
+        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+          this.prestamo.setIkEmpresaCuenta(UIBackingUtilities.toFirstKeySelectEntity(empresaCuentas));
+      } // if  
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+  }  
+
   public void doUpdateLimite() {
     try {      
       Calendar calendar= Calendar.getInstance();
+      calendar.setTimeInMillis(this.prestamo.getFechaAplicacion().getTime());
       calendar.add(Calendar.MONTH, this.prestamo.getPlazo().intValue());
       this.prestamo.getLimite().setTime(calendar.getTimeInMillis());
     } // try
@@ -211,7 +274,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }
-
+  
   public void doUpdateSaldo() {
     Map<String, Object> params= new HashMap<>();
     try {      

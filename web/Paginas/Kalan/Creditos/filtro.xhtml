@@ -103,7 +103,7 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCreditosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCreditosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCreditosFiltro.lazyModel.rowCount gt kalanCreditosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{kalanCreditosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{kalanCreditosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kalanCreditosFiltro.lazyModel.rowCount gt kalanCreditosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom">
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >

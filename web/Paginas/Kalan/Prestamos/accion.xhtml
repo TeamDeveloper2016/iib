@@ -12,15 +12,17 @@
     <script type="text/javascript">
       Janal.Control.fields= {
         'contenedorGrupos\\:idEmpresa'       : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:idEmpresaCuenta' : {validaciones: 'requerido', mascara: 'libre'},
         'contenedorGrupos\\:idEmpresaPersona': {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:nombre'       : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-a({"cual":\"contenedorGrupos\\\\:disponible\"})', mascara: 'libre'},
-				'contenedorGrupos\\:disponible'   : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
-				'contenedorGrupos\\:plazo'        : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
-				'contenedorGrupos\\:tasa'         : {validaciones: 'flotante|mayor-igual({"cuanto":0})', mascara: 'libre'},
-				'contenedorGrupos\\:pagos'        : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
-				'contenedorGrupos\\:limite'       : {validaciones: 'requerido|fecha', mascara: 'fecha'},
-				'contenedorGrupos\\:observaciones': {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+				'contenedorGrupos\\:nombre'          : {validaciones: 'texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:fechaAplicacion' : {validaciones: 'requerido|fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:importe'         : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-a({"cual":\"contenedorGrupos\\\\:disponible\"})', mascara: 'libre'},
+				'contenedorGrupos\\:disponible'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:plazo'           : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:tasa'            : {validaciones: 'flotante|mayor-igual({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:pagos'           : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:limite'          : {validaciones: 'requerido|fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:observaciones'   : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };      
 			
 			$(document).ready(function(){janal.readingMode('#{kalanPrestamosAccion.attrs.nombreAccion}');});
@@ -34,6 +36,30 @@
             <p:ajax event="tabChange" process="@this" update="contenedorGrupos" oncomplete="janal.refresh()"/>
             <p:tab title="General">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+                <p:selectOneMenu id="idEmpresa" value="#{kalanPrestamosAccion.prestamo.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{kalanPrestamosAccion.doLoadCuentas}" process="@this" update="idEmpresaCuenta"/>
+                  <f:selectItems value="#{kalanPrestamosAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Siglas" styleClass="janal-wid-30">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.titulo}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
+                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanPrestamosAccion.prestamo.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{kalanPrestamosAccion.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Banco" styleClass="janal-wid-30">
+                    <h:outputText value="#{item.banco}"/>
+                  </p:column>   
+                  <p:column headerText="Cuenta" styleClass="janal-wid-20">
+                    <h:outputText value="#{item.cuenta}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
                 <p:outputLabel for="idEmpresaPersona" value="Empleado:"/>
                 <p:autoComplete id="idEmpresaPersona" var="custom" placeholder="Ej: JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanPrestamosAccion.prestamo.ikEmpresaPersona}" completeMethod="#{kalanPrestamosFiltro.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
                   <p:ajax event="itemSelect" listener="#{kalanPrestamosAccion.doUpdateSaldo()}" process="@this" update="disponible" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
@@ -50,6 +76,10 @@
                 </p:autoComplete>			
                 <p:outputLabel for="nombre" value="Nombre:"/>
                 <p:inputText id="nombre" value="#{kalanPrestamosAccion.prestamo.nombre}" styleClass="janal-wid-100-txt"/>
+                <p:outputLabel for="fechaAplicacion" value="Fecha aplicacion:"/>
+                <p:calendar id="fechaAplicacion" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanPrestamosAccion.prestamo.fechaAplicacion}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario">
+                  <p:ajax event="dateSelect" listener="#{kalanPrestamosAccion.doUpdateLimite()}" process="@this plazo limite" update="limite"/>
+                </p:calendar>  
                 <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-70, janal-wid-30">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="importe" value="Importe:"/>

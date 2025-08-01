@@ -85,7 +85,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     String cargos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(cargo));
     String abonos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(abono));
-    return "Suma cargos: <strong>"+ cargos+ "</strong> | abonos: <strong>"+ abonos+ "</strong>";  
+    return "Suma cargos: <strong>"+ cargos+ "</strong> | abonos: <strong>"+ abonos+ "</strong> | saldo: <strong>"+ Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(abono- cargo))+ "</strong>";  
   }
   
   @PostConstruct
@@ -121,7 +121,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("disponible", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel= new FormatCustomLazy("VistaPrestamosDto", params, columns);
       this.attrs.put("general", this.toTotales("VistaPrestamosDto", "general", params));
       UIBackingUtilities.resetDataTable();
@@ -220,12 +220,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*").append(codigo).append(".*') and ");
       } // if  
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_kalan_prestamos.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_kalan_prestamos.fecha_aplicacion, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_kalan_prestamos.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		  sb.append("(date_format(tc_kalan_prestamos.fecha_aplicacion, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idPrestamoEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idPrestamoEstatus")).getKey(), -1L))
       if(Objects.equals(((UISelectEntity)this.attrs.get("idPrestamoEstatus")).getKey(), Constantes.TOP_OF_ITEMS))
-  		  sb.append("(tc_kalan_prestamos.id_prestamo_estatus in (2,6)) and ");
+  		  sb.append("(tc_kalan_prestamos.id_prestamo_estatus in (1, 2, 6)) and ");
       else 
   		  sb.append("(tc_kalan_prestamos.id_prestamo_estatus= ").append(this.attrs.get("idPrestamoEstatus")).append(") and ");
 	  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -354,7 +354,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("idPrestamo", row.toLong("idPrestamo"));
       params.put("sortOrder", "order by tc_kalan_prestamos_pagos.consecutivo desc");
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDetalle= new FormatCustomLazy("VistaPrestamosDto", "pagos", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
       this.attrs.put("seleccionado", row);

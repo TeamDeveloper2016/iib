@@ -85,7 +85,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     String cargos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(cargo));
     String abonos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(abono));
-    return "Suma cargos: <strong>"+ cargos+ "</strong> | abonos: <strong>"+ abonos+ "</strong>";  
+    return "Suma cargos: <strong>"+ cargos+ "</strong> | abonos: <strong>"+ abonos+ "</strong> | saldo: <strong>"+ Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(abono- cargo))+ "</strong>";  
   }
   
   @PostConstruct
@@ -121,7 +121,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_HORA));
+      columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel= new FormatCustomLazy("VistaCreditosDto", params, columns);
       this.attrs.put("general", this.toTotales("VistaCreditosDto", "general", params));
       UIBackingUtilities.resetDataTable();
@@ -354,7 +354,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("idCredito", row.toLong("idCredito"));
       params.put("sortOrder", "order by tc_kalan_creditos_pagos.consecutivo desc");
       columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
       this.lazyDetalle= new FormatCustomLazy("VistaCreditosDto", "pagos", params, columns);
       UIBackingUtilities.resetDataTable("detalle");
       this.attrs.put("seleccionado", row);

@@ -11,6 +11,8 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields= {
+        'contenedorGrupos\\:idEmpresa'       : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:idEmpresaCuenta' : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idTipoAfectacion': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:total'           : {validaciones: 'requerido|flotante', mascara: 'libre'},
 				'contenedorGrupos\\:saldo'           : {validaciones: 'requerido|flotante', mascara: 'libre'},
@@ -62,6 +64,30 @@
                 </p:panelGrid>  
               </p:panel>  
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
+                <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+                <p:selectOneMenu id="idEmpresa" value="#{kalanPrestamosAfectaciones.afectacion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <p:ajax event="change" listener="#{kalanPrestamosAfectaciones.doLoadCuentas}" process="@this" update="idEmpresaCuenta"/>
+                  <f:selectItems value="#{kalanPrestamosAfectaciones.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Siglas" styleClass="janal-wid-30">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.titulo}"/>
+                  </p:column>   
+                </p:selectOneMenu>
+                <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
+                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanPrestamosAfectaciones.afectacion.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{kalanPrestamosAfectaciones.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Banco" styleClass="janal-wid-30">
+                    <h:outputText value="#{item.banco}"/>
+                  </p:column>   
+                  <p:column headerText="Cuenta" styleClass="janal-wid-20">
+                    <h:outputText value="#{item.cuenta}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                </p:selectOneMenu>
                 <p:outputLabel for="idTipoAfectacion" value="Tipo:"/>
                 <p:selectOneMenu id="idTipoAfectacion" value="#{kalanPrestamosAfectaciones.afectacion.ikTipoAfectacion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{kalanPrestamosAfectaciones.doCheckImporte()}" process="@this" update="importe"/>
@@ -76,14 +102,14 @@
                 <p:outputLabel for="importe" value="Importe:"/>
                 <p:inputNumber id="importe" value="#{kalanPrestamosAfectaciones.afectacion.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right janal-color-blue" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
                 
-                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt">
                   <p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="fechaPago" value="Fecha pago:"/>
-                    <p:calendar id="fechaPago" inputStyleClass="janal-wid-99 janal-column-center" styleClass="janal-wid-100-txt" value="#{kalanPrestamosAfectaciones.afectacion.fechaPago}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+                    <p:calendar id="fechaPago" inputStyleClass="janal-wid-100-txt janal-column-center" styleClass="janal-wid-100-txt" value="#{kalanPrestamosAfectaciones.afectacion.fechaPago}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="fechaAplicacion" value="Fecha aplicación:"/>
-                    <p:calendar id="fechaAplicacion" inputStyleClass="janal-wid-99 janal-column-center" styleClass="janal-wid-100-txt" value="#{kalanPrestamosAfectaciones.afectacion.fechaAplicacion}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
+                    <p:calendar id="fechaAplicacion" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" styleClass="janal-wid-100-txt" value="#{kalanPrestamosAfectaciones.afectacion.fechaAplicacion}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
                   </p:panelGrid>  
                 </p:panelGrid>  
                 <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>

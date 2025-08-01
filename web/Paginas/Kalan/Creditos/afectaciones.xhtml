@@ -65,7 +65,7 @@
               </p:panel>  
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idEmpresa" value="Sucursal:"/>
-                <p:selectOneMenu id="idEmpresa" value="#{kalanCreditosAfectaciones.afectacion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="true">
+                <p:selectOneMenu id="idEmpresa" value="#{kalanCreditosAfectaciones.afectacion.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{kalanCreditosAfectaciones.doLoadCuentas}" process="@this" update="idEmpresaCuenta"/>
                   <f:selectItems value="#{kalanCreditosAfectaciones.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Siglas" styleClass="janal-wid-30">
