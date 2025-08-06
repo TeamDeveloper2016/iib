@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosDto;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
 /**
@@ -106,7 +107,7 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
     try {      
       calendar.setTimeInMillis(this.getFechaArranque().getTime());
       int year= calendar.get(Calendar.YEAR);
-      while(calendar.get(Calendar.YEAR)<= year || pagos> 53) {
+      while(calendar.get(Calendar.YEAR)<= year || pagos> Constantes.REGISTROS_TOPE_PAGINA) {
         calendar.add(Calendar.DATE, this.getPlazo().intValue());
         if(calendar.get(Calendar.YEAR)<= year) {
           if(pagos< this.cuotas.size()) 

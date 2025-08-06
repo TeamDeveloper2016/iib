@@ -90,7 +90,7 @@
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="fechaArranque" value="Fecha arranque:"/>
                     <p:calendar id="fechaArranque" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanAhorrosAccion.ahorro.fechaArranque}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario">
-                      <p:ajax event="dateSelect" listener="#{kalanAhorrosAccion.doUpdateLimite()}" process="@this plazo limite" update="limite"/>
+                      <p:ajax event="dateSelect" listener="#{kalanAhorrosAccion.doUpdateLimite()}" process="@this plazo limite" update="@(.limite)"/>
                     </p:calendar>  
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100">
@@ -105,11 +105,11 @@
                   </p:panelGrid>  
                 </p:panelGrid>  
                 <p:outputLabel for="limite" value="Limite:"/>
-                <p:calendar id="limite" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100-txt limite" value="#{kalanAhorrosAccion.ahorro.limite}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario" readonly="true"/>
+                <p:calendar id="limite" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100-txt limite" value="#{kalanAhorrosAccion.ahorro.limite}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario" disabled="true"/>
               </p:panelGrid>
             </p:tab>						
             <p:tab title="Cuotas">
-              <p:dataTable id="tabla" var="row" value="#{kalanAhorrosAccion.ahorro.cuotas}" paginator="false" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="filas" rowIndexVar="index" rowKey="#{row.idAhorroPago}">
+              <p:dataTable id="tabla" var="row" value="#{kalanAhorrosAccion.ahorro.cuotas}" paginator="false" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" rowsPerPageTemplate="#{Constantes.REGISTROS_TOPE_PAGINA}" styleClass="janal-wid-100-txt limite" rowIndexVar="index" rowKey="#{row.idAhorroPago}">
                 <p:column headerText="No" styleClass="MarAuto Responsive janal-wid-3">
                   <h:outputText value="#{index+ 1}.-"/>
                 </p:column>   
