@@ -1,6 +1,7 @@
 package mx.org.kaana.kalan.ahorros.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -15,8 +16,10 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kalan.ahorros.beans.Afectacion;
 import mx.org.kaana.kalan.ahorros.beans.Ahorro;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -64,7 +67,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Ahorros/filtro": JsfBase.getFlashAttribute("retorno"));
       this.doLoad(); 
       this.toLoadEmpresas();
-      this.doUpdateSaldo();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -88,6 +90,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.ahorro.setIkEmpresaCuenta(new UISelectEntity(this.ahorro.getIdEmpresaCuenta()));
           this.ahorro.setIkEmpresaPersona(new UISelectEntity(this.toLoadEmpleados(this.ahorro.getIdEmpresaPersona())));
           this.doLoadCuentas();
+          // CALCULAR CUANTAS CUOTAS YA FUERON AHORRADAS
           break;
       } // switch      
     } // try // try
@@ -264,10 +267,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doUpdateLimite() {
     try {      
-      Calendar calendar= Calendar.getInstance();
-      calendar.setTimeInMillis(this.ahorro.getFechaAplicacion().getTime());
-      calendar.add(Calendar.MONTH, this.ahorro.getPlazo().intValue());
-      this.ahorro.getLimite().setTime(calendar.getTimeInMillis());
+      this.ahorro.toCalculatePayments();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -275,29 +275,20 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch	
   }
   
-  public void doUpdateSaldo() {
-    Map<String, Object> params= new HashMap<>();
+  public void doUpdateImporte() {
     try {      
-      params.put("idEmpresaPersona", this.ahorro.getIkEmpresaPersona().getKey());      
-      Entity saldo= (Entity)DaoFactory.getInstance().toEntity("VistaAhorrosDto", "disponible", params);
-      if(!Objects.equals(saldo, null) && !saldo.isEmpty()) 
-        this.attrs.put("disponible", saldo.toDouble("disponible"));
-      else {
-        params.put(Constantes.SQL_CONDICION, "id_empresa_persona= "+ this.ahorro.getIkEmpresaPersona().getKey());      
-        saldo= (Entity)DaoFactory.getInstance().toEntity("TrManticEmpresaPersonalDto", params);
-        if(!Objects.equals(saldo, null) && !saldo.isEmpty()) 
-          this.attrs.put("disponible", saldo.toDouble("limite"));
-        else
-          this.attrs.put("disponible", 0D);
-      } // if  
+      for (Afectacion item: this.ahorro.getCuotas()) {
+        item.setImporte(this.ahorro.getImporte());
+      } // for
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-    finally {
-      Methods.clean(params);
-    } // finally
+  }
+
+  public String doColor(Afectacion row) {
+    return Objects.equals(row.getSql(), ESql.DELETE)? "janal-tr-yellow": "";
   }
   
 }

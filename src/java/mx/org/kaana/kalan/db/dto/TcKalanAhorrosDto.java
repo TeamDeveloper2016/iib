@@ -72,17 +72,19 @@ public class TcKalanAhorrosDto implements IBaseDto, Serializable {
   private Long idEmpresa;
   @Column (name="orden")
   private Long orden;
+  @Column (name="pagos")
+  private Long pagos;
 
   public TcKalanAhorrosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanAhorrosDto(Long key) {
-    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null);
+    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), 7L, 0D, 1L, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, 0L);
     setKey(key);
   }
 
-  public TcKalanAhorrosDto(Long idAhorro, Date fechaArranque, Long plazo, Double saldo, Long idAhorroEstatus, Date limite, String nombre, Double importe, Long ejercicio, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, Long orden) {
+  public TcKalanAhorrosDto(Long idAhorro, Date fechaArranque, Long plazo, Double saldo, Long idAhorroEstatus, Date limite, String nombre, Double importe, Long ejercicio, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, Long orden, Long pagos) {
     setIdAhorro(idAhorro);
     setFechaArranque(fechaArranque);
     setPlazo(plazo);
@@ -101,6 +103,7 @@ public class TcKalanAhorrosDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setOrden(orden);
+    setPagos(pagos);
   }
 	
   public void setIdAhorro(Long idAhorro) {
@@ -247,6 +250,14 @@ public class TcKalanAhorrosDto implements IBaseDto, Serializable {
     return orden;
   }
 
+  public Long getPagos() {
+    return pagos;
+  }
+
+  public void setPagos(Long pagos) {
+    this.pagos = pagos;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -297,6 +308,8 @@ public class TcKalanAhorrosDto implements IBaseDto, Serializable {
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPagos());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -322,13 +335,14 @@ public class TcKalanAhorrosDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
+		regresar.put("pagos", getPagos());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdAhorro(), getFechaArranque(), getPlazo(), getSaldo(), getIdAhorroEstatus(), getLimite(), getNombre(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getOrden()
+    Object[] regresar = new Object[] {
+      getIdAhorro(), getFechaArranque(), getPlazo(), getSaldo(), getIdAhorroEstatus(), getLimite(), getNombre(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getOrden(), getPagos()
     };
     return regresar;
   }

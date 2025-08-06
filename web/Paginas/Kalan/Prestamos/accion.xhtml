@@ -19,8 +19,6 @@
 				'contenedorGrupos\\:importe'         : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-a({"cual":\"contenedorGrupos\\\\:disponible\"})', mascara: 'libre'},
 				'contenedorGrupos\\:disponible'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:plazo'           : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
-				'contenedorGrupos\\:tasa'            : {validaciones: 'flotante|mayor-igual({"cuanto":0})', mascara: 'libre'},
-				'contenedorGrupos\\:pagos'           : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:limite'          : {validaciones: 'requerido|fecha', mascara: 'fecha'},
 				'contenedorGrupos\\:observaciones'   : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };      
@@ -37,7 +35,7 @@
             <p:tab title="General">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idEmpresa" value="Sucursal:"/>
-                <p:selectOneMenu id="idEmpresa" value="#{kalanPrestamosAccion.prestamo.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idEmpresa" value="#{kalanPrestamosAccion.prestamo.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{kalanPrestamosAccion.doLoadCuentas}" process="@this" update="idEmpresaCuenta"/>
                   <f:selectItems value="#{kalanPrestamosAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Siglas" styleClass="janal-wid-30">
@@ -48,7 +46,7 @@
                   </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
-                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanPrestamosAccion.prestamo.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanPrestamosAccion.prestamo.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{kalanPrestamosAccion.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Banco" styleClass="janal-wid-30">
                     <h:outputText value="#{item.banco}"/>

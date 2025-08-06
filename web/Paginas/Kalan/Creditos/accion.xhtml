@@ -36,7 +36,7 @@
             <p:tab title="General">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idEmpresa" value="Sucursal:"/>
-                <p:selectOneMenu id="idEmpresa" value="#{kalanCreditosAccion.credito.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idEmpresa" value="#{kalanCreditosAccion.credito.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{kalanCreditosAccion.doLoadCuentas}" process="@this" update="idEmpresaCuenta"/>
                   <f:selectItems value="#{kalanCreditosAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Siglas" styleClass="janal-wid-30">
@@ -47,7 +47,7 @@
                   </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
-                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanCreditosAccion.credito.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanCreditosAccion.credito.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{kalanCreditosAccion.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Banco" styleClass="janal-wid-30">
                     <h:outputText value="#{item.banco}"/>
