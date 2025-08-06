@@ -2,6 +2,7 @@ package mx.org.kaana.kalan.ahorros.beans;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.Calendar;
 import java.util.Objects;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosPagosDto;
@@ -27,6 +28,10 @@ public class Afectacion extends TcKalanAhorrosPagosDto implements Serializable {
   private UISelectEntity ikBanco;  
   private ESql sql;
 
+  public Afectacion() {
+    this(0D, new Date(Calendar.getInstance().getTimeInMillis()));
+  }
+  
   public Afectacion(Double importe, Date fecha) {
     super(Long.valueOf((int)(Math.random()* -1000000)));
     this.setIkEmpresa(new UISelectEntity(-1L));

@@ -65,6 +65,18 @@ from
 where      
   consecutivo= '{consecutivo}'
       </select>
+      <select id="detalle">
+select      
+  tc_kalan_ahorros_pagos.id_ahorro_pago as id_key,
+  tc_kalan_ahorros_controles.nombre as estatus,
+  tc_kalan_ahorros_pagos.*
+from      
+  tc_kalan_ahorros_pagos
+inner join        
+  tc_kalan_ahorros_controles on tc_kalan_ahorros_pagos.id_ahorro_control= tc_kalan_ahorros_controles.id_ahorro_control
+where 
+  tc_kalan_ahorros_pagos.id_ahorro= {idAhorro}
+      </select>
       <select id="pagos">
 select      
   ifnull(sum(if(id_tipo_afectacion= 2, importe, -1* importe)), 0) as total

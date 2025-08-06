@@ -4,12 +4,16 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 
 /**
  *@company KAANA
@@ -29,6 +33,10 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
   private UISelectEntity ikEmpresaPersona;  
   private List<Afectacion> cuotas;
 
+  private UISelectEntity ikTipoMedioPago;  
+  private UISelectEntity ikBanco;  
+  private String referencia;
+  
   public Ahorro() throws Exception {
     this(-1L);
   }
@@ -39,7 +47,8 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
     this.setIkEmpresaCuenta(new UISelectEntity(-1L));
     this.setIkEmpresaPersona(new UISelectEntity(-1L));
     this.setCuotas(new ArrayList<>());
-    this.toNextFriday();
+    this.setIkTipoMedioPago(new UISelectEntity(-1L));
+    this.setIkBanco(new UISelectEntity(-1L));
   }
   
   public String getEmpleado() {
@@ -87,7 +96,31 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
   public void setCuotas(List<Afectacion> cuotas) {
     this.cuotas = cuotas;
   }
-  
+
+  public UISelectEntity getIkTipoMedioPago() {
+    return ikTipoMedioPago;
+  }
+
+  public void setIkTipoMedioPago(UISelectEntity ikTipoMedioPago) {
+    this.ikTipoMedioPago = ikTipoMedioPago;
+  }
+
+  public UISelectEntity getIkBanco() {
+    return ikBanco;
+  }
+
+  public void setIkBanco(UISelectEntity ikBanco) {
+    this.ikBanco = ikBanco;
+  }
+
+  public String getReferencia() {
+    return referencia;
+  }
+
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
+  }
+
   private void toNextFriday() throws Exception {
     Calendar calendar= Calendar.getInstance();
     try {      
@@ -130,6 +163,15 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
           } // if  
         } // while
       } // if
+      this.toUpdate();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }  
+
+  public void toUpdate() throws Exception {
+    try {
       this.setPagos(Long.valueOf(this.cuotas.size()));
       if(!this.cuotas.isEmpty())
         this.setLimite(this.cuotas.get(this.cuotas.size()- 1).getFechaAplicacion());
@@ -138,6 +180,45 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
       throw e;
     } // catch	
   }  
+
+  public void addCuota() throws Exception {
+    try {
+      Calendar calendar= Calendar.getInstance();
+      calendar.setTimeInMillis(this.getLimite().getTime());
+      calendar.add(Calendar.DATE, this.getPlazo().intValue());
+      this.cuotas.add(new Afectacion(this.getImporte(), new Date(calendar.getTimeInMillis())));
+      this.toUpdate();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+
+  public void prepare() throws Exception {
+    try {
+      this.toNextFriday();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
+  public void toLoadCuotas() throws Exception {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idAhorro", this.getKey());
+      this.setCuotas((List<Afectacion>)DaoFactory.getInstance().toEntitySet(Afectacion.class, "TcKalanAhorrosPagosDto", "detalle", params));
+      for (Afectacion item: this.getCuotas()) {
+        item.setSql(ESql.SELECT);
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
   
   @Override
   public Class toHbmClass() {

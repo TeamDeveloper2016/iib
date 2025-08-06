@@ -87,6 +87,7 @@ public class Transaccion extends IBaseTnx {
           this.ahorro.setSaldo(this.ahorro.getImporte());
           regresar= DaoFactory.getInstance().insert(sesion, this.ahorro)>= 0L;
           this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus());
+          this.toCuotas(sesion);
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           break;
         case MODIFICAR:
@@ -240,7 +241,7 @@ public class Transaccion extends IBaseTnx {
 	}  
 
   private Boolean toDeletePago(Session sesion) throws Exception {
-		Boolean regresar          = null;
+		Boolean regresar          = Boolean.FALSE;
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("idAhorro", this.afectacion.getIdAhorro());
@@ -257,5 +258,50 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
   }
-  
+
+  private Boolean toCuotas(Session sesion) throws Exception {  
+		Boolean regresar   = Boolean.FALSE;
+    Siguiente siguiente= null;
+		try {
+      for (Afectacion item: this.ahorro.getCuotas()) {
+        switch(item.getSql()) {
+          case SELECT:
+            break;
+          case INSERT:
+            siguiente= this.toContinuar(sesion);
+            item.setConsecutivo(siguiente.getConsecutivo());
+            item.setEjercicio(siguiente.getEjercicio());
+            item.setOrden(siguiente.getOrden());
+            item.setIdAhorro(this.ahorro.getIdAhorro());
+            item.setIdEmpresa(this.ahorro.getIdEmpresa());
+            item.setIdEmpresaCuenta(this.ahorro.getIdEmpresaCuenta());
+            item.setIdTipoMedioPago(this.ahorro.getIkTipoMedioPago().getKey());
+            item.setIdBanco(Objects.equals(this.ahorro.getIkBanco().getKey(), -1L)? null: this.ahorro.getIkBanco().getKey());
+            item.setReferencia(this.ahorro.getReferencia());
+            item.setIdTipoAfectacion(2L); // ABONO
+            item.setIdUsuario(JsfBase.getIdUsuario());
+            regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
+            break;
+          case UPDATE:
+            item.setIdEmpresa(this.ahorro.getIdEmpresa());
+            item.setIdEmpresaCuenta(this.ahorro.getIdEmpresaCuenta());
+            item.setIdTipoMedioPago(this.ahorro.getIkTipoMedioPago().getKey());
+            item.setIdBanco(Objects.equals(this.ahorro.getIkBanco().getKey(), -1L)? null: this.ahorro.getIkBanco().getKey());
+            item.setReferencia(this.ahorro.getReferencia());
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+          case DELETE:
+            item.setIdAhorroControl(3L); // CANCELADO
+            regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+            break;
+        } // switch
+      } // for
+      regresar= Boolean.TRUE;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		return regresar;
+  }
+
 }

@@ -1,9 +1,7 @@
 package mx.org.kaana.kalan.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -74,17 +69,19 @@ public class TcKalanAhorrosDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="pagos")
   private Long pagos;
+  @Column (name="inicia")
+  private Double inicia;
 
   public TcKalanAhorrosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanAhorrosDto(Long key) {
-    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), 7L, 0D, 1L, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, 0L);
+    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), 7L, 0D, 1L, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, 0L, 0D);
     setKey(key);
   }
 
-  public TcKalanAhorrosDto(Long idAhorro, Date fechaArranque, Long plazo, Double saldo, Long idAhorroEstatus, Date limite, String nombre, Double importe, Long ejercicio, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, Long orden, Long pagos) {
+  public TcKalanAhorrosDto(Long idAhorro, Date fechaArranque, Long plazo, Double saldo, Long idAhorroEstatus, Date limite, String nombre, Double importe, Long ejercicio, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, Long orden, Long pagos, Double inicia) {
     setIdAhorro(idAhorro);
     setFechaArranque(fechaArranque);
     setPlazo(plazo);
@@ -104,6 +101,7 @@ public class TcKalanAhorrosDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setOrden(orden);
     setPagos(pagos);
+    setInicia(inicia);
   }
 	
   public void setIdAhorro(Long idAhorro) {
@@ -258,6 +256,14 @@ public class TcKalanAhorrosDto implements IBaseDto, Serializable {
     this.pagos = pagos;
   }
 
+  public Double getInicia() {
+    return inicia;
+  }
+
+  public void setInicia(Double inicia) {
+    this.inicia = inicia;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -310,6 +316,8 @@ public class TcKalanAhorrosDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPagos());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getInicia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -336,13 +344,14 @@ public class TcKalanAhorrosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("pagos", getPagos());
+		regresar.put("inicia", getInicia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdAhorro(), getFechaArranque(), getPlazo(), getSaldo(), getIdAhorroEstatus(), getLimite(), getNombre(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getOrden(), getPagos()
+      getIdAhorro(), getFechaArranque(), getPlazo(), getSaldo(), getIdAhorroEstatus(), getLimite(), getNombre(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getOrden(), getPagos(), getInicia()
     };
     return regresar;
   }

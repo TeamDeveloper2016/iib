@@ -1,7 +1,6 @@
 package mx.org.kaana.kalan.ahorros.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -27,6 +26,7 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.kalan.ahorros.reglas.Transaccion;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -56,17 +56,31 @@ public class Accion extends IBaseAttribute implements Serializable {
     return Objects.equals(this.accion, EAccion.AGREGAR) || Objects.equals(this.accion, EAccion.MODIFICAR);
   }
   
+  public Boolean getIsAdmin() {
+		try {
+      return JsfBase.isEncargado();
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);			
+		} // catch		
+    return Boolean.FALSE;
+  }
+  
   @PostConstruct
   @Override
   public void init() {
     try {
 //  		if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
 //				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.accion  = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.idAhorro= Objects.equals(JsfBase.getFlashAttribute("idAhorro"), null)? -1L: (Long)JsfBase.getFlashAttribute("idAhorro");
+//      this.accion  = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+//      this.idAhorro= Objects.equals(JsfBase.getFlashAttribute("idAhorro"), null)? -1L: (Long)JsfBase.getFlashAttribute("idAhorro");
+      this.accion  = EAccion.MODIFICAR;
+      this.idAhorro= 1L;
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Ahorros/filtro": JsfBase.getFlashAttribute("retorno"));
       this.doLoad(); 
       this.toLoadEmpresas();
+      this.toLoadTiposMediosPagos();
+      this.toLoadBancos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -82,18 +96,27 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (this.accion) {
         case AGREGAR:
           this.ahorro= new Ahorro();
+          this.ahorro.prepare();
           break;
         case MODIFICAR:
         case CONSULTAR:
           this.ahorro= (Ahorro)DaoFactory.getInstance().toEntity(Ahorro.class, "TcKalanAhorrosDto", params);
+          this.ahorro.toLoadCuotas();
           this.ahorro.setIkEmpresa(new UISelectEntity(this.ahorro.getIdEmpresa()));
           this.ahorro.setIkEmpresaCuenta(new UISelectEntity(this.ahorro.getIdEmpresaCuenta()));
           this.ahorro.setIkEmpresaPersona(new UISelectEntity(this.toLoadEmpleados(this.ahorro.getIdEmpresaPersona())));
+          this.ahorro.setIkTipoMedioPago(new UISelectEntity(this.ahorro.getCuotas().get(0).getIdTipoMedioPago()));
+          if(Objects.equals(this.ahorro.getCuotas().get(0).getIdBanco(), null))
+            this.ahorro.setIkBanco(new UISelectEntity(this.ahorro.getCuotas().get(0).getIdBanco()));
+          else
+            this.ahorro.setIkBanco(new UISelectEntity(-1L));
+          this.ahorro.setReferencia(this.ahorro.getCuotas().get(0).getReferencia());
           this.doLoadCuentas();
           // CALCULAR CUANTAS CUOTAS YA FUERON AHORRADAS
           break;
       } // switch      
-    } // try // try
+      this.toNameDayOfWeek();
+    } // try 
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
@@ -190,7 +213,7 @@ public class Accion extends IBaseAttribute implements Serializable {
    			params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_empresa_persona= "+ idEmpresaPersona+ " and tr_mantic_empresa_personal.id_activo= 1");
       else    
    			params.put(Constantes.SQL_CONDICION, "tr_mantic_empresa_personal.id_empresa_persona= "+ idEmpresaPersona);
-  		regresar= (Entity)DaoFactory.getInstance().toEntity("VistaAhorrosDto", "empleados", params);
+  		regresar= (Entity)DaoFactory.getInstance().toEntity("VistaPrestamosDto", "empleados", params);
       if(Objects.equals(regresar, null))
         regresar= new Entity(-1L);
       else
@@ -265,9 +288,22 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   }  
 
+  private void toNameDayOfWeek() {
+    try {      
+      Calendar calendar= Calendar.getInstance();
+      calendar.setTimeInMillis(this.ahorro.getFechaArranque().getTime());
+      this.attrs.put("dia", Fecha.getNombreDia(calendar.get(Calendar.DAY_OF_WEEK)));
+    } // try  
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
   public void doUpdateLimite() {
     try {      
       this.ahorro.toCalculatePayments();
+      this.toNameDayOfWeek();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -290,5 +326,80 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String doColor(Afectacion row) {
     return Objects.equals(row.getSql(), ESql.DELETE)? "janal-tr-yellow": "";
   }
+  
+  public void doRemove(Afectacion row) {
+    try {
+      if(Objects.equals(row.getSql(), ESql.INSERT))
+        this.ahorro.getCuotas().remove(row);
+      else
+        row.setSql(ESql.DELETE);
+      this.ahorro.toUpdate();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doAgregar() {
+    try {
+      this.ahorro.addCuota();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
+  public void doRecover(Afectacion row) {
+    try {
+      row.setSql(ESql.UPDATE);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+
+	private void toLoadTiposMediosPagos() {
+		List<UISelectEntity> tiposMediosPagos= null;
+		Map<String, Object>params            = new HashMap<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja= 1");
+			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
+      if(tiposMediosPagos!= null && !tiposMediosPagos.isEmpty()) {
+        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+    			this.ahorro.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity(tiposMediosPagos));
+      } // if  
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} 
+  
+	private void toLoadBancos() {
+		List<UISelectEntity> bancos= null;
+		Map<String, Object> params = new HashMap<>();
+		List<Columna> columns      = new ArrayList<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("bancos", bancos);
+      if(bancos!= null && !bancos.isEmpty()) {
+        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+    			this.ahorro.setIkBanco(UIBackingUtilities.toFirstKeySelectEntity(bancos));
+      } // if  
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} 
   
 }
