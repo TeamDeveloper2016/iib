@@ -209,7 +209,10 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
       params.put("idAhorro", this.getKey());
       this.setCuotas((List<Afectacion>)DaoFactory.getInstance().toEntitySet(Afectacion.class, "TcKalanAhorrosPagosDto", "detalle", params));
       for (Afectacion item: this.getCuotas()) {
-        item.setSql(ESql.SELECT);
+        if(Objects.equals(1L, item.getIdAhorroControl()))
+          item.setSql(ESql.UPDATE);
+        else 
+          item.setSql(ESql.SELECT);
       } // for
     } // try
     catch (Exception e) {

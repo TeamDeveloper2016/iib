@@ -70,12 +70,12 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   public void init() {
     try {
-//  		if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
-//				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-//      this.accion  = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-//      this.idAhorro= Objects.equals(JsfBase.getFlashAttribute("idAhorro"), null)? -1L: (Long)JsfBase.getFlashAttribute("idAhorro");
-      this.accion  = EAccion.MODIFICAR;
-      this.idAhorro= 1L;
+  		if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
+				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
+      this.accion  = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.idAhorro= Objects.equals(JsfBase.getFlashAttribute("idAhorro"), null)? -1L: (Long)JsfBase.getFlashAttribute("idAhorro");
+//      this.accion  = EAccion.MODIFICAR;
+//      this.idAhorro= 1L;
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Ahorros/filtro": JsfBase.getFlashAttribute("retorno"));
       this.doLoad(); 
       this.toLoadEmpresas();
@@ -314,7 +314,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doUpdateImporte() {
     try {      
       for (Afectacion item: this.ahorro.getCuotas()) {
-        item.setImporte(this.ahorro.getImporte());
+        if(Objects.equals(1L, item.getIdAhorroControl()))
+          item.setImporte(this.ahorro.getImporte());
       } // for
     } // try
     catch (Exception e) {

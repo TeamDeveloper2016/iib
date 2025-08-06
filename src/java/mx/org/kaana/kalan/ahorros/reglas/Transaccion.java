@@ -85,13 +85,14 @@ public class Transaccion extends IBaseTnx {
           this.ahorro.setIdUsuario(JsfBase.getIdUsuario());
           this.ahorro.setIdAhorroEstatus(Objects.equals(accion, EAccion.AGREGAR)? 1L: 2L);
           this.ahorro.setSaldo(this.ahorro.getImporte());
-          regresar= DaoFactory.getInstance().insert(sesion, this.ahorro)>= 0L;
+          DaoFactory.getInstance().insert(sesion, this.ahorro);
           this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus());
-          this.toCuotas(sesion);
+          regresar= this.toCuotas(sesion);
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           break;
         case MODIFICAR:
-          regresar= this.toCheckEstatus(sesion, Boolean.FALSE);
+          this.toCheckEstatus(sesion, Boolean.FALSE);
+          regresar= this.toCuotas(sesion);
           break;
 				case ELIMINAR:
           Map<String, Object> params = new HashMap<>();

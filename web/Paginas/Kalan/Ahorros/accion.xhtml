@@ -182,7 +182,7 @@
                   <h:outputText value="#{row.estatus}"/>
                 </p:column>   
                 <p:column headerText="..." styleClass="MarAuto Responsive janal-wid-col-40" exportable="false" rendered="#{kalanAhorrosAccion.isAdmin}">
-                  <p:commandButton title="Eliminar" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{kalanAhorrosAccion.doRemove(row)}" process="@this" update="tabla @(.limite)" style="display:#{row['sql'] eq 'DELETE'? 'none': ''}"/>
+                  <p:commandButton title="Eliminar" icon="fa fa-trash-o" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{kalanAhorrosAccion.doRemove(row)}" process="@this" update="tabla @(.limite)" style="display:#{row['sql'] eq 'DELETE' or row['sql'] eq 'SELECT'? 'none': ''}"/>
                   <p:commandButton title="Recuperar" icon="fa fa-recycle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" actionListener="#{kalanAhorrosAccion.doRecover(row)}" process="@this" update="tabla @(.limite)" style="display:#{row['sql'] eq 'DELETE'? '': 'none'}"/>
                 </p:column>   
                 <f:facet name="footer">
