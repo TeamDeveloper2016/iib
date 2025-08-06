@@ -7,6 +7,157 @@
   </model>
 
   <dml>
+    <unit id="TcKalanAhorrosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_ahorros
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_ahorros
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+      <select id="siguiente">
+select
+  max(tc_kalan_ahorros.orden)+ 1 as siguiente
+from 
+  tc_kalan_ahorros
+where
+  tc_kalan_ahorros.ejercicio= {ejercicio} 
+  and tc_kalan_ahorros.orden {operador} 900000		
+			</select>		
+      <select id="empleado">
+select      
+  tc_kalan_ahorros.id_ahorro as id_key,
+  concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
+  tc_kalan_ahorros.*
+from      
+  tc_kalan_ahorros
+inner join  
+  tr_mantic_empresa_personal on tc_kalan_ahorros.id_empresa_persona= tr_mantic_empresa_personal.id_empresa_persona
+inner join
+  tc_mantic_personas on tr_mantic_empresa_personal.id_persona= tc_mantic_personas.id_persona
+where 
+  {condicion} 
+      </select>
+    </unit>    
+    <unit id="TcKalanAhorrosPagosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_ahorros_pagos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_ahorros_pagos
+where      
+  consecutivo= '{consecutivo}'
+      </select>
+      <select id="pagos">
+select      
+  ifnull(sum(if(id_tipo_afectacion= 2, importe, -1* importe)), 0) as total
+from      
+  tc_kalan_ahorros_pagos
+where      
+  id_ahorro= {idAhorro}
+      </select>
+      <select id="siguiente">
+select
+  max(tc_kalan_ahorros_pagos.orden)+ 1 as siguiente
+from 
+  tc_kalan_ahorros_pagos
+where
+  tc_kalan_ahorros_pagos.ejercicio= {ejercicio} 
+  and tc_kalan_ahorros_pagos.orden {operador} 900000		
+			</select>		
+      <delete id="rows">
+delete from      
+  tc_kalan_ahorros_pagos
+where      
+  id_ahorro= {idAhorro}
+      </delete>
+      <delete id="depurar">
+delete from      
+  tc_kalan_ahorros_pagos
+where      
+  id_ahorro= {idAhorro}
+  and id_ahorro_pago= {idAhorroPago}
+      </delete>
+    </unit>    
+    <unit id="TcKalanAhorrosBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_ahorros_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_ahorros_bitacora
+where      
+  id_ahorro_bitacora = {idAhorroBitacora}
+      </select>
+      <delete id="rows">
+delete from      
+  tc_kalan_ahorros_bitacora
+where      
+  id_ahorro= {idAhorro}
+      </delete>
+    </unit>    
+    <unit id="TcKalanAhorrosControlesDto">
+      <select id="row">
+select      
+  tc_kalan_ahorros_controles.id_ahorro_control as id_key,      
+  tc_kalan_ahorros_controles.*
+from      
+  tc_kalan_ahorros_controles
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_ahorros_controles
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKalanAhorrosEstatusDto">
+      <select id="row">
+select      
+  tc_kalan_ahorros_estatus.id_ahorro_estatus as id_key,
+  tc_kalan_ahorros_estatus.*
+from      
+  tc_kalan_ahorros_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_ahorros_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
     <unit id="TcKalanPrestamosDto">
       <select id="row">
 select      

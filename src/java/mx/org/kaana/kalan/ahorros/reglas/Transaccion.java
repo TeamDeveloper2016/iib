@@ -1,4 +1,4 @@
-package mx.org.kaana.kalan.prestamos.reglas;
+package mx.org.kaana.kalan.ahorros.reglas;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,10 +8,10 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
-import mx.org.kaana.kalan.prestamos.beans.Afectacion;
-import mx.org.kaana.kalan.prestamos.beans.Prestamo;
-import mx.org.kaana.kalan.db.dto.TcKalanPrestamosPagosDto;
-import mx.org.kaana.kalan.db.dto.TcKalanPrestamosBitacoraDto;
+import mx.org.kaana.kalan.ahorros.beans.Afectacion;
+import mx.org.kaana.kalan.ahorros.beans.Ahorro;
+import mx.org.kaana.kalan.db.dto.TcKalanAhorrosPagosDto;
+import mx.org.kaana.kalan.db.dto.TcKalanAhorrosBitacoraDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -23,29 +23,29 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 
   private static final Log LOG= LogFactory.getLog(Transaccion.class);
-	private Prestamo prestamo;
+	private Ahorro ahorro;
 	private Afectacion afectacion;
-	private TcKalanPrestamosBitacoraDto bitacora;
+	private TcKalanAhorrosBitacoraDto bitacora;
 	private String messageError;
 	
-	public Transaccion(Prestamo prestamo) {
-		this.prestamo= prestamo;
+	public Transaccion(Ahorro ahorro) {
+		this.ahorro= ahorro;
 	}
 	
-	public Transaccion(Prestamo prestamo, Afectacion afectacion) {
-		this.prestamo   = prestamo;
+	public Transaccion(Ahorro ahorro, Afectacion afectacion) {
+		this.ahorro   = ahorro;
     this.afectacion= afectacion;
 	}
 	
-	public Transaccion(Long idPrestamo) throws Exception {
-    this(idPrestamo, new TcKalanPrestamosBitacoraDto());
+	public Transaccion(Long idAhorro) throws Exception {
+    this(idAhorro, new TcKalanAhorrosBitacoraDto());
 	}
   
-	public Transaccion(Long idPrestamo, TcKalanPrestamosBitacoraDto bitacora) throws Exception {
+	public Transaccion(Long idAhorro, TcKalanAhorrosBitacoraDto bitacora) throws Exception {
     Map<String, Object> params = new HashMap<>();
     try {      
-      params.put(Constantes.SQL_CONDICION, "id_prestamo= "+ idPrestamo);      
-  		this.prestamo = (Prestamo)DaoFactory.getInstance().toEntity(Prestamo.class, "TcKalanPrestamosDto", params);
+      params.put(Constantes.SQL_CONDICION, "id_ahorro= "+ idAhorro);      
+  		this.ahorro = (Ahorro)DaoFactory.getInstance().toEntity(Ahorro.class, "TcKalanAhorrosDto", params);
       this.bitacora= bitacora;
     } // try
     catch (Exception e) {
@@ -59,8 +59,8 @@ public class Transaccion extends IBaseTnx {
 	public Transaccion(Afectacion afectacion) throws Exception {
     Map<String, Object> params = new HashMap<>();
     try {      
-      params.put(Constantes.SQL_CONDICION, "id_prestamo= "+ afectacion.getIdPrestamo());      
-  		this.prestamo   = (Prestamo)DaoFactory.getInstance().toEntity(Prestamo.class, "TcKalanPrestamosDto", params);
+      params.put(Constantes.SQL_CONDICION, "id_ahorro= "+ afectacion.getIdAhorro());      
+  		this.ahorro    = (Ahorro)DaoFactory.getInstance().toEntity(Ahorro.class, "TcKalanAhorrosDto", params);
   		this.afectacion= afectacion;
     } // try
     catch (Exception e) {
@@ -79,14 +79,14 @@ public class Transaccion extends IBaseTnx {
         case AGREGAR:
         case PROCESAR:
           Siguiente consecutivo= this.toSiguiente(sesion);
-          this.prestamo.setConsecutivo(consecutivo.getConsecutivo());
-          this.prestamo.setEjercicio(consecutivo.getEjercicio());
-          this.prestamo.setOrden(consecutivo.getOrden());
-          this.prestamo.setIdUsuario(JsfBase.getIdUsuario());
-          this.prestamo.setIdPrestamoEstatus(Objects.equals(accion, EAccion.AGREGAR)? 1L: 2L);
-          this.prestamo.setSaldo(this.prestamo.getImporte());
-          regresar= DaoFactory.getInstance().insert(sesion, this.prestamo)>= 0L;
-          this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus());
+          this.ahorro.setConsecutivo(consecutivo.getConsecutivo());
+          this.ahorro.setEjercicio(consecutivo.getEjercicio());
+          this.ahorro.setOrden(consecutivo.getOrden());
+          this.ahorro.setIdUsuario(JsfBase.getIdUsuario());
+          this.ahorro.setIdAhorroEstatus(Objects.equals(accion, EAccion.AGREGAR)? 1L: 2L);
+          this.ahorro.setSaldo(this.ahorro.getImporte());
+          regresar= DaoFactory.getInstance().insert(sesion, this.ahorro)>= 0L;
+          this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus());
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           break;
         case MODIFICAR:
@@ -94,16 +94,16 @@ public class Transaccion extends IBaseTnx {
           break;
 				case ELIMINAR:
           Map<String, Object> params = new HashMap<>();
-          params.put("idPrestamo", this.prestamo.getIdPrestamo());            
-          DaoFactory.getInstance().deleteAll(sesion, TcKalanPrestamosBitacoraDto.class, params);
-          DaoFactory.getInstance().deleteAll(sesion, TcKalanPrestamosPagosDto.class, params);
+          params.put("idAhorro", this.ahorro.getIdAhorro());            
+          DaoFactory.getInstance().deleteAll(sesion, TcKalanAhorrosBitacoraDto.class, params);
+          DaoFactory.getInstance().deleteAll(sesion, TcKalanAhorrosPagosDto.class, params);
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
-					regresar= DaoFactory.getInstance().delete(sesion, this.prestamo)>= 1L;
+					regresar= DaoFactory.getInstance().delete(sesion, this.ahorro)>= 1L;
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-						this.prestamo.setIdPrestamoEstatus(this.bitacora.getIdPrestamoEstatus());
-            regresar= DaoFactory.getInstance().update(sesion, this.prestamo)>= 1L;
+						this.ahorro.setIdAhorroEstatus(this.bitacora.getIdAhorroEstatus());
+            regresar= DaoFactory.getInstance().update(sesion, this.ahorro)>= 1L;
 					} // if
 					break;
         case COMPLEMENTAR:
@@ -132,18 +132,18 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } 
 	
-  private void toBitacora(Session sesion, Long idPrestamoEstatus) throws Exception {
-    this.toBitacora(sesion, idPrestamoEstatus, null);
+  private void toBitacora(Session sesion, Long idAhorroEstatus) throws Exception {
+    this.toBitacora(sesion, idAhorroEstatus, null);
   }
   
-  private void toBitacora(Session sesion, Long idPrestamoEstatus, String justificacion) throws Exception {
+  private void toBitacora(Session sesion, Long idAhorroEstatus, String justificacion) throws Exception {
     try {
-      this.bitacora= new TcKalanPrestamosBitacoraDto(
-        this.prestamo.getIdPrestamo(), // Long idPrestamo
-        -1L, // Long idPrestamoBitacora, 
+      this.bitacora= new TcKalanAhorrosBitacoraDto(
+        this.ahorro.getIdAhorro(), // Long idAhorro
+        -1L, // Long idAhorroBitacora, 
         JsfBase.getIdUsuario(), // Long idUsuario, 
         justificacion, // String justificacion, 
-        idPrestamoEstatus // Long idPrestamoEstatus
+        idAhorroEstatus // Long idAhorroEstatus
       );
       DaoFactory.getInstance().insert(sesion, this.bitacora);
 		} // try
@@ -155,22 +155,22 @@ public class Transaccion extends IBaseTnx {
   private Boolean toCheckEstatus(Session sesion, Boolean depurar) throws Exception {
     Boolean regresar= Boolean.TRUE;
     try {
-      this.prestamo.setSaldo(this.prestamo.getImporte()- this.toSaldo(sesion));
-      if(this.prestamo.getSaldo()<= 0D)
-        this.prestamo.setIdPrestamoEstatus(3L); // TERMINADO
+      this.ahorro.setSaldo(this.ahorro.getImporte()- this.toSaldo(sesion));
+      if(this.ahorro.getSaldo()<= 0D)
+        this.ahorro.setIdAhorroEstatus(3L); // TERMINADO
       else
-        if(Objects.equals(this.prestamo.getImporte(), this.prestamo.getSaldo()))
-          this.prestamo.setIdPrestamoEstatus(2L); // ACTIVO
+        if(Objects.equals(this.ahorro.getImporte(), this.ahorro.getSaldo()))
+          this.ahorro.setIdAhorroEstatus(2L); // ACTIVO
         else
-          this.prestamo.setIdPrestamoEstatus(6L); // PARCIAL
-      regresar= DaoFactory.getInstance().update(sesion, this.prestamo)>= 0L;
+          this.ahorro.setIdAhorroEstatus(6L); // PARCIAL
+      regresar= DaoFactory.getInstance().update(sesion, this.ahorro)>= 0L;
       if(Objects.equals(this.afectacion, null))
-        this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus());
+        this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus());
       else 
         if(depurar)
-          this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus(), "SE ELIMINO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
+          this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus(), "SE ELIMINO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
         else
-          this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus(), "SE REGISTRO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
+          this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus(), "SE REGISTRO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
       // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
 		} // try
 		catch (Exception e) {
@@ -183,8 +183,8 @@ public class Transaccion extends IBaseTnx {
 		Double regresar           = 0D;
 		Map<String, Object> params= new HashMap<>();
 		try {
-			params.put("idPrestamo", this.prestamo.getIdPrestamo());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanPrestamosPagosDto", "pagos", params, "total");
+			params.put("idAhorro", this.ahorro.getIdAhorro());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanAhorrosPagosDto", "pagos", params, "total");
 			if(next.getData()!= null)
 			  regresar= next.toDouble();
 		} // try
@@ -203,7 +203,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("operador", this.getCurrentSign());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanPrestamosDto", "siguiente", params, "siguiente");
+			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanAhorrosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
 			else
@@ -224,7 +224,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params.put("ejercicio", this.getCurrentYear());
 			params.put("operador", this.getCurrentSign());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanPrestamosPagosDto", "siguiente", params, "siguiente");
+			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanAhorrosPagosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= new Siguiente(next.toLong());
 			else
@@ -243,9 +243,9 @@ public class Transaccion extends IBaseTnx {
 		Boolean regresar          = null;
 		Map<String, Object> params= new HashMap<>();
 		try {
-			params.put("idPrestamo", this.afectacion.getIdPrestamo());
-			params.put("idPrestamoPago", this.afectacion.getIdPrestamoPago());
-			regresar= DaoFactory.getInstance().deleteAll(sesion, TcKalanPrestamosPagosDto.class, "depurar", params)> 0L;
+			params.put("idAhorro", this.afectacion.getIdAhorro());
+			params.put("idAhorroPago", this.afectacion.getIdAhorroPago());
+			regresar= DaoFactory.getInstance().deleteAll(sesion, TcKalanAhorrosPagosDto.class, "depurar", params)> 0L;
       if(regresar) 
         regresar= this.toCheckEstatus(sesion, Boolean.TRUE);
 		} // try
