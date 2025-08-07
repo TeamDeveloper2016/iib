@@ -77,7 +77,6 @@ public class Transaccion extends IBaseTnx {
     try {
       switch(accion) {
         case AGREGAR:
-        case PROCESAR:
           Siguiente consecutivo= this.toSiguiente(sesion);
           this.prestamo.setConsecutivo(consecutivo.getConsecutivo());
           this.prestamo.setEjercicio(consecutivo.getEjercicio());

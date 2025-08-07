@@ -5,6 +5,7 @@ public enum EAccion {
   MODIFICAR             ("Modificar",    "icono-modificar",    "modificó"),
   ELIMINAR              ("Eliminar",     "icono-eliminar",     "elimino"),
   DESACTIVAR            ("Desactivar",   "icono-desactivar",   "desactivo"),
+  CANCELAR              ("Cancelar",     "icono-desactivar",   "cancelo"),
   CONSULTAR             ("Consultar",    "icono-consultar",    "consilto"),
   LISTAR                ("Listar",       "icono-listar",       "listo"),
   COMPLEMENTAR          ("Complementar", "icono-complementar", "complemento"),

@@ -21,6 +21,7 @@ public class Afectacion extends TcKalanAhorrosPagosDto implements Serializable {
   private static final long serialVersionUID = -8794495402874168801L;
 
   private String estatus;
+  private String medios;
   private UISelectEntity ikEmpresa;  
   private UISelectEntity ikEmpresaCuenta;  
   private UISelectEntity ikTipoAfectacion;  
@@ -43,6 +44,7 @@ public class Afectacion extends TcKalanAhorrosPagosDto implements Serializable {
     this.setIdAhorroControl(1L);
     this.setFechaAplicacion(fecha);
     this.setFechaPago(fecha);
+    this.setMedios("EFECTIVO");
     this.setEstatus("PROGRAMADO");
     this.setSql(ESql.INSERT);
   }
@@ -53,6 +55,14 @@ public class Afectacion extends TcKalanAhorrosPagosDto implements Serializable {
 
   public void setEstatus(String estatus) {
     this.estatus = estatus;
+  }
+
+  public String getMedios() {
+    return medios;
+  }
+
+  public void setMedios(String medios) {
+    this.medios = medios;
   }
 
   public UISelectEntity getIkEmpresa() {

@@ -60,9 +60,9 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
   
   public String getGeneral() {
-    String total= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("total"));
-    String saldo= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("saldo"));
-    return "Suma importe: <strong>"+ total+ "</strong> | saldo: <strong>"+ saldo+ "</strong>";  
+    String inicia   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("inicia"));
+    String acumulado= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("acumulado"));
+    return "Suma inicia: <strong>"+ inicia+ "</strong> | cuotas: <strong>"+ acumulado+ "</strong>";  
   }
   
   public String getTotal() {
@@ -85,7 +85,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     String cargos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(cargo));
     String abonos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(abono));
-    return "Suma cargos: <strong>"+ cargos+ "</strong> | abonos: <strong>"+ abonos+ "</strong> | saldo: <strong>"+ Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(abono- cargo))+ "</strong>";  
+    return "Suma cuotas: <strong>"+ abonos+ "</strong>";  
   }
   
   @PostConstruct
@@ -117,10 +117,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("importe", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("saldo", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("inicia", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("acumulado", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel= new FormatCustomLazy("VistaAhorrosDto", params, columns);
@@ -336,8 +335,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}	
 	
 	public String doMovimientos() {
-		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.PRESTAMOS);
-		JsfBase.setFlashAttribute(ETipoMovimiento.PRESTAMOS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.AHORROS);
+		JsfBase.setFlashAttribute(ETipoMovimiento.AHORROS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Kalan/Ahorros/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
@@ -384,7 +383,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       afectacion = (Afectacion)DaoFactory.getInstance().toEntity(Afectacion.class, "TcKalanAhorrosPagosDto", params);
       transaccion= new Transaccion(afectacion);
       transaccion.ejecutar(EAccion.DEPURAR);
-      JsfBase.addMessage("Eliminar", "El movimiento se ha eliminado", ETipoMensaje.INFORMACION);
+      JsfBase.addMessage("Eliminar", "La cuota se ha eliminado", ETipoMensaje.INFORMACION);
       this.doView(row);
     } // try
     catch (Exception e) {
@@ -413,8 +412,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   private Entity toEmptyTotales() {
     Entity regresar= new Entity(-1L);
-    regresar.put("total", new Value("total", 0D));
-    regresar.put("saldo", new Value("saldo", 0D));
+    regresar.put("inicia", new Value("inicia", 0D));
+    regresar.put("acumulado", new Value("acumulado", 0D));
     return regresar;
   }
   

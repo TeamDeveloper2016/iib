@@ -103,7 +103,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar = null;
     EAccion temporal= this.accion;
     try {      
-      this.accion= EAccion.PROCESAR;
+      if(Objects.equals(this.credito.getIdCreditoEstatus(), null) || this.credito.getIdCreditoEstatus()< 3L)
+        this.credito.setIdCreditoEstatus(2L);
       regresar= this.doAceptar();
     } // try
     catch (Exception e) {

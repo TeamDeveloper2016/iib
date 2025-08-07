@@ -19,7 +19,7 @@
         empleado        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         fechaInicio     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        idPrestamoEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+        idAhorroEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
       
 			fields= {
@@ -66,7 +66,7 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="nombre" value="Prestamo:"/>
+              <p:outputLabel for="nombre" value="Ahorro:"/>
               <p:inputText id="nombre" value="#{kalanAhorrosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{kalanAhorrosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
@@ -87,8 +87,8 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanAhorrosFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanAhorrosFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="idPrestamoEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idPrestamoEstatus" value="#{kalanAhorrosFiltro.attrs.idPrestamoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:outputLabel for="idAhorroEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idAhorroEstatus" value="#{kalanAhorrosFiltro.attrs.idAhorroEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{kalanAhorrosFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
@@ -145,24 +145,18 @@
               </f:facet>
               <h:outputText value="#{row['nombre']}"/>
             </p:column>	      
-            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.importe}">
+						<p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.inicia}">
               <f:facet name="header">
-                <h:outputText value="Importe"/>
+                <h:outputText value="Inicia"/>
               </f:facet>
-              <h:outputText value="#{row['importe']}"/>
+              <h:outputText value="#{row['inicia']}"/>
+            </p:column>														
+            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.acumulado}">
+              <f:facet name="header">
+                <h:outputText value="Cuotas"/>
+              </f:facet>
+              <h:outputText value="#{row['acumulado']}"/>
             </p:column>	      
-						<p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.saldo}">
-              <f:facet name="header">
-                <h:outputText value="Saldo"/>
-              </f:facet>
-              <h:outputText value="#{row['saldo']}"/>
-            </p:column>														
-						<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.disponible}">
-              <f:facet name="header">
-                <h:outputText value="Disponible"/>
-              </f:facet>
-              <h:outputText value="#{row['disponible']}"/>
-            </p:column>														
 						<p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
@@ -188,14 +182,14 @@
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{kalanAhorrosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:separator rendered="#{fn:contains('|1|2|', kalanAhorrosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
-            <p:menuitem id="modificar" action="#{kalanAhorrosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', kalanAhorrosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|2|', kalanAhorrosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
+						<p:separator rendered="#{fn:contains('|1|2|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus)}"/>
+            <p:menuitem id="modificar" action="#{kalanAhorrosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus)}"/>
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|2|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus)}"/>
             <p:separator/>
             <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanAhorrosFiltro.doMovimientos}"/>
-            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanAhorrosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idPrestamoEstatus) and kalanAhorrosFiltro.isAdmin}"/>
-            <p:separator rendered="#{fn:contains('|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
-            <p:menuitem value="Pago" icon="fa fa-dollar" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanAhorrosFiltro.doAfectaciones}" rendered="#{fn:contains('|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
+            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanAhorrosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus) and kalanAhorrosFiltro.isAdmin}"/>
+            <p:separator rendered="#{fn:contains('|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus)}"/>
+            <p:menuitem value="Pago" icon="fa fa-dollar" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanAhorrosFiltro.doAfectaciones}" rendered="#{fn:contains('|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus)}"/>
           </p:contextMenu>
           <p:spacer height="3px"/>
           <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanAhorrosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{kalanAhorrosFiltro.attrs.detalle}" selectionMode="single" paginator="#{kalanAhorrosFiltro.lazyDetalle.rowCount gt kalanAhorrosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="detalle total" style="display: #{kalanAhorrosFiltro.lazyDetalle eq null? 'none': ''}">
@@ -237,13 +231,7 @@
               </f:facet>
               <h:outputText value="#{row['usuario']}"/>
             </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.afectacion}">
-              <f:facet name="header">
-                <h:outputText value="Tipo"/>
-              </f:facet>
-              <h:outputText value="#{row['afectacion']}"/>
-            </p:column>	
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.medio}">
+            <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.medio}">
               <f:facet name="header">
                 <h:outputText value="Medio"/>
               </f:facet>
@@ -251,7 +239,7 @@
             </p:column>					
             <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.importe}">
               <f:facet name="header">
-                <h:outputText value="Importe"/>
+                <h:outputText value="Cuota"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>					
@@ -267,6 +255,12 @@
               </f:facet>
               <h:outputText value="#{row['fechaAplicacion']}"/>
             </p:column>					
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
+            </p:column>	
             <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5" exportable="false" rendered="#{kalanAhorrosFiltro.isAdmin}">
               <f:facet name="header">
                 <h:outputText value="..."/>

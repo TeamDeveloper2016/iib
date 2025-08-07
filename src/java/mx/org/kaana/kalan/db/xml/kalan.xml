@@ -47,11 +47,32 @@ inner join
 where 
   {condicion} 
       </select>
+      <update id="pagos">
+update
+  tc_kalan_ahorros
+inner join (
+  select
+    id_ahorro,
+    max(fecha_aplicacion) as fecha_aplicacion
+  from  
+    tc_kalan_ahorros_pagos
+  where
+    id_ahorro= {idAhorro}
+  group by
+    id_ahorro
+) as tt_kalan_ahorros_pagos on tc_kalan_ahorros.id_ahorro= tt_kalan_ahorros_pagos.id_ahorro
+set
+  tc_kalan_ahorros.pagos= tc_kalan_ahorros.pagos- 1,
+  tc_kalan_ahorros.limite= tt_kalan_ahorros_pagos.fecha_aplicacion
+where      
+  tc_kalan_ahorros.id_ahorro= {idAhorro}
+      </update>
     </unit>    
     <unit id="TcKalanAhorrosPagosDto">
       <select id="row">
 select      
-  *
+  tc_kalan_ahorros_pagos.id_ahorro_pago as id_key,       
+  tc_kalan_ahorros_pagos.*
 from      
   tc_kalan_ahorros_pagos
 where 
@@ -69,21 +90,37 @@ where
 select      
   tc_kalan_ahorros_pagos.id_ahorro_pago as id_key,
   tc_kalan_ahorros_controles.nombre as estatus,
+  tc_mantic_tipos_medios_pagos.nombre as medios,
   tc_kalan_ahorros_pagos.*
 from      
   tc_kalan_ahorros_pagos
+inner join        
+  tc_mantic_tipos_medios_pagos on tc_kalan_ahorros_pagos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 inner join        
   tc_kalan_ahorros_controles on tc_kalan_ahorros_pagos.id_ahorro_control= tc_kalan_ahorros_controles.id_ahorro_control
 where 
   tc_kalan_ahorros_pagos.id_ahorro= {idAhorro}
       </select>
+      <select id="control">
+select      
+  ifnull(count(distinct(tc_kalan_ahorros_pagos.id_ahorro_pago)), 0) as cuotas,
+  sum(if(id_ahorro_control= 1, 1, 0)) as pendiente
+from      
+  tc_kalan_ahorros_pagos
+where      
+  id_ahorro_control in (1, 2)
+  and id_ahorro= {idAhorro}
+group by  
+  id_ahorro
+      </select>  
       <select id="pagos">
 select      
   ifnull(sum(if(id_tipo_afectacion= 2, importe, -1* importe)), 0) as total
 from      
   tc_kalan_ahorros_pagos
 where      
-  id_ahorro= {idAhorro}
+  id_ahorro_control= 2      
+  and id_ahorro= {idAhorro}
       </select>
       <select id="siguiente">
 select
@@ -94,6 +131,16 @@ where
   tc_kalan_ahorros_pagos.ejercicio= {ejercicio} 
   and tc_kalan_ahorros_pagos.orden {operador} 900000		
 			</select>		
+      <update id="cancelar">
+update
+  tc_kalan_ahorros_pagos
+set
+  id_ahorro_control= 3,
+  registro= now()
+where      
+  id_ahorro_control= 1      
+  and id_ahorro= {idAhorro}
+      </update>
       <delete id="rows">
 delete from      
   tc_kalan_ahorros_pagos
@@ -104,8 +151,8 @@ where
 delete from      
   tc_kalan_ahorros_pagos
 where      
-  id_ahorro= {idAhorro}
-  and id_ahorro_pago= {idAhorroPago}
+  id_ahorro_pago= {idAhorroPago}
+  and id_ahorro= {idAhorro}
       </delete>
     </unit>    
     <unit id="TcKalanAhorrosBitacoraDto">

@@ -130,7 +130,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar = null;
     EAccion temporal= this.accion;
     try {      
-      this.accion= EAccion.PROCESAR;
+      if(Objects.equals(this.ahorro.getIdAhorroEstatus(), null) || this.ahorro.getIdAhorroEstatus()< 3L)
+        this.ahorro.setIdAhorroEstatus(2L);
       regresar= this.doAceptar();
     } // try
     catch (Exception e) {
@@ -402,5 +403,30 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} 
-  
+
+  public void doUpdateMedios() {
+    List<UISelectEntity> tiposMediosPagos= (List<UISelectEntity>)this.attrs.get("tiposMediosPagos"); 
+    String medios= "EFECTIVO";
+    try {      
+      if(!Objects.equals(tiposMediosPagos, null)) {
+        int index= tiposMediosPagos.indexOf(this.ahorro.getIkTipoMedioPago());
+        if(index>= 0)
+          medios= tiposMediosPagos.get(index).toString("nombre");
+      } // if
+      for (Afectacion item: this.ahorro.getCuotas()) {
+        if(Objects.equals(item.getIdAhorroControl(), 1L)) {
+          item.setIdTipoMedioPago(this.ahorro.getIkTipoMedioPago().getKey());
+          item.setIdBanco(Objects.equals(this.ahorro.getIkBanco().getKey(), -1L)? null: this.ahorro.getIkBanco().getKey());
+          item.setReferencia(this.ahorro.getReferencia());
+          item.setMedios(medios);
+          if(Objects.equals(item.getSql(), ESql.SELECT))
+            item.setSql(ESql.UPDATE);
+        } // if  
+      } // for
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }  
 }

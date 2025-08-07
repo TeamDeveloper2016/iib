@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
@@ -12,6 +13,7 @@ import mx.org.kaana.kalan.ahorros.beans.Afectacion;
 import mx.org.kaana.kalan.ahorros.beans.Ahorro;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosPagosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosBitacoraDto;
+import mx.org.kaana.kalan.db.dto.TcKalanAhorrosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -77,14 +79,12 @@ public class Transaccion extends IBaseTnx {
     try {
       switch(accion) {
         case AGREGAR:
-        case PROCESAR:
           Siguiente consecutivo= this.toSiguiente(sesion);
           this.ahorro.setConsecutivo(consecutivo.getConsecutivo());
           this.ahorro.setEjercicio(consecutivo.getEjercicio());
           this.ahorro.setOrden(consecutivo.getOrden());
           this.ahorro.setIdUsuario(JsfBase.getIdUsuario());
-          this.ahorro.setIdAhorroEstatus(Objects.equals(accion, EAccion.AGREGAR)? 1L: 2L);
-          this.ahorro.setSaldo(this.ahorro.getImporte());
+          this.ahorro.setSaldo(0D);
           DaoFactory.getInstance().insert(sesion, this.ahorro);
           this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus());
           regresar= this.toCuotas(sesion);
@@ -105,15 +105,15 @@ public class Transaccion extends IBaseTnx {
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.ahorro.setIdAhorroEstatus(this.bitacora.getIdAhorroEstatus());
+            if(Objects.equals(this.ahorro.getIdAhorroEstatus(), 4L) || // LIQUIDADO
+               Objects.equals(this.ahorro.getIdAhorroEstatus(), 5L))  // CANCELADO
+              this.toCancel(sesion);
             regresar= DaoFactory.getInstance().update(sesion, this.ahorro)>= 1L;
 					} // if
 					break;
         case COMPLEMENTAR:
-          Siguiente siguiente= this.toContinuar(sesion);
-          this.afectacion.setConsecutivo(siguiente.getConsecutivo());
-          this.afectacion.setEjercicio(siguiente.getEjercicio());
-          this.afectacion.setOrden(siguiente.getOrden());
-          DaoFactory.getInstance().insert(sesion, this.afectacion);
+          this.afectacion.setIdAhorroControl(2L);
+          DaoFactory.getInstance().update(sesion, this.afectacion);
           regresar= this.toCheckEstatus(sesion, Boolean.FALSE);
 					break;
         case DEPURAR:
@@ -156,12 +156,14 @@ public class Transaccion extends IBaseTnx {
 
   private Boolean toCheckEstatus(Session sesion, Boolean depurar) throws Exception {
     Boolean regresar= Boolean.TRUE;
+    Entity cuotas   = null;
     try {
-      this.ahorro.setSaldo(this.ahorro.getImporte()- this.toSaldo(sesion));
-      if(this.ahorro.getSaldo()<= 0D)
+      this.ahorro.setSaldo(this.toSaldo(sesion));
+      cuotas= this.toControl(sesion);
+      if(cuotas.toLong("pendiente")<= 0L)
         this.ahorro.setIdAhorroEstatus(3L); // TERMINADO
       else
-        if(Objects.equals(this.ahorro.getImporte(), this.ahorro.getSaldo()))
+        if(Objects.equals(cuotas.toLong("pendiente"), cuotas.toLong("cuotas")))
           this.ahorro.setIdAhorroEstatus(2L); // ACTIVO
         else
           this.ahorro.setIdAhorroEstatus(6L); // PARCIAL
@@ -170,9 +172,9 @@ public class Transaccion extends IBaseTnx {
         this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus());
       else 
         if(depurar)
-          this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus(), "SE ELIMINO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
+          this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus(), "SE ELIMINO UNA CUOTA POR "+ this.afectacion.getImporte());
         else
-          this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus(), "SE REGISTRO UN "+ (Objects.equals(this.afectacion.getIdTipoAfectacion(), 1L)? "CARGO": "ABONO")+ " POR "+ this.afectacion.getImporte());
+          this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus(), "SE REGISTRO UNA CUOTA POR "+ this.afectacion.getImporte());
       // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
 		} // try
 		catch (Exception e) {
@@ -189,6 +191,22 @@ public class Transaccion extends IBaseTnx {
 			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanAhorrosPagosDto", "pagos", params, "total");
 			if(next.getData()!= null)
 			  regresar= next.toDouble();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}  
+
+	private Entity toControl(Session sesion) throws Exception {
+		Entity regresar           = null;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idAhorro", this.ahorro.getIdAhorro());
+			regresar= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKalanAhorrosPagosDto", "control", params);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -248,8 +266,11 @@ public class Transaccion extends IBaseTnx {
 			params.put("idAhorro", this.afectacion.getIdAhorro());
 			params.put("idAhorroPago", this.afectacion.getIdAhorroPago());
 			regresar= DaoFactory.getInstance().deleteAll(sesion, TcKalanAhorrosPagosDto.class, "depurar", params)> 0L;
-      if(regresar) 
-        regresar= this.toCheckEstatus(sesion, Boolean.TRUE);
+      if(regresar) {
+        this.toCheckEstatus(sesion, Boolean.TRUE);
+        sesion.flush();
+        regresar= DaoFactory.getInstance().updateAll(sesion, TcKalanAhorrosDto.class, params, "pagos")> 0L;
+      } // if  
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -305,4 +326,20 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
   }
 
+  private Boolean toCancel(Session sesion) throws Exception {
+		Boolean regresar          = Boolean.FALSE;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idAhorro", this.ahorro.getIdAhorro());
+      regresar= DaoFactory.getInstance().updateAll(sesion, TcKalanAhorrosDto.class, params, "cancelar")>= 0L;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+  }
+  
 }
