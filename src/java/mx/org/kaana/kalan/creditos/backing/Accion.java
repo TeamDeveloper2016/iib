@@ -101,7 +101,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public String doAplicar() {
     String regresar = null;
-    EAccion temporal= this.accion;
     try {      
       if(Objects.equals(this.credito.getIdCreditoEstatus(), null) || this.credito.getIdCreditoEstatus()< 3L)
         this.credito.setIdCreditoEstatus(2L);
@@ -111,9 +110,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-    finally {
-      this.accion= temporal;
-    } // finally
     return regresar;
   }
 

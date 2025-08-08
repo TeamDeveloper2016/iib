@@ -32,6 +32,7 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
   private UISelectEntity ikEmpresaCuenta;  
   private UISelectEntity ikEmpresaPersona;  
   private List<Afectacion> cuotas;
+  private Long periodos;
 
   private UISelectEntity ikTipoMedioPago;  
   private UISelectEntity ikBanco;  
@@ -49,6 +50,7 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
     this.setCuotas(new ArrayList<>());
     this.setIkTipoMedioPago(new UISelectEntity(-1L));
     this.setIkBanco(new UISelectEntity(-1L));
+    this.periodos= 0L;
   }
   
   public String getEmpleado() {
@@ -119,6 +121,10 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
 
   public void setReferencia(String referencia) {
     this.referencia = referencia;
+  }
+
+  public Long getPeriodos() {
+    return periodos;
   }
 
   private void toNextFriday() throws Exception {
@@ -211,8 +217,10 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
       for (Afectacion item: this.getCuotas()) {
         if(Objects.equals(1L, item.getIdAhorroControl()))
           item.setSql(ESql.UPDATE);
-        else 
+        else {
           item.setSql(ESql.SELECT);
+          this.periodos++;
+        } // else  
       } // for
     } // try
     catch (Exception e) {

@@ -55,6 +55,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   public Boolean getAplicar() {
     return Objects.equals(this.accion, EAccion.AGREGAR) || Objects.equals(this.accion, EAccion.MODIFICAR);
   }
+
+  public Boolean getIsEdit() {
+    return !(Objects.equals(this.ahorro.getIdAhorroEstatus(), 1L) || Objects.equals(this.ahorro.getIdAhorroEstatus(), 2L));
+  }
   
   public Boolean getIsAdmin() {
 		try {
@@ -74,9 +78,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
       this.accion  = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.idAhorro= Objects.equals(JsfBase.getFlashAttribute("idAhorro"), null)? -1L: (Long)JsfBase.getFlashAttribute("idAhorro");
-//      this.accion  = EAccion.MODIFICAR;
-//      this.idAhorro= 1L;
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Ahorros/filtro": JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("periodos", 0L);
       this.doLoad(); 
       this.toLoadEmpresas();
       this.toLoadTiposMediosPagos();
@@ -102,6 +105,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:
           this.ahorro= (Ahorro)DaoFactory.getInstance().toEntity(Ahorro.class, "TcKalanAhorrosDto", params);
           this.ahorro.toLoadCuotas();
+          this.attrs.put("periodos", this.ahorro.getPeriodos());
           this.ahorro.setIkEmpresa(new UISelectEntity(this.ahorro.getIdEmpresa()));
           this.ahorro.setIkEmpresaCuenta(new UISelectEntity(this.ahorro.getIdEmpresaCuenta()));
           this.ahorro.setIkEmpresaPersona(new UISelectEntity(this.toLoadEmpleados(this.ahorro.getIdEmpresaPersona())));
@@ -127,8 +131,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } 
 
 	public String doAplicar() {
-    String regresar = null;
-    EAccion temporal= this.accion;
+    String regresar= null;
     try {      
       if(Objects.equals(this.ahorro.getIdAhorroEstatus(), null) || this.ahorro.getIdAhorroEstatus()< 3L)
         this.ahorro.setIdAhorroEstatus(2L);
@@ -138,9 +141,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);      
     } // catch	
-    finally {
-      this.accion= temporal;
-    } // finally
     return regresar;
   }
 

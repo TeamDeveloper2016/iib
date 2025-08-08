@@ -20,7 +20,7 @@
 				'contenedorGrupos\\:inicia'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:importe'         : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:plazo'           : {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'libre'},
-				'contenedorGrupos\\:pagos'           : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
+				'contenedorGrupos\\:pagos'           : {validaciones: 'requerido|flotante|mayor({"cuanto":#{kalanAhorrosAccion.attrs.periodos}})', mascara: 'libre'},
 				'contenedorGrupos\\:limite'          : {validaciones: 'requerido|fecha', mascara: 'fecha'},
 				'contenedorGrupos\\:observaciones'   : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:idTipoMedioPago' : {validaciones: 'requerido', mascara: 'libre'},
@@ -28,7 +28,10 @@
 				'contenedorGrupos\\:referencia'      : {validaciones: 'libre', mascara: 'libre'}
       };      
 			
-			$(document).ready(function(){janal.readingMode('#{kalanAhorrosAccion.attrs.nombreAccion}');});
+			$(document).ready(function(){ 
+        janal.readingMode('#{kalanAhorrosAccion.attrs.nombreAccion}');
+        reload();
+      });
     </script>
   </ui:define>
   <ui:define name="contenido">
@@ -40,7 +43,7 @@
             <p:tab title="General">
               <p:panelGrid id="ahorros" columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idEmpresa" value="Sucursal:"/>
-                <p:selectOneMenu id="idEmpresa" value="#{kalanAhorrosAccion.ahorro.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idEmpresa" value="#{kalanAhorrosAccion.ahorro.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{kalanAhorrosAccion.isEdit}">
                   <p:ajax event="change" listener="#{kalanAhorrosAccion.doLoadCuentas}" process="@this" update="idEmpresaCuenta"/>
                   <f:selectItems value="#{kalanAhorrosAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Siglas" styleClass="janal-wid-30">
@@ -51,7 +54,7 @@
                   </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
-                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanAhorrosAccion.ahorro.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanAhorrosAccion.ahorro.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{kalanAhorrosAccion.isEdit}">
                   <f:selectItems value="#{kalanAhorrosAccion.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                   <p:column headerText="Banco" styleClass="janal-wid-30">
                     <h:outputText value="#{item.banco}"/>
@@ -64,7 +67,7 @@
                   </p:column>   
                 </p:selectOneMenu>
                 <p:outputLabel for="idEmpresaPersona" value="Empleado:"/>
-                <p:autoComplete id="idEmpresaPersona" var="custom" placeholder="Ej: JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanAhorrosAccion.ahorro.ikEmpresaPersona}" completeMethod="#{kalanPrestamosFiltro.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                <p:autoComplete id="idEmpresaPersona" var="custom" placeholder="Ej: JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanAhorrosAccion.ahorro.ikEmpresaPersona}" completeMethod="#{kalanPrestamosFiltro.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" disabled="#{kalanAhorrosAccion.isEdit}" readonly="#{kalanAhorrosAccion.isEdit}">
                   <f:facet name="itemtip">
                     <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
                       <h:outputText value="RFC:" />
@@ -81,11 +84,11 @@
                 <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-34, janal-wid-33, janal-wid-33">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="fechaAplicacion" value="Fecha aplicación:"/>
-                    <p:calendar id="fechaAplicacion" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanAhorrosAccion.ahorro.fechaAplicacion}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+                    <p:calendar id="fechaAplicacion" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanAhorrosAccion.ahorro.fechaAplicacion}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario" disabled="#{kalanAhorrosAccion.isEdit}" readonly="#{kalanAhorrosAccion.isEdit}"/>
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="inicia" value="Inicia:"/>
-                    <p:inputNumber id="inicia" value="#{kalanAhorrosAccion.ahorro.inicia}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                    <p:inputNumber id="inicia" value="#{kalanAhorrosAccion.ahorro.inicia}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" disabled="#{kalanAhorrosAccion.isEdit}" readonly="#{kalanAhorrosAccion.isEdit}"/>
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="importe" value="Importe:"/>
@@ -97,7 +100,7 @@
                 <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-34, janal-wid-33, janal-wid-33">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="fechaArranque" value="Fecha arranque: (#{kalanAhorrosAccion.attrs.dia})"/>
-                    <p:calendar id="fechaArranque" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanAhorrosAccion.ahorro.fechaArranque}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario">
+                    <p:calendar id="fechaArranque" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanAhorrosAccion.ahorro.fechaArranque}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario" disabled="#{kalanAhorrosAccion.isEdit}" readonly="#{kalanAhorrosAccion.isEdit}">
                       <p:ajax event="dateSelect" listener="#{kalanAhorrosAccion.doUpdateLimite()}" process="@this plazo limite" update="@(.limite)"/>
                     </p:calendar>  
                   </p:panelGrid>  
@@ -115,6 +118,7 @@
                 <p:outputLabel for="limite" value="Limite:"/>
                 <p:calendar id="limite" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100-txt limite" value="#{kalanAhorrosAccion.ahorro.limite}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario" disabled="true"/>
               </p:panelGrid>
+              <p:remoteCommand name="reload" process="@this" update="idEmpresa idEmpresaCuenta idEmpresaPersona fechaAplicacion fechaArranque"/>
             </p:tab>						
             <p:tab title="Cuotas">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
@@ -131,7 +135,7 @@
                 </p:selectOneMenu>	
                 <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                    <p:outputLabel for="idBanco" value="Banco:" styleClass="banco medios#{kalanAhorrosAccion.ahorro.ikTipoMedioPago eq '1'? 'janal-display-none': ''}"/>
+                    <p:outputLabel for="idBanco" value="Banco:" styleClass="banco #{kalanAhorrosAccion.ahorro.ikTipoMedioPago eq '1'? 'janal-display-none': ''}"/>
                     <p:selectOneMenu id="idBanco" value="#{kalanAhorrosAccion.ahorro.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt banco #{kalanAhorrosAccion.ahorro.ikTipoMedioPago eq '1'? 'janal-display-none': ''}" converter="janal.convertidor.Entity">
                       <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                       <f:selectItems value="#{kalanAhorrosAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
