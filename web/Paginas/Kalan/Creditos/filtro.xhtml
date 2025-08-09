@@ -176,7 +176,7 @@
               <p:commandButton icon="fa fa-search" process="@this tabla" update="detalle @(.total)" actionListener="#{kalanCreditosFiltro.doView(row)}" title="Ver pagos"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel styleClass="detalle janal-align-left" value="#{kalanCreditosFiltro.general}" escape="false"/>
+              <p:outputLabel styleClass="total janal-align-left" value="#{kalanCreditosFiltro.general}" escape="false"/>
               <p:outputLabel value="Total [#{kalanCreditosFiltro.lazyModel== null? 0: kalanCreditosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
@@ -192,7 +192,7 @@
             <p:menuitem value="Pago" icon="fa fa-dollar" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanCreditosFiltro.doAfectaciones}" rendered="#{fn:contains('|2|6|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
           </p:contextMenu>
           <p:spacer height="3px"/>
-          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanCreditosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kalanCreditosFiltro.attrs.detalle}" selectionMode="single" paginator="#{kalanCreditosFiltro.lazyDetalle.rowCount gt kalanCreditosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="detalle" style="display: #{kalanCreditosFiltro.lazyDetalle eq null? 'none': ''}">
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanCreditosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kalanCreditosFiltro.lazyDetalle.rowCount gt kalanCreditosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="janal-wid-100-txt" style="display: #{kalanCreditosFiltro.lazyDetalle eq null? 'none': ''}">
             <f:facet name="header">
               <div class="lg-pantalla">
                 <p:outputLabel value="Pagos realizados al crédito [ #{kalanCreditosFiltro.attrs.seleccionado.consecutivo} ]" styleClass="total janal-color-white janal-align-left"/>

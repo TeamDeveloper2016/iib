@@ -15,6 +15,7 @@ import mx.org.kaana.kalan.db.dto.TcKalanAhorrosPagosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosBitacoraDto;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosDto;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -30,6 +31,9 @@ public class Transaccion extends IBaseTnx {
 	private TcKalanAhorrosBitacoraDto bitacora;
 	private String messageError;
 	
+	public Transaccion() {
+  }
+  
 	public Transaccion(Ahorro ahorro) {
 		this.ahorro= ahorro;
 	}
@@ -72,11 +76,16 @@ public class Transaccion extends IBaseTnx {
       Methods.clean(params);
     } // finally
 	}
+
+  public String getMessageError() {
+    return messageError;
+  }
   
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar= Boolean.FALSE;
     try {
+      this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" de ahorros ");
       switch(accion) {
         case AGREGAR:
           Siguiente consecutivo= this.toSiguiente(sesion);
@@ -112,9 +121,7 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					break;
         case COMPLEMENTAR:
-          this.afectacion.setIdAhorroControl(2L);
-          DaoFactory.getInstance().update(sesion, this.afectacion);
-          regresar= this.toCheckEstatus(sesion, Boolean.FALSE);
+          regresar= this.toCheckCuotas(sesion);
 					break;
         case DEPURAR:
           regresar= this.toDeletePago(sesion);
@@ -340,6 +347,29 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
+  }
+
+  private Boolean toCheckCuotas(Session sesion) throws Exception {
+    Boolean regresar          = Boolean.FALSE;
+    Map<String, Object> params= new HashMap<>();
+    Long cuotas               = 0L;
+    try {      
+      params.put("fecha", Fecha.getHoyEstandar());
+      cuotas= DaoFactory.getInstance().updateAll(sesion, TcKalanAhorrosPagosDto.class, params, "cuotas");
+      this.messageError= String.valueOf(cuotas);
+      if(cuotas> 0L) {
+        sesion.flush();
+        DaoFactory.getInstance().updateAll(sesion, TcKalanAhorrosDto.class, params, "cuotas");
+      } // if  
+      regresar= cuotas>= 0L;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
   }
   
 }

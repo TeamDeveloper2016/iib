@@ -96,7 +96,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(JsfBase.getFlashAttribute("idCreditoProcess")!= null) {
         this.attrs.put("idCreditoProcess", JsfBase.getFlashAttribute("idCreditoProcess"));
         this.doLoad();
-        this.attrs.put("idCreditoProcess", null);
       } // if
       this.toLoadEmpresas();
       this.toLoadEstatus();
@@ -206,8 +205,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb              = new StringBuilder();
 	  UISelectEntity acreedor       = (UISelectEntity)this.attrs.get("idAcreedor");
 		List<UISelectEntity>acreedores= (List<UISelectEntity>)this.attrs.get("acreedores");
-    if(!Cadena.isVacio(this.attrs.get("idCreditoProcess")) && !Objects.equals((Long)this.attrs.get("idCreditoProcess"), -1L)) 
+    if(!Cadena.isVacio(this.attrs.get("idCreditoProcess")) && !Objects.equals((Long)this.attrs.get("idCreditoProcess"), -1L))  {
       sb.append("(tc_kalan_creditos.id_credito=").append(this.attrs.get("idCreditoProcess")).append(") and ");
+      this.attrs.put("idCreditoProcess", null);
+    } // if  
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
   		sb.append("(tc_kalan_creditos.id_empresa= ").append(this.attrs.get("idEmpresa")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
@@ -384,7 +385,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       transaccion= new Transaccion(afectacion);
       transaccion.ejecutar(EAccion.DEPURAR);
       JsfBase.addMessage("Eliminar", "El movimiento se ha eliminado", ETipoMensaje.INFORMACION);
-      this.doView(row);
+      // this.doView(row);
+      this.attrs.put("idCreditoProcess", row.toLong("idCredito"));
+      this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

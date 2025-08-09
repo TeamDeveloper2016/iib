@@ -176,7 +176,7 @@
               <p:commandButton icon="fa fa-search" process="@this tabla" update="detalle @(.total)" actionListener="#{kalanAhorrosFiltro.doView(row)}" title="Ver pagos"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel styleClass="detalle janal-align-left" value="#{kalanAhorrosFiltro.general}" escape="false"/>
+              <p:outputLabel styleClass="total janal-align-left" value="#{kalanAhorrosFiltro.general}" escape="false"/>
               <p:outputLabel value="Total [#{kalanAhorrosFiltro.lazyModel== null? 0: kalanAhorrosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
@@ -192,7 +192,7 @@
             <p:menuitem value="Pago" icon="fa fa-dollar" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanAhorrosFiltro.doAfectaciones}" rendered="#{fn:contains('|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus)}"/>
           </p:contextMenu>
           <p:spacer height="3px"/>
-          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanAhorrosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{kalanAhorrosFiltro.attrs.detalle}" selectionMode="single" paginator="#{kalanAhorrosFiltro.lazyDetalle.rowCount gt kalanAhorrosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="detalle total" style="display: #{kalanAhorrosFiltro.lazyDetalle eq null? 'none': ''}">
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanAhorrosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="#{kalanAhorrosFiltro.lazyDetalle.rowCount gt kalanAhorrosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="janal-wid-100-txt" style="display: #{kalanAhorrosFiltro.lazyDetalle eq null? 'none': ''}">
             <f:facet name="header">
               <div class="lg-pantalla">
                 <p:outputLabel value="Pagos realizados al ahorro [ #{kalanAhorrosFiltro.attrs.seleccionado.consecutivo} ]" styleClass="total janal-color-white janal-align-left"/>
@@ -268,7 +268,7 @@
               <p:commandButton icon="fa fa-trash" process="@this detalle" update="dialogoPagos" actionListener="#{kalanAhorrosFiltro.doSelectDetalle(row)}" onstart="return janal.bloquear()" oncomplete="PF('dlgPagos').show()" title="Eliminar pago"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel styleClass="detalle janal-align-left janal-color-blue" value="#{kalanAhorrosFiltro.total}" escape="false"/>
+              <p:outputLabel styleClass="total janal-align-left janal-color-blue" value="#{kalanAhorrosFiltro.total}" escape="false"/>
               <p:outputLabel value="Total [#{kalanAhorrosFiltro.lazyDetalle== null? 0: kalanAhorrosFiltro.lazyDetalle.rowCount}] registros" styleClass="total"/>
             </f:facet>
           </p:dataTable>    
@@ -281,7 +281,7 @@
         </div>
       </div>
     </div>		           				
-		<p:dialog id="dialogoPagos" widgetVar="dlgPagos" header="Esta seguro de eliminar movimiento ?" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="40%" onHide="janal.desbloquear()">
+    <p:dialog id="dialogoPagos" widgetVar="dlgPagos" header="Esta seguro de eliminar movimiento ?" dynamic="true" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="40%" onHide="janal.desbloquear()">
       <h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">
         <p:outputLabel value="Consecutivo:"/>												
         <p:outputLabel value="#{kalanAhorrosFiltro.attrs.detalle.consecutivo}"/>
@@ -296,8 +296,8 @@
       </h:panelGrid>
       <hr class="ui-widget-content"/>
       <div class="janal-line-button">
-        <p:commandButton icon="fa fa-check" process="@this dialogoPagos" update="tabla detalle" value="Aceptar" actionListener="#{kalanAhorrosFiltro.doDeletePago(kalanAhorrosFiltro.attrs.detalle)}" oncomplete="PF('dlgPagos').hide();"/>
-        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagos').hide(); return true" oncomplete="janal.desbloquear();"/>
+        <p:commandButton icon="fa fa-check" process="@this dialogoPagos" update="tabla detalle @(.total)" value="Aceptar" actionListener="#{kalanAhorrosFiltro.doDeletePago(kalanAhorrosFiltro.attrs.detalle)}" oncomplete="PF('dlgPagos').hide();"/>
+        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagos').hide(); return true" oncomplete="janal.desbloquear()"/>
       </div>
 		</p:dialog>
   </ui:define>    
@@ -321,7 +321,7 @@
     </h:panelGrid>			
   </ui:define>
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="40%" onShow="janal.change('formDialogoEstatus', fields); janal.refresh();" onHide="janal.desbloquear(); janal.restore();  janal.refresh()">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="40%" onShow="janal.change('formDialogoEstatus', fields); janal.refresh()" onHide="janal.desbloquear(); janal.restore();  janal.refresh()">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<p:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
@@ -333,7 +333,7 @@
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla detalle" value="Aceptar" actionListener="#{kalanAhorrosFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear()"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla detalle @(.total)" value="Aceptar" actionListener="#{kalanAhorrosFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear()"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide()"/>
 				</div>
 			</h:form>

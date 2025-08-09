@@ -182,7 +182,7 @@
               <p:commandButton icon="fa fa-search" process="@this tabla" update="detalle @(.total)" actionListener="#{kalanPrestamosFiltro.doView(row)}" title="Ver pagos"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel styleClass="detalle janal-align-left" value="#{kalanPrestamosFiltro.general}" escape="false"/>
+              <p:outputLabel styleClass="total janal-align-left" value="#{kalanPrestamosFiltro.general}" escape="false"/>
               <p:outputLabel value="Total [#{kalanPrestamosFiltro.lazyModel== null? 0: kalanPrestamosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
@@ -198,7 +198,7 @@
             <p:menuitem value="Pago" icon="fa fa-dollar" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanPrestamosFiltro.doAfectaciones}" rendered="#{fn:contains('|2|6|', kalanPrestamosFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
           </p:contextMenu>
           <p:spacer height="3px"/>
-          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanPrestamosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" selection="#{kalanPrestamosFiltro.attrs.detalle}" selectionMode="single" paginator="#{kalanPrestamosFiltro.lazyDetalle.rowCount gt kalanPrestamosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="detalle total" style="display: #{kalanPrestamosFiltro.lazyDetalle eq null? 'none': ''}">
+          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanPrestamosFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="#{kalanPrestamosFiltro.lazyDetalle.rowCount gt kalanPrestamosFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="janal-wid-100-txt" style="display: #{kalanPrestamosFiltro.lazyDetalle eq null? 'none': ''}">
             <f:facet name="header">
               <div class="lg-pantalla">
                 <p:outputLabel value="Pagos realizados al prestamo [ #{kalanPrestamosFiltro.attrs.seleccionado.consecutivo} ]" styleClass="total janal-color-white janal-align-left"/>
@@ -302,7 +302,7 @@
       </h:panelGrid>
       <hr class="ui-widget-content"/>
       <div class="janal-line-button">
-        <p:commandButton icon="fa fa-check" process="@this dialogoPagos" update="tabla detalle" value="Aceptar" actionListener="#{kalanPrestamosFiltro.doDeletePago(kalanPrestamosFiltro.attrs.detalle)}" oncomplete="PF('dlgPagos').hide();"/>
+        <p:commandButton icon="fa fa-check" process="@this dialogoPagos" update="tabla detalle @(.total)" value="Aceptar" actionListener="#{kalanPrestamosFiltro.doDeletePago(kalanPrestamosFiltro.attrs.detalle)}" oncomplete="PF('dlgPagos').hide();"/>
         <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagos').hide(); return true" oncomplete="janal.desbloquear();"/>
       </div>
 		</p:dialog>

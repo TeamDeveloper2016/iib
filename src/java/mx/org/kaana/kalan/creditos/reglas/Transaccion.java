@@ -75,6 +75,7 @@ public class Transaccion extends IBaseTnx {
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar= Boolean.FALSE;
     try {
+      this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" de creditos ");
       switch(accion) {
         case AGREGAR:
           Siguiente consecutivo= this.toSiguiente(sesion);

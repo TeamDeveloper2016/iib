@@ -96,7 +96,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(JsfBase.getFlashAttribute("idPrestamoProcess")!= null) {
         this.attrs.put("idPrestamoProcess", JsfBase.getFlashAttribute("idPrestamoProcess"));
         this.doLoad();
-        this.attrs.put("idPrestamoProcess", null);
       } // if
       this.toLoadEmpresas();
       this.toLoadEstatus();
@@ -202,8 +201,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb              = new StringBuilder();
 	  UISelectEntity empleado       = (UISelectEntity)this.attrs.get("idEmpresaPersona");
 		List<UISelectEntity>empleados = (List<UISelectEntity>)this.attrs.get("empleados");
-    if(!Cadena.isVacio(this.attrs.get("idPrestamoProcess")) && !Objects.equals((Long)this.attrs.get("idPrestamoProcess"), -1L)) 
+    if(!Cadena.isVacio(this.attrs.get("idPrestamoProcess")) && !Objects.equals((Long)this.attrs.get("idPrestamoProcess"), -1L)) {
       sb.append("(tc_kalan_prestamos.id_prestamo=").append(this.attrs.get("idPrestamoProcess")).append(") and ");
+      this.attrs.put("idPrestamoProcess", null);
+    } // if  
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !Objects.equals(((UISelectEntity)this.attrs.get("idEmpresa")).getKey(), -1L))
   		sb.append("(tr_mantic_empresa_personal.id_empresa= ").append(this.attrs.get("idEmpresa")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
@@ -384,7 +385,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       transaccion= new Transaccion(afectacion);
       transaccion.ejecutar(EAccion.DEPURAR);
       JsfBase.addMessage("Eliminar", "El movimiento se ha eliminado", ETipoMensaje.INFORMACION);
-      this.doView(row);
+      // this.doView(row);
+      this.attrs.put("idPrestamoProcess", row.toLong("idPrestamo"));
+      this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
