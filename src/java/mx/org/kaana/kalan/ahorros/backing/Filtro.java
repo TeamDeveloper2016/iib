@@ -385,9 +385,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       transaccion= new Transaccion(afectacion);
       transaccion.ejecutar(EAccion.DEPURAR);
       JsfBase.addMessage("Eliminar", "La cuota se ha eliminado", ETipoMensaje.INFORMACION);
-      // this.doView(row);
       this.attrs.put("idAhorroProcess", row.toLong("idAhorro"));
       this.doLoad();
+      this.doView(row);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
