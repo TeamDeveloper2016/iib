@@ -75,7 +75,7 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
   }
 
   public TcKalanCreditosDto(Long key) {
-    this(1L, new Long(-1L), 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 0D, 1L, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
+    this(1L, new Long(-1L), 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 0D, 1L, null, null, 1L, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
     setKey(key);
   }
 

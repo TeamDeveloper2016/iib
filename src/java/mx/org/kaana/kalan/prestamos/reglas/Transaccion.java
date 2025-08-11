@@ -83,7 +83,6 @@ public class Transaccion extends IBaseTnx {
           this.prestamo.setEjercicio(consecutivo.getEjercicio());
           this.prestamo.setOrden(consecutivo.getOrden());
           this.prestamo.setIdUsuario(JsfBase.getIdUsuario());
-          this.prestamo.setIdPrestamoEstatus(Objects.equals(accion, EAccion.AGREGAR)? 1L: 2L);
           this.prestamo.setSaldo(this.prestamo.getImporte());
           regresar= DaoFactory.getInstance().insert(sesion, this.prestamo)>= 0L;
           this.toBitacora(sesion, this.prestamo.getIdPrestamoEstatus());

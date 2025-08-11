@@ -32,7 +32,7 @@
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
           <p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" process="@this" update="contenedorGrupos" oncomplete="janal.refresh()"/>
+            <p:ajax event="tabChange" process="@this" oncomplete="janal.refresh()"/>
             <p:tab title="General">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:outputLabel for="idEmpresa" value="Sucursal:"/>
@@ -84,7 +84,7 @@
                     <p:inputNumber id="importe" value="#{kalanCreditosAccion.credito.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
                   </p:panelGrid>  
                   <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                    <p:outputLabel for="tasa" value="Tasa (%):"/>
+                    <p:outputLabel for="tasa" value="Tasa anual (%):"/>
                     <p:inputNumber id="tasa" value="#{kalanCreditosAccion.credito.tasa}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
                   </p:panelGrid>  
                 </p:panelGrid>  

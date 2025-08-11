@@ -83,7 +83,6 @@ public class Transaccion extends IBaseTnx {
           this.credito.setEjercicio(consecutivo.getEjercicio());
           this.credito.setOrden(consecutivo.getOrden());
           this.credito.setIdUsuario(JsfBase.getIdUsuario());
-          this.credito.setIdCreditoEstatus(Objects.equals(accion, EAccion.AGREGAR)? 1L: 2L);
           this.credito.setSaldo(this.credito.getImporte());
           regresar= DaoFactory.getInstance().insert(sesion, this.credito)>= 0L;
           this.toBitacora(sesion, this.credito.getIdCreditoEstatus());

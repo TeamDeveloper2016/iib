@@ -1104,6 +1104,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doUpdateSaldo() {
     Map<String, Object> params= new HashMap<>();
     try {      
+      params.put("idPrestamo", -1L);      
       params.put("idEmpresaPersona", this.registroPersona.getEmpresaPersona().getIdEmpresaPersona());      
       Entity saldo= (Entity)DaoFactory.getInstance().toEntity("VistaPrestamosDto", "disponible", params);
       if(!Objects.equals(saldo, null) && !saldo.isEmpty()) {

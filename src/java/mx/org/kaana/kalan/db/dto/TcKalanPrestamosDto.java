@@ -76,7 +76,7 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
   }
 
   public TcKalanPrestamosDto(Long key) {
-    this(1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, null, null, null, new Long(-1L), null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
+    this(1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 1L, null, null, new Long(-1L), null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
     setKey(key);
   }
 

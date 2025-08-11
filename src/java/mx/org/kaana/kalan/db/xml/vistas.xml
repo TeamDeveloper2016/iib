@@ -152,8 +152,8 @@ select
   ifnull(count(distinct(tc_kalan_prestamos.id_prestamo)), 0) as cantidad,
   ifnull(sum(tc_kalan_prestamos.importe), 0) as prestamos,
   ifnull(tt_kalan_prestamos_pagos.abonado, 0) as abonado,
-  ifnull(sum(tc_kalan_prestamos.importe)- tt_kalan_prestamos_pagos.abonado, 0) as saldo,
-  ifnull(tr_mantic_empresa_personal.limite- tt_kalan_prestamos_pagos.abonado, 0) as disponible
+  ifnull(sum(tc_kalan_prestamos.importe)- ifnull(tt_kalan_prestamos_pagos.abonado, 0), 0) as saldo,
+  ifnull(tr_mantic_empresa_personal.limite- sum(tc_kalan_prestamos.importe)- ifnull(tt_kalan_prestamos_pagos.abonado, 0), 0) as disponible 
 from
   tc_kalan_prestamos
 inner join
@@ -164,12 +164,15 @@ left join (
     ifnull(sum(if(tc_kalan_prestamos_pagos.id_tipo_afectacion= 2, tc_kalan_prestamos_pagos.importe, -1* tc_kalan_prestamos_pagos.importe)), 0) as abonado
   from
     tc_kalan_prestamos_pagos
+  where
+    tc_kalan_prestamos_pagos.id_prestamo!= {idPrestamo}
   group by  
     tc_kalan_prestamos_pagos.id_prestamo
 ) as tt_kalan_prestamos_pagos on tc_kalan_prestamos.id_prestamo= tt_kalan_prestamos_pagos.id_prestamo
 where
   tc_kalan_prestamos.id_prestamo_estatus in (1, 2, 6) 
   and tc_kalan_prestamos.id_empresa_persona= {idEmpresaPersona}
+  and tc_kalan_prestamos.id_prestamo!= {idPrestamo}
 group by   
   tc_kalan_prestamos.id_empresa_persona
       </select>  

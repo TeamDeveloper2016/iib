@@ -117,10 +117,9 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {
-      if(Objects.equals(this.afectacion.getIdTipoMedioPago(), ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) {
-        this.afectacion.setIdBanco(null);
+      this.afectacion.setIdBanco(null);
+      if(Objects.equals(this.afectacion.getIdTipoMedioPago(), ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) 
         this.afectacion.setReferencia(null);
-      } // if  
       transaccion= new Transaccion(this.credito, this.afectacion);
       if(transaccion.ejecutar(this.accion)) {
         regresar= this.doCancelar();
