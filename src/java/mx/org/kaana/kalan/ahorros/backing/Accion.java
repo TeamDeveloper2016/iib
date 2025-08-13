@@ -416,7 +416,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       for (Afectacion item: this.ahorro.getCuotas()) {
         if(Objects.equals(item.getIdAhorroControl(), 1L)) {
           item.setIdTipoMedioPago(this.ahorro.getIkTipoMedioPago().getKey());
-          item.setIdBanco(Objects.equals(this.ahorro.getIkBanco().getKey(), -1L)? null: this.ahorro.getIkBanco().getKey());
+          item.setIdBanco(null);
+          // item.setIdBanco(Objects.equals(this.ahorro.getIkBanco().getKey(), -1L)? null: this.ahorro.getIkBanco().getKey());
           item.setReferencia(this.ahorro.getReferencia());
           item.setMedios(medios);
           if(Objects.equals(item.getSql(), ESql.SELECT))

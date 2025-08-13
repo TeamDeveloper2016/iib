@@ -368,6 +368,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return row.toDouble("efectivo")> row.toDouble("limite")? "janal-tr-orange": "";
 	} 
   
+  public void doPrintCorte(Entity seleccionado) {  
+    this.attrs.put("seleccionado", seleccionado);
+    this.doPrintCorte();
+  }
+  
   public void doPrintCorte() {  
     CreateCorteCaja corte      = null;
     Long idCierre              = -1L;

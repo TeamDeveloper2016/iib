@@ -153,7 +153,7 @@ select
   ifnull(sum(tc_kalan_prestamos.importe), 0) as prestamos,
   ifnull(tt_kalan_prestamos_pagos.abonado, 0) as abonado,
   ifnull(sum(tc_kalan_prestamos.importe)- ifnull(tt_kalan_prestamos_pagos.abonado, 0), 0) as saldo,
-  ifnull(tr_mantic_empresa_personal.limite- sum(tc_kalan_prestamos.importe)- ifnull(tt_kalan_prestamos_pagos.abonado, 0), 0) as disponible 
+  ifnull(tr_mantic_empresa_personal.limite- sum(tc_kalan_prestamos.importe)+ ifnull(tt_kalan_prestamos_pagos.abonado, 0), 0) as disponible 
 from
   tc_kalan_prestamos
 inner join

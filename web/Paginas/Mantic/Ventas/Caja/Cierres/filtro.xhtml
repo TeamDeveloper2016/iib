@@ -175,7 +175,7 @@
               </p:column>		
               <p:column styleClass="MarAuto Responsive janal-fix-10 janal-column-center" exportable="false">
                 <p:commandButton icon="fa fa-search" title="Detalle ventas" actionListener="#{manticVentasCajaCierresFiltro.doDetalle(row)}" process="@this" update="tablaDetalle @(.detalle)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-                <p:commandButton icon="ui-icon-print" title="Ticket" action="#{manticVentasCajaCierresFiltro.doPrintCorte}" rendered="#{row.estatus == 'TERMINADO'}">
+                <p:commandButton icon="ui-icon-print" title="Ticket" actionListener="#{manticVentasCajaCierresFiltro.doPrintCorte(row)}" rendered="#{row.estatus == 'TERMINADO'}">
                   <f:setPropertyActionListener value="#{row}" target="#{manticVentasCajaCierresFiltro.attrs.seleccionado}" />
                 </p:commandButton>
               </p:column>

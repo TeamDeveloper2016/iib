@@ -18,7 +18,7 @@ public class CreateCorteCaja {
 	
 	public CreateCorteCaja(CorteCaja corte) {
 		this.corte = corte;
-		init();
+		this.init();
 	}
 	
 	private void init() {		
@@ -40,16 +40,16 @@ public class CreateCorteCaja {
   
 	public String toHtml() throws Exception {
 		StringBuilder sb= new StringBuilder();
-		sb.append(toHeader());
-		sb.append(toBlackBar());
-		sb.append(toCorteCaja());
-		sb.append(toFoliosTicketDevoluciones());		
-		sb.append(toResumen());
-		sb.append(toDevolucionesGarantias());
-		sb.append(toRetirosIngresos());
-		sb.append(toDiferenciasVsCapturado());
-		sb.append(toFondoInicial());
-		sb.append(toFondoApertura());
+		sb.append(this.toHeader());
+		sb.append(this.toBlackBar());
+		sb.append(this.toCorteCaja());
+		sb.append(this.toFoliosTicketDevoluciones());		
+		sb.append(this.toResumen());
+		sb.append(this.toDevolucionesGarantias());
+		sb.append(this.toRetirosIngresos());
+		sb.append(this.toDiferenciasVsCapturado());
+		sb.append(this.toFondoInicial());
+		sb.append(this.toFondoApertura());
 		sb.append("</div>");	
 		return sb.toString();
 	} // toHtml
@@ -144,7 +144,7 @@ public class CreateCorteCaja {
     regresar.append("<p style=\"width: 290px;text-align: left;align-content: center;font-family: sans-serif;font-size: 10px;\">");
     regresar.append("<b>Cajero(s):</b>");
     regresar.append("<br>");	
-    regresar.append(toCajerosCierre());
+    regresar.append(this.toCajerosCierre());
     regresar.append("<br>");
 		regresar.append("</p>");		
     return regresar.toString();
@@ -179,7 +179,7 @@ public class CreateCorteCaja {
 	
 	private String toResumen() {				
 		StringBuilder regresar= new StringBuilder();			
-    regresar.append(toTable());
+    regresar.append(this.toTable());
     regresar.append("<tbody>");
     regresar.append("<tr>");
     regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 145px; max-width: 145px;\">").append("Efectivo: ").append("</td>");
@@ -231,7 +231,7 @@ public class CreateCorteCaja {
     if(this.corte.getGarantias().size()>0) {
       regresar.append("<table style=\"width: 290px;\">");		
       regresar.append("<tbody>");
-      for(Entity garantia : this.corte.getGarantias()) {
+      for(Entity garantia: this.corte.getGarantias()) {
         regresar.append("<tr>");
         regresar.append("<td style=\"font-family: sans-serif;font-size: 10px;width: 98px; max-width: 98px;\">").append(garantia.toString("consecutivo")).append("</td>");
         regresar.append("<td align=\"center\" style=\"font-family: sans-serif;font-size: 10px;width: 96px; max-width: 96px;\">").append(" por ").append("</td>");
