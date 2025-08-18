@@ -191,8 +191,11 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
     Afectacion afectacion= null;
     try {
       Calendar calendar= Calendar.getInstance();
-      if(Objects.equals(this.getIdAhorroEstatus(), 1) || Objects.equals(this.getIdAhorroEstatus(), 2)) {
-        calendar.setTimeInMillis(this.getLimite().getTime());
+      if(Objects.equals(this.getIdAhorroEstatus(), 1L) || Objects.equals(this.getIdAhorroEstatus(), 2L)) {
+        if(this.getCuotas().isEmpty())
+          calendar.setTimeInMillis(this.getLimite().getTime());
+        else
+          calendar.setTimeInMillis(this.getCuotas().get(this.getCuotas().size()- 1).getFechaPago().getTime());
         calendar.add(Calendar.DATE, this.getPlazo().intValue());
       } // if  
       afectacion= new Afectacion(this.getImporte(), new Date(calendar.getTimeInMillis()));

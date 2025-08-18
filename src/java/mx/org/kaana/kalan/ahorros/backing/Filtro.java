@@ -85,12 +85,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-    String cargos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(cargo));
-    String abonos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(abono));
+    String pagado  = Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(cargo));
+    String ahorrado= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(abono));
     Double inicia= 0D;
     if(!Objects.equals(this.attrs.get("seleccionado"), null)) 
       inicia= ((Entity)this.attrs.get("seleccionado")).toDouble("inicio");
-    return "Inicia: <strong>"+ inicia+ "</strong> | cargos: <strong>"+ cargos+ "</strong> | abonos: <strong>"+ abonos+ "</strong> | saldo: <strong>"+ Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(inicia+ abono- cargo))+ "</strong>";  
+    return "Inicia: <strong>"+ inicia+ "</strong> | ahorrado: <strong>"+ ahorrado+ "</strong> | pagado: <strong>"+ pagado+ "</strong> | saldo: <strong>"+ Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(inicia+ abono- cargo))+ "</strong>";  
   }
   
   @PostConstruct
