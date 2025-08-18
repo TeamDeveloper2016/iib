@@ -60,9 +60,11 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
   
   public String getGeneral() {
-    String inicia   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("inicia"));
-    String acumulado= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("acumulado"));
-    return "Suma inicia: <strong>"+ inicia+ "</strong> | cuotas: <strong>"+ acumulado+ "</strong>";  
+    String inicia  = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("inicia"));
+    String ahorrado= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("ahorrado"));
+    String pagado  = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("pagado"));
+    String saldo   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("inicia")+ ((Entity)this.attrs.get("general")).toDouble("ahorrado")- ((Entity)this.attrs.get("general")).toDouble("pagado"));
+    return "Suma inicia: <strong>"+ inicia+ "</strong> | ahorrado: <strong>"+ ahorrado+ "</strong> | pagado: <strong>"+ pagado+ "</strong> | saldo: <strong>"+ saldo+ "</strong>";  
   }
   
   public String getTotal() {
@@ -85,7 +87,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
     String cargos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(cargo));
     String abonos= Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(abono));
-    return "Suma cuotas: <strong>"+ abonos+ "</strong>";  
+    Double inicia= 0D;
+    if(!Objects.equals(this.attrs.get("seleccionado"), null)) 
+      inicia= ((Entity)this.attrs.get("seleccionado")).toDouble("inicio");
+    return "Inicia: <strong>"+ inicia+ "</strong> | cargos: <strong>"+ cargos+ "</strong> | abonos: <strong>"+ abonos+ "</strong> | saldo: <strong>"+ Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.toRedondearSat(inicia+ abono- cargo))+ "</strong>";  
   }
   
   @PostConstruct
@@ -117,7 +122,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empleado", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("inicia", EFormatoDinamicos.MILES_CON_DECIMALES));
-      columns.add(new Columna("acumulado", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("ahorrado", EFormatoDinamicos.MILES_CON_DECIMALES));
+      columns.add(new Columna("pagado", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("fechaAplicacion", EFormatoDinamicos.FECHA_CORTA));
@@ -416,7 +422,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   private Entity toEmptyTotales() {
     Entity regresar= new Entity(-1L);
     regresar.put("inicia", new Value("inicia", 0D));
-    regresar.put("acumulado", new Value("acumulado", 0D));
+    regresar.put("ahorrado", new Value("acumulado", 0D));
+    regresar.put("pagado", new Value("acumulado", 0D));
     return regresar;
   }
   

@@ -147,4 +147,11 @@ public class Gasto extends TcKalanEmpresasGastosDto implements Serializable {
     regresar.setRegistro(this.getRegistro());
     return regresar;
   }
+
+  @Override
+  public Class toHbmClass() {
+    return TcKalanEmpresasGastosDto.class;
+  }
+  
+  
 }

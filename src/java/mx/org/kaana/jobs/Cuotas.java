@@ -31,7 +31,7 @@ public class Cuotas implements Job, Serializable {
 //			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
         LOG.error("VERIFICANDO CUOTAS A APLICAR");
         transaccion= new Transaccion();     
-        transaccion.ejecutar(EAccion.COMPLEMENTAR);
+        transaccion.ejecutar(EAccion.REGISTRAR);
         LOG.error("SE ACTUALIZARON: "+ transaccion.getMessageError()+ " CUOTAS");
 //			} // if
 	  } // try

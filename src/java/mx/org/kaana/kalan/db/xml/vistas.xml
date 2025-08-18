@@ -18,10 +18,12 @@ select
   concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, '')) as empleado,
   tc_kalan_ahorros.nombre,
   tc_kalan_ahorros.inicia,
+  tc_kalan_ahorros.inicia as inicio,
   tc_kalan_ahorros_estatus.nombre as estatus,
   tc_kalan_ahorros_estatus.estatus_asociados,
-  ifnull(tt_kalan_ahorros.pagado, 0) as acumulado,        
-  ifnull(tt_kalan_ahorros.pagado, 0)+ tc_kalan_ahorros.inicia as total,
+  ifnull(tt_kalan_ahorros.pagado, 0) as pagado,
+  ifnull(tt_kalan_ahorros.ahorrado, 0) as ahorrado,
+  tc_kalan_ahorros.inicia+ ifnull(tt_kalan_ahorros.ahorrado, 0)- ifnull(tt_kalan_ahorros.pagado, 0) as total,
   tc_kalan_ahorros.fecha_aplicacion
 from   
   tc_kalan_ahorros
@@ -37,13 +39,14 @@ left join (
 	select
 	  tc_kalan_ahorros.id_ahorro,
 		tc_kalan_ahorros.id_empresa_persona,
-		sum(tc_kalan_ahorros_pagos.importe) as pagado
+		sum(if(tc_kalan_ahorros_pagos.id_tipo_afectacion= 1, tc_kalan_ahorros_pagos.importe, 0)) as pagado,
+		sum(if(tc_kalan_ahorros_pagos.id_tipo_afectacion= 2, tc_kalan_ahorros_pagos.importe, 0)) as ahorrado
 	from
 		tc_kalan_ahorros
 	inner join
 	  tc_kalan_ahorros_pagos on tc_kalan_ahorros.id_ahorro= tc_kalan_ahorros_pagos.id_ahorro
 	where
-		tc_kalan_ahorros_pagos.id_ahorro_control= 2
+		tc_kalan_ahorros_pagos.id_ahorro_control in (2, 4)
 	group by   
 		tc_kalan_ahorros.id_ahorro, 
 		tc_kalan_ahorros.id_empresa_persona        
@@ -57,7 +60,8 @@ where
 select 
   ifnull(tc_kalan_ahorros.id_ahorro, -1) as id_key,
   ifnull(sum(tc_kalan_ahorros.inicia), 0) as inicia,
-  ifnull(sum(tt_kalan_ahorros.acumulado), 0) as acumulado
+  ifnull(sum(tt_kalan_ahorros.ahorrado), 0) as ahorrado,
+  ifnull(sum(tt_kalan_ahorros.pagado), 0) as pagado
 from   
   tc_kalan_ahorros
 inner join  
@@ -72,13 +76,14 @@ inner join (
 	select
 	  tc_kalan_ahorros.id_ahorro,
 		tc_kalan_ahorros.id_empresa_persona,
-		sum(tc_kalan_ahorros_pagos.importe) as acumulado
+		sum(if(tc_kalan_ahorros_pagos.id_tipo_afectacion= 1, tc_kalan_ahorros_pagos.importe, 0)) as pagado,
+		sum(if(tc_kalan_ahorros_pagos.id_tipo_afectacion= 2, tc_kalan_ahorros_pagos.importe, 0)) as ahorrado
 	from
 		tc_kalan_ahorros
 	inner join
 	  tc_kalan_ahorros_pagos on tc_kalan_ahorros.id_ahorro= tc_kalan_ahorros_pagos.id_ahorro
 	where
-		tc_kalan_ahorros_pagos.id_ahorro_control= 2
+		tc_kalan_ahorros_pagos.id_ahorro_control in (2, 4)
 	group by   
 		tc_kalan_ahorros.id_ahorro, 
 		tc_kalan_ahorros.id_empresa_persona        
@@ -114,7 +119,7 @@ inner join
 inner join
 	tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 where
-  tc_kalan_ahorros_pagos.id_ahorro_control= 2
+  tc_kalan_ahorros_pagos.id_ahorro_control in (2, 4)
   and tc_kalan_ahorros_pagos.id_ahorro= {idAhorro}
 {sortOrder}        
       </select>  

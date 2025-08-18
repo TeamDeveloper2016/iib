@@ -37,7 +37,7 @@ public class Afectacion extends TcKalanAhorrosPagosDto implements Serializable {
     super(Long.valueOf((int)(Math.random()* -1000000)));
     this.setIkEmpresa(new UISelectEntity(-1L));
     this.setIkEmpresaCuenta(new UISelectEntity(-1L));
-    this.setIkTipoAfectacion(new UISelectEntity(-1L));
+    this.setIkTipoAfectacion(new UISelectEntity(2L));
     this.setIkTipoMedioPago(new UISelectEntity(-1L));
     this.setIkBanco(new UISelectEntity(-1L));
     this.setImporte(importe);
@@ -46,6 +46,7 @@ public class Afectacion extends TcKalanAhorrosPagosDto implements Serializable {
     this.setFechaPago(fecha);
     this.setMedios("EFECTIVO");
     this.setEstatus("PROGRAMADO");
+    this.setReferencia(null);
     this.setSql(ESql.INSERT);
   }
 

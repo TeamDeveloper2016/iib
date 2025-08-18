@@ -43,6 +43,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   private EAccion accion;
   private Ahorro ahorro;
   private Long idAhorro;
+  private Double importe;
 
   public Ahorro getAhorro() {
     return ahorro;
@@ -116,9 +117,9 @@ public class Accion extends IBaseAttribute implements Serializable {
             this.ahorro.setIkBanco(new UISelectEntity(-1L));
           this.ahorro.setReferencia(this.ahorro.getCuotas().get(0).getReferencia());
           this.doLoadCuentas();
-          // CALCULAR CUANTAS CUOTAS YA FUERON AHORRADAS
           break;
       } // switch      
+      this.importe= this.ahorro.getImporte();
       this.toNameDayOfWeek();
     } // try 
     catch (Exception e) {
@@ -315,9 +316,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doUpdateImporte() {
     try {      
       for (Afectacion item: this.ahorro.getCuotas()) {
-        if(Objects.equals(1L, item.getIdAhorroControl()))
+        if(Objects.equals(1L, item.getIdAhorroControl()) && Objects.equals(this.importe, item.getImporte()))
           item.setImporte(this.ahorro.getImporte());
       } // for
+      this.importe= this.ahorro.getImporte();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -345,7 +347,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   
   public void doAgregar() {
     try {
-      this.ahorro.addCuota();
+      Afectacion afectacion= this.ahorro.addCuota();
+      this.doUpdateMedios();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -374,6 +377,8 @@ public class Accion extends IBaseAttribute implements Serializable {
         if(Objects.equals(this.accion, EAccion.AGREGAR)) 
     			this.ahorro.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity(tiposMediosPagos));
       } // if  
+      if(Objects.equals(this.accion, EAccion.AGREGAR))
+        this.doUpdateMedios();        
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -430,4 +435,15 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);      
     } // catch	
   }  
+  
+  public void doUpdateAhorro() {
+    try {      
+      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }
+  
 }

@@ -187,17 +187,22 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
     } // catch	
   }  
 
-  public void addCuota() throws Exception {
+  public Afectacion addCuota() throws Exception {
+    Afectacion afectacion= null;
     try {
       Calendar calendar= Calendar.getInstance();
-      calendar.setTimeInMillis(this.getLimite().getTime());
-      calendar.add(Calendar.DATE, this.getPlazo().intValue());
-      this.cuotas.add(new Afectacion(this.getImporte(), new Date(calendar.getTimeInMillis())));
+      if(Objects.equals(this.getIdAhorroEstatus(), 1) || Objects.equals(this.getIdAhorroEstatus(), 2)) {
+        calendar.setTimeInMillis(this.getLimite().getTime());
+        calendar.add(Calendar.DATE, this.getPlazo().intValue());
+      } // if  
+      afectacion= new Afectacion(this.getImporte(), new Date(calendar.getTimeInMillis()));
+      this.cuotas.add(afectacion);
       this.toUpdate();
     } // try
     catch (Exception e) {
       throw e;
     } // catch	
+    return afectacion;
   }
 
   public void prepare() throws Exception {

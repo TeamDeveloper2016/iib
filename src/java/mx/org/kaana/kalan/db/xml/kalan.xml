@@ -7,6 +7,60 @@
   </model>
 
   <dml>
+    <unit id="TcKalanCuentasMovimientosDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_cuentas_movimientos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_cuentas_movimientos
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+    </unit>    
+    <unit id="TcKalanCuentasEstatusDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_cuentas_estatus
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_cuentas_estatus
+where      
+  nombre = '{nombre}'
+      </select>
+    </unit>    
+    <unit id="TcKalanCuentasBitacoraDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_cuentas_bitacora
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_cuentas_bitacora
+where      
+  id_cuenta_bitacora = {idCuentaBitacora}
+      </select>
+    </unit>    
     <unit id="TcKalanAhorrosDto">
       <select id="row">
 select      
@@ -76,7 +130,7 @@ inner join (
     count(distinct(id_ahorro_pago)) as cantidad,
     sum(if(id_ahorro_control= 1, 1, 0)) as pendiente,
     max(registro) as registro,
-    sum(if(id_ahorro_control= 2, importe, 0)) as saldo
+    sum(if(id_tipo_afectacion= 2, importe, if(id_tipo_afectacion= 1, -1* importe, 0))) as saldo
   from  
     tc_kalan_ahorros_pagos
   group by
@@ -130,7 +184,7 @@ select
 from      
   tc_kalan_ahorros_pagos
 where      
-  id_ahorro_control in (1, 2)
+  id_ahorro_control in (1, 2, 4)
   and id_ahorro= {idAhorro}
 group by  
   id_ahorro
@@ -141,7 +195,7 @@ select
 from      
   tc_kalan_ahorros_pagos
 where      
-  id_ahorro_control= 2      
+  id_ahorro_control in (2, 4)
   and id_ahorro= {idAhorro}
       </select>
       <select id="siguiente">

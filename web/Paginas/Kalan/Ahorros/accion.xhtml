@@ -112,7 +112,7 @@
                     </p:inputNumber>
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100">
-                    <p:outputLabel for="pagos" value="Cuotas:"/>
+                    <p:outputLabel for="pagos" value="Ahorros:"/>
                     <p:inputNumber id="pagos" value="#{kalanAhorrosAccion.ahorro.pagos}" styleClass="janal-wid-100-txt limite" inputStyleClass="janal-column-right" minValue="1" decimalPlaces="0" decimalSeparator="." thousandSeparator="," converter="javax.faces.Long" readonly="true"/>
                   </p:panelGrid>  
                 </p:panelGrid>  
@@ -121,7 +121,7 @@
               </p:panelGrid>
               <p:remoteCommand name="reload" process="@this" update="idEmpresa idEmpresaCuenta idEmpresaPersona fechaAplicacion fechaArranque"/>
             </p:tab>						
-            <p:tab title="Cuotas">
+            <p:tab title="Ahorros">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
                 <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
                 <p:selectOneMenu id="idTipoMedioPago" value="#{kalanAhorrosAccion.ahorro.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt medios" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
@@ -169,22 +169,30 @@
                   <h:outputText value="#{index+ 1}.-"/>
                 </p:column>   
                 <p:column headerText="Observaciones">
-                  <p:inputText value="#{row.observaciones}" styleClass="janal-wid-100-txt" rendered="#{not row.isEdit}"/>
+                  <p:inputText value="#{row.observaciones}" styleClass="janal-wid-100-txt" rendered="#{not row.isEdit}">
+                    <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateAhorro()}" process="@this"/>
+                  </p:inputText>                    
                   <h:outputText styleClass="janal-column-center janal-wid-100-txt" value="#{row.observaciones}" rendered="#{row.isEdit}"/>
                 </p:column>   
                 <p:column headerText="Medio" styleClass="MarAuto Responsive janal-wid-15">
                   <h:outputText styleClass="janal-column-center janal-wid-100-txt" value="#{row.medios}"/>
                 </p:column>   
                 <p:column headerText="Importe" styleClass="MarAuto Responsive janal-wid-10 janal-column-right">
-                  <p:inputNumber value="#{row.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" rendered="#{not row.isEdit}"/>
+                  <p:inputNumber value="#{row.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double" rendered="#{not row.isEdit}">
+                    <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateAhorro()}" process="@this"/>
+                  </p:inputNumber>                    
                   <h:outputText styleClass="janal-column-center janal-wid-100-txt" value="#{row.importe}" rendered="#{row.isEdit}"/>
                 </p:column>   
                 <p:column headerText="Fecha aplicación" styleClass="MarAuto Responsive janal-wid-10 janal-column-center">
-                  <p:calendar inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{row.fechaAplicacion}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario" readonly="#{row.isEdit}" readonlyInput="#{row.isEdit}" rendered="#{not row.isEdit}"/>
+                  <p:calendar inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{row.fechaAplicacion}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario" readonly="#{row.isEdit}" readonlyInput="#{row.isEdit}" rendered="#{not row.isEdit}">
+                    <p:ajax event="dateSelect" listener="#{kalanAhorrosAccion.doUpdateAhorro()}" process="@this"/>
+                  </p:calendar>                    
                   <h:outputText styleClass="janal-column-center janal-wid-100-txt" value="#{row.fechaAplicacion}" converter="janal.convertidor.Calendario" rendered="#{row.isEdit}"/>
                 </p:column>   
-                <p:column headerText="Fecha cuota" styleClass="MarAuto Responsive janal-wid-10 janal-column-center">
-                  <p:calendar inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{row.fechaPago}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario" rendered="#{not row.isEdit}"/>
+                <p:column headerText="Fecha ahorro" styleClass="MarAuto Responsive janal-wid-10 janal-column-center">
+                  <p:calendar inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{row.fechaPago}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario" rendered="#{not row.isEdit}">
+                    <p:ajax event="dateSelect" listener="#{kalanAhorrosAccion.doUpdateAhorro()}" process="@this"/>
+                  </p:calendar>                    
                   <h:outputText styleClass="janal-column-center janal-wid-100-txt" value="#{row.fechaPago}" converter="janal.convertidor.Calendario" rendered="#{row.isEdit}"/>
                 </p:column>   
                 <p:column headerText="Estatus" styleClass="MarAuto Responsive janal-wid-10">
@@ -210,13 +218,13 @@
   </ui:define>    	
   <ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanAhorrosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
-      <p:commandButton id="aplicar" value="Aplicar" icon="fa fa-lock" accesskey="p"  process="@form" action="#{kalanAhorrosAccion.doAplicar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" rendered="#{kalanAhorrosAccion.aplicar}"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{kalanAhorrosAccion.doAplicar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+      <!--p:commandButton id="aplicar" value="Aplicar" icon="fa fa-lock" accesskey="p"  process="@form" action="#{kalanAhorrosAccion.doAplicar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()" rendered="#{kalanAhorrosAccion.aplicar}"/-->
       <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{kalanAhorrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
     <div class="xs-pantalla">
-      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanAhorrosAccion.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="aplicarIcon" value="Aplicar" icon="fa fa-lock"  process="@form" action="#{kalanAhorrosAccion.doAplicar}" onstart="return execute()" oncomplete="janal.desbloquear()" rendered="#{kalanAhorrosAccion.aplicar}"/>
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{kalanAhorrosAccion.doAplicar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<!--p:commandButton id="aplicarIcon" value="Aplicar" icon="fa fa-lock"  process="@form" action="#{kalanAhorrosAccion.doAplicar}" onstart="return execute()" oncomplete="janal.desbloquear()" rendered="#{kalanAhorrosAccion.aplicar}"/-->
       <p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{kalanAhorrosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
   </ui:define>

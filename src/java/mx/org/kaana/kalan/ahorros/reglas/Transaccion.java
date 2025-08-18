@@ -121,6 +121,15 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					break;
         case COMPLEMENTAR:
+          Siguiente siguiente= this.toContinuar(sesion);
+          this.afectacion.setConsecutivo(siguiente.getConsecutivo());
+          this.afectacion.setEjercicio(siguiente.getEjercicio());
+          this.afectacion.setOrden(siguiente.getOrden());
+          DaoFactory.getInstance().insert(sesion, this.afectacion);
+          this.toCheckEstatus(sesion, Boolean.FALSE);
+          regresar= this.toCuotas(sesion);
+					break;
+        case REGISTRAR:
           regresar= this.toCheckCuotas(sesion);
 					break;
         case DEPURAR:
@@ -304,9 +313,7 @@ public class Transaccion extends IBaseTnx {
             item.setIdAhorro(this.ahorro.getIdAhorro());
             item.setIdEmpresa(this.ahorro.getIdEmpresa());
             item.setIdEmpresaCuenta(this.ahorro.getIdEmpresaCuenta());
-            item.setIdTipoMedioPago(this.ahorro.getIkTipoMedioPago().getKey());
-            item.setIdBanco(Objects.equals(this.ahorro.getIkBanco().getKey(), -1L)? null: this.ahorro.getIkBanco().getKey());
-            item.setReferencia(this.ahorro.getReferencia());
+            item.setIdBanco(null);
             item.setIdTipoAfectacion(2L); // ABONO
             item.setIdUsuario(JsfBase.getIdUsuario());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
@@ -314,9 +321,7 @@ public class Transaccion extends IBaseTnx {
           case UPDATE:
             item.setIdEmpresa(this.ahorro.getIdEmpresa());
             item.setIdEmpresaCuenta(this.ahorro.getIdEmpresaCuenta());
-            item.setIdTipoMedioPago(this.ahorro.getIkTipoMedioPago().getKey());
-            item.setIdBanco(Objects.equals(this.ahorro.getIkBanco().getKey(), -1L)? null: this.ahorro.getIkBanco().getKey());
-            item.setReferencia(this.ahorro.getReferencia());
+            item.setIdBanco(null);
             regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
             break;
           case DELETE:
