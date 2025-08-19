@@ -227,7 +227,6 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
 			params.put(Constantes.SQL_CONDICION, "id_cobro_caja= 1");
 			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
-			this.attrs.put("ikTipoMedioPago", UIBackingUtilities.toFirstKeySelectEntity(tiposMediosPagos));
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -244,7 +243,6 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("bancos", bancos);
-			this.attrs.put("ikBanco", UIBackingUtilities.toFirstKeySelectEntity(bancos));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

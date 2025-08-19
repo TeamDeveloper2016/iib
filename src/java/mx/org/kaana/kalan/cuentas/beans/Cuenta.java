@@ -1,0 +1,135 @@
+package mx.org.kaana.kalan.cuentas.beans;
+
+import java.io.Serializable;
+import mx.org.kaana.kalan.db.dto.TcKalanCuentasMovimientosDto;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 23/07/2025
+ *@time 08:35:27 AM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+public class Cuenta extends TcKalanCuentasMovimientosDto implements Serializable {
+
+  private static final long serialVersionUID = -8794495412874168809L;
+
+  private UISelectEntity ikEmpresa;  
+  private UISelectEntity ikEmpresaCuenta;  
+  private UISelectEntity ikDestino;  
+  private UISelectEntity ikEmpresaDestino;  
+  private UISelectEntity ikTipoAfectacion;  
+  private UISelectEntity ikTipoMedioPago;  
+  private UISelectEntity ikBanco;  
+
+  private Long idDestino;
+  private Long idEmpresaDestino;
+  
+  public Cuenta() {
+    this(-1L);
+  }
+
+  public Cuenta(Long key) {
+    super(key);
+    this.setIkEmpresa(new UISelectEntity(-1L));
+    this.setIkEmpresaCuenta(new UISelectEntity(-1L));
+    this.setIkEmpresaDestino(new UISelectEntity(-1L));
+    this.setIkTipoAfectacion(new UISelectEntity(-1L));
+    this.setIkTipoMedioPago(new UISelectEntity(-1L));
+    this.setIkBanco(new UISelectEntity(-1L));
+  }
+  
+  public UISelectEntity getIkEmpresa() {
+    return ikEmpresa;
+  }
+
+  public void setIkEmpresa(UISelectEntity ikEmpresa) {
+    this.ikEmpresa = ikEmpresa;
+    if(ikEmpresa!= null)
+			this.setIdEmpresa(ikEmpresa.getKey());    
+  }
+
+  public UISelectEntity getIkEmpresaCuenta() {
+    return ikEmpresaCuenta;
+  }
+
+  public void setIkEmpresaCuenta(UISelectEntity ikEmpresaCuenta) {
+    this.ikEmpresaCuenta = ikEmpresaCuenta;
+    if(ikEmpresaCuenta!= null)
+			this.setIdEmpresaCuenta(ikEmpresaCuenta.getKey());    
+  }
+
+  public UISelectEntity getIkDestino() {
+    return ikDestino;
+  }
+
+  public void setIkDestino(UISelectEntity ikDestino) {
+    this.ikDestino = ikDestino;
+    if(ikDestino!= null)
+			this.setIdDestino(ikDestino.getKey());    
+  }
+
+  public UISelectEntity getIkEmpresaDestino() {
+    return ikEmpresaDestino;
+  }
+
+  public void setIkEmpresaDestino(UISelectEntity ikEmpresaDestino) {
+    this.ikEmpresaDestino = ikEmpresaDestino;
+    if(ikEmpresaDestino!= null)
+			this.setIdEmpresaDestino(ikEmpresaDestino.getKey());    
+  }
+  
+  public UISelectEntity getIkTipoAfectacion() {
+    return ikTipoAfectacion;
+  }
+
+  public void setIkTipoAfectacion(UISelectEntity ikTipoAfectacion) {
+    this.ikTipoAfectacion = ikTipoAfectacion;
+    if(ikTipoAfectacion!= null)
+			this.setIdTipoAfectacion(ikTipoAfectacion.getKey());    
+  }
+
+  public UISelectEntity getIkTipoMedioPago() {
+    return ikTipoMedioPago;
+  }
+
+  public void setIkTipoMedioPago(UISelectEntity ikTipoMedioPago) {
+    this.ikTipoMedioPago = ikTipoMedioPago;
+    if(ikTipoMedioPago!= null)
+			this.setIdTipoMedioPago(ikTipoMedioPago.getKey());    
+  }
+
+  public UISelectEntity getIkBanco() {
+    return ikBanco;
+  }
+
+  public void setIkBanco(UISelectEntity ikBanco) {
+    this.ikBanco = ikBanco;
+    if(ikBanco!= null)
+			this.setIdBanco(ikBanco.getKey());    
+  }
+
+  public Long getIdDestino() {
+    return idDestino;
+  }
+
+  public void setIdDestino(Long idDestino) {
+    this.idDestino = idDestino;
+  }
+
+  public Long getIdEmpresaDestino() {
+    return idEmpresaDestino;
+  }
+
+  public void setIdEmpresaDestino(Long idEmpresaDestino) {
+    this.idEmpresaDestino = idEmpresaDestino;
+  }
+
+  @Override
+  public Class toHbmClass() {
+    return TcKalanCuentasMovimientosDto.class;
+  }
+  
+}

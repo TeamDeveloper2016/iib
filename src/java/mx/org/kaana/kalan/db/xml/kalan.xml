@@ -10,7 +10,8 @@
     <unit id="TcKalanCuentasMovimientosDto">
       <select id="row">
 select      
-  *
+  tc_kalan_cuentas_movimientos.id_cuenta_movimiento as id_key,        
+  tc_kalan_cuentas_movimientos.*
 from      
   tc_kalan_cuentas_movimientos
 where 
@@ -24,6 +25,15 @@ from
 where      
   consecutivo = '{consecutivo}'
       </select>
+      <select id="siguiente">
+select
+  max(tc_kalan_cuentas_movimientos.orden)+ 1 as siguiente
+from 
+  tc_kalan_cuentas_movimientos
+where
+  tc_kalan_cuentas_movimientos.ejercicio= {ejercicio} 
+  and tc_kalan_cuentas_movimientos.orden {operador} 900000		
+			</select>		
     </unit>    
     <unit id="TcKalanCuentasEstatusDto">
       <select id="row">
@@ -60,6 +70,12 @@ from
 where      
   id_cuenta_bitacora = {idCuentaBitacora}
       </select>
+      <delete id="rows">
+delete from      
+  tc_kalan_cuentas_bitacora
+where      
+  id_cuenta_movimiento = {idCuentaMovimiento}
+      </delete>
     </unit>    
     <unit id="TcKalanAhorrosDto">
       <select id="row">
@@ -227,7 +243,7 @@ set
   tc_kalan_ahorros_pagos.registro= now()
 where     
   tc_kalan_ahorros.id_ahorro_estatus in (2, 6)  
-  and tc_kalan_ahorros_pagos.id_ahorro_control= 1
+  and tc_kalan_ahorros_pagos.id_ahorro_control in (1)
   and date_format(tc_kalan_ahorros_pagos.fecha_aplicacion, '%Y%m%d')&lt;= '{fecha}'
       </update>
       <delete id="rows">

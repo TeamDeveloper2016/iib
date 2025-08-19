@@ -47,12 +47,12 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
   private String consecutivo;
   @Column (name="fecha_aplicacion")
   private Date fechaAplicacion;
-  @Column (name="id_cuenta_fuente")
+  @Column (name="id_empresa_cuenta")
   private Long idEmpresaCuenta;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_cuenta_destino")
-  private Long idCuentaDestino;
+  @Column (name="id_empresa_destino")
+  private Long idEmpresaDestino;
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="orden")
@@ -73,11 +73,11 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
   }
 
   public TcKalanCuentasMovimientosDto(Long key) {
-    this(null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, 1L);
+    this(2L, null, 0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, 1L);
     setKey(key);
   }
 
-  public TcKalanCuentasMovimientosDto(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long idBanco, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idCuentaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus) {
+  public TcKalanCuentasMovimientosDto(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long idBanco, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus) {
     setIdTipoAfectacion(idTipoAfectacion);
     setIdTipoMedioPago(idTipoMedioPago);
     setImporte(importe);
@@ -89,7 +89,7 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
     setFechaAplicacion(fechaAplicacion);
     setIdEmpresaCuenta(idEmpresaCuenta);
     setIdUsuario(idUsuario);
-    setIdCuentaDestino(idCuentaDestino);
+    setIdEmpresaDestino(idEmpresaDestino);
     setObservaciones(observaciones);
     setOrden(orden);
     setIdCuentaMovimiento(idCuentaMovimiento);
@@ -186,12 +186,12 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdCuentaDestino(Long idCuentaDestino) {
-    this.idCuentaDestino = idCuentaDestino;
+  public void setIdEmpresaDestino(Long idEmpresaDestino) {
+    this.idEmpresaDestino = idEmpresaDestino;
   }
 
-  public Long getIdCuentaDestino() {
-    return idCuentaDestino;
+  public Long getIdEmpresaDestino() {
+    return idEmpresaDestino;
   }
 
   public void setObservaciones(String observaciones) {
@@ -279,7 +279,7 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCuentaDestino());
+		regresar.append(getIdEmpresaDestino());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
@@ -310,7 +310,7 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
 		regresar.put("fechaAplicacion", getFechaAplicacion());
 		regresar.put("idEmpresaCuenta", getIdEmpresaCuenta());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idCuentaDestino", getIdCuentaDestino());
+		regresar.put("idEmpresaDestino", getIdEmpresaDestino());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("orden", getOrden());
 		regresar.put("idCuentaMovimiento", getIdCuentaMovimiento());
@@ -323,7 +323,7 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdTipoAfectacion(), getIdTipoMedioPago(), getImporte(), getIdBanco(), getEjercicio(), getFechaPago(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdCuentaDestino(), getObservaciones(), getOrden(), getIdCuentaMovimiento(), getReferencia(), getIdEmpresa(), getIdCuentaEstatus()
+      getIdTipoAfectacion(), getIdTipoMedioPago(), getImporte(), getIdBanco(), getEjercicio(), getFechaPago(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaDestino(), getObservaciones(), getOrden(), getIdCuentaMovimiento(), getReferencia(), getIdEmpresa(), getIdCuentaEstatus()
     };
     return regresar;
   }
