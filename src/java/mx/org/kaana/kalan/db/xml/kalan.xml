@@ -7,6 +7,42 @@
   </model>
 
   <dml>
+    <unit id="TcKalanCuentasConcentradorasDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_cuentas_concentradoras
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_cuentas_concentradoras
+where      
+  consecutivo = '{consecutivo}' and id_cuenta_concentradora = {idCuentaConcentradora}
+      </select>
+    </unit>    
+    <unit id="TcKalanCuentasOrigenesDto">
+      <select id="row">
+select      
+  *
+from      
+  tc_kalan_cuentas_origenes
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_cuentas_origenes
+where      
+  clave = '{clave}' and id_cuenta_origen = {idCuentaOrigen}
+      </select>
+    </unit>    
     <unit id="TcKalanCuentasMovimientosDto">
       <select id="row">
 select      
@@ -34,11 +70,27 @@ where
   tc_kalan_cuentas_movimientos.ejercicio= {ejercicio} 
   and tc_kalan_cuentas_movimientos.orden {operador} 900000		
 			</select>		
+      <select id="doble">
+select      
+  tc_kalan_cuentas_movimientos.id_cuenta_movimiento as id_key,     
+  tc_kalan_empresas_cuentas.id_empresa as id_destino,   
+  tt_kalan_cuentas_movimientos.id_empresa_cuenta as destino_cuenta,
+  tc_kalan_cuentas_movimientos.*
+from      
+  tc_kalan_cuentas_movimientos
+inner join
+  tc_kalan_cuentas_movimientos as tt_kalan_cuentas_movimientos on tc_kalan_cuentas_movimientos.id_empresa_destino= tt_kalan_cuentas_movimientos.id_cuenta_movimiento
+inner join
+  tc_kalan_empresas_cuentas on tt_kalan_cuentas_movimientos.id_empresa_cuenta= tc_kalan_empresas_cuentas.id_empresa_cuenta
+where 
+  {condicion} 
+      </select>
     </unit>    
     <unit id="TcKalanCuentasEstatusDto">
       <select id="row">
 select      
-  *
+  tc_kalan_cuentas_estatus.id_cuenta_estatus as id_key,
+  tc_kalan_cuentas_estatus.*
 from      
   tc_kalan_cuentas_estatus
 where 

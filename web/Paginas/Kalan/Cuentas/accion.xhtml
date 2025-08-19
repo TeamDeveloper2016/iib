@@ -18,7 +18,7 @@
 				'contenedorGrupos\\:idTipoAfectacion': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:importe'         : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
 				'contenedorGrupos\\:idTipoMedioPago' : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:referencia'      : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:referencia'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:observaciones'   : {validaciones: 'no-aplica', mascara: 'libre', formatos: 'cambiar-mayusculas'}
       };      
 			
@@ -93,7 +93,6 @@
                 <p:panelGrid columns="1" styleClass="janal-wid-100-txt" rendered="false">
                   <p:outputLabel for="idBanco" value="Banco:" styleClass="banco #{kalanCuentasAccion.cuenta.ikTipoMedioPago eq '1'? 'janal-display-none': ''}"/>
                   <p:selectOneMenu id="idBanco" value="#{kalanCuentasAccion.cuenta.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt banco #{kalanCuentasAccion.cuenta.ikTipoMedioPago eq '1'? 'janal-display-none': ''}" converter="janal.convertidor.Entity">
-                    <p:ajax event="change" listener="#{kalanCuentasAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                     <f:selectItems value="#{kalanCuentasAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                     <p:column headerText="Nombre">
                       <h:outputText value="#{item.nombre}"/>
@@ -104,9 +103,7 @@
                   </p:selectOneMenu>
                 </p:panelGrid>
                 <p:outputLabel for="referencia" value="Referencia:" styleClass="banco #{kalanCuentasAccion.cuenta.ikTipoMedioPago eq '1'? 'janal-display-none': ''}"/>
-                <p:inputText id="referencia" value="#{kalanCuentasAccion.cuenta.referencia}" styleClass="janal-wid-100-txt banco #{kalanCuentasAccion.cuenta.ikTipoMedioPago eq '1'? 'janal-display-none': ''}" placeholder="Ej. Referencia 4564">
-                  <p:ajax event="change" listener="#{kalanCuentasAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-                </p:inputText>  
+                <p:inputText id="referencia" value="#{kalanCuentasAccion.cuenta.referencia}" styleClass="janal-wid-100-txt banco #{kalanCuentasAccion.cuenta.ikTipoMedioPago eq '1'? 'janal-display-none': ''}" placeholder="Ej. Referencia 4564"/>
               </p:panelGrid>
             </p:tab>						
             <p:tab title="Observaciones">

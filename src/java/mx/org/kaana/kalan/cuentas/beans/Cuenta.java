@@ -1,6 +1,7 @@
 package mx.org.kaana.kalan.cuentas.beans;
 
 import java.io.Serializable;
+import java.sql.Date;
 import mx.org.kaana.kalan.db.dto.TcKalanCuentasMovimientosDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
@@ -19,13 +20,13 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements Serializable
   private UISelectEntity ikEmpresa;  
   private UISelectEntity ikEmpresaCuenta;  
   private UISelectEntity ikDestino;  
-  private UISelectEntity ikEmpresaDestino;  
+  private UISelectEntity ikDestinoCuenta;  
   private UISelectEntity ikTipoAfectacion;  
   private UISelectEntity ikTipoMedioPago;  
   private UISelectEntity ikBanco;  
 
   private Long idDestino;
-  private Long idEmpresaDestino;
+  private Long idDestinoCuenta;
   
   public Cuenta() {
     this(-1L);
@@ -35,11 +36,23 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements Serializable
     super(key);
     this.setIkEmpresa(new UISelectEntity(-1L));
     this.setIkEmpresaCuenta(new UISelectEntity(-1L));
-    this.setIkEmpresaDestino(new UISelectEntity(-1L));
+    this.setIkDestinoCuenta(new UISelectEntity(-1L));
     this.setIkTipoAfectacion(new UISelectEntity(-1L));
     this.setIkTipoMedioPago(new UISelectEntity(-1L));
     this.setIkBanco(new UISelectEntity(-1L));
   }
+
+  public Cuenta(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long idBanco, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus) {
+    super(idTipoAfectacion, idTipoMedioPago, importe, idBanco, ejercicio, fechaPago, consecutivo, fechaAplicacion, idEmpresaCuenta, idUsuario, idEmpresaDestino, observaciones, orden, idCuentaMovimiento, referencia, idEmpresa, idCuentaEstatus);
+    this.setIkEmpresa(new UISelectEntity(idEmpresa));
+    this.setIkEmpresaCuenta(new UISelectEntity(idEmpresaCuenta));
+    this.setIkDestino(new UISelectEntity(-1L));
+    this.setIkDestinoCuenta(new UISelectEntity(-1L));
+    this.setIkTipoAfectacion(new UISelectEntity(idTipoAfectacion));
+    this.setIkTipoMedioPago(new UISelectEntity(idTipoMedioPago));
+    this.setIkBanco(new UISelectEntity(-1L));
+  }
+  
   
   public UISelectEntity getIkEmpresa() {
     return ikEmpresa;
@@ -71,14 +84,14 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements Serializable
 			this.setIdDestino(ikDestino.getKey());    
   }
 
-  public UISelectEntity getIkEmpresaDestino() {
-    return ikEmpresaDestino;
+  public UISelectEntity getIkDestinoCuenta() {
+    return ikDestinoCuenta;
   }
 
-  public void setIkEmpresaDestino(UISelectEntity ikEmpresaDestino) {
-    this.ikEmpresaDestino = ikEmpresaDestino;
-    if(ikEmpresaDestino!= null)
-			this.setIdEmpresaDestino(ikEmpresaDestino.getKey());    
+  public void setIkDestinoCuenta(UISelectEntity ikDestinoCuenta) {
+    this.ikDestinoCuenta = ikDestinoCuenta;
+    if(ikDestinoCuenta!= null)
+			this.setIdDestinoCuenta(ikDestinoCuenta.getKey());    
   }
   
   public UISelectEntity getIkTipoAfectacion() {
@@ -119,17 +132,41 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements Serializable
     this.idDestino = idDestino;
   }
 
-  public Long getIdEmpresaDestino() {
-    return idEmpresaDestino;
+  public Long getIdDestinoCuenta() {
+    return idDestinoCuenta;
   }
 
-  public void setIdEmpresaDestino(Long idEmpresaDestino) {
-    this.idEmpresaDestino = idEmpresaDestino;
+  public void setIdDestinoCuenta(Long idDestinoCuenta) {
+    this.idDestinoCuenta = idDestinoCuenta;
   }
 
   @Override
   public Class toHbmClass() {
     return TcKalanCuentasMovimientosDto.class;
+  }
+  
+  @Override
+  public Cuenta clone() {
+    Cuenta regresar= new Cuenta(
+      2L, // Long idTipoAfectacion, 
+      this.getIdTipoMedioPago(), // Long idTipoMedioPago, 
+      this.getImporte(), // Double importe, 
+      null, // Long idBanco, 
+      this.getEjercicio(), // Long ejercicio, 
+      this.getFechaPago(), // Date fechaPago, 
+      null, // String consecutivo, 
+      this.getFechaAplicacion(), // Date fechaAplicacion, 
+      this.getIdDestinoCuenta(), // Long idEmpresaCuenta, 
+      this.getIdUsuario(), // Long idUsuario, 
+      null, // Long idEmpresaDestino, 
+      this.getObservaciones(), // String observaciones, 
+      null, // Long orden, 
+      -1L, // Long idCuentaMovimiento, 
+      this.getReferencia(), // String referencia, 
+      this.getIdDestino(), // Long idEmpresa, 
+      this.getIdCuentaEstatus() // Long idCuentaEstatus      
+    );
+    return regresar;
   }
   
 }

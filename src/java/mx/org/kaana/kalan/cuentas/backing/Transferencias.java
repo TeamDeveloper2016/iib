@@ -28,12 +28,12 @@ import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-@Named(value = "kalanCuentasAccion")
+@Named(value = "kalanCuentasTransferencias")
 @ViewScoped
-public class Accion extends IBaseAttribute implements Serializable {
+public class Transferencias extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393188565631311L;
-  private static final Log LOG = LogFactory.getLog(Accion.class);
+  private static final Log LOG = LogFactory.getLog(Transferencias.class);
   
   private EAccion accion;
   private Cuenta cuenta;
@@ -48,7 +48,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
   
   public Boolean getAplicar() {
-    return Objects.equals(this.accion, EAccion.AGREGAR) || Objects.equals(this.accion, EAccion.MODIFICAR);
+    return Objects.equals(this.accion, EAccion.PROCESAR) || Objects.equals(this.accion, EAccion.REPROCESAR);
   }
   
   @PostConstruct
@@ -57,13 +57,14 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
   		if(Objects.equals(JsfBase.getFlashAttribute("accion"), null))
 				UIBackingUtilities.execute("janal.isPostBack('cancelar')");
-      this.accion    = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.accion    = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.PROCESAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.idCuentaMovimiento= Objects.equals(JsfBase.getFlashAttribute("idCuentaMovimiento"), null)? -1L: (Long)JsfBase.getFlashAttribute("idCuentaMovimiento");
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Cuentas/filtro": JsfBase.getFlashAttribute("retorno"));
       this.toLoadTiposMediosPagos();
       this.toLoadBancos();
       this.doLoad(); 
       this.toLoadEmpresas();
+      this.toLoadDestinos();
       this.toLoadAfectaciones();
     } // try
     catch (Exception e) {
@@ -76,25 +77,28 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-      params.put(Constantes.SQL_CONDICION, "id_cuenta_movimiento= "+ this.idCuentaMovimiento);      
+      params.put(Constantes.SQL_CONDICION, "tc_kalan_cuentas_movimientos.id_cuenta_movimiento= "+ this.idCuentaMovimiento);      
       switch (this.accion) {
-        case AGREGAR:
+        case PROCESAR:
           this.cuenta= new Cuenta();
-          this.cuenta.setIkTipoAfectacion(new UISelectEntity(2L));
+          this.cuenta.setIkTipoAfectacion(new UISelectEntity(1L));
           if(!Objects.equals(this.attrs.get("tiposMediosPagos"), null))
             this.cuenta.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
           if(!Objects.equals(this.attrs.get("bancos"), null))
             this.cuenta.setIkBanco(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("bancos")));
           break;
-        case MODIFICAR:
+        case REPROCESAR:
         case CONSULTAR:
-          this.cuenta= (Cuenta)DaoFactory.getInstance().toEntity(Cuenta.class, "TcKalanCuentasMovimientosDto", params);
+          this.cuenta= (Cuenta)DaoFactory.getInstance().toEntity(Cuenta.class, "TcKalanCuentasMovimientosDto", "doble", params);
           this.cuenta.setIkEmpresa(new UISelectEntity(this.cuenta.getIdEmpresa()));
           this.cuenta.setIkEmpresaCuenta(new UISelectEntity(this.cuenta.getIdEmpresaCuenta()));
+          this.cuenta.setIkDestino(new UISelectEntity(this.cuenta.getIdDestino()));
+          this.cuenta.setIkDestinoCuenta(new UISelectEntity(this.cuenta.getIdDestinoCuenta()));
           this.cuenta.setIkTipoAfectacion(new UISelectEntity(this.cuenta.getIdTipoAfectacion()));
           this.cuenta.setIkTipoMedioPago(new UISelectEntity(this.cuenta.getIdTipoMedioPago()));
           this.cuenta.setIkBanco(new UISelectEntity(this.cuenta.getIdBanco()));
-          this.doLoadCuentas();
+          this.doLoadEmpresaCuentas();
+          this.doLoadEmpresaDestinos();
           break;
       } // switch      
     } // try // try
@@ -125,15 +129,16 @@ public class Accion extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {
-      this.cuenta.setIdEmpresaDestino(null);
+      if(!Objects.equals(EAccion.REPROCESAR, this.accion))
+        this.cuenta.setIdEmpresaDestino(null);
       this.cuenta.setIdBanco(null);
       transaccion= new Transaccion(this.cuenta);
       if(transaccion.ejecutar(this.accion)) {
         regresar= this.doCancelar();
-        JsfBase.addMessage("Se registro el movimiento de forma correcta", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se registro la transferencia de forma correcta", ETipoMensaje.INFORMACION);
       } // if
       else 
-        JsfBase.addMessage("Ocurrió un error al registrar el movimiento", ETipoMensaje.ERROR);      
+        JsfBase.addMessage("Ocurrió un error al registrar la transferencia", ETipoMensaje.ERROR);      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -165,11 +170,11 @@ public class Accion extends IBaseAttribute implements Serializable {
         empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
       this.attrs.put("empresas", empresas);
       if(empresas!= null && !empresas.isEmpty()) {
-        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+        if(Objects.equals(this.accion, EAccion.PROCESAR)) 
           this.cuenta.setIkEmpresa(UIBackingUtilities.toFirstKeySelectEntity(empresas));
       } // if
-      if(Objects.equals(this.accion, EAccion.AGREGAR)) 
-        this.doLoadCuentas();
+      if(Objects.equals(this.accion, EAccion.PROCESAR)) 
+        this.doLoadEmpresaCuentas();
     } // try
     catch (Exception e) {
       throw e;
@@ -180,7 +185,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 	}
 
-  public void doLoadCuentas() {
+  public void doLoadEmpresaCuentas() {
     List<UISelectEntity> empresaCuentas= null;
     Map<String, Object> params         = new HashMap<>();
     try {
@@ -192,8 +197,66 @@ public class Accion extends IBaseAttribute implements Serializable {
         empresaCuentas= UIEntity.build("TcKalanEmpresasCuentasDto", params);
       this.attrs.put("empresaCuentas", empresaCuentas);
       if(empresaCuentas!= null && !empresaCuentas.isEmpty()) {
-        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
+        if(Objects.equals(this.accion, EAccion.PROCESAR)) 
           this.cuenta.setIkEmpresaCuenta(UIBackingUtilities.toFirstKeySelectEntity(empresaCuentas));
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+  }  
+
+	private void toLoadDestinos() {
+		List<Columna> columns        = new ArrayList<>();
+    Map<String, Object> params   = new HashMap<>();
+    List<UISelectEntity> destinos= null;
+    try {
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        destinos= (List<UISelectEntity>) UIEntity.seleccione("TcManticEmpresasDto", "empresas", params, columns, "clave");
+      else
+        destinos= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+      this.attrs.put("destinos", destinos);
+      if(destinos!= null && !destinos.isEmpty()) {
+        if(Objects.equals(this.accion, EAccion.PROCESAR)) 
+          this.cuenta.setIkDestino(UIBackingUtilities.toFirstKeySelectEntity(destinos));
+      } // if
+      if(Objects.equals(this.accion, EAccion.PROCESAR)) 
+        this.doLoadEmpresaDestinos();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+  
+  public void doLoadEmpresaDestinos() {
+    List<UISelectEntity> empresaDestinos= null;
+    Map<String, Object> params          = new HashMap<>();
+    try {
+			params.put("idEmpresa", this.cuenta.getIdDestino());
+			params.put(Constantes.SQL_CONDICION, "id_empresa_cuenta!= "+ this.cuenta.getIdEmpresaCuenta());
+      if(Objects.equals(this.cuenta.getIdDestino(), -1L))
+        empresaDestinos= UIEntity.seleccione("TcKalanEmpresasCuentasDto", params, "banco");
+      else
+        empresaDestinos= UIEntity.build("TcKalanEmpresasCuentasDto", params);
+      this.attrs.put("empresaDestinos", empresaDestinos);
+      if(empresaDestinos!= null && !empresaDestinos.isEmpty()) {
+        if(Objects.equals(this.accion, EAccion.PROCESAR)) 
+          this.cuenta.setIkDestinoCuenta(UIBackingUtilities.toFirstKeySelectEntity(empresaDestinos));
       } // if  
     } // try
     catch (Exception e) {

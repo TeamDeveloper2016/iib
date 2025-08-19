@@ -4,6 +4,75 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaCuentasDto">
+      <select id="lazy">
+select      
+  tc_kalan_cuentas_movimientos.id_cuenta_movimiento as id_key,     
+  tc_kalan_cuentas_movimientos.id_cuenta_movimiento,
+  tc_kalan_cuentas_movimientos.id_empresa_destino,
+  tc_mantic_empresas.nombre as empresa,
+  tc_kalan_empresas_cuentas.cuenta as clave,
+  tc_kalan_empresas_cuentas.nombre as cuenta,
+  tc_kalan_cuentas_movimientos.consecutivo,
+  tc_kalan_cuentas_movimientos.fecha_aplicacion,
+  tc_kalan_cuentas_movimientos.fecha_pago,
+  tc_kalan_cuentas_movimientos.importe,
+  tc_mantic_tipos_medios_pagos.nombre as medio,
+  tc_kalan_cuentas_movimientos.id_cuenta_estatus,
+  tc_kalan_cuentas_estatus.nombre as estatus,
+  tc_kalan_cuentas_estatus.estatus_asociados,
+  tc_kalan_tipos_afectaciones.nombre as tipo,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
+  tc_kalan_cuentas_movimientos.observaciones,
+  tc_kalan_cuentas_movimientos.registro
+from      
+  tc_kalan_cuentas_movimientos
+inner join
+  tc_mantic_empresas on tc_kalan_cuentas_movimientos.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_kalan_empresas_cuentas on tc_kalan_cuentas_movimientos.id_empresa_cuenta= tc_kalan_empresas_cuentas.id_empresa_cuenta
+inner join
+  tc_mantic_tipos_medios_pagos on tc_kalan_cuentas_movimientos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+inner join    
+  tc_kalan_tipos_afectaciones on tc_kalan_cuentas_movimientos.id_tipo_afectacion= tc_kalan_tipos_afectaciones.id_tipo_afectacion
+inner join    
+  tc_kalan_cuentas_estatus on tc_kalan_cuentas_movimientos.id_cuenta_estatus= tc_kalan_cuentas_estatus.id_cuenta_estatus
+inner join
+	tc_janal_usuarios on tc_kalan_cuentas_movimientos.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+	tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+where
+  tc_mantic_empresas.id_empresa in ({idEmpresa})    
+  and {condicion}        
+{sortOrder}
+      </select>  
+      <select id="totales">
+select      
+  tc_kalan_cuentas_movimientos.id_cuenta_movimiento as id_key,     
+  sum(if(tc_kalan_cuentas_movimientos.id_tipo_afectacion= 1, tc_kalan_cuentas_movimientos.importe, 0)) as cargos,      
+  sum(if(tc_kalan_cuentas_movimientos.id_tipo_afectacion= 2, tc_kalan_cuentas_movimientos.importe, 0)) as abonos      
+from      
+  tc_kalan_cuentas_movimientos
+inner join
+  tc_mantic_empresas on tc_kalan_cuentas_movimientos.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_kalan_empresas_cuentas on tc_kalan_cuentas_movimientos.id_empresa_cuenta= tc_kalan_empresas_cuentas.id_empresa_cuenta
+inner join
+  tc_mantic_tipos_medios_pagos on tc_kalan_cuentas_movimientos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+inner join    
+  tc_kalan_tipos_afectaciones on tc_kalan_cuentas_movimientos.id_tipo_afectacion= tc_kalan_tipos_afectaciones.id_tipo_afectacion
+inner join    
+  tc_kalan_cuentas_estatus on tc_kalan_cuentas_movimientos.id_cuenta_estatus= tc_kalan_cuentas_estatus.id_cuenta_estatus
+inner join
+	tc_janal_usuarios on tc_kalan_cuentas_movimientos.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+	tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+where
+  tc_mantic_empresas.id_empresa in ({idEmpresa})    
+  and {condicion}        
+{sortOrder}
+      </select>  
+    </unit>  
 		<unit id="VistaAhorrosDto">
       <select id="lazy">
 select 
@@ -114,10 +183,10 @@ inner join
   tc_kalan_tipos_afectaciones on tc_kalan_ahorros_pagos.id_tipo_afectacion= tc_kalan_tipos_afectaciones.id_tipo_afectacion
 inner join
   tc_kalan_ahorros_controles on tc_kalan_ahorros_pagos.id_ahorro_control= tc_kalan_ahorros_controles.id_ahorro_control
-inner join
-	tc_janal_usuarios on tc_kalan_ahorros_pagos.id_usuario= tc_janal_usuarios.id_usuario
-inner join
-	tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+  inner join
+    tc_janal_usuarios on tc_kalan_ahorros_pagos.id_usuario= tc_janal_usuarios.id_usuario
+  inner join
+    tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 where
   tc_kalan_ahorros_pagos.id_ahorro_control in (2, 4)
   and tc_kalan_ahorros_pagos.id_ahorro= {idAhorro}
