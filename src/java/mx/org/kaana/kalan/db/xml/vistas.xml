@@ -10,6 +10,7 @@ select
   tc_kalan_cuentas_movimientos.id_cuenta_movimiento as id_key,     
   tc_kalan_cuentas_movimientos.id_cuenta_movimiento,
   tc_kalan_cuentas_movimientos.id_empresa_destino,
+  tc_kalan_cuentas_origenes.id_cuenta_origen,
   tc_mantic_empresas.nombre as empresa,
   tc_kalan_empresas_cuentas.cuenta as clave,
   tc_kalan_empresas_cuentas.nombre as cuenta,
@@ -22,6 +23,8 @@ select
   tc_kalan_cuentas_estatus.nombre as estatus,
   tc_kalan_cuentas_estatus.estatus_asociados,
   tc_kalan_tipos_afectaciones.nombre as tipo,
+  tc_kalan_cuentas_origenes.clave as codigo,
+  tc_kalan_cuentas_origenes.nombre as origen,
   concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', ifnull(tc_mantic_personas.materno, '')) as usuario,
   tc_kalan_cuentas_movimientos.observaciones,
   tc_kalan_cuentas_movimientos.registro
@@ -37,6 +40,8 @@ inner join
   tc_kalan_tipos_afectaciones on tc_kalan_cuentas_movimientos.id_tipo_afectacion= tc_kalan_tipos_afectaciones.id_tipo_afectacion
 inner join    
   tc_kalan_cuentas_estatus on tc_kalan_cuentas_movimientos.id_cuenta_estatus= tc_kalan_cuentas_estatus.id_cuenta_estatus
+inner join    
+  tc_kalan_cuentas_origenes on tc_kalan_cuentas_movimientos.id_cuenta_origen= tc_kalan_cuentas_origenes.id_cuenta_origen
 inner join
 	tc_janal_usuarios on tc_kalan_cuentas_movimientos.id_usuario= tc_janal_usuarios.id_usuario
 inner join
@@ -49,8 +54,9 @@ where
       <select id="totales">
 select      
   tc_kalan_cuentas_movimientos.id_cuenta_movimiento as id_key,     
-  sum(if(tc_kalan_cuentas_movimientos.id_tipo_afectacion= 1, tc_kalan_cuentas_movimientos.importe, 0)) as cargos,      
-  sum(if(tc_kalan_cuentas_movimientos.id_tipo_afectacion= 2, tc_kalan_cuentas_movimientos.importe, 0)) as abonos      
+  ifnull(sum(if(tc_kalan_cuentas_movimientos.id_tipo_afectacion= 1, tc_kalan_cuentas_movimientos.importe, 0)), 0) as cargos,      
+  ifnull(sum(if(tc_kalan_cuentas_movimientos.id_tipo_afectacion= 2, tc_kalan_cuentas_movimientos.importe, 0)), 0) as abonos,      
+  ifnull(sum(if(tc_kalan_cuentas_movimientos.id_tipo_afectacion= 2, tc_kalan_cuentas_movimientos.importe, -1* tc_kalan_cuentas_movimientos.importe)), 0) as saldo     
 from      
   tc_kalan_cuentas_movimientos
 inner join
@@ -63,6 +69,8 @@ inner join
   tc_kalan_tipos_afectaciones on tc_kalan_cuentas_movimientos.id_tipo_afectacion= tc_kalan_tipos_afectaciones.id_tipo_afectacion
 inner join    
   tc_kalan_cuentas_estatus on tc_kalan_cuentas_movimientos.id_cuenta_estatus= tc_kalan_cuentas_estatus.id_cuenta_estatus
+inner join    
+  tc_kalan_cuentas_origenes on tc_kalan_cuentas_movimientos.id_cuenta_origen= tc_kalan_cuentas_origenes.id_cuenta_origen
 inner join
 	tc_janal_usuarios on tc_kalan_cuentas_movimientos.id_usuario= tc_janal_usuarios.id_usuario
 inner join
@@ -72,6 +80,30 @@ where
   and {condicion}        
 {sortOrder}
       </select>  
+			<select id="movimientos">
+select
+  tc_kalan_cuentas_bitacora.id_cuenta_bitacora as id_key,
+  tc_kalan_cuentas_movimientos.consecutivo,
+  0 as importe,
+  tc_kalan_cuentas_bitacora.justificacion,
+  concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+  tc_kalan_cuentas_estatus.nombre as estatus,
+  tc_kalan_cuentas_bitacora.registro
+from 
+  tc_kalan_cuentas_bitacora
+inner join
+  tc_kalan_cuentas_movimientos on tc_kalan_cuentas_bitacora.id_cuenta_movimiento= tc_kalan_cuentas_movimientos.id_cuenta_movimiento
+inner join
+  tc_kalan_cuentas_estatus on tc_kalan_cuentas_bitacora.id_cuenta_estatus= tc_kalan_cuentas_estatus.id_cuenta_estatus
+inner join
+  tc_janal_usuarios on tc_kalan_cuentas_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+where
+  tc_kalan_cuentas_movimientos.id_cuenta_movimiento= {idCuentaMovimiento}
+order by
+  tc_kalan_cuentas_movimientos.registro desc
+			</select>		
     </unit>  
 		<unit id="VistaAhorrosDto">
       <select id="lazy">
@@ -130,7 +162,7 @@ select
   ifnull(tc_kalan_ahorros.id_ahorro, -1) as id_key,
   ifnull(sum(tc_kalan_ahorros.inicia), 0) as inicia,
   ifnull(sum(tt_kalan_ahorros.ahorrado), 0) as ahorrado,
-  ifnull(sum(tt_kalan_ahorros.pagado), 0) as pagado
+  ifnull(sum(tt_kalan_ahorros.pagado), 0) as pagado,
 from   
   tc_kalan_ahorros
 inner join  
@@ -253,6 +285,7 @@ group by
 			<select id="porCodigo">			
 select      
   tr_mantic_empresa_personal.id_empresa_persona as id_key,
+  tc_mantic_personas.id_persona,
   tr_mantic_empresa_personal.clave,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,
@@ -271,6 +304,7 @@ order by
 			<select id="porNombre">			
 select      
   tr_mantic_empresa_personal.id_empresa_persona as id_key,
+  tc_mantic_personas.id_persona,
   tr_mantic_empresa_personal.clave,
   tc_mantic_personas.rfc,
   tc_mantic_personas.curp,

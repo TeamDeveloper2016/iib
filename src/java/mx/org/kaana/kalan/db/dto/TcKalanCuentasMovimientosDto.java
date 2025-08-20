@@ -67,17 +67,21 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
   private Long idEmpresa;
   @Column (name="id_cuenta_estatus")
   private Long idCuentaEstatus;
+  @Column (name="id_cuenta_origen")
+  private Long idCuentaOrigen;
+  @Column (name="id_pivote")
+  private Long idPivote;
 
   public TcKalanCuentasMovimientosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanCuentasMovimientosDto(Long key) {
-    this(2L, null, 0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, 1L);
+    this(2L, null, 0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, 1L, 1L, null);
     setKey(key);
   }
 
-  public TcKalanCuentasMovimientosDto(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long idBanco, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus) {
+  public TcKalanCuentasMovimientosDto(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long idBanco, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus, Long idCuentaOrigen, Long idPivote) {
     setIdTipoAfectacion(idTipoAfectacion);
     setIdTipoMedioPago(idTipoMedioPago);
     setImporte(importe);
@@ -96,6 +100,8 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
     setReferencia(referencia);
     setIdEmpresa(idEmpresa);
     setIdCuentaEstatus(idCuentaEstatus);
+    setIdCuentaOrigen(idCuentaOrigen);
+    setIdPivote(idPivote);
   }
 	
   public void setIdTipoAfectacion(Long idTipoAfectacion) {
@@ -242,6 +248,22 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
     this.idCuentaEstatus = idCuentaEstatus;
   }
 
+  public Long getIdCuentaOrigen() {
+    return idCuentaOrigen;
+  }
+
+  public void setIdCuentaOrigen(Long idCuentaOrigen) {
+    this.idCuentaOrigen = idCuentaOrigen;
+  }
+
+  public Long getIdPivote() {
+    return idPivote;
+  }
+
+  public void setIdPivote(Long idPivote) {
+    this.idPivote = idPivote;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -317,13 +339,15 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
 		regresar.put("referencia", getReferencia());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("idCuentaEstatus", getIdCuentaEstatus());
+		regresar.put("idCuentaOrigen", getIdCuentaOrigen());
+		regresar.put("idPivote", getIdPivote());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdTipoAfectacion(), getIdTipoMedioPago(), getImporte(), getIdBanco(), getEjercicio(), getFechaPago(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaDestino(), getObservaciones(), getOrden(), getIdCuentaMovimiento(), getReferencia(), getIdEmpresa(), getIdCuentaEstatus()
+      getIdTipoAfectacion(), getIdTipoMedioPago(), getImporte(), getIdBanco(), getEjercicio(), getFechaPago(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaDestino(), getObservaciones(), getOrden(), getIdCuentaMovimiento(), getReferencia(), getIdEmpresa(), getIdCuentaEstatus(), getIdCuentaOrigen(), getIdPivote()
     };
     return regresar;
   }

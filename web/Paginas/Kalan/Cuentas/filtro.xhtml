@@ -13,13 +13,15 @@
     <script type="text/javascript">
 //<![CDATA[
       Janal.Control.fields = {
-        idEmpresa        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        nombre           : {validaciones: 'texto', mascara: 'fiscal', formatos: 'cambiar-mayusculas', grupo: 'general'},
-        rfc              : {validaciones: 'rfc',   mascara: 'fiscal', formatos: 'cambiar-mayusculas', grupo: 'general'},
-        empleado         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        fechaInicio      : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        fechaTermino     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        idPrestamoEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+        idEmpresa      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        idEmpresaCuenta: {validaciones: 'libre', mascara: 'libre'},
+        empleado       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				importeMenor   : {validaciones: 'libre|flotante', mascara: 'libre'},
+				importeMayor   : {validaciones: 'libre|flotante', mascara: 'libre'},
+        fechaInicio    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        fechaTermino   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        idCuentaOrigen : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
+        idCuentaEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
       
 			fields= {
@@ -58,6 +60,7 @@
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
               <p:outputLabel for="idEmpresa" value="Sucursal:"/>
               <p:selectOneMenu id="idEmpresa" value="#{kalanCuentasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <p:ajax event="change" listener="#{kalanCuentasFiltro.doLoadCuentas}" process="@this" update="idEmpresaCuenta"/>
                 <f:selectItems value="#{kalanCuentasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -66,10 +69,19 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="nombre" value="Prestamo:"/>
-              <p:inputText id="nombre" value="#{kalanCuentasFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>              			                            
-              <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{kalanCuentasFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
+              <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
+              <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanCuentasFiltro.attrs.idEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{kalanCuentasFiltro.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                <p:column headerText="Banco" styleClass="janal-wid-30">
+                  <h:outputText value="#{item.banco}"/>
+                </p:column>   
+                <p:column headerText="Cuenta" styleClass="janal-wid-20">
+                  <h:outputText value="#{item.cuenta}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
               <p:outputLabel for="empleado" value="Empleado:"/>
 							<p:autoComplete id="empleado" var="custom" placeholder="Ej: JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanCuentasFiltro.attrs.idEmpresaPersona}" completeMethod="#{kalanCuentasFiltro.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
 								<f:facet name="itemtip">
@@ -83,12 +95,23 @@
 									</h:panelGrid>
 								</f:facet>
 							</p:autoComplete>			
+              <p:outputLabel for="importeMenor" value="Importe menor:"/>
+              <p:inputNumber id="importeMenor" value="#{kalanCuentasAccion.attrs.importeMenor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+              <p:outputLabel for="importeMayor" value="Importe mayor:"/>
+              <p:inputNumber id="importeMayor" value="#{kalanCuentasAccion.attrs.importeMayor}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt janal-column-right" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCuentasFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCuentasFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="idPrestamoEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idPrestamoEstatus" value="#{kalanCuentasFiltro.attrs.idPrestamoEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+              <p:outputLabel for="idCuentaOrigen" value="Origen:"/>
+              <p:selectOneMenu id="idCuentaOrigen" value="#{kalanCuentasFiltro.attrs.idCuentaOrigen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{kalanCuentasFiltro.attrs.origenes}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="idCuentaEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idCuentaEstatus" value="#{kalanCuentasFiltro.attrs.idCuentaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{kalanCuentasFiltro.attrs.catalogo}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
@@ -97,8 +120,8 @@
 							<p:separator/>
             </p:panelGrid>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{kalanCuentasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla detalle @(.total)"/>
-							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{kalanCuentasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla detalle @(.total)" />
+							<p:commandButton id="buscar" styleClass="janal-text-white lg-pantalla" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute(true);" process="@this panelBusqueda" actionListener="#{kalanCuentasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla @(.total)"/>
+							<p:commandButton id="buscarIcon" title="Buscar" iconPos="left" styleClass="xs-pantalla janal-text-white janal-wid-100" accesskey="b"  icon="fa fa-filter" onstart="return janal.execute();" process="@this panelBusqueda" actionListener="#{kalanCuentasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla @(.total)" />
 						</div>
           </p:panel>
         </div>
@@ -110,6 +133,7 @@
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
                   <p:menuitem value="Agregar" action="#{kalanCuentasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Transferencia" action="#{kalanCuentasFiltro.doAccion('PROCESAR')}" icon="fa fa-retweet" title="Transferencia" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -117,6 +141,7 @@
               </div>  
               <div class="xs-pantalla">              
                 <p:commandButton action="#{kalanCuentasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:commandButton action="#{kalanCuentasFiltro.doAccion('PROCESAR')}" icon="fa fa-retweet" title="Transferencia" onstart="return janal.bloquear()"/>						
                 <p:commandButton id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:commandButton id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
@@ -138,32 +163,38 @@
                 <h:outputText value="Consecutivo"/>
               </f:facet>
               <h:outputText value="#{row['consecutivo']}"/>
-            </p:column>														
-            <p:column styleClass="janal-column-left MarAuto Responsive" sortBy="#{row.usuario}">
-              <f:facet name="header">
-                <h:outputText value="Empleado"/>
-              </f:facet>
-              <h:outputText value="#{row['usuario']}"/>
-            </p:column>	      
-            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
-              <f:facet name="header">
-                <h:outputText value="Tipo"/>
-              </f:facet>
-              <h:outputText value="#{row['tipo']}"/>
-            </p:column>	      
-            <p:column styleClass="MarAuto Responsive janal-wid-8 janal-column-right" sortBy="#{row.importe}">
-              <f:facet name="header">
-                <h:outputText value="Importe"/>
-              </f:facet>
-              <h:outputText value="#{row['importe']}"/>
-            </p:column>	      
+            </p:column>							
             <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.medio}">
               <f:facet name="header">
                 <h:outputText value="Medio"/>
               </f:facet>
               <h:outputText value="#{row['medio']}"/>
             </p:column>	      
-						<p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
+            <p:column styleClass="janal-column-left MarAuto Responsive janal-display-none" sortBy="#{row.usuario}">
+              <f:facet name="header">
+                <h:outputText value="Empleado"/>
+              </f:facet>
+              <h:outputText value="#{row['usuario']}"/>
+            </p:column>	      
+						<p:column styleClass="MarAuto Responsive" sortBy="#{row.origen}">
+              <f:facet name="header">
+                <h:outputText value="Origen"/>
+              </f:facet>
+              <h:outputText value="#{row['origen']}"/>
+            </p:column>														
+            <p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
+              <f:facet name="header">
+                <h:outputText value="Tipo"/>
+              </f:facet>
+              <h:outputText value="#{row['tipo']}"/>
+            </p:column>	      
+            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{row['importe']}"/>
+            </p:column>	      
+						<p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
@@ -179,7 +210,7 @@
               <f:facet name="header">
                 <h:outputText value="..."/>
               </f:facet>
-              <p:commandButton icon="fa fa-search" process="@this tabla" update="detalle @(.total)" actionListener="#{kalanCuentasFiltro.doView(row)}" title="Ver pagos"/>
+              <p:commandButton icon="fa fa-trash" process="@this" update="confirmacion" actionListener="#{kalanCuentasFiltro.doSeleccionado(row)}" onstart="return janal.bloquear()" oncomplete="PF('dialogoConfirmacion').show()" title="Eliminar" rendered="#{kalanCuentasFiltro.doView(row)}"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel styleClass="total janal-align-left" value="#{kalanCuentasFiltro.general}" escape="false"/>
@@ -188,139 +219,64 @@
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{kalanCuentasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-						<p:separator rendered="#{fn:contains('|1|', kalanCuentasFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
-            <p:menuitem id="modificar" action="#{kalanCuentasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|', kalanCuentasFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|', kalanCuentasFiltro.attrs.seleccionado.idPrestamoEstatus)}"/>
+						<p:separator rendered="#{fn:contains('|1|', kalanCuentasFiltro.attrs.seleccionado.idCuentaEstatus)}"/>
+            <p:menuitem id="modificar" action="#{kalanCuentasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|', kalanCuentasFiltro.attrs.seleccionado.idCuentaEstatus)}"/>
+            <p:menuitem id="eliminar" icon="fa fa-trash" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" actionListener="#{kalanCuentasFiltro.doSeleccionado()}" rendered="#{fn:contains('|1|', kalanCuentasFiltro.attrs.seleccionado.idCuentaEstatus)}"/>
             <p:separator/>
             <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanCuentasFiltro.doMovimientos}"/>
-            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanCuentasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', kalanCuentasFiltro.attrs.seleccionado.idPrestamoEstatus) and kalanCuentasFiltro.isAdmin}"/>
+            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanCuentasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', kalanCuentasFiltro.attrs.seleccionado.idCuentaEstatus) and kalanCuentasFiltro.isAdmin}"/>
           </p:contextMenu>
-          <p:spacer height="3px"/>
-          <p:dataTable lazy="true" id="detalle" widgetVar="kajoolDetalle" var="row" value="#{kalanCuentasFiltro.lazyDetalle}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_MAX_CADA_PAGINA}" paginator="#{kalanCuentasFiltro.lazyDetalle.rowCount gt kalanCuentasFiltro.lazyDetalle.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="bottom" styleClass="janal-wid-100-txt" style="display: #{kalanCuentasFiltro.lazyDetalle eq null? 'none': ''}">
-            <f:facet name="header">
-              <div class="lg-pantalla">
-                <p:outputLabel value="Pagos realizados al prestamo [ #{kalanCuentasFiltro.attrs.seleccionado.consecutivo} ]" styleClass="total janal-color-white janal-align-left"/>
-                <p:menuButton value="Opciones">
-                  <p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-                  <p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
-                </p:menuButton>
-              </div>  
-              <div class="xs-pantalla">              
-                <p:commandButton icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('detallePdf', 'detalle')" oncomplete="janal.desbloquear()"/>
-                <p:commandButton icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('detalleXls', 'detalle')" oncomplete="janal.desbloquear()"/>
-              </div>  
-            </f:facet>	            
-            <p:column styleClass="MarAuto Responsive janal-wid-5">
-              <f:facet name="header">
-                <h:outputText value="No."/>
-              </f:facet>
-              <h:outputText value="#{index+ 1}.-"/>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
-              <f:facet name="header">
-                <h:outputText value="Consecutivo"/>
-              </f:facet>
-              <h:outputText value="#{row['consecutivo']}"/>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive" sortBy="#{row.usuario}" exportable="false">
-              <f:facet name="header">
-                <h:outputText value="Registro"/>
-              </f:facet>
-              <h:outputText value="#{row['usuario']}"/>
-              <i class="fa fa-fw fa-comments janal-color-blue janal-icons-message #{empty(row['observaciones']) or row['observaciones'] eq ''? 'janal-display-none': ''}" title="Observaciones: #{row['observaciones']}"></i>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none">
-              <f:facet name="header">
-                <h:outputText value="Registro"/>
-              </f:facet>
-              <h:outputText value="#{row['usuario']}"/>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.afectacion}">
-              <f:facet name="header">
-                <h:outputText value="Tipo"/>
-              </f:facet>
-              <h:outputText value="#{row['afectacion']}"/>
-            </p:column>	
-            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.medio}">
-              <f:facet name="header">
-                <h:outputText value="Medio"/>
-              </f:facet>
-              <h:outputText value="#{row['medio']}"/>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{row.importe}">
-              <f:facet name="header">
-                <h:outputText value="Importe"/>
-              </f:facet>
-              <h:outputText value="#{row['importe']}"/>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none">
-              <f:facet name="header">
-                <h:outputText value="Observaciones"/>
-              </f:facet>
-              <h:outputText value="#{row['observaciones']}"/>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-wid-15 janal-column-center" sortBy="#{row.fechaAplicacion}">
-              <f:facet name="header">
-                <h:outputText value="Fecha"/>
-              </f:facet>
-              <h:outputText value="#{row['fechaAplicacion']}"/>
-            </p:column>					
-            <p:column styleClass="MarAuto Responsive janal-column-center janal-wid-5" exportable="false" rendered="#{kalanCuentasFiltro.isAdmin}">
-              <f:facet name="header">
-                <h:outputText value="..."/>
-              </f:facet>
-              <p:commandButton icon="fa fa-trash" process="@this detalle" update="dialogoPagos" actionListener="#{kalanCuentasFiltro.doSelectDetalle(row)}" onstart="return janal.bloquear()" oncomplete="PF('dlgPagos').show()" title="Eliminar pago"/>
-            </p:column>		
-            <f:facet name="footer">
-              <p:outputLabel styleClass="detalle janal-align-left janal-color-blue" value="#{kalanCuentasFiltro.total}" escape="false"/>
-              <p:outputLabel value="Total [#{kalanCuentasFiltro.lazyDetalle== null? 0: kalanCuentasFiltro.lazyDetalle.rowCount}] registros" styleClass="total"/>
-              <p:outputLabel styleClass="detalle janal-align-left janal-color-blue" value="Las filas en color corresponde a transferencias entre cuentas"/>
-            </f:facet>
-          </p:dataTable>    
-          <h:commandLink id="detallePdf">
-            <pe:exporter type="pdf" skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
-          </h:commandLink>
-          <h:commandLink id="detalleXls">
-            <pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="detalle" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
-          </h:commandLink>		              
         </div>
       </div>
     </div>		           				
-		<p:dialog id="dialogoPagos" widgetVar="dlgPagos" header="Esta seguro de eliminar movimiento ?" resizable="false" closable="true" minimizable="false" maximizable="false" responsive="true" width="40%" onHide="janal.desbloquear()">
-      <h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">
-        <p:outputLabel value="Consecutivo:"/>												
-        <p:outputLabel value="#{kalanCuentasFiltro.attrs.detalle.consecutivo}"/>
-        <p:outputLabel value="Importe:"/>
-        <p:outputLabel value="#{kalanCuentasFiltro.attrs.detalle.importe}"/>
-        <p:outputLabel value="Usuario:"/>
-        <p:outputLabel value="#{kalanCuentasFiltro.attrs.detalle.usuario}"/>
-        <p:outputLabel value="Tipo:"/>
-        <p:outputLabel value="#{kalanCuentasFiltro.attrs.detalle.afectacion}"/>
-        <p:outputLabel value="Fecha:"/>
-        <p:outputLabel value="#{kalanCuentasFiltro.attrs.detalle.registro}"/>
-      </h:panelGrid>
-      <hr class="ui-widget-content"/>
-      <div class="janal-line-button">
-        <p:commandButton icon="fa fa-check" process="@this dialogoPagos" update="tabla detalle @(.total)" value="Aceptar" actionListener="#{kalanCuentasFiltro.doDeletePago(kalanCuentasFiltro.attrs.detalle)}" oncomplete="PF('dlgPagos').hide();"/>
-        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagos').hide(); return true" oncomplete="janal.desbloquear();"/>
-      </div>
-		</p:dialog>
   </ui:define>    
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el prestamo ?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el movimiento ?" />
   <ui:param name="accionConfirmacion" value="#{kalanCuentasFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
-    <h:panelGrid columns="2" columnClasses="janal-wid-30:">
+    <h:panelGrid columns="2" styleClass="#{kalanCuentasFiltro.attrs.seleccionado.idCuentaOrigen.toLong ne 19? '': 'janal-display-none'}" columnClasses="janal-wid-30">
+      <p:outputLabel value="Empresa: "/>
+      <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.empresa}"/>
+      <p:outputLabel value="Cuenta: "/>
+      <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.cuenta}"/>
       <p:outputLabel value="Consecutivo: "/>
       <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.consecutivo}"/>
-      <p:outputLabel value="Razón social: "/>
-      <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.nombre}"/>
       <p:outputLabel value="Importe: "/>
       <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.importe}"/>
-      <p:outputLabel value="Saldo: "/>
-      <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.saldo}"/>
+      <p:outputLabel value="Fecha aplicación: "/>
+      <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.fechaAplicacion}"/>
+      <p:outputLabel value="Estatus: "/>
+      <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.estatus}"/>
+    </h:panelGrid>			
+    <h:panelGrid columns="2" styleClass="janal-wid-100-txt #{kalanCuentasFiltro.attrs.seleccionado.idCuentaOrigen.toLong ne 19? 'janal-display-none': ''}" columnClasses="janal-wid-50">
+      <p:panel header="Cuenta fuente" styleClass="janal-wid-100-txt" toggleable="true">
+        <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-30">
+          <p:outputLabel value="Empresa: "/>
+          <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.empresa}"/>
+          <p:outputLabel value="Cuenta: "/>
+          <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.cuenta}"/>
+          <p:outputLabel value="Consecutivo: "/>
+          <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.consecutivo}"/>
+        </p:panelGrid>  
+      </p:panel>
+      <p:panel header="Cuenta destino" styleClass="janal-wid-100-txt" toggleable="true">      
+        <p:panelGrid columns="2" styleClass="janal-wid-100-txt" columnClasses="janal-wid-30">
+          <p:outputLabel value="Empresa: "/>
+          <p:outputLabel value="#{kalanCuentasFiltro.attrs.detalle.empresa}"/>
+          <p:outputLabel value="Cuenta: "/>
+          <p:outputLabel value="#{kalanCuentasFiltro.attrs.detalle.cuenta}"/>
+          <p:outputLabel value="Consecutivo: "/>
+          <p:outputLabel value="#{kalanCuentasFiltro.attrs.detalle.consecutivo}"/>
+        </p:panelGrid>  
+      </p:panel>  
+    </h:panelGrid>
+    <h:panelGrid columns="2" styleClass="#{kalanCuentasFiltro.attrs.seleccionado.idCuentaOrigen.toLong ne 19? 'janal-display-none': ''}" columnClasses="janal-wid-30">
+      <p:outputLabel value="Importe: "/>
+      <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.importe}"/>
+      <p:outputLabel value="Fecha aplicación: "/>
+      <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.fechaAplicacion}"/>
       <p:outputLabel value="Estatus: "/>
       <p:outputLabel value="#{kalanCuentasFiltro.attrs.seleccionado.estatus}"/>
     </h:panelGrid>			
@@ -338,7 +294,7 @@
 				</p:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla detalle" value="Aceptar" actionListener="#{kalanCuentasFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear()"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" actionListener="#{kalanCuentasFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear()"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide()"/>
 				</div>
 			</h:form>

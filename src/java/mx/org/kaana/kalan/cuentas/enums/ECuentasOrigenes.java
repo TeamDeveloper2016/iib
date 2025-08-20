@@ -1,0 +1,46 @@
+package mx.org.kaana.kalan.cuentas.enums;
+
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
+public enum ECuentasOrigenes {
+
+  BANCOS(1L, "1"),
+  BANCOS_CARGOS(2L, "11"),
+  BANCOS_ABONOS(3L, "12"),
+  BANCOS_TRANSFERENCIAS(19L, "13"),
+  VENTAS(4L, "2"),
+	AHORROS(7L, "3"),
+  PRESTAMOS(10L, "4"),
+  GASTOS(13L, "5"),
+  CREDITOS(16L, "6");
+
+  private Long idCuentaOrigen;
+  private String clave;
+  
+	private static final Map<Long, ECuentasOrigenes> lookup= new HashMap<>();
+
+  static {
+    for (ECuentasOrigenes item: EnumSet.allOf(ECuentasOrigenes.class)) 
+      lookup.put(item.getIdCuentaOrigen(), item);    
+  }
+
+  private ECuentasOrigenes(Long idCuentaOrigen, String clave) {
+    this.idCuentaOrigen = idCuentaOrigen;
+    this.clave = clave;
+  }
+
+  public Long getIdCuentaOrigen() {
+    return idCuentaOrigen;
+  }
+
+  public String getClave() {
+    return clave;
+  }
+	
+	public static ECuentasOrigenes fromIdEstatusCuenta(Long getIdCuentaOrigen) {
+    return lookup.get(getIdCuentaOrigen);
+  } 
+  
+}

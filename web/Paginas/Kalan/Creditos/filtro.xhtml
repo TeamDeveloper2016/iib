@@ -184,7 +184,7 @@
 						<p:menuitem id="consultar" action="#{kalanCreditosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator rendered="#{fn:contains('|1|2|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
             <p:menuitem id="modificar" action="#{kalanCreditosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|2|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
+            <p:menuitem id="eliminar" icon="fa fa-trash" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|2|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
             <p:separator/>
             <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanCreditosFiltro.doMovimientos}"/>
             <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanCreditosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|', kalanCreditosFiltro.attrs.seleccionado.idCreditoEstatus) and kalanCreditosFiltro.isAdmin}"/>

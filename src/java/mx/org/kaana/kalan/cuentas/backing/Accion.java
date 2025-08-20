@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kalan.cuentas.beans.Cuenta;
+import mx.org.kaana.kalan.cuentas.enums.ECuentasOrigenes;
 import mx.org.kaana.kalan.cuentas.reglas.Transaccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -80,6 +81,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (this.accion) {
         case AGREGAR:
           this.cuenta= new Cuenta();
+          this.cuenta.setIdCuentaOrigen(ECuentasOrigenes.BANCOS_ABONOS.getIdCuentaOrigen());
           this.cuenta.setIkTipoAfectacion(new UISelectEntity(2L));
           if(!Objects.equals(this.attrs.get("tiposMediosPagos"), null))
             this.cuenta.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
@@ -97,7 +99,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.doLoadCuentas();
           break;
       } // switch      
-    } // try // try
+    } // try // try // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
@@ -125,6 +127,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {
+      this.cuenta.setIdCuentaOrigen(Objects.equals(this.cuenta.getIdTipoAfectacion(), 2L)? ECuentasOrigenes.BANCOS_ABONOS.getIdCuentaOrigen(): ECuentasOrigenes.BANCOS_CARGOS.getIdCuentaOrigen());
       this.cuenta.setIdEmpresaDestino(null);
       this.cuenta.setIdBanco(null);
       transaccion= new Transaccion(this.cuenta);
@@ -134,7 +137,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       } // if
       else 
         JsfBase.addMessage("Ocurrió un error al registrar el movimiento", ETipoMensaje.ERROR);      
-    } // try
+    } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);

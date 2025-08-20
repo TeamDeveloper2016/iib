@@ -7,28 +7,11 @@
   </model>
 
   <dml>
-    <unit id="TcKalanCuentasConcentradorasDto">
-      <select id="row">
-select      
-  *
-from      
-  tc_kalan_cuentas_concentradoras
-where 
-  {condicion} 
-      </select>
-      <select id="identically">
-select      
-  *
-from      
-  tc_kalan_cuentas_concentradoras
-where      
-  consecutivo = '{consecutivo}' and id_cuenta_concentradora = {idCuentaConcentradora}
-      </select>
-    </unit>    
     <unit id="TcKalanCuentasOrigenesDto">
       <select id="row">
 select      
-  *
+  tc_kalan_cuentas_origenes.id_cuenta_origen as id_key,
+  tc_kalan_cuentas_origenes.*
 from      
   tc_kalan_cuentas_origenes
 where 
@@ -85,6 +68,29 @@ inner join
 where 
   {condicion} 
       </select>
+      <select id="detalle">
+select      
+  tc_kalan_cuentas_movimientos.id_cuenta_movimiento as id_key,     
+  tc_mantic_empresas.nombre as empresa,
+  tc_kalan_empresas_cuentas.nombre as cuenta,
+  tc_kalan_cuentas_movimientos.*
+from      
+  tc_kalan_cuentas_movimientos
+inner join
+  tc_mantic_empresas on tc_kalan_cuentas_movimientos.id_empresa= tc_mantic_empresas.id_empresa
+inner join
+  tc_kalan_empresas_cuentas on tc_kalan_cuentas_movimientos.id_empresa_cuenta= tc_kalan_empresas_cuentas.id_empresa_cuenta
+where 
+  {condicion} 
+      </select>
+      <update id="rows">
+update 
+  tc_kalan_cuentas_movimientos
+set 
+  id_empresa_destino= null              
+where
+  id_cuenta_movimiento in ({cuentas})
+      </update>
     </unit>    
     <unit id="TcKalanCuentasEstatusDto">
       <select id="row">

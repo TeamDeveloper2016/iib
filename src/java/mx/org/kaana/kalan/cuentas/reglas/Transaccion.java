@@ -3,13 +3,13 @@ package mx.org.kaana.kalan.cuentas.reglas;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.kalan.db.dto.TcKalanCuentasBitacoraDto;
 import mx.org.kaana.kalan.cuentas.beans.Cuenta;
+import mx.org.kaana.kalan.db.dto.TcKalanCuentasMovimientosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -86,11 +86,12 @@ public class Transaccion extends IBaseTnx {
 				case DEPURAR:
           params.put(Constantes.SQL_CONDICION, "tc_kalan_cuentas_movimientos.id_cuenta_movimiento= "+ this.cuenta.getIdEmpresaDestino());
           clone= (Cuenta)DaoFactory.getInstance().toEntity(sesion, Cuenta.class, "TcKalanCuentasMovimientosDto", params);
-          
+          params.put("cuentas", this.cuenta.getIdCuentaMovimiento()+ ", "+ this.cuenta.getIdEmpresaDestino());
+          DaoFactory.getInstance().updateAll(sesion, TcKalanCuentasMovimientosDto.class, params);
+          sesion.flush();
           params.put("idCuentaMovimiento", this.cuenta.getIdCuentaMovimiento());            
           DaoFactory.getInstance().deleteAll(sesion, TcKalanCuentasBitacoraDto.class, params);
 					DaoFactory.getInstance().delete(sesion, this.cuenta);
-          
           params.put("idCuentaMovimiento", clone.getIdCuentaMovimiento());
           DaoFactory.getInstance().deleteAll(sesion, TcKalanCuentasBitacoraDto.class, params);
 					regresar= DaoFactory.getInstance().delete(sesion, clone)>= 1L;
@@ -103,10 +104,12 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case DESACTIVAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
+            this.cuenta.setIdBanco(null);
 						this.cuenta.setIdCuentaEstatus(this.bitacora.getIdCuentaEstatus());
             DaoFactory.getInstance().update(sesion, this.cuenta);
             params.put(Constantes.SQL_CONDICION, "tc_kalan_cuentas_movimientos.id_cuenta_movimiento= "+ this.cuenta.getIdEmpresaDestino());
             clone= (Cuenta)DaoFactory.getInstance().toEntity(sesion, Cuenta.class, "TcKalanCuentasMovimientosDto", params);
+            clone.setIdBanco(null);
 						clone.setIdCuentaEstatus(this.bitacora.getIdCuentaEstatus());
             regresar= DaoFactory.getInstance().update(sesion, clone)>= 1L;
 					} // if
@@ -243,6 +246,7 @@ public class Transaccion extends IBaseTnx {
       clone.setIdBanco(null);
       clone.setIdEmpresa(this.cuenta.getIdDestino());
       clone.setIdEmpresaCuenta(this.cuenta.getIdDestinoCuenta());
+      clone.setIdCuentaEstatus(this.cuenta.getIdCuentaEstatus());
       clone.setFechaAplicacion(this.cuenta.getFechaAplicacion());
       clone.setFechaPago(this.cuenta.getFechaPago());
       clone.setIdTipoMedioPago(this.cuenta.getIdTipoMedioPago());

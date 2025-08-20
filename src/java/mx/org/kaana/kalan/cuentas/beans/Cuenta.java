@@ -42,8 +42,8 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements Serializable
     this.setIkBanco(new UISelectEntity(-1L));
   }
 
-  public Cuenta(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long idBanco, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus) {
-    super(idTipoAfectacion, idTipoMedioPago, importe, idBanco, ejercicio, fechaPago, consecutivo, fechaAplicacion, idEmpresaCuenta, idUsuario, idEmpresaDestino, observaciones, orden, idCuentaMovimiento, referencia, idEmpresa, idCuentaEstatus);
+  public Cuenta(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long idBanco, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus, Long idCuentaOrigen, Long idPivote) {
+    super(idTipoAfectacion, idTipoMedioPago, importe, idBanco, ejercicio, fechaPago, consecutivo, fechaAplicacion, idEmpresaCuenta, idUsuario, idEmpresaDestino, observaciones, orden, idCuentaMovimiento, referencia, idEmpresa, idCuentaEstatus, idCuentaOrigen, idPivote);
     this.setIkEmpresa(new UISelectEntity(idEmpresa));
     this.setIkEmpresaCuenta(new UISelectEntity(idEmpresaCuenta));
     this.setIkDestino(new UISelectEntity(-1L));
@@ -164,7 +164,9 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements Serializable
       -1L, // Long idCuentaMovimiento, 
       this.getReferencia(), // String referencia, 
       this.getIdDestino(), // Long idEmpresa, 
-      this.getIdCuentaEstatus() // Long idCuentaEstatus      
+      this.getIdCuentaEstatus(), // Long idCuentaEstatus      
+      this.getIdCuentaOrigen(), // Long idCuentaOrigen, 
+      this.getIdPivote() // Long idPivote
     );
     return regresar;
   }
