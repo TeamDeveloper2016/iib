@@ -71,6 +71,8 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
   private Long idCuentaOrigen;
   @Column (name="id_pivote")
   private Long idPivote;
+  @Column (name="registro")
+  private Timestamp actualizado;
 
   public TcKalanCuentasMovimientosDto() {
     this(new Long(-1L));
@@ -102,6 +104,7 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
     setIdCuentaEstatus(idCuentaEstatus);
     setIdCuentaOrigen(idCuentaOrigen);
     setIdPivote(idPivote);
+    setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
   public void setIdTipoAfectacion(Long idTipoAfectacion) {
@@ -264,6 +267,14 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
     this.idPivote = idPivote;
   }
 
+  public Timestamp getActualizado() {
+    return actualizado;
+  }
+
+  public void setActualizado(Timestamp actualizado) {
+    this.actualizado = actualizado;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -341,13 +352,14 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
 		regresar.put("idCuentaEstatus", getIdCuentaEstatus());
 		regresar.put("idCuentaOrigen", getIdCuentaOrigen());
 		regresar.put("idPivote", getIdPivote());
+		regresar.put("actualizado", getActualizado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdTipoAfectacion(), getIdTipoMedioPago(), getImporte(), getIdBanco(), getEjercicio(), getFechaPago(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaDestino(), getObservaciones(), getOrden(), getIdCuentaMovimiento(), getReferencia(), getIdEmpresa(), getIdCuentaEstatus(), getIdCuentaOrigen(), getIdPivote()
+      getIdTipoAfectacion(), getIdTipoMedioPago(), getImporte(), getIdBanco(), getEjercicio(), getFechaPago(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaDestino(), getObservaciones(), getOrden(), getIdCuentaMovimiento(), getReferencia(), getIdEmpresa(), getIdCuentaEstatus(), getIdCuentaOrigen(), getIdPivote(), getActualizado()
     };
     return regresar;
   }

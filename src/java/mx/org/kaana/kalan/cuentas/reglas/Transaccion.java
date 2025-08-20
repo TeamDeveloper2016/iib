@@ -1,5 +1,6 @@
 package mx.org.kaana.kalan.cuentas.reglas;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -18,9 +19,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends IBaseTnx implements Serializable {
 
   private static final Log LOG= LogFactory.getLog(Transaccion.class);
+  private static final long serialVersionUID = 5752229334495124313L;
+  
 	private Cuenta cuenta;
 	private TcKalanCuentasBitacoraDto bitacora;
 	private String messageError;

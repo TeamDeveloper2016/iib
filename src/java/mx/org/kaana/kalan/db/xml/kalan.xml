@@ -83,6 +83,16 @@ inner join
 where 
   {condicion} 
       </select>
+      <select id="existe">
+select      
+  tc_kalan_cuentas_movimientos.id_cuenta_movimiento as id_key,
+  tc_kalan_cuentas_movimientos.id_cuenta_movimiento
+from      
+  tc_kalan_cuentas_movimientos
+where 
+  id_cuenta_origen= {idCuentaOrigen}           
+  and id_pivote= {idPivote}
+      </select>
       <update id="rows">
 update 
   tc_kalan_cuentas_movimientos

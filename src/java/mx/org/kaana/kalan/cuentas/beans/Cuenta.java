@@ -13,7 +13,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Cuenta extends TcKalanCuentasMovimientosDto implements Serializable {
+public class Cuenta extends TcKalanCuentasMovimientosDto implements ICuenta, Serializable {
 
   private static final long serialVersionUID = -8794495412874168809L;
 
