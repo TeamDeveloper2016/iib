@@ -15,6 +15,7 @@ select
   tc_kalan_empresas_cuentas.cuenta as clave,
   tc_kalan_empresas_cuentas.nombre as cuenta,
   tc_kalan_cuentas_movimientos.consecutivo,
+  ifnull(tt_kalan_cuentas_movimientos.consecutivo, '') as ligado,
   tc_kalan_cuentas_movimientos.fecha_aplicacion,
   tc_kalan_cuentas_movimientos.fecha_pago,
   tc_kalan_cuentas_movimientos.importe,
@@ -30,6 +31,8 @@ select
   tc_kalan_cuentas_movimientos.registro
 from      
   tc_kalan_cuentas_movimientos
+left join
+  tc_kalan_cuentas_movimientos as tt_kalan_cuentas_movimientos on tc_kalan_cuentas_movimientos.id_empresa_destino= tt_kalan_cuentas_movimientos.id_cuenta_movimiento
 inner join
   tc_mantic_empresas on tc_kalan_cuentas_movimientos.id_empresa= tc_mantic_empresas.id_empresa
 inner join

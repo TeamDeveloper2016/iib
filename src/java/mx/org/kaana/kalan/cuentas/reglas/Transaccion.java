@@ -132,15 +132,15 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } 
 	
-  private void toBitacora(Session sesion, Long idCuentaEstatus) throws Exception {
-    this.toBitacora(sesion, idCuentaEstatus, null);
+  private void toBitacora(Session sesion, Long idCuentaMovimiento, Long idCuentaEstatus) throws Exception {
+    this.toBitacora(sesion, idCuentaMovimiento, idCuentaEstatus, null);
   }
   
-  private void toBitacora(Session sesion, Long idCuentaEstatus, String justificacion) throws Exception {
+  private void toBitacora(Session sesion, Long idCuentaMovimiento, Long idCuentaEstatus, String justificacion) throws Exception {
     try {
       this.bitacora= new TcKalanCuentasBitacoraDto(
         -1L, // Long idCuentaBitacora, 
-        this.cuenta.getIdCuentaMovimiento(), // Long idCuentaMovimiento
+        idCuentaMovimiento, // Long idCuentaMovimiento
         justificacion, // String justificacion, 
         JsfBase.getIdUsuario(), // Long idUsuario, 
         idCuentaEstatus // Long idCuentaEstatus
@@ -182,7 +182,7 @@ public class Transaccion extends IBaseTnx {
       this.cuenta.setOrden(consecutivo.getOrden());
       this.cuenta.setIdUsuario(JsfBase.getIdUsuario());
       regresar= DaoFactory.getInstance().insert(sesion, this.cuenta)>= 0L;
-      this.toBitacora(sesion, this.cuenta.getIdCuentaEstatus());
+      this.toBitacora(sesion, this.cuenta.getIdCuentaMovimiento(), this.cuenta.getIdCuentaEstatus());
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -194,7 +194,7 @@ public class Transaccion extends IBaseTnx {
     Boolean regresar= Boolean.TRUE;
     try {
       regresar= DaoFactory.getInstance().update(sesion, this.cuenta)>= 0L;
-      this.toBitacora(sesion, this.cuenta.getIdCuentaEstatus());
+      this.toBitacora(sesion, this.cuenta.getIdCuentaMovimiento(), this.cuenta.getIdCuentaEstatus());
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -211,7 +211,7 @@ public class Transaccion extends IBaseTnx {
       this.cuenta.setOrden(consecutivo.getOrden());
       this.cuenta.setIdUsuario(JsfBase.getIdUsuario());
       DaoFactory.getInstance().insert(sesion, this.cuenta);
-      this.toBitacora(sesion, this.cuenta.getIdCuentaEstatus());
+      this.toBitacora(sesion, this.cuenta.getIdCuentaMovimiento(), this.cuenta.getIdCuentaEstatus());
       
       Cuenta clone= this.cuenta.clone();
       consecutivo = this.toSiguiente(sesion);
@@ -222,7 +222,7 @@ public class Transaccion extends IBaseTnx {
       clone.setIdUsuario(JsfBase.getIdUsuario());
       clone.setIdBanco(null);
       DaoFactory.getInstance().insert(sesion, clone);
-      this.toBitacora(sesion, clone.getIdCuentaEstatus());
+      this.toBitacora(sesion, clone.getIdCuentaMovimiento(), clone.getIdCuentaEstatus());
       
       sesion.flush();
       this.cuenta.setIdEmpresaDestino(clone.getIdCuentaMovimiento());
@@ -240,7 +240,7 @@ public class Transaccion extends IBaseTnx {
     try {
       this.cuenta.setIdBanco(null);
       DaoFactory.getInstance().update(sesion, this.cuenta);
-      this.toBitacora(sesion, this.cuenta.getIdCuentaEstatus());
+      this.toBitacora(sesion, this.cuenta.getIdCuentaMovimiento(), this.cuenta.getIdCuentaEstatus());
       params.put(Constantes.SQL_CONDICION, "tc_kalan_cuentas_movimientos.id_cuenta_movimiento= "+ this.cuenta.getIdEmpresaDestino());
       Cuenta clone= (Cuenta)DaoFactory.getInstance().toEntity(sesion, Cuenta.class, "TcKalanCuentasMovimientosDto", params);
       clone.setIdBanco(null);
@@ -253,7 +253,7 @@ public class Transaccion extends IBaseTnx {
       clone.setImporte(this.cuenta.getImporte());
       clone.setReferencia(this.cuenta.getReferencia());
       regresar= DaoFactory.getInstance().update(sesion, clone)>= 0L;
-      this.toBitacora(sesion, clone.getIdCuentaEstatus());
+      this.toBitacora(sesion, clone.getIdCuentaMovimiento(), clone.getIdCuentaEstatus());
 		} // try
 		catch (Exception e) {
 			throw e;

@@ -158,7 +158,14 @@
               </f:facet>
               <h:outputText value="#{row['cuenta']}"/>
             </p:column>														
-            <p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.consecutivo}">
+            <p:column styleClass="MarAuto Responsive janal-wid-12 janal-column-center" sortBy="#{row.consecutivo}" exportable="false">
+              <f:facet name="header">
+                <h:outputText value="Consecutivo"/>
+              </f:facet>
+              <h:outputText value="#{row['consecutivo']}"/>
+              <i class="fa fa-fw fa-retweet janal-color-blue janal-icons-message #{empty(row['ligado']) or row['ligado'] eq ''? 'janal-display-none': ''}" title="Asociado: #{row['ligado']}"></i>
+            </p:column>							
+            <p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Consecutivo"/>
               </f:facet>

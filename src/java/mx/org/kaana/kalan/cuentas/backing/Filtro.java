@@ -242,6 +242,7 @@ public class Filtro extends IBaseFilter implements Serializable {
         empresas= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
       this.attrs.put("empresas", empresas);
   	  this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity(empresas));
+      this.doLoadCuentas();
     } // try
     catch (Exception e) {
       throw e;
@@ -367,8 +368,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}	
 	
 	public String doMovimientos() {
-		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.PRESTAMOS);
-		JsfBase.setFlashAttribute(ETipoMovimiento.PRESTAMOS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.CUENTAS);
+		JsfBase.setFlashAttribute(ETipoMovimiento.CUENTAS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Kalan/Cuentas/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
