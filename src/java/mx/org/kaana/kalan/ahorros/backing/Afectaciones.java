@@ -99,7 +99,7 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
             this.afectacion.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
           if(!Objects.equals(this.attrs.get("bancos"), null))
             this.afectacion.setIkBanco(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("bancos")));
-          this.afectacion.setIdAhorroControl(4L);
+          this.afectacion.setIdAhorroControl(4L); // PAGADO
           this.afectacion.setIdUsuario(JsfBase.getIdUsuario());
           this.doLoadCuentas();
           break;

@@ -28,12 +28,12 @@ public class Cuotas implements Job, Serializable {
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
     Transaccion transaccion= null;
 		try {
-//			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
+			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
         LOG.error("VERIFICANDO CUOTAS A APLICAR");
         transaccion= new Transaccion();     
         transaccion.ejecutar(EAccion.REGISTRAR);
         LOG.error("SE ACTUALIZARON: "+ transaccion.getMessageError()+ " CUOTAS");
-//			} // if
+			} // if
 	  } // try
 		catch (Exception e) {
 			Error.mensaje(e);

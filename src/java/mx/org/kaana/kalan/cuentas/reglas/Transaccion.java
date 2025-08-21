@@ -4,22 +4,17 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
-import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.kalan.db.dto.TcKalanCuentasBitacoraDto;
 import mx.org.kaana.kalan.cuentas.beans.Cuenta;
 import mx.org.kaana.kalan.db.dto.TcKalanCuentasMovimientosDto;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx implements Serializable {
+public class Transaccion extends IBaseCuenta implements Serializable {
 
   private static final Log LOG= LogFactory.getLog(Transaccion.class);
   private static final long serialVersionUID = 5752229334495124313L;
@@ -70,16 +65,16 @@ public class Transaccion extends IBaseTnx implements Serializable {
       this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el movimiento ");
       switch(accion) {
         case AGREGAR:
-          regresar= this.toAgregar(sesion);
+          regresar= super.addCuenta(sesion, this.cuenta);
           break;
         case MODIFICAR:
-          regresar= this.toModificar(sesion);
+          regresar= super.updateCuenta(sesion, this.cuenta);
           break;
         case PROCESAR:
-          regresar= this.toInsert(sesion);
+          regresar= this.insert(sesion);
           break;
         case REPROCESAR:
-          regresar= this.toUpdate(sesion);
+          regresar= this.update(sesion);
           break;
 				case ELIMINAR:
           params.put("idCuentaMovimiento", this.cuenta.getIdCuentaMovimiento());            
@@ -135,98 +130,13 @@ public class Transaccion extends IBaseTnx implements Serializable {
     return regresar;
   } 
 	
-  private void toBitacora(Session sesion, Long idCuentaMovimiento, Long idCuentaEstatus) throws Exception {
-    this.toBitacora(sesion, idCuentaMovimiento, idCuentaEstatus, null);
-  }
-  
-  private void toBitacora(Session sesion, Long idCuentaMovimiento, Long idCuentaEstatus, String justificacion) throws Exception {
-    try {
-      this.bitacora= new TcKalanCuentasBitacoraDto(
-        -1L, // Long idCuentaBitacora, 
-        idCuentaMovimiento, // Long idCuentaMovimiento
-        justificacion, // String justificacion, 
-        JsfBase.getIdUsuario(), // Long idUsuario, 
-        idCuentaEstatus // Long idCuentaEstatus
-      );
-      DaoFactory.getInstance().insert(sesion, this.bitacora);
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-  }
-
-	private Siguiente toSiguiente(Session sesion) throws Exception {
-		Siguiente regresar        = null;
-		Map<String, Object> params= new HashMap<>();
-		try {
-			params.put("ejercicio", this.getCurrentYear());
-			params.put("operador", this.getCurrentSign());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcKalanCuentasMovimientosDto", "siguiente", params, "siguiente");
-			if(next.getData()!= null)
-			  regresar= new Siguiente(next.toLong());
-			else
-			  regresar= new Siguiente(Configuracion.getInstance().isEtapaDesarrollo()? 900001L: 1L);
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-		return regresar;
-	}  
-
-  private Boolean toAgregar(Session sesion) throws Exception {
+  private Boolean insert(Session sesion) throws Exception {
     Boolean regresar= Boolean.TRUE;
     try {
-      Siguiente consecutivo= this.toSiguiente(sesion);
-      this.cuenta.setConsecutivo(consecutivo.getConsecutivo());
-      this.cuenta.setEjercicio(consecutivo.getEjercicio());
-      this.cuenta.setOrden(consecutivo.getOrden());
-      this.cuenta.setIdUsuario(JsfBase.getIdUsuario());
-      regresar= DaoFactory.getInstance().insert(sesion, this.cuenta)>= 0L;
-      this.toBitacora(sesion, this.cuenta.getIdCuentaMovimiento(), this.cuenta.getIdCuentaEstatus());
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-    return regresar;
-  }
-  
-  private Boolean toModificar(Session sesion) throws Exception {
-    Boolean regresar= Boolean.TRUE;
-    try {
-      regresar= DaoFactory.getInstance().update(sesion, this.cuenta)>= 0L;
-      this.toBitacora(sesion, this.cuenta.getIdCuentaMovimiento(), this.cuenta.getIdCuentaEstatus());
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-    return regresar;
-  }
-  
-  private Boolean toInsert(Session sesion) throws Exception {
-    Boolean regresar= Boolean.TRUE;
-    try {
-      Siguiente consecutivo= this.toSiguiente(sesion);
-      this.cuenta.setConsecutivo(consecutivo.getConsecutivo());
-      this.cuenta.setEjercicio(consecutivo.getEjercicio());
-      this.cuenta.setOrden(consecutivo.getOrden());
-      this.cuenta.setIdUsuario(JsfBase.getIdUsuario());
-      DaoFactory.getInstance().insert(sesion, this.cuenta);
-      this.toBitacora(sesion, this.cuenta.getIdCuentaMovimiento(), this.cuenta.getIdCuentaEstatus());
-      
+      super.addCuenta(sesion, this.cuenta);
       Cuenta clone= this.cuenta.clone();
-      consecutivo = this.toSiguiente(sesion);
       clone.setIdEmpresaDestino(this.cuenta.getIdCuentaMovimiento());
-      clone.setConsecutivo(consecutivo.getConsecutivo());
-      clone.setEjercicio(consecutivo.getEjercicio());
-      clone.setOrden(consecutivo.getOrden());
-      clone.setIdUsuario(JsfBase.getIdUsuario());
-      clone.setIdBanco(null);
-      DaoFactory.getInstance().insert(sesion, clone);
-      this.toBitacora(sesion, clone.getIdCuentaMovimiento(), clone.getIdCuentaEstatus());
-      
+      super.addCuenta(sesion, clone);
       sesion.flush();
       this.cuenta.setIdEmpresaDestino(clone.getIdCuentaMovimiento());
       regresar= DaoFactory.getInstance().update(sesion, this.cuenta)>= 0L;
@@ -237,13 +147,12 @@ public class Transaccion extends IBaseTnx implements Serializable {
     return regresar;
   }
   
-  private Boolean toUpdate(Session sesion) throws Exception {
+  private Boolean update(Session sesion) throws Exception {
     Boolean regresar          = Boolean.TRUE;
     Map<String, Object> params= new HashMap<>();
     try {
       this.cuenta.setIdBanco(null);
-      DaoFactory.getInstance().update(sesion, this.cuenta);
-      this.toBitacora(sesion, this.cuenta.getIdCuentaMovimiento(), this.cuenta.getIdCuentaEstatus());
+      super.updateCuenta(sesion, this.cuenta);
       params.put(Constantes.SQL_CONDICION, "tc_kalan_cuentas_movimientos.id_cuenta_movimiento= "+ this.cuenta.getIdEmpresaDestino());
       Cuenta clone= (Cuenta)DaoFactory.getInstance().toEntity(sesion, Cuenta.class, "TcKalanCuentasMovimientosDto", params);
       clone.setIdBanco(null);
@@ -255,8 +164,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       clone.setIdTipoMedioPago(this.cuenta.getIdTipoMedioPago());
       clone.setImporte(this.cuenta.getImporte());
       clone.setReferencia(this.cuenta.getReferencia());
-      regresar= DaoFactory.getInstance().update(sesion, clone)>= 0L;
-      this.toBitacora(sesion, clone.getIdCuentaMovimiento(), clone.getIdCuentaEstatus());
+      regresar= super.updateCuenta(sesion, clone);
 		} // try
 		catch (Exception e) {
 			throw e;

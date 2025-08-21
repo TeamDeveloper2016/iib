@@ -96,7 +96,6 @@ public class Transaccion extends IBaseCuenta {
           this.ahorro.setConsecutivo(consecutivo.getConsecutivo());
           this.ahorro.setEjercicio(consecutivo.getEjercicio());
           this.ahorro.setOrden(consecutivo.getOrden());
-          this.ahorro.setIdUsuario(JsfBase.getIdUsuario());
           this.ahorro.setSaldo(0D);
           DaoFactory.getInstance().insert(sesion, this.ahorro);
           this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus());
@@ -118,7 +117,7 @@ public class Transaccion extends IBaseCuenta {
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.ahorro.setIdAhorroEstatus(this.bitacora.getIdAhorroEstatus());
-            if(Objects.equals(this.ahorro.getIdAhorroEstatus(), 4L) || // LIQUIDADO
+            if(Objects.equals(this.ahorro.getIdAhorroEstatus(), 3L) || // TERMINADO
                Objects.equals(this.ahorro.getIdAhorroEstatus(), 5L))  // CANCELADO
               this.toCancel(sesion);
             regresar= DaoFactory.getInstance().update(sesion, this.ahorro)>= 1L;
@@ -288,7 +287,7 @@ public class Transaccion extends IBaseCuenta {
 			params.put("idAhorro", this.afectacion.getIdAhorro());
 			params.put("idAhorroPago", this.afectacion.getIdAhorroPago());
 			params.put(Constantes.SQL_CONDICION, "id_ahorro_pago= "+ this.afectacion.getIdAhorroPago());
-      Afectacion item= (Afectacion)DaoFactory.getInstance().toEntitySet(sesion, Afectacion.class, "TcKalanAhorrosPagosDto", params);
+      Afectacion item= (Afectacion)DaoFactory.getInstance().toEntity(sesion, Afectacion.class, "TcKalanAhorrosPagosDto", params);
       // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
       this.toDeleteControlCuentaPago(sesion, item);
 			regresar= DaoFactory.getInstance().deleteAll(sesion, TcKalanAhorrosPagosDto.class, "depurar", params)> 0L;
@@ -327,7 +326,7 @@ public class Transaccion extends IBaseCuenta {
             item.setIdEmpresaCuenta(this.ahorro.getIdEmpresaCuenta());
             item.setIdBanco(null);
             item.setIdTipoAfectacion(ETipoAfectacion.ABONO.getIdTipoAfectacion()); // ABONO
-            item.setIdUsuario(JsfBase.getIdUsuario());
+            item.setIdUsuario(this.ahorro.getIdUsuario());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
           case UPDATE:
@@ -355,7 +354,7 @@ public class Transaccion extends IBaseCuenta {
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("idAhorro", this.ahorro.getIdAhorro());
-      regresar= DaoFactory.getInstance().updateAll(sesion, TcKalanAhorrosDto.class, params, "cancelar")>= 0L;
+      regresar= DaoFactory.getInstance().updateAll(sesion, TcKalanAhorrosPagosDto.class, params, "cancelar")>= 0L;
 		} // try
 		catch (Exception e) {
 			throw e;

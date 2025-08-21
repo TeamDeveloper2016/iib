@@ -193,7 +193,7 @@
             <p:menuitem id="eliminar" icon="fa fa-trash" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|2|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus)}"/>
             <p:separator/>
             <p:menuitem value="Bitacora" icon="fa fa-user" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanAhorrosFiltro.doMovimientos}"/>
-            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanAhorrosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus) and kalanAhorrosFiltro.isAdmin}"/>
+            <p:menuitem value="Estatus" icon="fa fa-exchange" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{kalanAhorrosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|4|6|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus) and kalanAhorrosFiltro.isAdmin}"/>
             <p:separator rendered="#{fn:contains('|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus)}"/>
             <p:menuitem value="Pago" icon="fa fa-dollar" onstart="return janal.bloquear()" process="@this tabla" action="#{kalanAhorrosFiltro.doAfectaciones}" rendered="#{fn:contains('|2|6|', kalanAhorrosFiltro.attrs.seleccionado.idAhorroEstatus)}"/>
           </p:contextMenu>

@@ -86,7 +86,7 @@ where
       <select id="existe">
 select      
   tc_kalan_cuentas_movimientos.id_cuenta_movimiento as id_key,
-  tc_kalan_cuentas_movimientos.id_cuenta_movimiento
+  tc_kalan_cuentas_movimientos.*
 from      
   tc_kalan_cuentas_movimientos
 where 
@@ -299,8 +299,6 @@ from
   tc_kalan_ahorros_pagos
 where      
   id_ahorro= {idAhorro}
-group by  
-  id_ahorro
       </select>  
       <select id="cuentas">
 select
@@ -320,7 +318,7 @@ update
   tc_kalan_ahorros_pagos
 set
   id_ahorro_control= 3,
-  registro= now()
+  actualizado= now()
 where      
   id_ahorro_control= 1      
   and id_ahorro= {idAhorro}

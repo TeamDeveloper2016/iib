@@ -101,6 +101,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case AGREGAR:
           this.ahorro= new Ahorro();
           this.ahorro.prepare();
+          this.ahorro.setIdUsuario(JsfBase.getIdUsuario());
           break;
         case MODIFICAR:
         case CONSULTAR:

@@ -390,11 +390,12 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put(Constantes.SQL_CONDICION, "id_ahorro_pago= "+ row.toLong("idAhorroPago"));
       afectacion = (Afectacion)DaoFactory.getInstance().toEntity(Afectacion.class, "TcKalanAhorrosPagosDto", params);
       transaccion= new Transaccion(afectacion);
-      transaccion.ejecutar(EAccion.DEPURAR);
-      JsfBase.addMessage("Eliminar", "La cuota se ha eliminado", ETipoMensaje.INFORMACION);
-      this.attrs.put("idAhorroProcess", row.toLong("idAhorro"));
-      this.doLoad();
-      this.doView(row);
+      if(transaccion.ejecutar(EAccion.DEPURAR)) {
+        JsfBase.addMessage("Eliminar", "La cuota se ha eliminado", ETipoMensaje.INFORMACION);
+        this.attrs.put("idAhorroProcess", row.toLong("idAhorro"));
+        this.doLoad();
+        this.doView(row);
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);

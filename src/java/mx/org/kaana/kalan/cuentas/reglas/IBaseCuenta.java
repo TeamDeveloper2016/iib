@@ -86,7 +86,7 @@ public abstract class IBaseCuenta extends IBaseTnx implements Serializable {
     return regresar;
   }
   
-  private Boolean addCuenta(Session sesion, TcKalanCuentasMovimientosDto cuenta) throws Exception {
+  protected Boolean addCuenta(Session sesion, TcKalanCuentasMovimientosDto cuenta) throws Exception {
     Boolean regresar= Boolean.TRUE;
     try {
       Siguiente consecutivo= this.siguiente(sesion);
@@ -102,7 +102,7 @@ public abstract class IBaseCuenta extends IBaseTnx implements Serializable {
     return regresar;
   }
   
-  private Boolean updateCuenta(Session sesion, TcKalanCuentasMovimientosDto cuenta) throws Exception {
+  protected Boolean updateCuenta(Session sesion, TcKalanCuentasMovimientosDto cuenta) throws Exception {
     Boolean regresar= Boolean.TRUE;
     try {
       cuenta.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -115,7 +115,7 @@ public abstract class IBaseCuenta extends IBaseTnx implements Serializable {
     return regresar;
   }
 
-	private Siguiente siguiente(Session sesion) throws Exception {
+	protected Siguiente siguiente(Session sesion) throws Exception {
 		Siguiente regresar        = null;
 		Map<String, Object> params= new HashMap<>();
 		try {
@@ -136,11 +136,11 @@ public abstract class IBaseCuenta extends IBaseTnx implements Serializable {
 		return regresar;
 	}  
   
-  private void bitacora(Session sesion, TcKalanCuentasMovimientosDto cuenta) throws Exception {
+  protected void bitacora(Session sesion, TcKalanCuentasMovimientosDto cuenta) throws Exception {
     this.bitacora(sesion, cuenta, null);
   }
   
-  private void bitacora(Session sesion, TcKalanCuentasMovimientosDto cuenta, String justificacion) throws Exception {
+  protected void bitacora(Session sesion, TcKalanCuentasMovimientosDto cuenta, String justificacion) throws Exception {
     try {
       TcKalanCuentasBitacoraDto bitacora= new TcKalanCuentasBitacoraDto(
         -1L, // Long idCuentaBitacora, 

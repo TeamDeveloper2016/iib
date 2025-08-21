@@ -202,6 +202,7 @@ select
   tc_kalan_ahorros_pagos.id_ahorro_pago as id_key,
   tc_kalan_ahorros_pagos.id_ahorro,
   tc_kalan_ahorros_pagos.id_ahorro_pago,
+  tc_kalan_ahorros.inicia as inicio,
   tc_kalan_ahorros_pagos.consecutivo,
   tc_mantic_tipos_medios_pagos.nombre as medio,        
   tc_kalan_ahorros_pagos.importe,
@@ -214,15 +215,17 @@ select
 from   
   tc_kalan_ahorros_pagos
 inner join
+  tc_kalan_ahorros on tc_kalan_ahorros_pagos.id_ahorro= tc_kalan_ahorros.id_ahorro
+inner join
   tc_mantic_tipos_medios_pagos on tc_kalan_ahorros_pagos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 inner join
   tc_kalan_tipos_afectaciones on tc_kalan_ahorros_pagos.id_tipo_afectacion= tc_kalan_tipos_afectaciones.id_tipo_afectacion
 inner join
   tc_kalan_ahorros_controles on tc_kalan_ahorros_pagos.id_ahorro_control= tc_kalan_ahorros_controles.id_ahorro_control
-  inner join
-    tc_janal_usuarios on tc_kalan_ahorros_pagos.id_usuario= tc_janal_usuarios.id_usuario
-  inner join
-    tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+inner join
+  tc_janal_usuarios on tc_kalan_ahorros_pagos.id_usuario= tc_janal_usuarios.id_usuario
+inner join
+  tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 where
   tc_kalan_ahorros_pagos.id_ahorro_control in (2, 4)
   and tc_kalan_ahorros_pagos.id_ahorro= {idAhorro}
