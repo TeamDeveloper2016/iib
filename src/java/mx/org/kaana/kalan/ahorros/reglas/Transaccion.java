@@ -130,8 +130,9 @@ public class Transaccion extends IBaseCuenta {
           this.afectacion.setEjercicio(siguiente.getEjercicio());
           this.afectacion.setOrden(siguiente.getOrden());
           DaoFactory.getInstance().insert(sesion, this.afectacion);
-          this.toCheckEstatus(sesion, Boolean.FALSE);
-          regresar= this.toCuotas(sesion);
+          regresar= this.toCheckEstatus(sesion, Boolean.FALSE);
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          this.toControlCuentaPago(sesion, this.afectacion);
 					break;
         case REGISTRAR:
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
@@ -183,7 +184,7 @@ public class Transaccion extends IBaseCuenta {
       this.ahorro.setSaldo(this.toSaldo(sesion));
       cuotas= this.toControl(sesion);
       if(cuotas.toLong("pendiente")<= 0L)
-        this.ahorro.setIdAhorroEstatus(3L); // TERMINADO
+        this.ahorro.setIdAhorroEstatus(4L); // LIQUIDADO
       else
         if(Objects.equals(cuotas.toLong("pendiente"), cuotas.toLong("cuotas")))
           this.ahorro.setIdAhorroEstatus(2L); // ACTIVO
@@ -197,7 +198,6 @@ public class Transaccion extends IBaseCuenta {
           this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus(), "SE ELIMINO UNA CUOTA POR "+ this.afectacion.getImporte());
         else
           this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus(), "SE REGISTRO UNA CUOTA POR "+ this.afectacion.getImporte());
-      // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -420,8 +420,17 @@ public class Transaccion extends IBaseCuenta {
     try {      
       List<Afectacion> items= (List<Afectacion>)DaoFactory.getInstance().toEntitySet(sesion, Afectacion.class, "TcKalanAhorrosPagosDto", "cuentas", params);
       for (Afectacion item: items) {
-        super.control(sesion, item, Objects.equals(item.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.AHORROS_CARGOS: ECuentasOrigenes.AHORROS_ABONOS);
+        this.toControlCuentaPago(sesion, item);
       } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
+  private void toControlCuentaPago(Session sesion, Afectacion item) throws Exception {
+    try {
+      super.control(sesion, item, Objects.equals(item.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.AHORROS_CARGOS: ECuentasOrigenes.AHORROS_ABONOS);
     } // try
     catch (Exception e) {
       throw e;

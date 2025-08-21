@@ -39,8 +39,8 @@ public abstract class IBaseCuenta extends IBaseTnx implements Serializable {
        params.put("idPivote", cuenta.getKey());
        TcKalanCuentasMovimientosDto existe= (TcKalanCuentasMovimientosDto)DaoFactory.getInstance().toEntity(sesion, TcKalanCuentasMovimientosDto.class, "TcKalanCuentasMovimientosDto", "existe", params);    
        if(delete && !Objects.equals(existe, null)) {
-        existe.setIdCuentaEstatus(EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
-        this.updateCuenta(sesion, existe);
+         existe.setIdCuentaEstatus(EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
+         this.updateCuenta(sesion, existe);
        } // if
        else
           if(Objects.equals(existe, null)) {
@@ -79,7 +79,7 @@ public abstract class IBaseCuenta extends IBaseTnx implements Serializable {
       -1L, // Long idCuentaMovimiento, 
       cuenta.getReferencia(), // String referencia, 
       cuenta.getIdEmpresa(), // Long idEmpresa, 
-      cuenta.getIdCuentaEstatus(), // Long idCuentaEstatus, 
+      2L, // APLICADO Long idCuentaEstatus, 
       origen.getIdCuentaOrigen(), // Long idCuentaOrigen, 
       cuenta.getKey() // Long idPivote
     );

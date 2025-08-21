@@ -72,6 +72,8 @@ public class TcKalanAhorrosPagosDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="referencia")
   private String referencia;
+  @Column (name="actualizado")
+  private Timestamp actualizado;
 
   public TcKalanAhorrosPagosDto() {
     this(new Long(-1L));
@@ -101,6 +103,7 @@ public class TcKalanAhorrosPagosDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setOrden(orden);
     setReferencia(referencia);
+    setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
   public void setIdTipoAfectacion(Long idTipoAfectacion) {
@@ -247,6 +250,14 @@ public class TcKalanAhorrosPagosDto implements IBaseDto, Serializable {
     return referencia;
   }
 
+  public Timestamp getActualizado() {
+    return actualizado;
+  }
+
+  public void setActualizado(Timestamp actualizado) {
+    this.actualizado = actualizado;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -297,6 +308,8 @@ public class TcKalanAhorrosPagosDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getReferencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getActualizado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -322,13 +335,14 @@ public class TcKalanAhorrosPagosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("referencia", getReferencia());
+		regresar.put("actualizado", getActualizado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdTipoAfectacion(), getIdAhorro(), getIdTipoMedioPago(), getIdAhorroPago(), getImporte(), getIdBanco(), getFechaPago(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdAhorroControl(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getReferencia()
+    Object[] regresar = new Object[] {
+      getIdTipoAfectacion(), getIdAhorro(), getIdTipoMedioPago(), getIdAhorroPago(), getImporte(), getIdBanco(), getFechaPago(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdAhorroControl(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getReferencia(), getActualizado()
     };
     return regresar;
   }

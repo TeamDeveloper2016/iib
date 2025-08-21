@@ -213,7 +213,7 @@ inner join (
     id_ahorro,
     count(distinct(id_ahorro_pago)) as cantidad,
     sum(if(id_ahorro_control= 1, 1, 0)) as pendiente,
-    max(registro) as registro,
+    max(actualizado) as actualizado,
     sum(if(id_ahorro_control= 2 or id_ahorro_control= 4, if(id_tipo_afectacion= 2, importe, if(id_tipo_afectacion= 1, -1* importe, 0)), 0)) as saldo
   from  
     tc_kalan_ahorros_pagos
@@ -221,11 +221,11 @@ inner join (
     id_ahorro
 ) as tt_kalan_ahorros_pagos on tc_kalan_ahorros.id_ahorro= tt_kalan_ahorros_pagos.id_ahorro
 set
-  tc_kalan_ahorros.id_ahorro_estatus= if(tt_kalan_ahorros_pagos.cantidad= tt_kalan_ahorros_pagos.pendiente, 2, if(tt_kalan_ahorros_pagos.pendiente= 0, 3, 6)),
+  tc_kalan_ahorros.id_ahorro_estatus= if(tt_kalan_ahorros_pagos.cantidad= tt_kalan_ahorros_pagos.pendiente, 2, if(tt_kalan_ahorros_pagos.pendiente= 0, 4, 6)),
   tc_kalan_ahorros.saldo= tt_kalan_ahorros_pagos.saldo
 where
   tc_kalan_ahorros.id_ahorro_estatus in (2, 6) 
-  and tt_kalan_ahorros_pagos.registro= '{fecha}'        
+  and date_format(tt_kalan_ahorros_pagos.actualizado, '%Y%m%d')= '{fecha}'        
       </update>
     </unit>    
     <unit id="TcKalanAhorrosPagosDto">
@@ -332,7 +332,7 @@ inner join
   tc_kalan_ahorros on tc_kalan_ahorros.id_ahorro= tc_kalan_ahorros_pagos.id_ahorro
 set
   tc_kalan_ahorros_pagos.id_ahorro_control= 2,
-  tc_kalan_ahorros_pagos.registro= now()
+  tc_kalan_ahorros_pagos.actualizado= now()
 where     
   tc_kalan_ahorros.id_ahorro_estatus in (2, 6)  
   and tc_kalan_ahorros_pagos.id_ahorro_control in (1)
