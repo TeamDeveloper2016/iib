@@ -88,6 +88,7 @@ public class Transferencias extends IBaseAttribute implements Serializable {
             this.cuenta.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
           if(!Objects.equals(this.attrs.get("bancos"), null))
             this.cuenta.setIkBanco(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("bancos")));
+          this.cuenta.setIdUsuario(JsfBase.getIdUsuario());
           break;
         case REPROCESAR:
         case CONSULTAR:

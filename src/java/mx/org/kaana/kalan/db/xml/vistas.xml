@@ -81,7 +81,6 @@ inner join
 where
   tc_mantic_empresas.id_empresa in ({idEmpresa})    
   and {condicion}        
-{sortOrder}
       </select>  
 			<select id="movimientos">
 select

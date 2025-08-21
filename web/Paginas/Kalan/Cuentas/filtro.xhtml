@@ -14,10 +14,10 @@
 //<![CDATA[
       Janal.Control.fields = {
         idEmpresa      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        idEmpresaCuenta: {validaciones: 'libre', mascara: 'libre'},
+        idEmpresaCuenta: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         empleado       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				importeMenor   : {validaciones: 'libre|flotante', mascara: 'libre'},
-				importeMayor   : {validaciones: 'libre|flotante', mascara: 'libre'},
+				importeMenor   : {validaciones: 'libre|flotante', mascara: 'libre', grupo: 'general'},
+				importeMayor   : {validaciones: 'libre|flotante', mascara: 'libre', grupo: 'general'},
         fechaInicio    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         idCuentaOrigen : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
@@ -239,7 +239,7 @@
   </ui:define>    
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el movimiento ?" />
   <ui:param name="accionConfirmacion" value="#{kalanCuentasFiltro}"/>
-  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="updateComponent" value="tabla @(.total)"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">

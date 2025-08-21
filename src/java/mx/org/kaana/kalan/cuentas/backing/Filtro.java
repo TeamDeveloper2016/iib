@@ -106,7 +106,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
+  } 
 
   public String doAccion(String accion) {
     EAccion eaccion= null;
@@ -124,20 +124,28 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     return pagina.concat(Constantes.REDIRECIONAR);
-  } // doAccion
+  } 
 
   public void doEliminar() {
-    Entity seleccionado    = Objects.equals(this.attrs.get("seleccionado"), null)? (Entity)this.attrs.get("temporal"): (Entity)this.attrs.get("seleccionado");
-    Transaccion transaccion= null;
+    Entity seleccionado      = Objects.equals(this.attrs.get("seleccionado"), null)? (Entity)this.attrs.get("temporal"): (Entity)this.attrs.get("seleccionado");
+    Transaccion transaccion  = null;
+		Map<String, Object>params= null;
     try {
+      params= this.toPrepare();	
       transaccion = new Transaccion(seleccionado.getKey());
-      transaccion.ejecutar(Objects.equals(seleccionado.toLong("idCuentaOrigen"), ECuentasOrigenes.BANCOS_TRANSFERENCIAS.getIdCuentaOrigen())? EAccion.DEPURAR: EAccion.ELIMINAR);
-      JsfBase.addMessage("Eliminar", "El movimiento se ha eliminado", ETipoMensaje.INFORMACION);
+      if(transaccion.ejecutar(Objects.equals(seleccionado.toLong("idCuentaOrigen"), ECuentasOrigenes.BANCOS_TRANSFERENCIAS.getIdCuentaOrigen())? EAccion.DEPURAR: EAccion.ELIMINAR)) {
+        JsfBase.addMessage("Eliminar", "El movimiento se ha eliminado", ETipoMensaje.INFORMACION);
+        this.attrs.put("totales", this.toTotales("VistaCuentasDto", "totales", params));
+        UIBackingUtilities.resetDataTable();
+      } // if  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally		
   } 
 	
 	public List<UISelectEntity> doCompleteEmpleado(String codigo) {

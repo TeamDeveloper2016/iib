@@ -135,6 +135,7 @@ public class Transaccion extends IBaseCuenta implements Serializable {
     try {
       super.addCuenta(sesion, this.cuenta);
       Cuenta clone= this.cuenta.clone();
+      clone.setIdBanco(null);
       clone.setIdEmpresaDestino(this.cuenta.getIdCuentaMovimiento());
       super.addCuenta(sesion, clone);
       sesion.flush();
