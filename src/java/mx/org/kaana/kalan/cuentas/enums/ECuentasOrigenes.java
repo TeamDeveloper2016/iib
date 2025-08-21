@@ -12,6 +12,8 @@ public enum ECuentasOrigenes {
   BANCOS_TRANSFERENCIAS(19L, "13"),
   VENTAS(4L, "2"),
 	AHORROS(7L, "3"),
+	AHORROS_CARGOS(8L, "31"),
+	AHORROS_ABONOS(9L, "32"),
   PRESTAMOS(10L, "4"),
   GASTOS(13L, "5"),
   CREDITOS(16L, "6");
@@ -39,7 +41,7 @@ public enum ECuentasOrigenes {
     return clave;
   }
 	
-	public static ECuentasOrigenes fromIdEstatusCuenta(Long getIdCuentaOrigen) {
+	public static ECuentasOrigenes fromIdCuentaOrigen(Long getIdCuentaOrigen) {
     return lookup.get(getIdCuentaOrigen);
   } 
   

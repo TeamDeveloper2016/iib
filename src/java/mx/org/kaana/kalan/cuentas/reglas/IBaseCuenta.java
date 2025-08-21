@@ -22,7 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public abstract class CuentasTnx extends IBaseTnx implements Serializable {
+public abstract class IBaseCuenta extends IBaseTnx implements Serializable {
 
   private static final Log LOG= LogFactory.getLog(Transaccion.class);
   private static final long serialVersionUID = 5752229314495124313L;
@@ -35,6 +35,8 @@ public abstract class CuentasTnx extends IBaseTnx implements Serializable {
     Boolean regresar          = Boolean.TRUE;
     Map<String, Object> params= new HashMap<>();
     try {
+       params.put("idCuentaOrigen", origen.getIdCuentaOrigen());
+       params.put("idPivote", cuenta.getKey());
        TcKalanCuentasMovimientosDto existe= (TcKalanCuentasMovimientosDto)DaoFactory.getInstance().toEntity(sesion, TcKalanCuentasMovimientosDto.class, "TcKalanCuentasMovimientosDto", "existe", params);    
        if(delete && !Objects.equals(existe, null)) {
         existe.setIdCuentaEstatus(EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
@@ -79,7 +81,7 @@ public abstract class CuentasTnx extends IBaseTnx implements Serializable {
       cuenta.getIdEmpresa(), // Long idEmpresa, 
       cuenta.getIdCuentaEstatus(), // Long idCuentaEstatus, 
       origen.getIdCuentaOrigen(), // Long idCuentaOrigen, 
-      null // Long idPivote
+      cuenta.getKey() // Long idPivote
     );
     return regresar;
   }
@@ -91,9 +93,8 @@ public abstract class CuentasTnx extends IBaseTnx implements Serializable {
       cuenta.setConsecutivo(consecutivo.getConsecutivo());
       cuenta.setEjercicio(consecutivo.getEjercicio());
       cuenta.setOrden(consecutivo.getOrden());
-      cuenta.setIdUsuario(JsfBase.getIdUsuario());
       regresar= DaoFactory.getInstance().insert(sesion, cuenta)>= 0L;
-      this.bitacora(sesion, cuenta.getIdCuentaMovimiento(), cuenta.getIdCuentaEstatus());
+      this.bitacora(sesion, cuenta);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -106,7 +107,7 @@ public abstract class CuentasTnx extends IBaseTnx implements Serializable {
     try {
       cuenta.setActualizado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       regresar= DaoFactory.getInstance().update(sesion, cuenta)>= 0L;
-      this.bitacora(sesion, cuenta.getIdCuentaMovimiento(), cuenta.getIdCuentaEstatus());
+      this.bitacora(sesion, cuenta);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -135,18 +136,18 @@ public abstract class CuentasTnx extends IBaseTnx implements Serializable {
 		return regresar;
 	}  
   
-  private void bitacora(Session sesion, Long idCuentaMovimiento, Long idCuentaEstatus) throws Exception {
-    this.bitacora(sesion, idCuentaMovimiento, idCuentaEstatus, null);
+  private void bitacora(Session sesion, TcKalanCuentasMovimientosDto cuenta) throws Exception {
+    this.bitacora(sesion, cuenta, null);
   }
   
-  private void bitacora(Session sesion, Long idCuentaMovimiento, Long idCuentaEstatus, String justificacion) throws Exception {
+  private void bitacora(Session sesion, TcKalanCuentasMovimientosDto cuenta, String justificacion) throws Exception {
     try {
       TcKalanCuentasBitacoraDto bitacora= new TcKalanCuentasBitacoraDto(
         -1L, // Long idCuentaBitacora, 
-        idCuentaMovimiento, // Long idCuentaMovimiento
+        cuenta.getIdCuentaMovimiento(), // Long idCuentaMovimiento
         justificacion, // String justificacion, 
-        JsfBase.getIdUsuario(), // Long idUsuario, 
-        idCuentaEstatus // Long idCuentaEstatus
+        cuenta.getIdUsuario(), // Long idUsuario, 
+        cuenta.getIdCuentaEstatus() // Long idCuentaEstatus
       );
       DaoFactory.getInstance().insert(sesion, bitacora);
 		} // try

@@ -71,7 +71,7 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
   private Long idCuentaOrigen;
   @Column (name="id_pivote")
   private Long idPivote;
-  @Column (name="registro")
+  @Column (name="actualizado")
   private Timestamp actualizado;
 
   public TcKalanCuentasMovimientosDto() {

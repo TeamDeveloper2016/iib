@@ -291,6 +291,30 @@ where
   tc_kalan_ahorros_pagos.ejercicio= {ejercicio} 
   and tc_kalan_ahorros_pagos.orden {operador} 900000		
 			</select>		
+      <select id="depurar">
+select      
+  tc_kalan_ahorros_pagos.id_ahorro_pago as id_key,       
+  tc_kalan_ahorros_pagos.*
+from      
+  tc_kalan_ahorros_pagos
+where      
+  id_ahorro= {idAhorro}
+group by  
+  id_ahorro
+      </select>  
+      <select id="cuentas">
+select
+  tc_kalan_ahorros_pagos.id_ahorro_pago as id_key,       
+  tc_kalan_ahorros_pagos.*
+from
+  tc_kalan_ahorros_pagos                
+inner join
+  tc_kalan_ahorros on tc_kalan_ahorros_pagos.id_ahorro= tc_kalan_ahorros.id_ahorro
+where     
+  tc_kalan_ahorros.id_ahorro_estatus in (2, 6)  
+  and tc_kalan_ahorros_pagos.id_ahorro_control in (1)
+  and date_format(tc_kalan_ahorros_pagos.fecha_aplicacion, '%Y%m%d')&lt;= '{fecha}'
+      </select>
       <update id="cancelar">
 update
   tc_kalan_ahorros_pagos

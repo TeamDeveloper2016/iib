@@ -35,6 +35,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosBitacoraDto;
 import mx.org.kaana.kalan.ahorros.beans.Afectacion;
+import mx.org.kaana.kalan.cuentas.enums.ETipoAfectacion;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 
 @Named(value = "kalanAhorrosFiltro")
@@ -63,7 +64,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     String inicia  = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("inicia"));
     String ahorrado= Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("ahorrado"));
     String pagado  = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("pagado"));
-    String saldo   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("inicia")+ ((Entity)this.attrs.get("general")).toDouble("ahorrado")- ((Entity)this.attrs.get("general")).toDouble("pagado"));
+    String saldo   = Numero.formatear(Numero.MILES_CON_DECIMALES, ((Entity)this.attrs.get("general")).toDouble("saldo"));
     return "Suma inicia: <strong>"+ inicia+ "</strong> | ahorrado: <strong>"+ ahorrado+ "</strong> | pagado: <strong>"+ pagado+ "</strong> | saldo: <strong>"+ saldo+ "</strong>";  
   }
   
@@ -75,9 +76,9 @@ public class Filtro extends IBaseFilter implements Serializable {
       if(!Objects.equals(this.lazyDetalle, null))
         for(Entity item: (List<Entity>)this.lazyDetalle.getWrappedData()) {
           value= item.toString("importe");
-          if(Objects.equals(item.toLong("idTipoAfectacion"), 1L))
+          if(Objects.equals(item.toLong("idTipoAfectacion"), ETipoAfectacion.CARGO.getIdTipoAfectacion()))
             cargo= cargo+ Double.valueOf(Cadena.eliminar(value, ','));
-          if(Objects.equals(item.toLong("idTipoAfectacion"), 2L))
+          if(Objects.equals(item.toLong("idTipoAfectacion"), ETipoAfectacion.ABONO.getIdTipoAfectacion()))
             abono= abono+ Double.valueOf(Cadena.eliminar(value, ','));
         } // for  
 		} // try
@@ -424,6 +425,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     regresar.put("inicia", new Value("inicia", 0D));
     regresar.put("ahorrado", new Value("acumulado", 0D));
     regresar.put("pagado", new Value("acumulado", 0D));
+    regresar.put("saldo", new Value("saldo", 0D));
     return regresar;
   }
   

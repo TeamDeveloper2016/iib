@@ -1,16 +1,19 @@
 package mx.org.kaana.kalan.ahorros.reglas;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.kalan.ahorros.beans.Afectacion;
 import mx.org.kaana.kalan.ahorros.beans.Ahorro;
+import mx.org.kaana.kalan.cuentas.enums.ECuentasOrigenes;
+import mx.org.kaana.kalan.cuentas.enums.ETipoAfectacion;
+import mx.org.kaana.kalan.cuentas.reglas.IBaseCuenta;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosPagosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosBitacoraDto;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosDto;
@@ -23,9 +26,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends IBaseCuenta {
 
   private static final Log LOG= LogFactory.getLog(Transaccion.class);
+  private static final long serialVersionUID = -2921458836815052344L;
 	private Ahorro ahorro;
 	private Afectacion afectacion;
 	private TcKalanAhorrosBitacoraDto bitacora;
@@ -97,7 +101,6 @@ public class Transaccion extends IBaseTnx {
           DaoFactory.getInstance().insert(sesion, this.ahorro);
           this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus());
           regresar= this.toCuotas(sesion);
-          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           break;
         case MODIFICAR:
           this.toCheckEstatus(sesion, Boolean.FALSE);
@@ -105,10 +108,11 @@ public class Transaccion extends IBaseTnx {
           break;
 				case ELIMINAR:
           Map<String, Object> params = new HashMap<>();
-          params.put("idAhorro", this.ahorro.getIdAhorro());            
+          params.put("idAhorro", this.ahorro.getIdAhorro());   
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          this.toDeleteControlCuenta(sesion);
           DaoFactory.getInstance().deleteAll(sesion, TcKalanAhorrosBitacoraDto.class, params);
           DaoFactory.getInstance().deleteAll(sesion, TcKalanAhorrosPagosDto.class, params);
-          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
 					regresar= DaoFactory.getInstance().delete(sesion, this.ahorro)>= 1L;
 					break;
 				case JUSTIFICAR:
@@ -130,9 +134,11 @@ public class Transaccion extends IBaseTnx {
           regresar= this.toCuotas(sesion);
 					break;
         case REGISTRAR:
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           regresar= this.toCheckCuotas(sesion);
 					break;
         case DEPURAR:
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           regresar= this.toDeletePago(sesion);
 					break;
       } // switch
@@ -281,6 +287,10 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params.put("idAhorro", this.afectacion.getIdAhorro());
 			params.put("idAhorroPago", this.afectacion.getIdAhorroPago());
+			params.put(Constantes.SQL_CONDICION, "id_ahorro_pago= "+ this.afectacion.getIdAhorroPago());
+      Afectacion item= (Afectacion)DaoFactory.getInstance().toEntitySet(sesion, Afectacion.class, "TcKalanAhorrosPagosDto", params);
+      // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+      this.toDeleteControlCuentaPago(sesion, item);
 			regresar= DaoFactory.getInstance().deleteAll(sesion, TcKalanAhorrosPagosDto.class, "depurar", params)> 0L;
       if(regresar) {
         this.toCheckEstatus(sesion, Boolean.TRUE);
@@ -302,6 +312,8 @@ public class Transaccion extends IBaseTnx {
     Siguiente siguiente= null;
 		try {
       for (Afectacion item: this.ahorro.getCuotas()) {
+        item.setReferencia(!Objects.equals(item.getReferencia(), null)? item.getReferencia().toUpperCase(): item.getReferencia());
+        item.setObservaciones(!Objects.equals(item.getObservaciones(), null)? item.getObservaciones().toUpperCase(): item.getObservaciones());
         switch(item.getSql()) {
           case SELECT:
             break;
@@ -314,7 +326,7 @@ public class Transaccion extends IBaseTnx {
             item.setIdEmpresa(this.ahorro.getIdEmpresa());
             item.setIdEmpresaCuenta(this.ahorro.getIdEmpresaCuenta());
             item.setIdBanco(null);
-            item.setIdTipoAfectacion(2L); // ABONO
+            item.setIdTipoAfectacion(ETipoAfectacion.ABONO.getIdTipoAfectacion()); // ABONO
             item.setIdUsuario(JsfBase.getIdUsuario());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
             break;
@@ -360,6 +372,8 @@ public class Transaccion extends IBaseTnx {
     Long cuotas               = 0L;
     try {      
       params.put("fecha", Fecha.getHoyEstandar());
+     // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+      this.toControlCuenta(sesion, params);
       cuotas= DaoFactory.getInstance().updateAll(sesion, TcKalanAhorrosPagosDto.class, params, "cuotas");
       this.messageError= String.valueOf(cuotas);
       if(cuotas> 0L) {
@@ -375,6 +389,43 @@ public class Transaccion extends IBaseTnx {
       Methods.clean(params);
     } // finally
     return regresar;
+  }
+
+  private void toDeleteControlCuenta(Session sesion) throws Exception {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("idAhorro", this.ahorro.getIdAhorro());   
+      List<Afectacion> items= (List<Afectacion>)DaoFactory.getInstance().toEntitySet(sesion, Afectacion.class, "TcKalanAhorrosPagosDto", "depurar", params);
+      for (Afectacion item: items) 
+        this.toDeleteControlCuentaPago(sesion, item);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toDeleteControlCuentaPago(Session sesion, Afectacion item) throws Exception {
+    try {      
+      super.control(sesion, item, Objects.equals(item.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.AHORROS_CARGOS: ECuentasOrigenes.AHORROS_ABONOS, Boolean.TRUE);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
+  private void toControlCuenta(Session sesion, Map<String, Object> params) throws Exception {
+    try {      
+      List<Afectacion> items= (List<Afectacion>)DaoFactory.getInstance().toEntitySet(sesion, Afectacion.class, "TcKalanAhorrosPagosDto", "cuentas", params);
+      for (Afectacion item: items) {
+        super.control(sesion, item, Objects.equals(item.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.AHORROS_CARGOS: ECuentasOrigenes.AHORROS_ABONOS);
+      } // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
   }
   
 }

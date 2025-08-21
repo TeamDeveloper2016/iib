@@ -166,6 +166,7 @@ select
   ifnull(sum(tc_kalan_ahorros.inicia), 0) as inicia,
   ifnull(sum(tt_kalan_ahorros.ahorrado), 0) as ahorrado,
   ifnull(sum(tt_kalan_ahorros.pagado), 0) as pagado,
+  ifnull(sum(tc_kalan_ahorros.inicia)+ sum(tt_kalan_ahorros.ahorrado)- sum(tt_kalan_ahorros.pagado), 0) as saldo
 from   
   tc_kalan_ahorros
 inner join  

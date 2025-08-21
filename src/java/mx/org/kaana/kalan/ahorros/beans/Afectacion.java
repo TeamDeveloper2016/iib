@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.util.Calendar;
 import java.util.Objects;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.kalan.cuentas.beans.ICuenta;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosPagosDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
@@ -16,7 +17,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Afectacion extends TcKalanAhorrosPagosDto implements Serializable {
+public class Afectacion extends TcKalanAhorrosPagosDto implements ICuenta, Serializable {
 
   private static final long serialVersionUID = -8794495402874168801L;
 
@@ -135,6 +136,11 @@ public class Afectacion extends TcKalanAhorrosPagosDto implements Serializable {
     if(Objects.equals(this.getIdAhorroControl(), 1L) && (Objects.equals(this.getSql(), ESql.DELETE) || Objects.equals(this.getSql(), ESql.SELECT)))
       this.setSql(ESql.UPDATE); 
   }  
+
+  @Override
+  public Long getIdCuentaEstatus() {
+    return getIdAhorroControl();
+  }
   
   @Override
   public Class toHbmClass() {

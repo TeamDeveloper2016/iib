@@ -11,6 +11,7 @@ import java.sql.Date;
  */
 public interface ICuenta {
   
+  public Long getKey();
   public Long getIdEmpresa();
   public Long getIdEmpresaCuenta();
   public Long getIdTipoAfectacion();

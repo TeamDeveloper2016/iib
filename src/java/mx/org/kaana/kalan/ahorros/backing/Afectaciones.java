@@ -22,6 +22,7 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.kalan.ahorros.reglas.Transaccion;
+import mx.org.kaana.kalan.cuentas.enums.ETipoAfectacion;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -93,7 +94,7 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
           this.afectacion.setIdAhorro(this.idAhorro);
           this.afectacion.setIkEmpresa(new UISelectEntity(this.ahorro.getIdEmpresa()));
           this.afectacion.setIkEmpresaCuenta(new UISelectEntity(this.ahorro.getIdEmpresaCuenta()));
-          this.afectacion.setIkTipoAfectacion(new UISelectEntity(1L));
+          this.afectacion.setIkTipoAfectacion(new UISelectEntity(ETipoAfectacion.CARGO.getIdTipoAfectacion()));
           if(!Objects.equals(this.attrs.get("tiposMediosPagos"), null))
             this.afectacion.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
           if(!Objects.equals(this.attrs.get("bancos"), null))
@@ -163,7 +164,7 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
 
   public void doCheckImporte() {
     try {
-      if(Objects.equals(this.afectacion.getIdTipoAfectacion(), 2L))  // ABONO
+      if(Objects.equals(this.afectacion.getIdTipoAfectacion(), ETipoAfectacion.ABONO.getIdTipoAfectacion()))  // ABONO
         UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-a({\"cual\": \"contenedorGrupos\\\\\\\\:saldo\"})', mascara: 'libre', mensaje: 'El importe debe de ser menor o igual a lo ahorrado'});");
       else 
         UIBackingUtilities.execute("janal.renovate('contenedorGrupos\\\\:importe', {validaciones: 'requerido|flotante|mayor({\"cuanto\":0})|menor-a({\"cual\": \"contenedorGrupos\\\\\\\\:total\"})', mascara: 'libre', mensaje: 'El importe debe de ser menor o igual al disponible'});");
