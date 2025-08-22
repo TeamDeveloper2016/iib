@@ -135,9 +135,9 @@ public class Ahorro extends TcKalanAhorrosDto implements ICuenta, Serializable {
         calendar.add(Calendar.DATE, this.getPlazo().intValue());
         if(calendar.get(Calendar.YEAR)<= year) {
           if(pagos< this.cuotas.size()) 
-            this.cuotas.get(pagos).update(this.getImporte(), new Date(calendar.getTimeInMillis()));
+            this.cuotas.get(pagos).update(this.getCuota(), new Date(calendar.getTimeInMillis()));
           else  
-            this.cuotas.add(new Afectacion(this.getImporte(), new Date(calendar.getTimeInMillis())));
+            this.cuotas.add(new Afectacion(this.getCuota(), new Date(calendar.getTimeInMillis())));
           pagos++; 
         } // if  
       } // while
@@ -183,7 +183,7 @@ public class Ahorro extends TcKalanAhorrosDto implements ICuenta, Serializable {
           calendar.setTimeInMillis(this.getCuotas().get(this.getCuotas().size()- 1).getFechaPago().getTime());
         calendar.add(Calendar.DATE, this.getPlazo().intValue());
       } // if  
-      afectacion= new Afectacion(this.getImporte(), new Date(calendar.getTimeInMillis()));
+      afectacion= new Afectacion(this.getCuota(), new Date(calendar.getTimeInMillis()));
       this.cuotas.add(afectacion);
       this.toUpdate();
     } // try

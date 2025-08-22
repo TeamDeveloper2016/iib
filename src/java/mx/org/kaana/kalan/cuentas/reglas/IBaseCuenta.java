@@ -41,6 +41,7 @@ public abstract class IBaseCuenta extends IBaseTnx implements Serializable {
         this.addCuenta(sesion, existe);
       } // if
       else {
+        existe.setImporte(cuenta.getImporte());
         existe.setIdCuentaEstatus(idEstatusCuenta);
         this.updateCuenta(sesion, existe);
       } // else
