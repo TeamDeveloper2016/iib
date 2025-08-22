@@ -262,6 +262,8 @@ inner join
   tc_kalan_ahorros_controles on tc_kalan_ahorros_pagos.id_ahorro_control= tc_kalan_ahorros_controles.id_ahorro_control
 where 
   tc_kalan_ahorros_pagos.id_ahorro= {idAhorro}
+order by
+  tc_kalan_ahorros_pagos.fecha_aplicacion               
       </select>
       <select id="control">
 select      
