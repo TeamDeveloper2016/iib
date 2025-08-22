@@ -106,10 +106,10 @@ public class Transaccion extends IBaseCuenta {
           regresar= this.toCuotas(sesion);
           break;
         case MODIFICAR:
-          this.toCheckEstatus(sesion, Boolean.FALSE);
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
           if(Objects.equals(this.ahorro.getIdAhorroEstatus(), 2L))
             this.toControlCuentaCargo(sesion);
+          this.toCheckEstatus(sesion, Boolean.FALSE);
           regresar= this.toCuotas(sesion);
           break;
 				case ELIMINAR:

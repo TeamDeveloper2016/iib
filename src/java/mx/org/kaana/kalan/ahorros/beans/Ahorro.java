@@ -225,6 +225,11 @@ public class Ahorro extends TcKalanAhorrosDto implements ICuenta, Serializable {
   }
 
   @Override
+  public Double getImporte() {
+    return this.getInicia();
+  }
+
+  @Override
   public Long getIdTipoAfectacion() {
     return ETipoAfectacion.ABONO.getIdTipoAfectacion();
   }

@@ -43,7 +43,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   private EAccion accion;
   private Ahorro ahorro;
   private Long idAhorro;
-  private Double importe;
+  private Double cuota;
 
   public Ahorro getAhorro() {
     return ahorro;
@@ -115,7 +115,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.doLoadCuentas();
           break;
       } // switch      
-      this.importe= this.ahorro.getImporte();
+      this.cuota= this.ahorro.getCuota();
       this.toNameDayOfWeek();
     } // try 
     catch (Exception e) {
@@ -312,10 +312,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doUpdateImporte() {
     try {      
       for (Afectacion item: this.ahorro.getCuotas()) {
-        if(Objects.equals(1L, item.getIdAhorroControl()) && Objects.equals(this.importe, item.getImporte()))
-          item.setImporte(this.ahorro.getImporte());
+        if(Objects.equals(1L, item.getIdAhorroControl()) && Objects.equals(this.cuota, item.getImporte()))
+          item.setImporte(this.ahorro.getCuota());
       } // for
-      this.importe= this.ahorro.getImporte();
+      this.cuota= this.ahorro.getCuota();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

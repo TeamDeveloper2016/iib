@@ -115,7 +115,7 @@
                   </p:panelGrid>  
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="importe" value="Importe:"/>
-                    <p:inputNumber id="importe" value="#{kalanAhorrosAccion.ahorro.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double">
+                    <p:inputNumber id="importe" value="#{kalanAhorrosAccion.ahorro.cuota}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double">
                       <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateImporte()}" process="@this @(.tabla)" update="contenedorGrupos:tabla" oncomplete="janal.refresh()"/>
                     </p:inputNumber>
                   </p:panelGrid>  
