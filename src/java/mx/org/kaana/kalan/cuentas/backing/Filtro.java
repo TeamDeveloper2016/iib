@@ -70,6 +70,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       } // if
       this.toLoadEmpresas();
       this.toLoadEstatus();
+      this.toLoadTiposAfectaciones();
       this.toLoadCuentasOrigenes();
     } // try
     catch (Exception e) {
@@ -205,8 +206,6 @@ public class Filtro extends IBaseFilter implements Serializable {
           codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*");
           sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', ifnull(tc_mantic_personas.paterno, ''), ' ', ifnull(tc_mantic_personas.materno, ''))) regexp '.*").append(codigo).append(".*') and ");
         } // if  
-      if(origenes!= null && origen!= null && origenes.indexOf(origen)>= 0 && !Objects.equals(origen.getKey(), -1L)) 
-        sb.append("(tc_kalan_cuentas_origenes.clave like '").append(origenes.get(origenes.indexOf(origen)).toString("clave")).append("%') and ");
       if(!Cadena.isVacio(this.attrs.get("importeMenor")))
         sb.append("(date_format(tc_kalan_cuentas_movimientos.importe, '%Y%m%d')<= '").append(this.attrs.get("importeMenor")).append("') and ");	
       if(!Cadena.isVacio(this.attrs.get("importeMayor")))
@@ -215,6 +214,10 @@ public class Filtro extends IBaseFilter implements Serializable {
         sb.append("(date_format(tc_kalan_cuentas_movimientos.fecha_aplicacion, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
       if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
         sb.append("(date_format(tc_kalan_cuentas_movimientos.fecha_aplicacion, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+      if(!Cadena.isVacio(this.attrs.get("idTipoAfectacion")) && !Objects.equals(((UISelectEntity)this.attrs.get("idTipoAfectacion")).getKey(), -1L))
+        sb.append("(tc_kalan_cuentas_movimientos.id_tipo_afectacion= ").append(this.attrs.get("idTipoAfectacion")).append(") and ");
+      if(origenes!= null && origen!= null && origenes.indexOf(origen)>= 0 && !Objects.equals(origen.getKey(), -1L)) 
+        sb.append("(tc_kalan_cuentas_origenes.clave like '").append(origenes.get(origenes.indexOf(origen)).toString("clave")).append("%') and ");
       if(!Cadena.isVacio(this.attrs.get("idCuentaEstatus")) && !Objects.equals(((UISelectEntity)this.attrs.get("idCuentaEstatus")).getKey(), -1L))
         if(Objects.equals(((UISelectEntity)this.attrs.get("idCuentaEstatus")).getKey(), Constantes.TOP_OF_ITEMS))
           sb.append("(tc_kalan_cuentas_movimientos.id_cuenta_estatus in (1, 2)) and ");
@@ -307,12 +310,34 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally
 	}
 
+	private void toLoadTiposAfectaciones() {
+		List<Columna> columns        = new ArrayList<>();
+    Map<String, Object> params   = new HashMap<>();
+    List<UISelectEntity> afectaciones= null;
+    try {
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      afectaciones= (List<UISelectEntity>) UIEntity.seleccione("TcKalanTiposAfectacionesDto", "row", params, columns, "nombre");
+      this.attrs.put("afectaciones", afectaciones);
+      if(afectaciones!= null && !afectaciones.isEmpty()) 
+    	  this.attrs.put("idTipoAfectacion", UIBackingUtilities.toFirstKeySelectEntity(afectaciones));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+
 	private void toLoadCuentasOrigenes() {
 		List<Columna> columns        = new ArrayList<>();
     Map<String, Object> params   = new HashMap<>();
     List<UISelectEntity> origenes= null;
     try {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			// params.put(Constantes.SQL_CONDICION, "clave like '1%'");
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       origenes= (List<UISelectEntity>) UIEntity.seleccione("TcKalanCuentasOrigenesDto", "row", params, columns, "nombre");
       this.attrs.put("origenes", origenes);

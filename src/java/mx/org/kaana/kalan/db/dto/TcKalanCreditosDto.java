@@ -69,17 +69,24 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="id_acreedor")
   private Long idAcreedor;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
+  @Column (name="fecha_pago")
+  private Date fechaPago;
+  @Column (name="referencia")
+  private String referencia;
+  
 
   public TcKalanCreditosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanCreditosDto(Long key) {
-    this(1L, new Long(-1L), 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 0D, 1L, null, null, 1L, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
+    this(1L, new Long(-1L), 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 0D, 1L, null, null, 1L, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()), null);
     setKey(key);
   }
 
-  public TcKalanCreditosDto(Long plazo, Long idCredito, Double saldo, Date limite, String nombre, Double importe, Double tasa, Long pagos, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden, Long idAcreedor, Date fechaAplicacion) {
+  public TcKalanCreditosDto(Long plazo, Long idCredito, Double saldo, Date limite, String nombre, Double importe, Double tasa, Long pagos, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden, Long idAcreedor, Date fechaAplicacion, Long idTipoMedioPago, Date fechaPago, String referencia) {
     setPlazo(plazo);
     setIdCredito(idCredito);
     setSaldo(saldo);
@@ -99,6 +106,9 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
     setOrden(orden);
     setIdAcreedor(idAcreedor);
     setFechaAplicacion(fechaAplicacion);
+    setIdTipoMedioPago(idTipoMedioPago);
+    setFechaPago(fechaPago);
+    setReferencia(referencia);
   }
 	
   public void setPlazo(Long plazo) {
@@ -253,6 +263,30 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
     this.fechaAplicacion = fechaAplicacion;
   }
 
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public Date getFechaPago() {
+    return fechaPago;
+  }
+
+  public void setFechaPago(Date fechaPago) {
+    this.fechaPago = fechaPago;
+  }
+
+  public String getReferencia() {
+    return referencia;
+  }
+
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -305,6 +339,12 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
 		regresar.append(getIdAcreedor());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFechaAplicacion());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getReferencia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -331,13 +371,16 @@ public class TcKalanCreditosDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("idAcreedor", getIdAcreedor());
 		regresar.put("fechaAplicacion", getFechaAplicacion());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("fechaPago", getFechaPago());
+		regresar.put("referencia", getReferencia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getPlazo(), getIdCredito(), getSaldo(), getLimite(), getNombre(), getImporte(), getTasa(), getPagos(), getEjercicio(), getRegistro(), getConsecutivo(), getIdCreditoEstatus(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getIdAcreedor(), getFechaAplicacion()
+      getPlazo(), getIdCredito(), getSaldo(), getLimite(), getNombre(), getImporte(), getTasa(), getPagos(), getEjercicio(), getRegistro(), getConsecutivo(), getIdCreditoEstatus(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getIdAcreedor(), getFechaAplicacion(), getIdTipoMedioPago(), getFechaPago(), getReferencia()
     };
     return regresar;
   }

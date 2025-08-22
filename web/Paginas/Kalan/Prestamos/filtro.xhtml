@@ -163,11 +163,29 @@
               </f:facet>
               <h:outputText value="#{row['disponible']}"/>
             </p:column>														
+						<p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.medio}">
+              <f:facet name="header">
+                <h:outputText value="Medio"/>
+              </f:facet>
+              <h:outputText value="#{row['medio']}"/>
+            </p:column>														
+						<p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.referencia}">
+              <f:facet name="header">
+                <h:outputText value="Referencia"/>
+              </f:facet>
+              <h:outputText value="#{row['referencia']}"/>
+            </p:column>														
 						<p:column styleClass="MarAuto Responsive janal-wid-8" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
+            </p:column>														
+						<p:column styleClass="MarAuto Responsive janal-wid-1 janal-display-none" sortBy="#{row.fechaPago}">
+              <f:facet name="header">
+                <h:outputText value="Fecha pago"/>
+              </f:facet>
+              <h:outputText value="#{row['fechaPago']}"/>
             </p:column>														
 						<p:column styleClass="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{row.fechaAplicacion}">
               <f:facet name="header">
@@ -298,7 +316,7 @@
         <p:outputLabel value="Tipo:"/>
         <p:outputLabel value="#{kalanPrestamosFiltro.attrs.detalle.afectacion}"/>
         <p:outputLabel value="Fecha:"/>
-        <p:outputLabel value="#{kalanPrestamosFiltro.attrs.detalle.registro}"/>
+        <p:outputLabel value="#{kalanPrestamosFiltro.attrs.detalle.fechaAplicacion}"/>
       </h:panelGrid>
       <hr class="ui-widget-content"/>
       <div class="janal-line-button">

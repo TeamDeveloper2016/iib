@@ -62,6 +62,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.accion    = Objects.equals(JsfBase.getFlashAttribute("accion"), null)? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.idPrestamo= Objects.equals(JsfBase.getFlashAttribute("idPrestamo"), null)? -1L: (Long)JsfBase.getFlashAttribute("idPrestamo");
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Prestamos/filtro": JsfBase.getFlashAttribute("retorno"));
+      this.toLoadTiposMediosPagos();
       this.doLoad(); 
       this.toLoadEmpresas();
       this.doUpdateSaldo();
@@ -80,6 +81,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (this.accion) {
         case AGREGAR:
           this.prestamo= new Prestamo();
+          if(!Objects.equals(this.attrs.get("tiposMediosPagos"), null))
+            this.prestamo.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
+          this.prestamo.setIdUsuario(JsfBase.getIdUsuario());
           break;
         case MODIFICAR:
         case CONSULTAR:
@@ -87,10 +91,11 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.prestamo.setIkEmpresa(new UISelectEntity(this.prestamo.getIdEmpresa()));
           this.prestamo.setIkEmpresaCuenta(new UISelectEntity(this.prestamo.getIdEmpresaCuenta()));
           this.prestamo.setIkEmpresaPersona(new UISelectEntity(this.toLoadEmpleados(this.prestamo.getIdEmpresaPersona())));
+          this.prestamo.setIkTipoMedioPago(new UISelectEntity(this.prestamo.getIdTipoMedioPago()));
           this.doLoadCuentas();
           break;
       } // switch      
-    } // try // try
+    } // try 
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
@@ -297,5 +302,28 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     } // finally
   }
+
+	private void toLoadTiposMediosPagos() {
+		List<UISelectEntity> tiposMediosPagos= null;
+		Map<String, Object>params            = new HashMap<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja= 1");
+			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} 
+
+  public void doUpdateMedios() {
+    try {      
+      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
+  }  
   
 }

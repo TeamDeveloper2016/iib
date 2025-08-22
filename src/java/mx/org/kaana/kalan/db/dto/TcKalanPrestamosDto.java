@@ -34,26 +34,30 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcKalanPrestamosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
   @Column (name="plazo")
   private Long plazo;
   @Column (name="saldo")
   private Double saldo;
   @Column (name="limite")
   private Date limite;
-  @Column (name="fecha_aplicacion")
-  private Date fechaAplicacion;
   @Column (name="nombre")
   private String nombre;
   @Column (name="importe")
   private Double importe;
   @Column (name="id_prestamo_estatus")
   private Long idPrestamoEstatus;
+  @Column (name="fecha_pago")
+  private Date fechaPago;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
   private Timestamp registro;
   @Column (name="consecutivo")
   private String consecutivo;
+  @Column (name="fecha_aplicacion")
+  private Date fechaAplicacion;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_prestamo")
@@ -70,26 +74,31 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
   private Long idEmpresa;
   @Column (name="orden")
   private Long orden;
+  @Column (name="referencia")
+  private String referencia;
 
   public TcKalanPrestamosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanPrestamosDto(Long key) {
-    this(1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 1L, null, null, new Long(-1L), null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
+    this(null, 1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, 0D, 1L, new Date(Calendar.getInstance().getTimeInMillis()), null, null, new Date(Calendar.getInstance().getTimeInMillis()), new Long(-1L), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKalanPrestamosDto(Long plazo, Double saldo, Date limite, String nombre, Double importe, Long idPrestamoEstatus, Long ejercicio, String consecutivo, Long idPrestamo, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, Long orden, Date fechaAplicacion) {
+  public TcKalanPrestamosDto(Long idTipoMedioPago, Long plazo, Double saldo, Date limite, String nombre, Double importe, Long idPrestamoEstatus, Date fechaPago, Long ejercicio, String consecutivo, Date fechaAplicacion, Long idPrestamo, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaPersona, String observaciones, Long idEmpresa, Long orden, String referencia) {
+    setIdTipoMedioPago(idTipoMedioPago);
     setPlazo(plazo);
     setSaldo(saldo);
     setLimite(limite);
     setNombre(nombre);
     setImporte(importe);
     setIdPrestamoEstatus(idPrestamoEstatus);
+    setFechaPago(fechaPago);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setConsecutivo(consecutivo);
+    setFechaAplicacion(fechaAplicacion);
     setIdPrestamo(idPrestamo);
     setIdEmpresaCuenta(idEmpresaCuenta);
     setIdUsuario(idUsuario);
@@ -97,9 +106,17 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setOrden(orden);
-    setFechaAplicacion(fechaAplicacion);
+    setReferencia(referencia);
   }
 	
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
+  }
+
   public void setPlazo(Long plazo) {
     this.plazo = plazo;
   }
@@ -148,6 +165,14 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
     return idPrestamoEstatus;
   }
 
+  public void setFechaPago(Date fechaPago) {
+    this.fechaPago = fechaPago;
+  }
+
+  public Date getFechaPago() {
+    return fechaPago;
+  }
+
   public void setEjercicio(Long ejercicio) {
     this.ejercicio = ejercicio;
   }
@@ -170,6 +195,14 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
 
   public String getConsecutivo() {
     return consecutivo;
+  }
+
+  public void setFechaAplicacion(Date fechaAplicacion) {
+    this.fechaAplicacion = fechaAplicacion;
+  }
+
+  public Date getFechaAplicacion() {
+    return fechaAplicacion;
   }
 
   public void setIdPrestamo(Long idPrestamo) {
@@ -228,12 +261,12 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
     return orden;
   }
 
-  public Date getFechaAplicacion() {
-    return fechaAplicacion;
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
   }
 
-  public void setFechaAplicacion(Date fechaAplicacion) {
-    this.fechaAplicacion = fechaAplicacion;
+  public String getReferencia() {
+    return referencia;
   }
 
   @Transient
@@ -251,6 +284,8 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPlazo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSaldo());
@@ -263,11 +298,15 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPrestamoEstatus());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaPago());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getConsecutivo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaAplicacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdPrestamo());
 		regresar.append(Constantes.SEPARADOR);
@@ -283,7 +322,7 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaAplicacion());
+		regresar.append(getReferencia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -291,15 +330,18 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
 		regresar.put("plazo", getPlazo());
 		regresar.put("saldo", getSaldo());
 		regresar.put("limite", getLimite());
 		regresar.put("nombre", getNombre());
 		regresar.put("importe", getImporte());
 		regresar.put("idPrestamoEstatus", getIdPrestamoEstatus());
+		regresar.put("fechaPago", getFechaPago());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("consecutivo", getConsecutivo());
+		regresar.put("fechaAplicacion", getFechaAplicacion());
 		regresar.put("idPrestamo", getIdPrestamo());
 		regresar.put("idEmpresaCuenta", getIdEmpresaCuenta());
 		regresar.put("idUsuario", getIdUsuario());
@@ -307,14 +349,14 @@ public class TcKalanPrestamosDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
-		regresar.put("fechaAplicacion", getFechaAplicacion());
+		regresar.put("referencia", getReferencia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getPlazo(), getSaldo(), getLimite(), getNombre(), getImporte(), getIdPrestamoEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getIdPrestamo(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getOrden(), getFechaAplicacion()
+      getIdTipoMedioPago(), getPlazo(), getSaldo(), getLimite(), getNombre(), getImporte(), getIdPrestamoEstatus(), getFechaPago(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdPrestamo(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaPersona(), getObservaciones(), getIdEmpresa(), getOrden(), getReferencia()
     };
     return regresar;
   }

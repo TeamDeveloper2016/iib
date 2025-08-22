@@ -358,9 +358,12 @@ select
   tc_kalan_prestamos.nombre,
   tc_kalan_prestamos.importe,
   tc_kalan_prestamos.saldo,
+  tc_mantic_tipos_medios_pagos.nombre as medio,
+  tc_kalan_prestamos.referencia,
   tc_kalan_prestamos_estatus.nombre as estatus,
   tc_kalan_prestamos_estatus.estatus_asociados,
   ifnull(tt_kalan_prestamos.disponible, tr_mantic_empresa_personal.limite) as disponible,        
+  tc_kalan_prestamos.fecha_pago,
   tc_kalan_prestamos.fecha_aplicacion
 from   
   tc_kalan_prestamos
@@ -372,6 +375,8 @@ inner join
   tc_mantic_empresas on tr_mantic_empresa_personal.id_empresa= tc_mantic_empresas.id_empresa
 inner join
   tc_kalan_prestamos_estatus on tc_kalan_prestamos.id_prestamo_estatus= tc_kalan_prestamos_estatus.id_prestamo_estatus
+inner join
+  tc_mantic_tipos_medios_pagos on tc_kalan_prestamos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 left join (
 	select
 		tc_kalan_prestamos.id_empresa_persona,
@@ -475,8 +480,11 @@ select
   tc_kalan_creditos.nombre,
   tc_kalan_creditos.importe,
   tc_kalan_creditos.saldo,
+  tc_mantic_tipos_medios_pagos.nombre as medio,
+  tc_kalan_creditos.referencia,
   tc_kalan_creditos_estatus.nombre as estatus,
   tc_kalan_creditos_estatus.estatus_asociados,
+  tc_kalan_creditos.fecha_pago,
   tc_kalan_creditos.fecha_aplicacion
 from   
   tc_kalan_creditos
@@ -486,6 +494,8 @@ inner join
   tc_mantic_acreedores on tc_kalan_creditos.id_acreedor= tc_mantic_acreedores.id_acreedor
 inner join
   tc_kalan_creditos_estatus on tc_kalan_creditos.id_credito_estatus= tc_kalan_creditos_estatus.id_credito_estatus
+inner join
+  tc_mantic_tipos_medios_pagos on tc_kalan_creditos.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 where
   tc_kalan_creditos.id_empresa in ({idEmpresa})    
   and {condicion}        

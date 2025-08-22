@@ -1,7 +1,8 @@
 package mx.org.kaana.kalan.creditos.beans;
 
-
 import java.io.Serializable;
+import mx.org.kaana.kalan.cuentas.beans.ICuenta;
+import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
 import mx.org.kaana.kalan.db.dto.TcKalanCreditosPagosDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
@@ -13,7 +14,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Afectacion extends TcKalanCreditosPagosDto implements Serializable {
+public class Afectacion extends TcKalanCreditosPagosDto implements ICuenta, Serializable {
 
   private static final long serialVersionUID = -8794495402874168801L;
 
@@ -21,7 +22,6 @@ public class Afectacion extends TcKalanCreditosPagosDto implements Serializable 
   private UISelectEntity ikEmpresaCuenta;  
   private UISelectEntity ikTipoAfectacion;  
   private UISelectEntity ikTipoMedioPago;  
-  private UISelectEntity ikBanco;  
 
   public Afectacion() {
     super();
@@ -29,7 +29,6 @@ public class Afectacion extends TcKalanCreditosPagosDto implements Serializable 
     this.setIkEmpresaCuenta(new UISelectEntity(-1L));
     this.setIkTipoAfectacion(new UISelectEntity(-1L));
     this.setIkTipoMedioPago(new UISelectEntity(-1L));
-    this.setIkBanco(new UISelectEntity(-1L));
   }
 
   public UISelectEntity getIkEmpresa() {
@@ -72,14 +71,9 @@ public class Afectacion extends TcKalanCreditosPagosDto implements Serializable 
 			this.setIdTipoMedioPago(ikTipoMedioPago.getKey());    
   }
 
-  public UISelectEntity getIkBanco() {
-    return ikBanco;
-  }
-
-  public void setIkBanco(UISelectEntity ikBanco) {
-    this.ikBanco = ikBanco;
-    if(ikBanco!= null)
-			this.setIdBanco(ikBanco.getKey());    
+  @Override
+  public Long getIdCuentaEstatus() {
+    return EEstatusCuentas.APLICADO.getIdEstatusCuenta();
   }
   
   @Override

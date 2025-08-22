@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.kalan.ahorros.beans.Afectacion;
 import mx.org.kaana.kalan.ahorros.beans.Ahorro;
 import mx.org.kaana.kalan.cuentas.enums.ECuentasOrigenes;
+import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
 import mx.org.kaana.kalan.cuentas.enums.ETipoAfectacion;
 import mx.org.kaana.kalan.cuentas.reglas.IBaseCuenta;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosPagosDto;
@@ -324,7 +325,6 @@ public class Transaccion extends IBaseCuenta {
             item.setIdAhorro(this.ahorro.getIdAhorro());
             item.setIdEmpresa(this.ahorro.getIdEmpresa());
             item.setIdEmpresaCuenta(this.ahorro.getIdEmpresaCuenta());
-            item.setIdBanco(null);
             item.setIdTipoAfectacion(ETipoAfectacion.ABONO.getIdTipoAfectacion()); // ABONO
             item.setIdUsuario(this.ahorro.getIdUsuario());
             regresar= DaoFactory.getInstance().insert(sesion, item)> 0L;
@@ -332,7 +332,6 @@ public class Transaccion extends IBaseCuenta {
           case UPDATE:
             item.setIdEmpresa(this.ahorro.getIdEmpresa());
             item.setIdEmpresaCuenta(this.ahorro.getIdEmpresaCuenta());
-            item.setIdBanco(null);
             regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
             break;
           case DELETE:
@@ -395,8 +394,9 @@ public class Transaccion extends IBaseCuenta {
     try {      
       params.put("idAhorro", this.ahorro.getIdAhorro());   
       List<Afectacion> items= (List<Afectacion>)DaoFactory.getInstance().toEntitySet(sesion, Afectacion.class, "TcKalanAhorrosPagosDto", "depurar", params);
-      for (Afectacion item: items) 
-        this.toDeleteControlCuentaPago(sesion, item);
+      if(!Objects.equals(items, null))
+        for (Afectacion item: items) 
+          this.toDeleteControlCuentaPago(sesion, item);
     } // try
     catch (Exception e) {
       throw e;
@@ -408,7 +408,7 @@ public class Transaccion extends IBaseCuenta {
   
   private void toDeleteControlCuentaPago(Session sesion, Afectacion item) throws Exception {
     try {      
-      super.control(sesion, item, Objects.equals(item.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.AHORROS_CARGOS: ECuentasOrigenes.AHORROS_ABONOS, Boolean.TRUE);
+      super.control(sesion, item, Objects.equals(item.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.AHORROS_CARGOS: ECuentasOrigenes.AHORROS_ABONOS, EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
     } // try
     catch (Exception e) {
       throw e;
@@ -435,5 +435,5 @@ public class Transaccion extends IBaseCuenta {
       throw e;
     } // catch	
   }
-  
+
 }

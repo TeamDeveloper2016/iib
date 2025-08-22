@@ -35,8 +35,6 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
   private Long idTipoMedioPago;
   @Column (name="importe")
   private Double importe;
-  @Column (name="id_banco")
-  private Long idBanco;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="fecha_pago")
@@ -79,15 +77,14 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
   }
 
   public TcKalanCuentasMovimientosDto(Long key) {
-    this(2L, null, 0D, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, 1L, 1L, null);
+    this(2L, null, 0D, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, 1L, 1L, null);
     setKey(key);
   }
 
-  public TcKalanCuentasMovimientosDto(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long idBanco, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus, Long idCuentaOrigen, Long idPivote) {
+  public TcKalanCuentasMovimientosDto(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus, Long idCuentaOrigen, Long idPivote) {
     setIdTipoAfectacion(idTipoAfectacion);
     setIdTipoMedioPago(idTipoMedioPago);
     setImporte(importe);
-    setIdBanco(idBanco);
     setEjercicio(ejercicio);
     setFechaPago(fechaPago);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -129,14 +126,6 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
 
   public Double getImporte() {
     return importe;
-  }
-
-  public void setIdBanco(Long idBanco) {
-    this.idBanco = idBanco;
-  }
-
-  public Long getIdBanco() {
-    return idBanco;
   }
 
   public void setEjercicio(Long ejercicio) {
@@ -296,8 +285,6 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdBanco());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFechaPago());
@@ -335,7 +322,6 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
 		regresar.put("idTipoAfectacion", getIdTipoAfectacion());
 		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
 		regresar.put("importe", getImporte());
-		regresar.put("idBanco", getIdBanco());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("fechaPago", getFechaPago());
 		regresar.put("registro", getRegistro());
@@ -359,7 +345,7 @@ public class TcKalanCuentasMovimientosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdTipoAfectacion(), getIdTipoMedioPago(), getImporte(), getIdBanco(), getEjercicio(), getFechaPago(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaDestino(), getObservaciones(), getOrden(), getIdCuentaMovimiento(), getReferencia(), getIdEmpresa(), getIdCuentaEstatus(), getIdCuentaOrigen(), getIdPivote(), getActualizado()
+      getIdTipoAfectacion(), getIdTipoMedioPago(), getImporte(), getEjercicio(), getFechaPago(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getIdEmpresaDestino(), getObservaciones(), getOrden(), getIdCuentaMovimiento(), getReferencia(), getIdEmpresa(), getIdCuentaEstatus(), getIdCuentaOrigen(), getIdPivote(), getActualizado()
     };
     return regresar;
   }

@@ -84,7 +84,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.doLoad(); 
       this.toLoadEmpresas();
       this.toLoadTiposMediosPagos();
-      this.toLoadBancos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -112,10 +111,6 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.ahorro.setIkEmpresaCuenta(new UISelectEntity(this.ahorro.getIdEmpresaCuenta()));
           this.ahorro.setIkEmpresaPersona(new UISelectEntity(this.toLoadEmpleados(this.ahorro.getIdEmpresaPersona())));
           this.ahorro.setIkTipoMedioPago(new UISelectEntity(this.ahorro.getCuotas().get(0).getIdTipoMedioPago()));
-          if(Objects.equals(this.ahorro.getCuotas().get(0).getIdBanco(), null))
-            this.ahorro.setIkBanco(new UISelectEntity(this.ahorro.getCuotas().get(0).getIdBanco()));
-          else
-            this.ahorro.setIkBanco(new UISelectEntity(-1L));
           this.ahorro.setReferencia(this.ahorro.getCuotas().get(0).getReferencia());
           this.doLoadCuentas();
           break;
@@ -386,30 +381,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} 
   
-	private void toLoadBancos() {
-		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = new HashMap<>();
-		List<Columna> columns      = new ArrayList<>();
-		try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("bancos", bancos);
-      if(bancos!= null && !bancos.isEmpty()) {
-        if(Objects.equals(this.accion, EAccion.AGREGAR)) 
-    			this.ahorro.setIkBanco(UIBackingUtilities.toFirstKeySelectEntity(bancos));
-      } // if  
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} 
-
   public void doUpdateMedios() {
     List<UISelectEntity> tiposMediosPagos= (List<UISelectEntity>)this.attrs.get("tiposMediosPagos"); 
     String medios= "EFECTIVO";
@@ -422,8 +393,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       for (Afectacion item: this.ahorro.getCuotas()) {
         if(Objects.equals(item.getIdAhorroControl(), 1L)) {
           item.setIdTipoMedioPago(this.ahorro.getIkTipoMedioPago().getKey());
-          item.setIdBanco(null);
-          // item.setIdBanco(Objects.equals(this.ahorro.getIkBanco().getKey(), -1L)? null: this.ahorro.getIkBanco().getKey());
           item.setReferencia(!Objects.equals(this.ahorro.getReferencia(), null)? this.ahorro.getReferencia().toUpperCase(): this.ahorro.getReferencia());
           item.setMedios(medios);
           if(Objects.equals(item.getSql(), ESql.SELECT))

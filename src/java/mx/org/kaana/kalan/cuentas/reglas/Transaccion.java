@@ -102,12 +102,10 @@ public class Transaccion extends IBaseCuenta implements Serializable {
 					break;
 				case DESACTIVAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-            this.cuenta.setIdBanco(null);
 						this.cuenta.setIdCuentaEstatus(this.bitacora.getIdCuentaEstatus());
             DaoFactory.getInstance().update(sesion, this.cuenta);
             params.put(Constantes.SQL_CONDICION, "tc_kalan_cuentas_movimientos.id_cuenta_movimiento= "+ this.cuenta.getIdEmpresaDestino());
             clone= (Cuenta)DaoFactory.getInstance().toEntity(sesion, Cuenta.class, "TcKalanCuentasMovimientosDto", params);
-            clone.setIdBanco(null);
 						clone.setIdCuentaEstatus(this.bitacora.getIdCuentaEstatus());
             regresar= DaoFactory.getInstance().update(sesion, clone)>= 1L;
 					} // if
@@ -135,7 +133,6 @@ public class Transaccion extends IBaseCuenta implements Serializable {
     try {
       super.addCuenta(sesion, this.cuenta);
       Cuenta clone= this.cuenta.clone();
-      clone.setIdBanco(null);
       clone.setIdEmpresaDestino(this.cuenta.getIdCuentaMovimiento());
       super.addCuenta(sesion, clone);
       sesion.flush();
@@ -152,11 +149,9 @@ public class Transaccion extends IBaseCuenta implements Serializable {
     Boolean regresar          = Boolean.TRUE;
     Map<String, Object> params= new HashMap<>();
     try {
-      this.cuenta.setIdBanco(null);
       super.updateCuenta(sesion, this.cuenta);
       params.put(Constantes.SQL_CONDICION, "tc_kalan_cuentas_movimientos.id_cuenta_movimiento= "+ this.cuenta.getIdEmpresaDestino());
       Cuenta clone= (Cuenta)DaoFactory.getInstance().toEntity(sesion, Cuenta.class, "TcKalanCuentasMovimientosDto", params);
-      clone.setIdBanco(null);
       clone.setIdEmpresa(this.cuenta.getIdDestino());
       clone.setIdEmpresaCuenta(this.cuenta.getIdDestinoCuenta());
       clone.setIdCuentaEstatus(this.cuenta.getIdCuentaEstatus());

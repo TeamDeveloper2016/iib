@@ -12,10 +12,8 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.kalan.cuentas.beans.ICuenta;
 import mx.org.kaana.kalan.cuentas.enums.ECuentasOrigenes;
-import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
 import mx.org.kaana.kalan.db.dto.TcKalanCuentasBitacoraDto;
 import mx.org.kaana.kalan.db.dto.TcKalanCuentasMovimientosDto;
-import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
@@ -28,29 +26,24 @@ public abstract class IBaseCuenta extends IBaseTnx implements Serializable {
   private static final long serialVersionUID = 5752229314495124313L;
   
   protected Boolean control(Session sesion, ICuenta cuenta, ECuentasOrigenes origen) throws Exception {
-    return this.control(sesion, cuenta, origen, Boolean.FALSE);  
+    return this.control(sesion, cuenta, origen, cuenta.getIdCuentaEstatus());  
   }
   
-  protected Boolean control(Session sesion, ICuenta cuenta, ECuentasOrigenes origen, Boolean delete) throws Exception {
+  protected Boolean control(Session sesion, ICuenta cuenta, ECuentasOrigenes origen, Long idEstatusCuenta) throws Exception {
     Boolean regresar          = Boolean.TRUE;
     Map<String, Object> params= new HashMap<>();
     try {
-       params.put("idCuentaOrigen", origen.getIdCuentaOrigen());
-       params.put("idPivote", cuenta.getKey());
-       TcKalanCuentasMovimientosDto existe= (TcKalanCuentasMovimientosDto)DaoFactory.getInstance().toEntity(sesion, TcKalanCuentasMovimientosDto.class, "TcKalanCuentasMovimientosDto", "existe", params);    
-       if(delete && !Objects.equals(existe, null)) {
-         existe.setIdCuentaEstatus(EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
-         this.updateCuenta(sesion, existe);
-       } // if
-       else
-          if(Objects.equals(existe, null)) {
-            existe= this.clone(cuenta, origen);
-            this.addCuenta(sesion, existe);
-          } // if
-          else {
-            existe.setIdCuentaEstatus(cuenta.getIdCuentaEstatus());
-            this.updateCuenta(sesion, existe);
-          } // else
+      params.put("idCuentaOrigen", origen.getIdCuentaOrigen());
+      params.put("idPivote", cuenta.getKey());
+      TcKalanCuentasMovimientosDto existe= (TcKalanCuentasMovimientosDto)DaoFactory.getInstance().toEntity(sesion, TcKalanCuentasMovimientosDto.class, "TcKalanCuentasMovimientosDto", "existe", params);    
+      if(Objects.equals(existe, null)) {
+        existe= this.clone(cuenta, origen);
+        this.addCuenta(sesion, existe);
+      } // if
+      else {
+        existe.setIdCuentaEstatus(idEstatusCuenta);
+        this.updateCuenta(sesion, existe);
+      } // else
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -66,7 +59,6 @@ public abstract class IBaseCuenta extends IBaseTnx implements Serializable {
       cuenta.getIdTipoAfectacion(), // Long idTipoAfectacion, 
       cuenta.getIdTipoMedioPago(), // Long idTipoMedioPago, 
       cuenta.getImporte(), // Double importe, 
-      null, // Long idBanco, 
       null, // Long ejercicio, 
       cuenta.getFechaPago(), // Date fechaPago, 
       null, // String consecutivo, 

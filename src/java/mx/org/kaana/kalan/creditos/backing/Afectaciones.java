@@ -68,7 +68,6 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
       this.idCredito= Objects.equals(JsfBase.getFlashAttribute("idCredito"), null)? -1L: (Long)JsfBase.getFlashAttribute("idCredito");
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Creditos/filtro": JsfBase.getFlashAttribute("retorno"));
       this.toLoadTiposMediosPagos();
-      this.toLoadBancos();
       this.doLoad(); 
       this.toLoadEmpresas();
       this.toLoadAfectaciones();
@@ -97,8 +96,6 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
           this.afectacion.setIkTipoAfectacion(new UISelectEntity(2L));
           if(!Objects.equals(this.attrs.get("tiposMediosPagos"), null))
             this.afectacion.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
-          if(!Objects.equals(this.attrs.get("bancos"), null))
-            this.afectacion.setIkBanco(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("bancos")));
           this.afectacion.setIdUsuario(JsfBase.getIdUsuario());
           this.doLoadCuentas();
           break;
@@ -117,7 +114,6 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {
-      this.afectacion.setIdBanco(null);
       if(Objects.equals(this.afectacion.getIdTipoMedioPago(), ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())) 
         this.afectacion.setReferencia(null);
       transaccion= new Transaccion(this.credito, this.afectacion);
@@ -232,26 +228,6 @@ public class Afectaciones extends IBaseAttribute implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} 
-  
-	private void toLoadBancos() {
-		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = new HashMap<>();
-		List<Columna> columns      = new ArrayList<>();
-		try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("bancos", bancos);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
 	} 
   
 }

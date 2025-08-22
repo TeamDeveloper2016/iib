@@ -62,7 +62,6 @@ public class Transferencias extends IBaseAttribute implements Serializable {
       this.idCuentaMovimiento= Objects.equals(JsfBase.getFlashAttribute("idCuentaMovimiento"), null)? -1L: (Long)JsfBase.getFlashAttribute("idCuentaMovimiento");
       this.attrs.put("retorno", Objects.equals(JsfBase.getFlashAttribute("retorno"), null)? "/Paginas/Kalan/Cuentas/filtro": JsfBase.getFlashAttribute("retorno"));
       this.toLoadTiposMediosPagos();
-      this.toLoadBancos();
       this.doLoad(); 
       this.toLoadEmpresas();
       this.toLoadDestinos();
@@ -86,8 +85,6 @@ public class Transferencias extends IBaseAttribute implements Serializable {
           this.cuenta.setIkTipoAfectacion(new UISelectEntity(1L));
           if(!Objects.equals(this.attrs.get("tiposMediosPagos"), null))
             this.cuenta.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
-          if(!Objects.equals(this.attrs.get("bancos"), null))
-            this.cuenta.setIkBanco(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("bancos")));
           this.cuenta.setIdUsuario(JsfBase.getIdUsuario());
           break;
         case REPROCESAR:
@@ -99,7 +96,6 @@ public class Transferencias extends IBaseAttribute implements Serializable {
           this.cuenta.setIkDestinoCuenta(new UISelectEntity(this.cuenta.getIdDestinoCuenta()));
           this.cuenta.setIkTipoAfectacion(new UISelectEntity(this.cuenta.getIdTipoAfectacion()));
           this.cuenta.setIkTipoMedioPago(new UISelectEntity(this.cuenta.getIdTipoMedioPago()));
-          this.cuenta.setIkBanco(new UISelectEntity(this.cuenta.getIdBanco()));
           this.doLoadEmpresaCuentas();
           this.doLoadEmpresaDestinos();
           break;
@@ -134,7 +130,6 @@ public class Transferencias extends IBaseAttribute implements Serializable {
     try {
       if(!Objects.equals(EAccion.REPROCESAR, this.accion))
         this.cuenta.setIdEmpresaDestino(null);
-      this.cuenta.setIdBanco(null);
       transaccion= new Transaccion(this.cuenta);
       if(transaccion.ejecutar(this.accion)) {
         regresar= this.doCancelar();
@@ -305,26 +300,6 @@ public class Transferencias extends IBaseAttribute implements Serializable {
 		} // catch		
 	} 
 
-	private void toLoadBancos() {
-		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = new HashMap<>();
-		List<Columna> columns      = new ArrayList<>();
-		try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, columns, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("bancos", bancos);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} 
-  
   public void doUpdateMedios() {
     try {      
       

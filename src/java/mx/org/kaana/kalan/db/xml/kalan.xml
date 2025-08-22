@@ -531,7 +531,26 @@ from
 where
   tc_kalan_prestamos_pagos.ejercicio= {ejercicio} 
   and tc_kalan_prestamos_pagos.orden {operador} 900000		
-			</select>		
+			</select>	
+      <select id="cuenta">
+select
+  tc_kalan_prestamos_pagos.id_prestamo_pago as id_key,       
+  tc_kalan_prestamos_pagos.*
+from
+  tc_kalan_prestamos_pagos                
+where     
+  tc_kalan_prestamos_pagos.id_prestamo= {idPrestamo}
+  and tc_kalan_prestamos_pagos.id_prestamo_pago= {idPrestamoPago}
+      </select>      
+      <select id="cuentas">
+select
+  tc_kalan_prestamos_pagos.id_prestamo_pago as id_key,       
+  tc_kalan_prestamos_pagos.*
+from
+  tc_kalan_prestamos_pagos                
+where     
+  id_prestamo= {idPrestamo}
+      </select>      
       <delete id="rows">
 delete from      
   tc_kalan_prestamos_pagos
@@ -546,46 +565,6 @@ where
   and id_prestamo_pago= {idPrestamoPago}
       </delete>
     </unit>           
-    <unit id="TcKalanCreditosDto">
-      <select id="row">
-select      
-  tc_kalan_creditos.id_credito as id_key,        
-  tc_kalan_creditos.*
-from      
-  tc_kalan_creditos
-where 
-  {condicion} 
-      </select>
-      <select id="identically">
-select      
-  *
-from      
-  tc_kalan_creditos
-where      
-  consecutivo = '{consecutivo}'
-      </select>
-      <select id="siguiente">
-select
-  max(tc_kalan_creditos.orden)+ 1 as siguiente
-from 
-  tc_kalan_creditos
-where
-  tc_kalan_creditos.ejercicio= {ejercicio} 
-  and tc_kalan_creditos.orden {operador} 900000		
-			</select>		
-      <select id="acreedor">
-select      
-  tc_kalan_creditos.id_credito as id_key,        
-  tc_mantic_acreedores.razon_social,
-  tc_kalan_creditos.*
-from      
-  tc_kalan_creditos
-inner join
-  tc_mantic_acreedores on tc_kalan_creditos.id_acreedor= tc_mantic_acreedores.id_acreedor
-where 
-  {condicion} 
-      </select>  
-    </unit>    
     <unit id="TcKalanCreditosEstatusDto">
       <select id="row">
 select      
@@ -629,6 +608,46 @@ where
   id_credito= {idCredito}
       </delete>
     </unit>  
+    <unit id="TcKalanCreditosDto">
+      <select id="row">
+select      
+  tc_kalan_creditos.id_credito as id_key,        
+  tc_kalan_creditos.*
+from      
+  tc_kalan_creditos
+where 
+  {condicion} 
+      </select>
+      <select id="identically">
+select      
+  *
+from      
+  tc_kalan_creditos
+where      
+  consecutivo = '{consecutivo}'
+      </select>
+      <select id="siguiente">
+select
+  max(tc_kalan_creditos.orden)+ 1 as siguiente
+from 
+  tc_kalan_creditos
+where
+  tc_kalan_creditos.ejercicio= {ejercicio} 
+  and tc_kalan_creditos.orden {operador} 900000		
+			</select>		
+      <select id="acreedor">
+select      
+  tc_kalan_creditos.id_credito as id_key,        
+  tc_mantic_acreedores.razon_social,
+  tc_kalan_creditos.*
+from      
+  tc_kalan_creditos
+inner join
+  tc_mantic_acreedores on tc_kalan_creditos.id_acreedor= tc_mantic_acreedores.id_acreedor
+where 
+  {condicion} 
+      </select>  
+    </unit>    
     <unit id="TcKalanCreditosPagosDto">
       <select id="row">
 select      
@@ -664,6 +683,25 @@ where
   tc_kalan_creditos_pagos.ejercicio= {ejercicio} 
   and tc_kalan_creditos_pagos.orden {operador} 900000		
 			</select>		
+      <select id="cuenta">
+select
+  tc_kalan_creditos_pagos.id_credito_pago as id_key,       
+  tc_kalan_creditos_pagos.*
+from
+  tc_kalan_creditos_pagos                
+where     
+  tc_kalan_creditos_pagos.id_credito= {idCredito}
+  and tc_kalan_creditos_pagos.id_credito_pago= {idCreditoPago}
+      </select>      
+      <select id="cuentas">
+select
+  tc_kalan_creditos_pagos.id_credito_pago as id_key,       
+  tc_kalan_creditos_pagos.*
+from
+  tc_kalan_creditos_pagos                
+where     
+  id_credito= {idCredito}
+      </select>      
       <delete id="rows">
 delete from      
   tc_kalan_creditos_pagos

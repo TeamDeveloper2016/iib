@@ -79,6 +79,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (this.accion) {
         case AGREGAR:
           this.credito= new Credito();
+          this.credito.setIdUsuario(JsfBase.getIdUsuario());
           break;
         case MODIFICAR:
         case CONSULTAR:

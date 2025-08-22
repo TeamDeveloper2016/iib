@@ -1,7 +1,8 @@
 package mx.org.kaana.kalan.prestamos.beans;
 
-
 import java.io.Serializable;
+import mx.org.kaana.kalan.cuentas.beans.ICuenta;
+import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
 import mx.org.kaana.kalan.db.dto.TcKalanPrestamosPagosDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
@@ -13,7 +14,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Afectacion extends TcKalanPrestamosPagosDto implements Serializable {
+public class Afectacion extends TcKalanPrestamosPagosDto implements ICuenta, Serializable {
 
   private static final long serialVersionUID = -8794495402874168801L;
 
@@ -81,10 +82,15 @@ public class Afectacion extends TcKalanPrestamosPagosDto implements Serializable
     if(ikBanco!= null)
 			this.setIdBanco(ikBanco.getKey());    
   }
+
+  @Override
+  public Long getIdCuentaEstatus() {
+    return EEstatusCuentas.APLICADO.getIdEstatusCuenta();
+  }
   
   @Override
   public Class toHbmClass() {
     return TcKalanPrestamosPagosDto.class;
   }
-  
+
 }

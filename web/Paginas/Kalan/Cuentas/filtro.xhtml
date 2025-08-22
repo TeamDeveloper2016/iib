@@ -20,8 +20,9 @@
 				importeMayor   : {validaciones: 'libre|flotante', mascara: 'libre', grupo: 'general'},
         fechaInicio    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         fechaTermino   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        idCuentaOrigen : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
-        idCuentaEstatus: {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
+        idTipoAfectacion: {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
+        idCuentaOrigen  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},				
+        idCuentaEstatus : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
       
 			fields= {
@@ -103,6 +104,13 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCuentasFiltro.attrs.fechaInicio}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha término:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanCuentasFiltro.attrs.fechaTermino}" pattern="dd/MM/yyyy" readonlyInput="false" locale="mx" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="idTipoAfectacion" value="Movimiento:"/>
+              <p:selectOneMenu id="idTipoAfectacion" value="#{kalanCuentasFiltro.attrs.idTipoAfectacion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                <f:selectItems value="#{kalanCuentasFiltro.attrs.afectaciones}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
               <p:outputLabel for="idCuentaOrigen" value="Origen:"/>
               <p:selectOneMenu id="idCuentaOrigen" value="#{kalanCuentasFiltro.attrs.idCuentaOrigen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                 <f:selectItems value="#{kalanCuentasFiltro.attrs.origenes}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>

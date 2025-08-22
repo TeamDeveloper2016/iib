@@ -41,8 +41,6 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
   private Long idCredito;
   @Column (name="importe")
   private Double importe;
-  @Column (name="id_banco")
-  private Long idBanco;
   @Column (name="fecha_pago")
   private Date fechaPago;
   @Column (name="ejercicio")
@@ -71,17 +69,16 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
   }
 
   public TcKalanCreditosPagosDto(Long key) {
-    this(2L, new Long(-1L), null, null, 0D, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null);
+    this(2L, new Long(-1L), null, null, 0D, new Date(Calendar.getInstance().getTimeInMillis()), null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcKalanCreditosPagosDto(Long idTipoAfectacion, Long idCreditoPago, Long idTipoMedioPago, Long idCredito, Double importe, Long idBanco, Date fechaPago, Long ejercicio, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden, String referencia) {
+  public TcKalanCreditosPagosDto(Long idTipoAfectacion, Long idCreditoPago, Long idTipoMedioPago, Long idCredito, Double importe, Date fechaPago, Long ejercicio, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden, String referencia) {
     setIdTipoAfectacion(idTipoAfectacion);
     setIdCreditoPago(idCreditoPago);
     setIdTipoMedioPago(idTipoMedioPago);
     setIdCredito(idCredito);
     setImporte(importe);
-    setIdBanco(idBanco);
     setFechaPago(fechaPago);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -133,14 +130,6 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
 
   public Double getImporte() {
     return importe;
-  }
-
-  public void setIdBanco(Long idBanco) {
-    this.idBanco = idBanco;
-  }
-
-  public Long getIdBanco() {
-    return idBanco;
   }
 
   public void setFechaPago(Date fechaPago) {
@@ -256,8 +245,6 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdBanco());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFechaPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
@@ -291,7 +278,6 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
 		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
 		regresar.put("idCredito", getIdCredito());
 		regresar.put("importe", getImporte());
-		regresar.put("idBanco", getIdBanco());
 		regresar.put("fechaPago", getFechaPago());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
@@ -308,8 +294,8 @@ public class TcKalanCreditosPagosDto implements IBaseDto, Serializable {
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdTipoAfectacion(), getIdCreditoPago(), getIdTipoMedioPago(), getIdCredito(), getImporte(), getIdBanco(), getFechaPago(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getReferencia()
+    Object[] regresar = new Object[] {
+      getIdTipoAfectacion(), getIdCreditoPago(), getIdTipoMedioPago(), getIdCredito(), getImporte(), getFechaPago(), getEjercicio(), getRegistro(), getConsecutivo(), getFechaAplicacion(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getReferencia()
     };
     return regresar;
   }

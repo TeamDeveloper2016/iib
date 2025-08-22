@@ -23,7 +23,6 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements ICuenta, Ser
   private UISelectEntity ikDestinoCuenta;  
   private UISelectEntity ikTipoAfectacion;  
   private UISelectEntity ikTipoMedioPago;  
-  private UISelectEntity ikBanco;  
 
   private Long idDestino;
   private Long idDestinoCuenta;
@@ -39,18 +38,16 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements ICuenta, Ser
     this.setIkDestinoCuenta(new UISelectEntity(-1L));
     this.setIkTipoAfectacion(new UISelectEntity(-1L));
     this.setIkTipoMedioPago(new UISelectEntity(-1L));
-    this.setIkBanco(new UISelectEntity(-1L));
   }
 
-  public Cuenta(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long idBanco, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus, Long idCuentaOrigen, Long idPivote) {
-    super(idTipoAfectacion, idTipoMedioPago, importe, idBanco, ejercicio, fechaPago, consecutivo, fechaAplicacion, idEmpresaCuenta, idUsuario, idEmpresaDestino, observaciones, orden, idCuentaMovimiento, referencia, idEmpresa, idCuentaEstatus, idCuentaOrigen, idPivote);
+  public Cuenta(Long idTipoAfectacion, Long idTipoMedioPago, Double importe, Long ejercicio, Date fechaPago, String consecutivo, Date fechaAplicacion, Long idEmpresaCuenta, Long idUsuario, Long idEmpresaDestino, String observaciones, Long orden, Long idCuentaMovimiento, String referencia, Long idEmpresa, Long idCuentaEstatus, Long idCuentaOrigen, Long idPivote) {
+    super(idTipoAfectacion, idTipoMedioPago, importe, ejercicio, fechaPago, consecutivo, fechaAplicacion, idEmpresaCuenta, idUsuario, idEmpresaDestino, observaciones, orden, idCuentaMovimiento, referencia, idEmpresa, idCuentaEstatus, idCuentaOrigen, idPivote);
     this.setIkEmpresa(new UISelectEntity(idEmpresa));
     this.setIkEmpresaCuenta(new UISelectEntity(idEmpresaCuenta));
     this.setIkDestino(new UISelectEntity(-1L));
     this.setIkDestinoCuenta(new UISelectEntity(-1L));
     this.setIkTipoAfectacion(new UISelectEntity(idTipoAfectacion));
     this.setIkTipoMedioPago(new UISelectEntity(idTipoMedioPago));
-    this.setIkBanco(new UISelectEntity(-1L));
   }
   
   
@@ -114,16 +111,6 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements ICuenta, Ser
 			this.setIdTipoMedioPago(ikTipoMedioPago.getKey());    
   }
 
-  public UISelectEntity getIkBanco() {
-    return ikBanco;
-  }
-
-  public void setIkBanco(UISelectEntity ikBanco) {
-    this.ikBanco = ikBanco;
-    if(ikBanco!= null)
-			this.setIdBanco(ikBanco.getKey());    
-  }
-
   public Long getIdDestino() {
     return idDestino;
   }
@@ -151,7 +138,6 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements ICuenta, Ser
       2L, // Long idTipoAfectacion, 
       this.getIdTipoMedioPago(), // Long idTipoMedioPago, 
       this.getImporte(), // Double importe, 
-      null, // Long idBanco, 
       this.getEjercicio(), // Long ejercicio, 
       this.getFechaPago(), // Date fechaPago, 
       null, // String consecutivo, 

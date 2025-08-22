@@ -1,6 +1,9 @@
 package mx.org.kaana.kalan.prestamos.beans;
 
 import java.io.Serializable;
+import mx.org.kaana.kalan.cuentas.beans.ICuenta;
+import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
+import mx.org.kaana.kalan.cuentas.enums.ETipoAfectacion;
 import mx.org.kaana.kalan.db.dto.TcKalanPrestamosDto;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 
@@ -12,7 +15,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Prestamo extends TcKalanPrestamosDto implements Serializable {
+public class Prestamo extends TcKalanPrestamosDto implements ICuenta, Serializable {
 
   private static final long serialVersionUID = -8794495402874168809L;
 
@@ -20,7 +23,8 @@ public class Prestamo extends TcKalanPrestamosDto implements Serializable {
   private UISelectEntity ikEmpresa;  
   private UISelectEntity ikEmpresaCuenta;  
   private UISelectEntity ikEmpresaPersona;  
-
+  private UISelectEntity ikTipoMedioPago;  
+  
   public Prestamo() {
     this(-1L);
   }
@@ -30,6 +34,7 @@ public class Prestamo extends TcKalanPrestamosDto implements Serializable {
     this.setIkEmpresa(new UISelectEntity(-1L));
     this.setIkEmpresaCuenta(new UISelectEntity(-1L));
     this.setIkEmpresaPersona(new UISelectEntity(-1L));
+    this.setIkTipoMedioPago(new UISelectEntity(-1L));
   }
   
   public String getEmpleado() {
@@ -70,6 +75,26 @@ public class Prestamo extends TcKalanPrestamosDto implements Serializable {
 			this.setIdEmpresaPersona(ikEmpresaPersona.getKey());    
   }
 
+  public UISelectEntity getIkTipoMedioPago() {
+    return ikTipoMedioPago;
+  }
+
+  public void setIkTipoMedioPago(UISelectEntity ikTipoMedioPago) {
+    this.ikTipoMedioPago = ikTipoMedioPago;
+    if(ikTipoMedioPago!= null)
+			this.setIdTipoMedioPago(ikTipoMedioPago.getKey());    
+  }
+
+  @Override
+  public Long getIdTipoAfectacion() {
+    return ETipoAfectacion.CARGO.getIdTipoAfectacion();
+  }
+
+  @Override
+  public Long getIdCuentaEstatus() {
+    return EEstatusCuentas.APLICADO.getIdEstatusCuenta();
+  }
+  
   @Override
   public Class toHbmClass() {
     return TcKalanPrestamosDto.class;

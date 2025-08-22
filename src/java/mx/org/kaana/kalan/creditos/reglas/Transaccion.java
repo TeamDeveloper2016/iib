@@ -1,15 +1,20 @@
 package mx.org.kaana.kalan.creditos.reglas;
 
+import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.kalan.creditos.beans.Afectacion;
 import mx.org.kaana.kalan.creditos.beans.Credito;
+import mx.org.kaana.kalan.cuentas.enums.ECuentasOrigenes;
+import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
+import mx.org.kaana.kalan.cuentas.enums.ETipoAfectacion;
+import mx.org.kaana.kalan.cuentas.reglas.IBaseCuenta;
 import mx.org.kaana.kalan.db.dto.TcKalanCreditosBitacoraDto;
 import mx.org.kaana.kalan.db.dto.TcKalanCreditosPagosDto;
 import mx.org.kaana.libs.Constantes;
@@ -20,9 +25,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends IBaseCuenta implements Serializable {
 
   private static final Log LOG= LogFactory.getLog(Transaccion.class);
+  private static final long serialVersionUID = -6005316970063414580L;
+  
 	private Credito credito;
 	private Afectacion afectacion;
 	private TcKalanCreditosBitacoraDto bitacora;
@@ -82,18 +89,24 @@ public class Transaccion extends IBaseTnx {
           this.credito.setConsecutivo(consecutivo.getConsecutivo());
           this.credito.setEjercicio(consecutivo.getEjercicio());
           this.credito.setOrden(consecutivo.getOrden());
-          this.credito.setIdUsuario(JsfBase.getIdUsuario());
           this.credito.setSaldo(this.credito.getImporte());
           regresar= DaoFactory.getInstance().insert(sesion, this.credito)>= 0L;
           this.toBitacora(sesion, this.credito.getIdCreditoEstatus());
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          if(Objects.equals(this.credito.getIdCreditoEstatus(), 2L))
+            this.toControlCuentaCargo(sesion);
           break;
         case MODIFICAR:
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          if(Objects.equals(this.credito.getIdCreditoEstatus(), 2L))
+            this.toControlCuentaCargo(sesion);
           regresar= this.toCheckEstatus(sesion, Boolean.FALSE);
           break;
 				case ELIMINAR:
           Map<String, Object> params = new HashMap<>();
           params.put("idCredito", this.credito.getIdCredito());            
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          this.toDeleteControlCuenta(sesion);
           DaoFactory.getInstance().deleteAll(sesion, TcKalanCreditosBitacoraDto.class, params);
           DaoFactory.getInstance().deleteAll(sesion, TcKalanCreditosPagosDto.class, params);
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
@@ -102,6 +115,10 @@ public class Transaccion extends IBaseTnx {
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.credito.setIdCreditoEstatus(this.bitacora.getIdCreditoEstatus());
+            if(Objects.equals(this.credito.getIdCreditoEstatus(), 2L))  // ACTIVO
+              this.toControlCuentaCargo(sesion);
+            if(Objects.equals(this.credito.getIdCreditoEstatus(), 5L))  // CANCELADO
+              this.toCancel(sesion);
             regresar= DaoFactory.getInstance().update(sesion, this.credito)>= 1L;
 					} // if
 					break;
@@ -111,6 +128,8 @@ public class Transaccion extends IBaseTnx {
           this.afectacion.setEjercicio(siguiente.getEjercicio());
           this.afectacion.setOrden(siguiente.getOrden());
           DaoFactory.getInstance().insert(sesion, this.afectacion);
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          this.toControlCuentaCargoPago(sesion, afectacion);
           regresar= this.toCheckEstatus(sesion, Boolean.FALSE);
 					break;
         case DEPURAR:
@@ -244,6 +263,9 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params.put("idCredito", this.afectacion.getIdCredito());
 			params.put("idCreditoPago", this.afectacion.getIdCreditoPago());
+      // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+      Afectacion item= (Afectacion)DaoFactory.getInstance().toEntity(sesion, Afectacion.class, "TcKalanCreditosPagosDto", "cuenta", params);
+      this.toControlCuentaDeletePago(sesion, item);
 			regresar= DaoFactory.getInstance().deleteAll(sesion, TcKalanCreditosPagosDto.class, "depurar", params)> 0L;
       if(regresar) 
         regresar= this.toCheckEstatus(sesion, Boolean.TRUE);
@@ -256,5 +278,79 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
   }
- 
+
+  private void toDeleteControlCuenta(Session sesion) throws Exception {
+    try {      
+      super.control(sesion, this.credito, Objects.equals(this.credito.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.CREDITOS_CARGOS: ECuentasOrigenes.CREDITOS_ABONOS, EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
+      this.toControlCuentaDelete(sesion);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+
+  private void toControlCuentaDelete(Session sesion) throws Exception {
+    Map<String, Object> params = new HashMap<>();
+    try {      
+      params.put("idCredito", this.credito.getIdCredito());   
+      List<Afectacion> items= (List<Afectacion>)DaoFactory.getInstance().toEntitySet(sesion, Afectacion.class, "TcKalanCreditosPagosDto", "cuentas", params);
+      for (Afectacion item: items) 
+        this.toControlCuentaDeletePago(sesion, item);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toControlCuentaDeletePago(Session sesion, Afectacion item) throws Exception {
+    try {      
+      super.control(sesion, item, Objects.equals(item.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.CREDITOS_CARGOS: ECuentasOrigenes.CREDITOS_ABONOS, EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
+  private void toControlCuentaCargo(Session sesion) throws Exception {
+    try {
+      super.control(sesion, this.credito, Objects.equals(this.credito.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.CREDITOS_CARGOS: ECuentasOrigenes.CREDITOS_ABONOS);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+
+  private void toControlCuentaCargoPago(Session sesion, Afectacion item) throws Exception {
+    try {
+      super.control(sesion, item, Objects.equals(item.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.CREDITOS_CARGOS: ECuentasOrigenes.CREDITOS_ABONOS);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+
+  private Boolean toCancel(Session sesion) throws Exception {
+		Boolean regresar          = Boolean.FALSE;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idCredito", this.credito.getIdCredito());
+      // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+      super.control(sesion, this.credito, Objects.equals(this.credito.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.CREDITOS_CARGOS: ECuentasOrigenes.CREDITOS_ABONOS, EEstatusCuentas.CANCELADO.getIdEstatusCuenta());
+      List<Afectacion> items= (List<Afectacion>)DaoFactory.getInstance().toEntitySet(sesion, Afectacion.class, "TcKalanCreditosPagosDto", "cuentas", params);
+      if(!Objects.equals(items, null))
+        for (Afectacion item: items) 
+          super.control(sesion, item, Objects.equals(item.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.CREDITOS_CARGOS: ECuentasOrigenes.CREDITOS_ABONOS, EEstatusCuentas.CANCELADO.getIdEstatusCuenta());
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+  }
+  
 }

@@ -27,7 +27,6 @@ public class Afectacion extends TcKalanAhorrosPagosDto implements ICuenta, Seria
   private UISelectEntity ikEmpresaCuenta;  
   private UISelectEntity ikTipoAfectacion;  
   private UISelectEntity ikTipoMedioPago;  
-  private UISelectEntity ikBanco;  
   private ESql sql;
 
   public Afectacion() {
@@ -40,7 +39,6 @@ public class Afectacion extends TcKalanAhorrosPagosDto implements ICuenta, Seria
     this.setIkEmpresaCuenta(new UISelectEntity(-1L));
     this.setIkTipoAfectacion(new UISelectEntity(2L));
     this.setIkTipoMedioPago(new UISelectEntity(-1L));
-    this.setIkBanco(new UISelectEntity(-1L));
     this.setImporte(importe);
     this.setIdAhorroControl(1L);
     this.setFechaAplicacion(fecha);
@@ -105,16 +103,6 @@ public class Afectacion extends TcKalanAhorrosPagosDto implements ICuenta, Seria
     this.ikTipoMedioPago = ikTipoMedioPago;
     if(ikTipoMedioPago!= null)
 			this.setIdTipoMedioPago(ikTipoMedioPago.getKey());    
-  }
-
-  public UISelectEntity getIkBanco() {
-    return ikBanco;
-  }
-
-  public void setIkBanco(UISelectEntity ikBanco) {
-    this.ikBanco = ikBanco;
-    if(ikBanco!= null)
-			this.setIdBanco(ikBanco.getKey());    
   }
 
   public ESql getSql() {
