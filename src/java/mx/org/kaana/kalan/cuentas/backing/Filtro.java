@@ -336,8 +336,8 @@ public class Filtro extends IBaseFilter implements Serializable {
     Map<String, Object> params   = new HashMap<>();
     List<UISelectEntity> origenes= null;
     try {
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			// params.put(Constantes.SQL_CONDICION, "clave like '1%'");
+			// params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			params.put(Constantes.SQL_CONDICION, "clave like '1%'");
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       origenes= (List<UISelectEntity>) UIEntity.seleccione("TcKalanCuentasOrigenesDto", "row", params, columns, "nombre");
       this.attrs.put("origenes", origenes);

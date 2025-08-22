@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.kalan.cuentas.beans.ICuenta;
+import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
+import mx.org.kaana.kalan.cuentas.enums.ETipoAfectacion;
 import mx.org.kaana.kalan.db.dto.TcKalanAhorrosDto;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -23,20 +26,17 @@ import mx.org.kaana.libs.reflection.Methods;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Ahorro extends TcKalanAhorrosDto implements Serializable {
+public class Ahorro extends TcKalanAhorrosDto implements ICuenta, Serializable {
 
   private static final long serialVersionUID = -8794495402874168809L;
 
   private String empleado;
   private UISelectEntity ikEmpresa;  
   private UISelectEntity ikEmpresaCuenta;  
+  private UISelectEntity ikTipoMedioPago;  
   private UISelectEntity ikEmpresaPersona;  
   private List<Afectacion> cuotas;
   private Long periodos;
-
-  private UISelectEntity ikTipoMedioPago;  
-  private UISelectEntity ikBanco;  
-  private String referencia;
   
   public Ahorro() throws Exception {
     this(-1L);
@@ -49,7 +49,6 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
     this.setIkEmpresaPersona(new UISelectEntity(-1L));
     this.setCuotas(new ArrayList<>());
     this.setIkTipoMedioPago(new UISelectEntity(-1L));
-    this.setIkBanco(new UISelectEntity(-1L));
     this.periodos= 0L;
   }
   
@@ -105,22 +104,8 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
 
   public void setIkTipoMedioPago(UISelectEntity ikTipoMedioPago) {
     this.ikTipoMedioPago = ikTipoMedioPago;
-  }
-
-  public UISelectEntity getIkBanco() {
-    return ikBanco;
-  }
-
-  public void setIkBanco(UISelectEntity ikBanco) {
-    this.ikBanco = ikBanco;
-  }
-
-  public String getReferencia() {
-    return referencia;
-  }
-
-  public void setReferencia(String referencia) {
-    this.referencia = referencia;
+    if(ikEmpresaCuenta!= null)
+			this.setIdTipoMedioPago(ikTipoMedioPago.getKey());    
   }
 
   public Long getPeriodos() {
@@ -238,7 +223,22 @@ public class Ahorro extends TcKalanAhorrosDto implements Serializable {
       Methods.clean(params);
     } // finally
   }
-  
+
+  @Override
+  public Long getIdTipoAfectacion() {
+    return ETipoAfectacion.ABONO.getIdTipoAfectacion();
+  }
+
+  @Override
+  public Date getFechaPago() {
+    return this.getFechaArranque();
+  }
+
+  @Override
+  public Long getIdCuentaEstatus() {
+    return EEstatusCuentas.APLICADO.getIdEstatusCuenta();
+  }
+
   @Override
   public Class toHbmClass() {
     return TcKalanAhorrosDto.class;

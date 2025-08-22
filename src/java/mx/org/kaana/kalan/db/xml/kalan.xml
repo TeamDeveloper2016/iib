@@ -16,6 +16,8 @@ from
   tc_kalan_cuentas_origenes
 where 
   {condicion} 
+order by
+  clave        
       </select>
       <select id="identically">
 select      

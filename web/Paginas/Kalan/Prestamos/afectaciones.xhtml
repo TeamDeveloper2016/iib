@@ -74,19 +74,38 @@
                     <h:outputText value="#{item.titulo}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
-                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanPrestamosAfectaciones.afectacion.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{kalanPrestamosAfectaciones.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
-                  <p:column headerText="Banco" styleClass="janal-wid-30">
-                    <h:outputText value="#{item.banco}"/>
-                  </p:column>   
-                  <p:column headerText="Cuenta" styleClass="janal-wid-20">
-                    <h:outputText value="#{item.cuenta}"/>
-                  </p:column>   
-                  <p:column headerText="Nombre">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                </p:selectOneMenu>
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
+                    <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanPrestamosAfectaciones.afectacion.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <f:selectItems value="#{kalanPrestamosAfectaciones.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                      <p:column headerText="Banco" styleClass="janal-wid-30">
+                        <h:outputText value="#{item.banco}"/>
+                      </p:column>   
+                      <p:column headerText="Cuenta" styleClass="janal-wid-20">
+                        <h:outputText value="#{item.cuenta}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
+                    <p:selectOneMenu id="idTipoMedioPago" value="#{kalanPrestamosAfectaciones.afectacion.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" process="@this" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh()"/>
+                      <f:selectItems value="#{kalanPrestamosAfectaciones.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                      <p:column headerText="Clave">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>	
+                  </p:panelGrid>
+                </p:panelGrid>
+                <p:outputLabel for="referencia" value="Referencia:" styleClass="banco #{kalanPrestamosAfectaciones.afectacion.idTipoMedioPago eq 1? 'janal-display-none': ''}"/>
+                <p:inputText id="referencia" value="#{kalanPrestamosAfectaciones.afectacion.referencia}" styleClass="janal-wid-100-txt banco #{kalanPrestamosAfectaciones.afectacion.idTipoMedioPago eq 1? 'janal-display-none': ''}" placeholder="Ej. Referencia 4564"/>
                 <p:outputLabel for="idTipoAfectacion" value="Tipo:"/>
                 <p:selectOneMenu id="idTipoAfectacion" value="#{kalanPrestamosAfectaciones.afectacion.ikTipoAfectacion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <p:ajax event="change" listener="#{kalanPrestamosAfectaciones.doCheckImporte()}" process="@this" update="importe"/>
@@ -111,21 +130,6 @@
                     <p:calendar id="fechaAplicacion" inputStyleClass="janal-wid-100-txt janal-column-center janal-color-blue" styleClass="janal-wid-100-txt" value="#{kalanPrestamosAfectaciones.afectacion.fechaAplicacion}" pattern="dd/MM/yyyy" readonlyInput="true" locale="mx" converter="janal.convertidor.Calendario"/>
                   </p:panelGrid>  
                 </p:panelGrid>  
-                <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
-                <p:selectOneMenu id="idTipoMedioPago" value="#{kalanPrestamosAfectaciones.afectacion.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" process="@this" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh()"/>
-                  <f:selectItems value="#{kalanPrestamosAfectaciones.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                  <p:column headerText="Clave">
-                    <h:outputText value="#{item.clave}"/>
-                  </p:column>   
-                  <p:column headerText="Nombre">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                </p:selectOneMenu>	
-                <p:panelGrid columns="1" styleClass="janal-wid-100">
-                  <p:outputLabel for="referencia" value="Referencia:" styleClass="banco #{kalanPrestamosAfectaciones.afectacion.idTipoMedioPago eq 1? 'janal-display-none': ''}"/>
-                  <p:inputText id="referencia" value="#{kalanPrestamosAfectaciones.afectacion.referencia}" styleClass="janal-wid-100-txt banco #{kalanPrestamosAfectaciones.afectacion.idTipoMedioPago eq 1? 'janal-display-none': ''}" placeholder="Ej. Referencia 4564"/>
-                </p:panelGrid>
                 <p:outputLabel for="observaciones" value="Observaciones:"/>
                 <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{kalanPrestamosAfectaciones.afectacion.observaciones}"/>  
               </p:panelGrid>

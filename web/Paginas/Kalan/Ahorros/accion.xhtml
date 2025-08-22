@@ -54,20 +54,41 @@
                     <h:outputText value="#{item.titulo}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
-                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanAhorrosAccion.ahorro.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{kalanAhorrosAccion.isEdit}">
-                  <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-                  <f:selectItems value="#{kalanAhorrosAccion.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
-                  <p:column headerText="Banco" styleClass="janal-wid-30">
-                    <h:outputText value="#{item.banco}"/>
-                  </p:column>   
-                  <p:column headerText="Cuenta" styleClass="janal-wid-20">
-                    <h:outputText value="#{item.cuenta}"/>
-                  </p:column>   
-                  <p:column headerText="Nombre">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                </p:selectOneMenu>
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-50, janal-wid-50">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
+                    <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanAhorrosAccion.ahorro.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains" disabled="#{kalanAhorrosAccion.isEdit}">
+                      <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+                      <f:selectItems value="#{kalanAhorrosAccion.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                      <p:column headerText="Banco" styleClass="janal-wid-30">
+                        <h:outputText value="#{item.banco}"/>
+                      </p:column>   
+                      <p:column headerText="Cuenta" styleClass="janal-wid-20">
+                        <h:outputText value="#{item.cuenta}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
+                    <p:selectOneMenu id="idTipoMedioPago" value="#{kalanAhorrosAccion.ahorro.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt medios" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh()"/>
+                      <f:selectItems value="#{kalanAhorrosAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                      <p:column headerText="Clave">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>	
+                  </p:panelGrid>
+                </p:panelGrid>
+                <p:outputLabel for="referencia" value="Referencia:" styleClass="banco #{kalanAhorrosAccion.ahorro.ikTipoMedioPago eq '1'? 'janal-display-none': ''}"/>
+                <p:inputText id="referencia" value="#{kalanAhorrosAccion.ahorro.referencia}" styleClass="janal-wid-100-txt banco #{kalanAhorrosAccion.ahorro.ikTipoMedioPago eq '1'? 'janal-display-none': ''}" placeholder="Ej. Referencia 4564">
+                  <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateMedios()}" process="@this @(.medios)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh()"/>
+                </p:inputText>  
                 <p:outputLabel for="idEmpresaPersona" value="Empleado:"/>
                 <p:autoComplete id="idEmpresaPersona" var="custom" placeholder="Ej: JUAN PEREZ LOPEZ" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{kalanAhorrosAccion.ahorro.ikEmpresaPersona}" completeMethod="#{kalanPrestamosFiltro.doCompleteEmpleado}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500" disabled="#{kalanAhorrosAccion.isEdit}" readonly="#{kalanAhorrosAccion.isEdit}">
                   <f:facet name="itemtip">
@@ -123,38 +144,6 @@
               <p:remoteCommand name="reload" process="@this" update="idEmpresa idEmpresaCuenta idEmpresaPersona fechaAplicacion fechaArranque"/>
             </p:tab>						
             <p:tab title="Ahorros">
-              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100-txt">
-                <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
-                <p:selectOneMenu id="idTipoMedioPago" value="#{kalanAhorrosAccion.ahorro.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt medios" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh()"/>
-                  <f:selectItems value="#{kalanAhorrosAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                  <p:column headerText="Clave">
-                    <h:outputText value="#{item.clave}"/>
-                  </p:column>   
-                  <p:column headerText="Nombre">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                </p:selectOneMenu>	
-                <p:panelGrid columns="1" styleClass="janal-wid-100-txt" rendered="false">
-                  <p:outputLabel for="idBanco" value="Banco:" styleClass="banco #{kalanAhorrosAccion.ahorro.ikTipoMedioPago eq '1'? 'janal-display-none': ''}"/>
-                  <p:selectOneMenu id="idBanco" value="#{kalanAhorrosAccion.ahorro.ikBanco}" filter="true" filterMatchMode="custom" filterFunction="janal.contains" var="item" styleClass="janal-wid-100-txt banco #{kalanAhorrosAccion.ahorro.ikTipoMedioPago eq '1'? 'janal-display-none': ''}" converter="janal.convertidor.Entity">
-                    <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-                    <f:selectItems value="#{kalanAhorrosAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                    <p:column headerText="Nombre">
-                      <h:outputText value="#{item.nombre}"/>
-                    </p:column>   
-                    <p:column headerText="Razón social">
-                      <h:outputText value="#{item.razonSocial}"/>
-                    </p:column>   
-                  </p:selectOneMenu>
-                </p:panelGrid>
-                <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                  <p:outputLabel for="referencia" value="Referencia:" styleClass="banco #{kalanAhorrosAccion.ahorro.ikTipoMedioPago eq '1'? 'janal-display-none': ''}"/>
-                  <p:inputText id="referencia" value="#{kalanAhorrosAccion.ahorro.referencia}" styleClass="janal-wid-100-txt banco #{kalanAhorrosAccion.ahorro.ikTipoMedioPago eq '1'? 'janal-display-none': ''}" placeholder="Ej. Referencia 4564">
-                    <p:ajax event="change" listener="#{kalanAhorrosAccion.doUpdateMedios()}" process="@this @(.medios)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh()"/>
-                  </p:inputText>  
-                </p:panelGrid>
-              </p:panelGrid>
               <p:dataTable id="tabla" var="row" value="#{kalanAhorrosAccion.ahorro.cuotas}" paginator="false" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_TOPE_PAGINA}" rowsPerPageTemplate="#{Constantes.REGISTROS_TOPE_PAGINA}" styleClass="janal-wid-100-txt banco limite" rowIndexVar="index" rowKey="#{row.idAhorroPago}">
                 <f:facet name="header">
                   <div class="lg-pantalla">

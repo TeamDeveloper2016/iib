@@ -100,10 +100,16 @@ public class Transaccion extends IBaseCuenta {
           this.ahorro.setSaldo(0D);
           DaoFactory.getInstance().insert(sesion, this.ahorro);
           this.toBitacora(sesion, this.ahorro.getIdAhorroEstatus());
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          if(Objects.equals(this.ahorro.getIdAhorroEstatus(), 2L))
+            this.toControlCuentaCargo(sesion);
           regresar= this.toCuotas(sesion);
           break;
         case MODIFICAR:
           this.toCheckEstatus(sesion, Boolean.FALSE);
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          if(Objects.equals(this.ahorro.getIdAhorroEstatus(), 2L))
+            this.toControlCuentaCargo(sesion);
           regresar= this.toCuotas(sesion);
           break;
 				case ELIMINAR:
@@ -118,9 +124,15 @@ public class Transaccion extends IBaseCuenta {
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.ahorro.setIdAhorroEstatus(this.bitacora.getIdAhorroEstatus());
-            if(Objects.equals(this.ahorro.getIdAhorroEstatus(), 3L) || // TERMINADO
-               Objects.equals(this.ahorro.getIdAhorroEstatus(), 5L))  // CANCELADO
-              this.toCancel(sesion);
+            switch(this.ahorro.getIdAhorroEstatus().intValue()) {
+              case 2: // ACTIVO
+                this.toControlCuentaCargo(sesion);
+                break;
+              case 3: // TERMINADO
+              case 5: // CANCELADO
+                this.toCancel(sesion);
+                break;
+            } // switch
             regresar= DaoFactory.getInstance().update(sesion, this.ahorro)>= 1L;
 					} // if
 					break;
@@ -391,7 +403,8 @@ public class Transaccion extends IBaseCuenta {
 
   private void toDeleteControlCuenta(Session sesion) throws Exception {
     Map<String, Object> params = new HashMap<>();
-    try {      
+    try {  
+      super.control(sesion, this.ahorro, ECuentasOrigenes.AHORROS_INICIA, EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
       params.put("idAhorro", this.ahorro.getIdAhorro());   
       List<Afectacion> items= (List<Afectacion>)DaoFactory.getInstance().toEntitySet(sesion, Afectacion.class, "TcKalanAhorrosPagosDto", "depurar", params);
       if(!Objects.equals(items, null))
@@ -430,6 +443,15 @@ public class Transaccion extends IBaseCuenta {
   private void toControlCuentaPago(Session sesion, Afectacion item) throws Exception {
     try {
       super.control(sesion, item, Objects.equals(item.getIdTipoAfectacion(), ETipoAfectacion.CARGO.getIdTipoAfectacion())? ECuentasOrigenes.AHORROS_CARGOS: ECuentasOrigenes.AHORROS_ABONOS);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+
+  private void toControlCuentaCargo(Session sesion) throws Exception {
+    try {
+      super.control(sesion, this.ahorro, ECuentasOrigenes.AHORROS_INICIA);
     } // try
     catch (Exception e) {
       throw e;

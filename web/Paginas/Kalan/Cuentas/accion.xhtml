@@ -44,19 +44,38 @@
                     <h:outputText value="#{item.titulo}"/>
                   </p:column>   
                 </p:selectOneMenu>
-                <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
-                <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanCuentasAccion.cuenta.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <f:selectItems value="#{kalanCuentasAccion.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
-                  <p:column headerText="Banco" styleClass="janal-wid-30">
-                    <h:outputText value="#{item.banco}"/>
-                  </p:column>   
-                  <p:column headerText="Cuenta" styleClass="janal-wid-20">
-                    <h:outputText value="#{item.cuenta}"/>
-                  </p:column>   
-                  <p:column headerText="Nombre">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                </p:selectOneMenu>
+                <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-50, janal-wid-50">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idEmpresaCuenta" value="Cuentas:"/>
+                    <p:selectOneMenu id="idEmpresaCuenta" value="#{kalanCuentasAccion.cuenta.ikEmpresaCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <f:selectItems value="#{kalanCuentasAccion.attrs.empresaCuentas}" var="element" itemValue="#{element}" itemLabel="#{element.banco} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                      <p:column headerText="Banco" styleClass="janal-wid-30">
+                        <h:outputText value="#{item.banco}"/>
+                      </p:column>   
+                      <p:column headerText="Cuenta" styleClass="janal-wid-20">
+                        <h:outputText value="#{item.cuenta}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
+                    <p:selectOneMenu id="idTipoMedioPago" value="#{kalanCuentasAccion.cuenta.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt medios" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{kalanCuentasAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh()"/>
+                      <f:selectItems value="#{kalanCuentasAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                      <p:column headerText="Clave">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>	
+                  </p:panelGrid>
+                </p:panelGrid>
+                <p:outputLabel for="referencia" value="Referencia:" styleClass="banco #{kalanCuentasAccion.cuenta.ikTipoMedioPago eq '1'? 'janal-display-none': ''}"/>
+                <p:inputText id="referencia" value="#{kalanCuentasAccion.cuenta.referencia}" styleClass="janal-wid-100-txt banco #{kalanCuentasAccion.cuenta.ikTipoMedioPago eq '1'? 'janal-display-none': ''}" placeholder="Ej. Referencia 4564"/>
                 <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-50, janal-wid-50">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
                     <p:outputLabel for="fechaAplicacion" value="Fecha aplicacion:"/>
@@ -79,19 +98,6 @@
                 </p:selectOneMenu>
                 <p:outputLabel for="importe" value="Importe:"/>
                 <p:inputNumber id="importe" value="#{kalanCuentasAccion.cuenta.importe}" styleClass="janal-wid-100-txt" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
-                <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
-                <p:selectOneMenu id="idTipoMedioPago" value="#{kalanCuentasAccion.cuenta.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt medios" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
-                  <p:ajax event="change" listener="#{kalanCuentasAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh()"/>
-                  <f:selectItems value="#{kalanCuentasAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                  <p:column headerText="Clave">
-                    <h:outputText value="#{item.clave}"/>
-                  </p:column>   
-                  <p:column headerText="Nombre">
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>   
-                </p:selectOneMenu>	
-                <p:outputLabel for="referencia" value="Referencia:" styleClass="banco #{kalanCuentasAccion.cuenta.ikTipoMedioPago eq '1'? 'janal-display-none': ''}"/>
-                <p:inputText id="referencia" value="#{kalanCuentasAccion.cuenta.referencia}" styleClass="janal-wid-100-txt banco #{kalanCuentasAccion.cuenta.ikTipoMedioPago eq '1'? 'janal-display-none': ''}" placeholder="Ej. Referencia 4564"/>
               </p:panelGrid>
             </p:tab>						
             <p:tab title="Observaciones">
