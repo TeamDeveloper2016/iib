@@ -97,6 +97,14 @@ where
 order by
   tc_kalan_cuentas_movimientos.id_cuenta_movimiento desc              
       </select>
+      <select id="rows">
+select
+  ifnull(count(*), 0) as movimientos
+from
+  tc_kalan_cuentas_movimientos
+where
+  id_empresa_cuenta= {idEmpresaCuenta}
+      </select>
       <update id="rows">
 update 
   tc_kalan_cuentas_movimientos
@@ -105,6 +113,12 @@ set
 where
   id_cuenta_movimiento in ({cuentas})
       </update>
+      <delete id="rows">
+delete from 
+  tc_kalan_cuentas_movimientos
+where
+  id_empresa_cuenta= {idEmpresaCuenta}
+      </delete>
     </unit>    
     <unit id="TcKalanCuentasEstatusDto">
       <select id="row">
@@ -147,6 +161,16 @@ delete from
   tc_kalan_cuentas_bitacora
 where      
   id_cuenta_movimiento = {idCuentaMovimiento}
+      </delete>
+      <delete id="cuentas">
+delete 
+  tc_kalan_cuentas_bitacora 
+from      
+  tc_kalan_cuentas_bitacora 
+inner join
+  tc_kalan_cuentas_movimientos on tc_kalan_cuentas_bitacora.id_cuenta_movimiento= tc_kalan_cuentas_movimientos.id_cuenta_movimiento
+where      
+  tc_kalan_cuentas_movimientos.id_empresa_cuenta= {idEmpresaCuenta}
       </delete>
     </unit>    
     <unit id="TcKalanAhorrosDto">

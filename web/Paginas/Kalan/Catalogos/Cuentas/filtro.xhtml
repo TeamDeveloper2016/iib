@@ -145,9 +145,9 @@
 							</f:facet>
 						</p:dataTable>
 						<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-							<p:menuitem action="#{kalanCatalogosCuentasFiltro.doAccion('CONSULTAR')}" process="@this tabla" icon="fa fa-search" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-							<p:menuitem action="#{kalanCatalogosCuentasFiltro.doAccion('MODIFICAR')}" process="@this tabla" icon="fa fa-edit" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-							<p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+							<p:menuitem icon="fa fa-search" value="Consultar" action="#{kalanCatalogosCuentasFiltro.doAccion('CONSULTAR')}" process="@this tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+							<p:menuitem icon="fa fa-edit" value="Modificar" action="#{kalanCatalogosCuentasFiltro.doAccion('MODIFICAR')}" process="@this tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
+							<p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>
 						</p:contextMenu>		
 					</div>	
 				</div>
@@ -161,6 +161,8 @@
 	<ui:param name="renderedConfirmacion" value="true"/>	
 	<ui:define name="detalleConfirmacion">
 		<h:panelGrid columns="2">
+			<p:outputLabel value="Empresa: "/>
+			<p:outputLabel value="#{kalanCatalogosCuentasFiltro.attrs.seleccionado.empresa}"/>
 			<p:outputLabel value="Banco: "/>
 			<p:outputLabel value="#{kalanCatalogosCuentasFiltro.attrs.seleccionado.banco}"/>
 			<p:outputLabel value="Nombre: "/>

@@ -1,12 +1,15 @@
 package mx.org.kaana.kalan.catalogos.cuentas.reglas;
 
 import java.io.Serializable;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kalan.catalogos.cuentas.beans.Cuenta;
 import mx.org.kaana.kalan.cuentas.enums.ECuentasOrigenes;
-import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
 import mx.org.kaana.kalan.cuentas.reglas.IBaseCuenta;
+import mx.org.kaana.kalan.db.dto.TcKalanCuentasBitacoraDto;
+import mx.org.kaana.kalan.db.dto.TcKalanCuentasMovimientosDto;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseCuenta implements Serializable {
@@ -17,6 +20,10 @@ public class Transaccion extends IBaseCuenta implements Serializable {
 	private Boolean aperturar;	
 	private String messageError;
 
+	public Transaccion(Cuenta cuenta) {
+    this(cuenta, Boolean.FALSE);
+  }
+  
 	public Transaccion(Cuenta cuenta, Boolean aperturar) {
 		this.cuenta   = cuenta;	
     this.aperturar= aperturar;
@@ -45,11 +52,13 @@ public class Transaccion extends IBaseCuenta implements Serializable {
             this.toControlCuentaCargo(sesion);
 					break;				
 				case ELIMINAR:
-					regresar= DaoFactory.getInstance().delete(sesion, this.cuenta)>= 1L;
-          if(regresar) {
-            this.toControlCuentaCargo(sesion);
-            this.cuenta.setIdEstatusCuenta(EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
-          } // if  
+          if(this.toCheckCuenta(sesion)) {
+					  DaoFactory.getInstance().deleteAll(sesion, TcKalanCuentasBitacoraDto.class, "cuentas", this.cuenta.toMap());
+					  DaoFactory.getInstance().deleteAll(sesion, TcKalanCuentasMovimientosDto.class, this.cuenta.toMap());
+					  regresar= DaoFactory.getInstance().delete(sesion, this.cuenta)>= 1L;
+          } // if
+          else 
+            throw new Exception("NO SE PUEDE ELIMINAR LA CUENTA, EXISTEN MOVIMIENTOS ASOCIADOS");
 					break;
 			} // switch
 			if(!regresar)
@@ -74,5 +83,18 @@ public class Transaccion extends IBaseCuenta implements Serializable {
       throw e;
     } // catch	
   }
-    
+ 
+  private Boolean toCheckCuenta(Session sesion) throws Exception {
+    Boolean regresar= Boolean.TRUE;
+    try {
+      Entity row= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcKalanCuentasMovimientosDto", "rows", this.cuenta.toMap());
+      if(!Objects.equals(row, null) && !row.isEmpty())
+        regresar= row.toLong("movimientos")<= 1L;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    return regresar;
+  }
+  
 }

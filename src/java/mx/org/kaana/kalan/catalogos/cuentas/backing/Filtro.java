@@ -17,13 +17,13 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kalan.catalogos.cuentas.beans.Cuenta;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.kalan.catalogos.clasificaciones.reglas.Transaccion;
-import mx.org.kaana.kalan.db.dto.TcKalanGastosClasificacionesDto;
+import mx.org.kaana.kalan.catalogos.cuentas.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -122,11 +122,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion  
 	
   public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
+		Transaccion transaccion= null;
+		Entity seleccionado    = (Entity) this.attrs.get("seleccionado");
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion(new TcKalanGastosClasificacionesDto(seleccionado.getKey()));
+			transaccion= new Transaccion(new Cuenta(seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La cuenta se eliminó correctamente", ETipoMensaje.ERROR);
 			else
