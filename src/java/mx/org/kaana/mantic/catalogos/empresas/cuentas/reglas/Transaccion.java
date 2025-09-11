@@ -291,7 +291,7 @@ public class Transaccion extends IBaseTnx {
 									DaoFactory.getInstance().update(sesion, item     );
 								} // if
 							} // else
-							pagoPivote= new TcManticEmpresasPagosDto(1L, JsfBase.getIdUsuario(), this.pago.getIdEmpresaDeuda(), this.pago.getObservaciones(), -1L, totalPago, null,  null, null, item     .getIdNotaEntrada(), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
+							pagoPivote= new TcManticEmpresasPagosDto(1L, JsfBase.getIdUsuario(), this.pago.getIdEmpresaDeuda(), this.pago.getObservaciones(), -1L, totalPago, null,  null, null, item     .getIdNotaEntrada(), null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null);
 							DaoFactory.getInstance().insert(sesion, pagoPivote);
 						} // if
 					} // if
@@ -335,7 +335,7 @@ public class Transaccion extends IBaseTnx {
 									DaoFactory.getInstance().update(sesion, creditoNota);
 								} // if
 							} // else
-							pagoPivote= new TcManticEmpresasPagosDto(1L, JsfBase.getIdUsuario(), this.pago.getIdEmpresaDeuda(), this.pago.getObservaciones(), -1L, totalPago, notaCredito.getKey(),  null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
+							pagoPivote= new TcManticEmpresasPagosDto(1L, JsfBase.getIdUsuario(), this.pago.getIdEmpresaDeuda(), this.pago.getObservaciones(), -1L, totalPago, notaCredito.getKey(),  null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null);
 							DaoFactory.getInstance().insert(sesion, pagoPivote);
 						} // if
 					} // if

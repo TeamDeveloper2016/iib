@@ -14,10 +14,14 @@
 				'contenedorGrupos\\:idBanco' : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:cuenta'  : {validaciones: 'requerido|entero', mascara: 'libre'},
 				'contenedorGrupos\\:nombre'  : {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'contenedorGrupos\\:idActivo': {validaciones: 'requerido', mascara: 'libre'}				
+				'contenedorGrupos\\:idActivo': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:importe' : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'}				
 			};						
 			
-			$(document).ready(function(){janal.readingMode('#{kalanCatalogosCuentasAccion.attrs.nombreAccion}');});
+			$(document).ready(function(){
+        janal.readingMode('#{kalanCatalogosCuentasAccion.attrs.nombreAccion}');
+        reload();
+      });
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -27,6 +31,16 @@
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
 							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
+                <p:outputLabel for="idEmpresa" value="Sucursal:"/>
+                <p:selectOneMenu id="idEmpresa" value="#{kalanCatalogosCuentasAccion.cuenta.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                  <f:selectItems value="#{kalanCatalogosCuentasAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{empty element.nombre or element.nombre eq ''? '': '|'} #{element.nombre}"/>
+                  <p:column headerText="Siglas" styleClass="janal-wid-30">
+                    <h:outputText value="#{item.nombre}"/>
+                  </p:column>   
+                  <p:column headerText="Nombre">
+                    <h:outputText value="#{item.titulo}"/>
+                  </p:column>   
+                </p:selectOneMenu>
                 <p:outputLabel for="idBanco" value="Banco:"/>
                 <p:selectOneMenu id="idBanco" value="#{kalanCatalogosCuentasAccion.cuenta.idBanco}" converter="javax.faces.Long" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
                   <f:selectItems value="#{kalanCatalogosCuentasAccion.attrs.bancos}"/>
@@ -40,7 +54,15 @@
 		  						<f:selectItem itemLabel="SI" itemValue="1"/>
 			  					<f:selectItem itemLabel="NO" itemValue="2"/>
 				  			</p:selectOneMenu>								
+                <p:separator/>
+                <p:selectBooleanCheckbox itemLabel="#{kalanCatalogosCuentasAccion.attrs.titulo}" value="#{kalanCatalogosCuentasAccion.attrs.aperturar}">
+                  <p:ajax event="change" listener="#{kalanCatalogosCuentasAccion.doCheckImporte}" process="@this" update="@(.aperturar)" oncomplete="janal.refresh()"/>
+                </p:selectBooleanCheckbox>  
+                <p:outputLabel for="importe" value="Importe:" styleClass="aperturar #{kalanCatalogosCuentasAccion.attrs.aperturar? '': 'janal-display-none'}"/>
+                <p:inputNumber id="importe" value="#{kalanCatalogosCuentasAccion.cuenta.importe}" styleClass="janal-wid-100-txt aperturar #{kalanCatalogosCuentasAccion.attrs.aperturar? '': 'janal-display-none'}" inputStyleClass="janal-column-right" minValue="0" decimalPlaces="2" decimalSeparator="." thousandSeparator="," converter="javax.faces.Double"/>
+                <p:outputLabel value="#{kalanCatalogosCuentasAccion.attrs.aperturo}" styleClass="janal-column-center janal-color-blue aperturar" rendered="#{not empty(kalanCatalogosCuentasAccion.attrs.aperturo)}"/>
               </p:panelGrid>
+              <p:remoteCommand name="reload" process="@this" update="@(.aperturar)" oncomplete="janal.refresh()"/>
 						</p:tab>						            						            																																																
 					</p:tabView>
 				</div>

@@ -69,17 +69,19 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
   private String comentarios;
 	@Column (name="id_empresa_pago_control")
   private Long idEmpresaPagoControl;
+	@Column (name="fecha_aplicacion")
+  private Date fechaAplicacion;
 	
   public TcManticEmpresasPagosDto() {
     this(new Long(-1L));
   }
 
   public TcManticEmpresasPagosDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
+    this(null, null, null, null, new Long(-1L), null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null);
     setKey(key);
   }
 
-  public TcManticEmpresasPagosDto(Long idTipoMedioPago, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresaPago, Double pago, Long idCreditoNota, Long idBanco, String referencia, Long idNotaEntrada, Long idCierre, Date fechaPago, String comentarios, Long idEmpresaPagoControl) {
+  public TcManticEmpresasPagosDto(Long idTipoMedioPago, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresaPago, Double pago, Long idCreditoNota, Long idBanco, String referencia, Long idNotaEntrada, Long idCierre, Date fechaPago, String comentarios, Long idEmpresaPagoControl, Date fechaAplicacion) {
 		this(idTipoMedioPago, idUsuario, idEmpresaDeuda, observaciones, idEmpresaPago, pago, idCreditoNota, idBanco, referencia, idNotaEntrada, idCierre, null, null, null, fechaPago, comentarios, idEmpresaPagoControl);
 	}
 	
@@ -102,6 +104,7 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
     this.fechaPago= fechaPago;
     this.comentarios= comentarios;
     this.idEmpresaPagoControl= idEmpresaPagoControl;
+    setFechaAplicacion(fechaAplicacion);
   }
 	
   public void setIdTipoMedioPago(Long idTipoMedioPago) {
@@ -255,6 +258,14 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
   public void setIdEmpresaPagoControl(Long idEmpresaPagoControl) {
     this.idEmpresaPagoControl = idEmpresaPagoControl;
   }
+
+  public Date getFechaAplicacion() {
+    return fechaAplicacion;
+  }
+
+  public void setFechaAplicacion(Date fechaAplicacion) {
+    this.fechaAplicacion = fechaAplicacion;
+  }
 	
   @Transient
   @Override
@@ -308,6 +319,8 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
 		regresar.append(getComentarios());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresaPagoControl());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaAplicacion());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -334,13 +347,14 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
 		regresar.put("fechaPago", getFechaPago());
 		regresar.put("comentarios", getComentarios());
 		regresar.put("idEmpresaPagoControl", getIdEmpresaPagoControl());
+		regresar.put("fechaAplicacion", getFechaAplicacion());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-			getIdTipoMedioPago(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresaPago(), getPago(), getIdCreditoNota(), getIdNotaEntrada(), getIdBanco(), getReferencia(), getRegistro(), getIdCierre(), getIdEgreso(), getConsecutivo(), getOrden(), getEjercicio(), getFechaPago(), getComentarios(), getIdEmpresaPagoControl()
+    Object[] regresar = new Object[] {
+			getIdTipoMedioPago(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresaPago(), getPago(), getIdCreditoNota(), getIdNotaEntrada(), getIdBanco(), getReferencia(), getRegistro(), getIdCierre(), getIdEgreso(), getConsecutivo(), getOrden(), getEjercicio(), getFechaPago(), getComentarios(), getIdEmpresaPagoControl(), getFechaAplicacion()
     };
     return regresar;
   }

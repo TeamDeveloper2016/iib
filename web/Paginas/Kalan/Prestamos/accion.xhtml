@@ -98,7 +98,7 @@
                 <p:inputText id="nombre" value="#{kalanPrestamosAccion.prestamo.nombre}" styleClass="janal-wid-100-txt"/>
                 <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100-txt" columnClasses="janal-wid-50, janal-wid-50">
                   <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
-                    <p:outputLabel for="fechaAplicacion" value="Fecha aplicacion:"/>
+                    <p:outputLabel for="fechaAplicacion" value="Fecha aplicación:"/>
                     <p:calendar id="fechaAplicacion" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanPrestamosAccion.prestamo.fechaAplicacion}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario">
                       <p:ajax event="dateSelect" listener="#{kalanPrestamosAccion.doUpdateLimite()}" process="@this plazo limite" update="limite"/>
                     </p:calendar>  

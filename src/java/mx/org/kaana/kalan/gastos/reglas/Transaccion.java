@@ -1,5 +1,6 @@
 package mx.org.kaana.kalan.gastos.reglas;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -12,6 +13,8 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
+import mx.org.kaana.kalan.cuentas.enums.ECuentasOrigenes;
+import mx.org.kaana.kalan.cuentas.reglas.IBaseCuenta;
 import mx.org.kaana.kalan.db.dto.TcKalanEmpresasControlesDto;
 import mx.org.kaana.kalan.db.dto.TcKalanEmpresasGastosDto;
 import mx.org.kaana.kalan.db.dto.TcKalanGastosBitacoraDto;
@@ -23,7 +26,9 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends IBaseCuenta implements Serializable {
+
+  private static final long serialVersionUID = 1850636643676316740L;
 
 	private Gasto gasto;	
   private TcKalanGastosBitacoraDto bitacora;  
@@ -44,7 +49,7 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
+		boolean regresar          = Boolean.FALSE;
     Map<String, Object> params= new HashMap<>();
 		try {
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registrar el gasto");
@@ -76,6 +81,9 @@ public class Transaccion extends IBaseTnx {
             this.gasto.getIdEmpresaGasto() // Long idEmpresaGasto
           );
           regresar= DaoFactory.getInstance().insert(sesion, this.bitacora)> 0L;
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L))
+            this.toControlCuentaCargo(sesion);
 					break;
 				case MODIFICAR:
           if(Objects.equals(this.gasto.getIdActivoProrratear(), 1L)) 
@@ -277,5 +285,14 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toSiguiente  
+ 
+  private void toControlCuentaCargo(Session sesion) throws Exception {
+    try {
+      // super.control(sesion, this.gasto, ECuentasOrigenes.GASTOS_CARGO);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
   
 }

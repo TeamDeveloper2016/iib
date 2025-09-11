@@ -209,7 +209,14 @@
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>	      
-						<p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+            <p:column styleClass="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}" exportable="false">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
+              <i class="fa fa-fw fa-comments janal-icons-message #{empty(row['observaciones']) or row['observaciones'] eq ''? 'janal-display-none': ''}" title="Observaciones: #{row['observaciones']}"></i>
+            </p:column>														
+						<p:column styleClass="MarAuto Responsive janal-display-none janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>

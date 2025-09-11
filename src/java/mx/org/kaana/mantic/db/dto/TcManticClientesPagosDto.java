@@ -63,21 +63,23 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
   private Date fechaPago;
 	@Column (name="id_cliente_pago_control")
   private Long idClientePagoControl;
+	@Column (name="fecha_aplicacion")
+  private Date fechaAplicacion;
 
   public TcManticClientesPagosDto() {
     this(new Long(-1L));
   }
 
   public TcManticClientesPagosDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, null, null);
+    this(null, null, null, new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia) {
-		this(idUsuario, idClienteDeuda, observaciones, idClientePago, pago, idTipoMedioPago, idCierre, idBanco, referencia, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
+  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia, Date fechaAplicacion) {
+		this(idUsuario, idClienteDeuda, observaciones, idClientePago, pago, idTipoMedioPago, idCierre, idBanco, referencia, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
 	}
 	
-  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia, String consecutivo, Long orden, Long ejercicio, String comentarios, Date fechaPago, Long idClientePagoControl) {
+  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre, Long idBanco, String referencia, String consecutivo, Long orden, Long ejercicio, String comentarios, Date fechaPago, Long idClientePagoControl, Date fechaAplicacion) {
     setIdUsuario(idUsuario);
     setIdClienteDeuda(idClienteDeuda);
     setObservaciones(observaciones);
@@ -94,6 +96,7 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
     this.comentarios= comentarios;
     this.fechaPago= fechaPago;
     this.idClientePagoControl= idClientePagoControl;
+    setFechaAplicacion(fechaAplicacion);
   }
 
 	public Long getIdBanco() {
@@ -223,6 +226,14 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
   public Long getIdClientePagoControl() {
     return idClientePagoControl;
   }
+
+  public Date getFechaAplicacion() {
+    return fechaAplicacion;
+  }
+
+  public void setFechaAplicacion(Date fechaAplicacion) {
+    this.fechaAplicacion = fechaAplicacion;
+  }
 	
   @Transient
   @Override
@@ -270,6 +281,8 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.append(getFechaPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdClientePagoControl());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaAplicacion());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -293,13 +306,14 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.put("comentarios", getComentarios());
 		regresar.put("fechaPago", getFechaPago());
 		regresar.put("idClientePagoControl", getIdClientePagoControl());
+		regresar.put("fechaAplicacion", getFechaAplicacion());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] { 
-			getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago(), getIdCierre(), getIdBanco(), getReferencia(), getConsecutivo(), getOrden(), getEjercicio(), getComentarios(), getFechaPago(), getIdClientePagoControl()
+			getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago(), getIdCierre(), getIdBanco(), getReferencia(), getConsecutivo(), getOrden(), getEjercicio(), getComentarios(), getFechaPago(), getIdClientePagoControl(), getFechaAplicacion()
     };
     return regresar;
   }

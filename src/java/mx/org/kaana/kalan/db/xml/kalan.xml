@@ -94,6 +94,8 @@ from
 where 
   id_cuenta_origen= {idCuentaOrigen}           
   and id_pivote= {idPivote}
+order by
+  tc_kalan_cuentas_movimientos.id_cuenta_movimiento desc              
       </select>
       <update id="rows">
 update 
@@ -959,6 +961,15 @@ from
   tc_kalan_empresas_cuentas
 where      
   cuenta = '{cuenta}' and id_empresa = {idEmpresa} and id_banco = {idBanco}
+      </select>
+      <select id="igual">
+select      
+  tc_kalan_empresas_cuentas.id_empresa_cuenta as id_key,
+  tc_kalan_empresas_cuentas.*
+from      
+  tc_kalan_empresas_cuentas
+where      
+  id_empresa_cuenta= {idEmpresaCuenta}
       </select>
       <select id="cuentas">
 select     

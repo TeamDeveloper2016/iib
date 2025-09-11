@@ -5,10 +5,13 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import mx.org.kaana.kalan.cuentas.beans.ICuenta;
+import mx.org.kaana.kalan.cuentas.enums.ETipoAfectacion;
 import mx.org.kaana.kalan.db.dto.TcKalanEmpresasGastosDto;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 
 /**
  *@company KAANA
@@ -18,7 +21,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Gasto extends TcKalanEmpresasGastosDto implements Serializable {
+public class Gasto extends TcKalanEmpresasGastosDto implements ICuenta, Serializable {
 
   private static final long serialVersionUID = 2117388011559360170L;
   
@@ -152,6 +155,25 @@ public class Gasto extends TcKalanEmpresasGastosDto implements Serializable {
   public Class toHbmClass() {
     return TcKalanEmpresasGastosDto.class;
   }
-  
+
+  @Override
+  public Long getIdTipoAfectacion() {
+    return ETipoAfectacion.CARGO.getIdTipoAfectacion();
+  }
+
+  @Override
+  public Long getIdTipoMedioPago() {
+    return ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago();
+  }
+
+  @Override
+  public Date getFechaPago() {
+    return this.getFechaReferencia();
+  }
+
+  @Override
+  public Long getIdCuentaEstatus() {
+    return this.getIdGastoEstatus();
+  }
   
 }

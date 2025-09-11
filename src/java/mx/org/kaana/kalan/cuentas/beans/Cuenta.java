@@ -50,7 +50,6 @@ public class Cuenta extends TcKalanCuentasMovimientosDto implements ICuenta, Ser
     this.setIkTipoMedioPago(new UISelectEntity(idTipoMedioPago));
   }
   
-  
   public UISelectEntity getIkEmpresa() {
     return ikEmpresa;
   }

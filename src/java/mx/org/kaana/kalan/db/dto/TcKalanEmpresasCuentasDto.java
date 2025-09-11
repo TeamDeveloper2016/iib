@@ -46,6 +46,10 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
   private Long idBanco;
   @Column (name="id_activo")
   private Long idActivo;
+  @Column (name="es_banca")
+  private Long esBanca;
+  @Column (name="importe")
+  private Double importe;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -54,11 +58,11 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
   }
 
   public TcKalanEmpresasCuentasDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, 1L);
+    this(new Long(-1L), null, null, null, null, null, null, 1L, 0D, 1L);
     setKey(key);
   }
 
-  public TcKalanEmpresasCuentasDto(Long idEmpresaCuenta, Long idUsuario, String cuenta, Long idPrincipal, Long idEmpresa, String nombre, Long idBanco, Long idActivo) {
+  public TcKalanEmpresasCuentasDto(Long idEmpresaCuenta, Long idUsuario, String cuenta, Long idPrincipal, Long idEmpresa, String nombre, Long idBanco, Long idActivo, Double importe, Long esBanca) {
     setIdEmpresaCuenta(idEmpresaCuenta);
     setIdUsuario(idUsuario);
     setCuenta(cuenta);
@@ -67,6 +71,8 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
     setNombre(nombre);
     setIdBanco(idBanco);
     setIdActivo(idActivo);
+    setEsBanca(esBanca);
+    setImporte(importe);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -134,6 +140,22 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
     this.idActivo = idActivo;
   }
 
+  public Long getEsBanca() {
+    return esBanca;
+  }
+
+  public void setEsBanca(Long esBanca) {
+    this.esBanca = esBanca;
+  }
+
+  public Double getImporte() {
+    return importe;
+  }
+
+  public void setImporte(Double importe) {
+    this.importe = importe;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -173,6 +195,8 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdActivo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImporte());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -189,14 +213,16 @@ public class TcKalanEmpresasCuentasDto implements IBaseDto, Serializable {
 		regresar.put("nombre", getNombre());
 		regresar.put("idBanco", getIdBanco());
 		regresar.put("idActivo", getIdActivo());
+		regresar.put("esBanca", getEsBanca());
+		regresar.put("importe", getImporte());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-      getIdEmpresaCuenta(), getIdUsuario(), getCuenta(), getIdPrincipal(), getIdEmpresa(), getNombre(), getIdBanco(), getIdActivo(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdEmpresaCuenta(), getIdUsuario(), getCuenta(), getIdPrincipal(), getIdEmpresa(), getNombre(), getIdBanco(), getIdActivo(), getEsBanca(), getImporte(), getRegistro()
     };
     return regresar;
   }
