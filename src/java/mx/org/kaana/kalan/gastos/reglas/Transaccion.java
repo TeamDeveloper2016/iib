@@ -75,7 +75,7 @@ public class Transaccion extends IBaseCuenta implements Serializable {
 					this.parcialidades(sesion);
           this.toBitacora(sesion);
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
-          if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L) && Objects.equals(this.gasto.getIdActivoProrratear(), 1L)) 
+          if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L) && Objects.equals(this.gasto.getIdActivoProrratear(), 2L)) 
             this.toControlCuentaCargo(sesion);
 					break;
 				case MODIFICAR:
@@ -98,7 +98,7 @@ public class Transaccion extends IBaseCuenta implements Serializable {
 					this.parcialidades(sesion);
           this.toBitacora(sesion);
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
-          if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L))
+          if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L) && Objects.equals(this.gasto.getIdActivoProrratear(), 2L))
             this.toControlCuentaCargo(sesion);
 					break;				
 				case ELIMINAR:
@@ -186,7 +186,7 @@ public class Transaccion extends IBaseCuenta implements Serializable {
     TcKalanEmpresasControlesDto control= null;
     int count                 = 1;
     try {
-      if(!Objects.equals(this.gasto.getParcialidades(), null)) {
+      if(!Objects.equals(this.gasto.getParcialidades(), null) && !this.gasto.getParcialidades().isEmpty()) {
         for (Parcialidad item: this.gasto.getParcialidades()) {
           item.setIdUsuario(JsfBase.getIdUsuario());
           item.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -341,7 +341,7 @@ public class Transaccion extends IBaseCuenta implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {      
       params.put("idEmpresaGasto", this.gasto.getIdEmpresaGasto());   
-      List<Parcialidad> items= (List<Parcialidad>)DaoFactory.getInstance().toEntitySet(sesion, Parcialidad.class, "TcKalanEmpresasGastosDto", "igual", params);
+      List<Parcialidad> items= (List<Parcialidad>)DaoFactory.getInstance().toEntitySet(sesion, Parcialidad.class, "TcKalanEmpresasGastosDto", "iguales", params);
       for (Parcialidad item: items) 
         this.toControlCuentaDeletePago(sesion, item);
     } // try
@@ -369,7 +369,7 @@ public class Transaccion extends IBaseCuenta implements Serializable {
 			params.put("idEmpresaGasto", this.gasto.getIdEmpresaGasto());
       // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
       super.control(sesion, this.gasto, ECuentasOrigenes.GASTOS_CARGO, EEstatusCuentas.CANCELADO.getIdEstatusCuenta());
-      List<Parcialidad> items= (List<Parcialidad>)DaoFactory.getInstance().toEntitySet(sesion, Parcialidad.class, "TcKalanEmpresasGastosDto", "igual", params);
+      List<Parcialidad> items= (List<Parcialidad>)DaoFactory.getInstance().toEntitySet(sesion, Parcialidad.class, "TcKalanEmpresasGastosDto", "iguales", params);
       if(!Objects.equals(items, null))
         for (Parcialidad item: items) 
           super.control(sesion, item, ECuentasOrigenes.GASTOS_CARGO, EEstatusCuentas.CANCELADO.getIdEstatusCuenta());

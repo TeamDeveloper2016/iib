@@ -442,7 +442,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doUpdateMedios() {
     try {      
-      this.gasto.setCheque(!Objects.equals(this.gasto.getIdTipoMedioPago(), 1L));
+      this.gasto.setCheque(Objects.equals(this.gasto.getIdTipoMedioPago(), 2L));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
