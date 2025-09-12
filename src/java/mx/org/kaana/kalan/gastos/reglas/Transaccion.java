@@ -11,9 +11,9 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.kajool.reglas.beans.Siguiente;
 import mx.org.kaana.kalan.cuentas.enums.ECuentasOrigenes;
+import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
 import mx.org.kaana.kalan.cuentas.reglas.IBaseCuenta;
 import mx.org.kaana.kalan.db.dto.TcKalanEmpresasControlesDto;
 import mx.org.kaana.kalan.db.dto.TcKalanEmpresasGastosDto;
@@ -73,16 +73,9 @@ public class Transaccion extends IBaseCuenta implements Serializable {
             regresar= DaoFactory.getInstance().insert(sesion, this.gasto.getDocumento())> 0L;
           } // if  
 					this.parcialidades(sesion);
-          this.bitacora= new TcKalanGastosBitacoraDto(
-            JsfBase.getIdUsuario(), // Long idUsuario, 
-            -1L, // Long idGastoBitacora, 
-            null, // String observaciones, 
-            this.gasto.getIdGastoEstatus(), // Long idGastoEstatus, 
-            this.gasto.getIdEmpresaGasto() // Long idEmpresaGasto
-          );
-          regresar= DaoFactory.getInstance().insert(sesion, this.bitacora)> 0L;
+          this.toBitacora(sesion);
           // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
-          if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L))
+          if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L) && Objects.equals(this.gasto.getIdActivoProrratear(), 1L)) 
             this.toControlCuentaCargo(sesion);
 					break;
 				case MODIFICAR:
@@ -103,18 +96,16 @@ public class Transaccion extends IBaseCuenta implements Serializable {
           else
             DaoFactory.getInstance().delete(sesion, this.gasto.getDocumento());
 					this.parcialidades(sesion);
-          this.bitacora= new TcKalanGastosBitacoraDto(
-            JsfBase.getIdUsuario(), // Long idUsuario, 
-            -1L, // Long idGastoBitacora, 
-            null, // String observaciones, 
-            this.gasto.getIdGastoEstatus(), // Long idGastoEstatus, 
-            this.gasto.getIdEmpresaGasto() // Long idEmpresaGasto
-          );
-          regresar= DaoFactory.getInstance().insert(sesion, this.bitacora)> 0L;
+          this.toBitacora(sesion);
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L))
+            this.toControlCuentaCargo(sesion);
 					break;				
 				case ELIMINAR:
           params.put("idEmpresaGasto", this.gasto.getIdEmpresaGasto());
           DaoFactory.getInstance().deleteAll(sesion, TcKalanGastosBitacoraDto.class, params);
+          // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+          this.toDeleteControlCuenta(sesion);
 					this.clean(sesion);
           DaoFactory.getInstance().delete(sesion, this.gasto.getDocumento());
           regresar= DaoFactory.getInstance().delete(sesion, this.gasto)> 0L;
@@ -149,6 +140,8 @@ public class Transaccion extends IBaseCuenta implements Serializable {
             if(Objects.equals(this.gasto.getIdGastoComprobante(), -1L))
               this.gasto.setIdGastoComprobante(null);
             regresar= DaoFactory.getInstance().update(sesion, this.gasto)>= 1L;
+            if(Objects.equals(this.gasto.getIdGastoEstatus(), 3L))  // CANCELADO
+              this.toCancel(sesion);
 					} // if
 					break;
 			} // switch
@@ -169,6 +162,24 @@ public class Transaccion extends IBaseCuenta implements Serializable {
 		return regresar;
 	}	
 	
+  private Boolean toBitacora(Session sesion) throws Exception {
+    Boolean regresar= Boolean.TRUE;
+    try {
+      this.bitacora= new TcKalanGastosBitacoraDto(
+        JsfBase.getIdUsuario(), // Long idUsuario, 
+        -1L, // Long idGastoBitacora, 
+        null, // String observaciones, 
+        this.gasto.getIdGastoEstatus(), // Long idGastoEstatus, 
+        this.gasto.getIdEmpresaGasto() // Long idEmpresaGasto
+      );
+      regresar= DaoFactory.getInstance().insert(sesion, this.bitacora)> 0L;
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		  
+    return regresar;
+  }
+  
   private Boolean parcialidades(Session sesion) throws Exception {
     Boolean regresar          = Boolean.TRUE;
     Map<String, Object> params= new HashMap<>();
@@ -196,12 +207,18 @@ public class Transaccion extends IBaseCuenta implements Serializable {
               item.setIdActivoProrratear(2L);
               item.setIdFuente(2L);
               regresar= DaoFactory.getInstance().update(sesion, item)> 0L;
+              // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+              if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L)) 
+                this.toControlCuentaCargoPago(sesion, item);
               break;
             case DELETE:
               params.put("idEmpresaGasto", this.gasto.getIdEmpresaGasto());
               params.put("idGastoControl", item.getIdEmpresaGasto());
               DaoFactory.getInstance().deleteAll(sesion, TcKalanEmpresasControlesDto.class, "control", params);
               regresar= DaoFactory.getInstance().delete(sesion, item)> 0L;
+              // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+              if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L)) 
+                this.toControlCuentaDeletePago(sesion, item);
               break;
             case INSERT:
               Siguiente consecutivo= this.toSiguiente(sesion);	
@@ -228,6 +245,9 @@ public class Transaccion extends IBaseCuenta implements Serializable {
                 -1L // Long idEmpresaControl
               );
               regresar= DaoFactory.getInstance().insert(sesion, control)> 0L;
+              // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+              if(Objects.equals(this.gasto.getIdGastoEstatus(), 2L)) 
+                this.toControlCuentaCargoPago(sesion, item);
               break;
           } // switch
           count++;
@@ -284,15 +304,83 @@ public class Transaccion extends IBaseCuenta implements Serializable {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toSiguiente  
+	} 
  
   private void toControlCuentaCargo(Session sesion) throws Exception {
+    String referencia= this.gasto.getReferencia();
     try {
-      // super.control(sesion, this.gasto, ECuentasOrigenes.GASTOS_CARGO);
+      this.gasto.setReferencia(this.gasto.getConcepto());
+      super.control(sesion, this.gasto, ECuentasOrigenes.GASTOS_CARGO);
+      this.gasto.setReferencia(referencia);
     } // try
     catch (Exception e) {
       throw e;
     } // catch	
+  }
+
+  private void toControlCuentaCargoPago(Session sesion, Parcialidad item) throws Exception {
+    try {
+      super.control(sesion, item, ECuentasOrigenes.GASTOS_CARGO);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
+  private void toDeleteControlCuenta(Session sesion) throws Exception {
+    try {      
+      super.control(sesion, this.gasto, ECuentasOrigenes.GASTOS_CARGO, EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
+      this.toControlCuentaDelete(sesion);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
+  private void toControlCuentaDelete(Session sesion) throws Exception {
+    Map<String, Object> params= new HashMap<>();
+    try {      
+      params.put("idEmpresaGasto", this.gasto.getIdEmpresaGasto());   
+      List<Parcialidad> items= (List<Parcialidad>)DaoFactory.getInstance().toEntitySet(sesion, Parcialidad.class, "TcKalanEmpresasGastosDto", "igual", params);
+      for (Parcialidad item: items) 
+        this.toControlCuentaDeletePago(sesion, item);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+    finally {
+      Methods.clean(params);
+    } // finally
+  }
+  
+  private void toControlCuentaDeletePago(Session sesion, Parcialidad item) throws Exception {
+    try {      
+      super.control(sesion, item, ECuentasOrigenes.GASTOS_CARGO, EEstatusCuentas.ELIMINADO.getIdEstatusCuenta());
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch	
+  }
+  
+  private Boolean toCancel(Session sesion) throws Exception {
+		Boolean regresar          = Boolean.FALSE;
+		Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("idEmpresaGasto", this.gasto.getIdEmpresaGasto());
+      // QUEDA PENDIENTE ACTUALIZAR LA CUENTA DE BANCO
+      super.control(sesion, this.gasto, ECuentasOrigenes.GASTOS_CARGO, EEstatusCuentas.CANCELADO.getIdEstatusCuenta());
+      List<Parcialidad> items= (List<Parcialidad>)DaoFactory.getInstance().toEntitySet(sesion, Parcialidad.class, "TcKalanEmpresasGastosDto", "igual", params);
+      if(!Objects.equals(items, null))
+        for (Parcialidad item: items) 
+          super.control(sesion, item, ECuentasOrigenes.GASTOS_CARGO, EEstatusCuentas.CANCELADO.getIdEstatusCuenta());
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
   }
   
 }

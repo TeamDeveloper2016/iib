@@ -49,13 +49,14 @@ public class AdminGasto implements Serializable {
         params.put("idEmpresaGasto", this.idEmpresaGasto);      
         regresar = (Gasto)DaoFactory.getInstance().toEntity(Gasto.class, "TcKalanEmpresasGastosDto", "igual", params);
         if(regresar!= null) {
+          regresar.setIkTipoMedioPago(new UISelectEntity(regresar.getIdTipoMedioPago()));
           params.put("idProveedor", regresar.getIdProveedor());
           proveedor= (Entity)DaoFactory.getInstance().toEntity("TcManticProveedoresDto", "igual", params);
           if(Objects.equals(proveedor, null))
-            regresar.setIkProveedor(new UISelectEntity(new Entity(-1L)));
+            regresar.setIkProveedor(new UISelectEntity(-1L));
           else
             regresar.setIkProveedor(new UISelectEntity(proveedor));
-          if(Objects.equals(regresar.getIdActivoCheque(), 1L)) {
+          if(!Objects.equals(regresar.getIdTipoMedioPago(), 1L) || Objects.equals(regresar.getIdActivoCheque(), 1L)) {
             Cheque documento= (Cheque)DaoFactory.getInstance().toEntity(Cheque.class, "TcKalanEmpresasChequesDto", "cheques", params);
             if(documento!= null) {
               if(Objects.equals(documento.getIdActivoProveedor(), 1L)) {
@@ -93,7 +94,7 @@ public class AdminGasto implements Serializable {
     } // finally
     return regresar;
   }
-
+  
   public Gasto toGasto() {
     Gasto regresar            = null; 
     Map<String, Object> params= new HashMap<>();
@@ -118,5 +119,5 @@ public class AdminGasto implements Serializable {
     } // finally
     return regresar;
   }
-  
+
 }

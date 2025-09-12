@@ -75,6 +75,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idEmpresaGasto", JsfBase.getFlashAttribute("idEmpresaGasto")== null? -1L: JsfBase.getFlashAttribute("idEmpresaGasto"));
       this.attrs.put("idEmpresaGastoProcess", JsfBase.getFlashAttribute("idEmpresaGastoProcess"));
       this.attrs.put("total", 0D);
+      this.toLoadTiposMediosPagos();
 			this.doLoad();
       this.toLoadEmpresas();
       this.toLoadClasificaciones();
@@ -93,6 +94,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch(this.accion) {
         case AGREGAR:
           this.gasto= admin.getGasto();
+          if(!Objects.equals(this.attrs.get("tiposMediosPagos"), null))
+            this.gasto.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
+          this.gasto.setIdUsuario(JsfBase.getIdUsuario());
           break;
         case MODIFICAR:
         case CONSULTAR:
@@ -327,10 +331,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     return Fecha.formatear(Fecha.FECHA_CORTA, fecha);
   }
   
-  public void doCheque() {
-    
-  }
- 
   public void doProrratear() {
     if(this.gasto.getProrratear() && Objects.equals(this.gasto.getPagos(), 0L))
       this.gasto.setPagos(12L);
@@ -425,6 +425,29 @@ public class Accion extends IBaseAttribute implements Serializable {
  
   public char getGroupProveedor(UISelectEntity item) {
     return item.toString("rfc").charAt(0);
+  }  
+ 
+	private void toLoadTiposMediosPagos() {
+		List<UISelectEntity> tiposMediosPagos= null;
+		Map<String, Object>params            = new HashMap<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja= 1");
+			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} 
+
+  public void doUpdateMedios() {
+    try {      
+      this.gasto.setCheque(!Objects.equals(this.gasto.getIdTipoMedioPago(), 1L));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
   }  
   
 }

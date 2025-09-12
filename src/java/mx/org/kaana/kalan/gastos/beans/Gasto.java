@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mx.org.kaana.kalan.cuentas.beans.ICuenta;
+import mx.org.kaana.kalan.cuentas.enums.ECuentasOrigenes;
+import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
 import mx.org.kaana.kalan.cuentas.enums.ETipoAfectacion;
 import mx.org.kaana.kalan.db.dto.TcKalanEmpresasGastosDto;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.mantic.enums.ETipoMediosPago;
 
 /**
  *@company KAANA
@@ -27,8 +28,10 @@ public class Gasto extends TcKalanEmpresasGastosDto implements ICuenta, Serializ
   
   private Cheque documento;
 	private UISelectEntity ikProveedor;
+  private UISelectEntity ikTipoMedioPago;  
   private List<Parcialidad> parcialidades;
-
+  private Long idEstatusCuenta;
+  
   public Gasto() {
     this(-1L);
   }
@@ -38,8 +41,9 @@ public class Gasto extends TcKalanEmpresasGastosDto implements ICuenta, Serializ
     this.init();
   }
 
-  public Gasto(Long idGastoClasificacion, Long idGastoComprobante, Double ivaCalculado, Long idActivoIeps, Date fechaAplicacion, Double total, Long idEmpresaCuenta, Double iva, Date fechaReferencia, Long idProveedor, Double ivaRetenido, Long idActivoCheque, Double importe, Long pago, Long pagos, Long idGastoSubclasificacion, Double ieps, Long idUsuario, Double subtotal, String concepto, Double iepsCalculado, String observaciones, Long idEmpresa, Long idEmpresaGasto, String referencia, Long idActivoProrratear, Long idGastoEstatus, String consecutivo, Long ejercicio, Long orden, Long idFuente) {
-    super(idGastoClasificacion, idGastoComprobante, ivaCalculado, idActivoIeps, fechaAplicacion, total, idEmpresaCuenta, iva, fechaReferencia, idProveedor, ivaRetenido, idActivoCheque, importe, pago, pagos, idGastoSubclasificacion, ieps, idUsuario, subtotal, concepto, iepsCalculado, observaciones, idEmpresa, idEmpresaGasto, referencia, idActivoProrratear, idGastoEstatus, consecutivo, ejercicio, orden, idFuente);
+  public Gasto(Long idGastoClasificacion, Long idGastoComprobante, Double ivaCalculado, Long idActivoIeps, Date fechaAplicacion, Double total, Long idEmpresaCuenta, Double iva, Date fechaReferencia, Long idProveedor, Double ivaRetenido, Long idActivoCheque, Double importe, Long pago, Long pagos, Long idGastoSubclasificacion, Double ieps, Long idUsuario, Double subtotal, String concepto, Double iepsCalculado, String observaciones, Long idEmpresa, Long idEmpresaGasto, String referencia, Long idActivoProrratear, Long idGastoEstatus, String consecutivo, Long ejercicio, Long orden, Long idFuente, Long idTipoMedioPago) {
+    super(idGastoClasificacion, idGastoComprobante, ivaCalculado, idActivoIeps, fechaAplicacion, total, idEmpresaCuenta, iva, fechaReferencia, idProveedor, ivaRetenido, idActivoCheque, importe, pago, pagos, idGastoSubclasificacion, ieps, idUsuario, subtotal, concepto, iepsCalculado, observaciones, idEmpresa, idEmpresaGasto, referencia, idActivoProrratear, idGastoEstatus, consecutivo, ejercicio, orden, idFuente, idTipoMedioPago);
+    this.idEstatusCuenta= EEstatusCuentas.APLICADO.getIdEstatusCuenta();
     this.init();
   }
   
@@ -105,10 +109,21 @@ public class Gasto extends TcKalanEmpresasGastosDto implements ICuenta, Serializ
     this.setIdGastoEstatus(value? 2L: 1L);
   }
   
+  public UISelectEntity getIkTipoMedioPago() {
+    return ikTipoMedioPago;
+  }
+
+  public void setIkTipoMedioPago(UISelectEntity ikTipoMedioPago) {
+    this.ikTipoMedioPago = ikTipoMedioPago;
+    if(ikTipoMedioPago!= null)
+			this.setIdTipoMedioPago(ikTipoMedioPago.getKey());    
+  }
+  
   private void init() {
-    this.documento= new Cheque();
+    this.documento    = new Cheque();
     this.parcialidades= new ArrayList<>();
     this.setIdUsuario(JsfBase.getIdUsuario());
+    this.setIkTipoMedioPago(new UISelectEntity(-1L));
     this.documento.setIdUsuario(JsfBase.getIdUsuario());
     this.setIdGastoEstatus(1L);
   }
@@ -145,7 +160,8 @@ public class Gasto extends TcKalanEmpresasGastosDto implements ICuenta, Serializ
       this.getConsecutivo(), // String consecutivo, 
       this.getEjercicio(), // Long ejercicio, 
       this.getOrden(), // Long orden      
-      1L // Long idFuente
+      1L, // Long idFuente
+      this.getIdTipoMedioPago() // Long idTipoMedioPago
     );
     regresar.setRegistro(this.getRegistro());
     return regresar;
@@ -162,18 +178,13 @@ public class Gasto extends TcKalanEmpresasGastosDto implements ICuenta, Serializ
   }
 
   @Override
-  public Long getIdTipoMedioPago() {
-    return ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago();
-  }
-
-  @Override
   public Date getFechaPago() {
     return this.getFechaReferencia();
   }
 
   @Override
   public Long getIdCuentaEstatus() {
-    return this.getIdGastoEstatus();
+    return idEstatusCuenta;
   }
   
 }

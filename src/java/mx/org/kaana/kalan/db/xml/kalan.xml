@@ -1175,7 +1175,7 @@ select
 from      
   tc_kalan_empresas_gastos
 where      
-  id_empresa_gasto = {idEmpresaGasto}
+  id_empresa_gasto= {idEmpresaGasto}
       </select>
       <select id="iguales">
 select      
