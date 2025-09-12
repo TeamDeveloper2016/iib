@@ -319,8 +319,11 @@ public class Transaccion extends IBaseCuenta implements Serializable {
   }
 
   private void toControlCuentaCargoPago(Session sesion, Parcialidad item) throws Exception {
+    String referencia= item.getReferencia();
     try {
+      item.setReferencia(item.getConcepto());
       super.control(sesion, item, ECuentasOrigenes.GASTOS_CARGO);
+      item.setReferencia(referencia);
     } // try
     catch (Exception e) {
       throw e;
