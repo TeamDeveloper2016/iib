@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mx.org.kaana.kalan.cuentas.beans.ICuenta;
-import mx.org.kaana.kalan.cuentas.enums.ECuentasOrigenes;
 import mx.org.kaana.kalan.cuentas.enums.EEstatusCuentas;
 import mx.org.kaana.kalan.cuentas.enums.ETipoAfectacion;
 import mx.org.kaana.kalan.db.dto.TcKalanEmpresasGastosDto;

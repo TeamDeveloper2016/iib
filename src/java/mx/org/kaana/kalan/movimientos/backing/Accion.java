@@ -66,6 +66,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("titulo", JsfBase.getFlashAttribute("titulo")== null? " ingreso sin factura": JsfBase.getFlashAttribute("titulo"));
       this.attrs.put("idEmpresaMovimiento", JsfBase.getFlashAttribute("idEmpresaMovimiento")== null? -1L: JsfBase.getFlashAttribute("idEmpresaMovimiento"));
       this.idTipoMovimiento= JsfBase.getFlashAttribute("idTipoMovimiento")== null? 1L: (Long)JsfBase.getFlashAttribute("idTipoMovimiento");
+      this.toLoadTiposMediosPagos();
 			this.doLoad();
       this.toLoadEmpresas();
       this.doLoadBancos();
@@ -84,10 +85,14 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch(this.accion) {
         case AGREGAR:
           this.movimiento= admin.getMovimiento();
+          if(!Objects.equals(this.attrs.get("tiposMediosPagos"), null))
+            this.movimiento.setIkTipoMedioPago(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("tiposMediosPagos")));
+          this.movimiento.setIdUsuario(JsfBase.getIdUsuario());
           break;
         case MODIFICAR:
         case CONSULTAR:
           this.movimiento= admin.getMovimiento();
+          this.doLoadCuentas();
           break;
       } // switch
       concepto= new Entity(Objects.equals(this.movimiento.getIdTipoConcepto(), null)? -1L: this.movimiento.getIdTipoConcepto());
@@ -301,6 +306,29 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
   public char getGroupCliente(UISelectEntity item) {
     return item.toString("rfc").charAt(0);
+  }  
+ 
+	private void toLoadTiposMediosPagos() {
+		List<UISelectEntity> tiposMediosPagos= null;
+		Map<String, Object>params            = new HashMap<>();
+		try {
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja= 1");
+			tiposMediosPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposMediosPagos", tiposMediosPagos);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} 
+  
+  public void doUpdateMedios() {
+    try {      
+      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);      
+    } // catch	
   }  
   
 }

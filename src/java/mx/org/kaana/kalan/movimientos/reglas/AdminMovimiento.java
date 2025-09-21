@@ -49,6 +49,7 @@ public class AdminMovimiento implements Serializable {
             params.put("idCliente", regresar.getIdCliente());
             cliente= (Entity)DaoFactory.getInstance().toEntity("TcManticClientesDto", "igual", params);
             regresar.setIkCliente(new UISelectEntity(cliente));
+            regresar.setIkTipoMedioPago(new UISelectEntity(regresar.getIdTipoMedioPago()));
           } // if  
         } // if  
         else {
@@ -80,6 +81,10 @@ public class AdminMovimiento implements Serializable {
           regresar= new Movimiento();
           throw new RuntimeException("El concepto no esta registrado en la base de datos !");
         } // if
+        else {
+          regresar.setIkCliente(new UISelectEntity(regresar.getIdCliente()));
+          regresar.setIkTipoMedioPago(new UISelectEntity(regresar.getIdTipoMedioPago()));
+        } // else  
       } // else  
     } // try
     catch (Exception e) {

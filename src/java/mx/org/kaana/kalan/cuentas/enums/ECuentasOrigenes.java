@@ -24,7 +24,13 @@ public enum ECuentasOrigenes {
   GASTOS_ABONO(15L, "52"),
   CREDITOS(16L, "6"),
   CREDITOS_CARGOS(17L, "61"),
-  CREDITOS_ABONOS(18L, "62");
+  CREDITOS_ABONOS(18L, "62"),
+  INGRESOS(22L, "7"),
+  INGRESOS_CARGOS(23L, "71"),
+  INGRESOS_ABONOS(24L, "22"),
+  EGRESOS(25L, "8"),
+  EGRESOS_CARGOS(26L, "81"),
+  EGRESOS_ABONOS(27L, "82");
 
   private Long idCuentaOrigen;
   private String clave;

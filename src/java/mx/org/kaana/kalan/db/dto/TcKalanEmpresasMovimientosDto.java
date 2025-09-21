@@ -1,9 +1,7 @@
 package mx.org.kaana.kalan.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -74,17 +69,23 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
   private Long orden;
   @Column (name="concepto")
   private String concepto;
+  @Column (name="fecha_pago")
+  private Date fechaPago;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
+  @Column (name="referencia")
+  private String referencia;
 
   public TcKalanEmpresasMovimientosDto() {
     this(new Long(-1L));
   }
 
   public TcKalanEmpresasMovimientosDto(Long key) {
-    this(2L, null, -1L, 1L, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 0D, null, null, null, null, null, null, null);
+    this(2L, null, -1L, 1L, new Long(-1L), null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 0D, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), 1L, null);
     setKey(key);
   }
 
-  public TcKalanEmpresasMovimientosDto(Long idAnticipo, String justificacion, Long idCliente, Long idMovimientoEstatus, Long idEmpresaMovimiento, Long idBanco, Long ejercicio, String consecutivo, Long idTipoConcepto, Date fechaAplicacion, Double total, Long idTipoMovimiento, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden, String concepto) {
+  public TcKalanEmpresasMovimientosDto(Long idAnticipo, String justificacion, Long idCliente, Long idMovimientoEstatus, Long idEmpresaMovimiento, Long idBanco, Long ejercicio, String consecutivo, Long idTipoConcepto, Date fechaAplicacion, Double total, Long idTipoMovimiento, Long idEmpresaCuenta, Long idUsuario, String observaciones, Long idEmpresa, Long orden, String concepto, Date fechaPago, Long idTipoMedioPago, String referencia) {
     setIdAnticipo(idAnticipo);
     setJustificacion(justificacion);
     setIdCliente(idCliente);
@@ -104,6 +105,9 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setOrden(orden);
     setConcepto(concepto);
+    setFechaPago(fechaPago);
+    setIdTipoMedioPago(idTipoMedioPago);
+    setReferencia(referencia);
   }
 	
   public void setIdAnticipo(Long idAnticipo) {
@@ -258,6 +262,30 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
     this.concepto = concepto;
   }
 
+  public Date getFechaPago() {
+    return fechaPago;
+  }
+
+  public void setFechaPago(Date fechaPago) {
+    this.fechaPago = fechaPago;
+  }
+
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public String getReferencia() {
+    return referencia;
+  }
+
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -310,6 +338,12 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getConcepto());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFechaPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getReferencia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -336,13 +370,16 @@ public class TcKalanEmpresasMovimientosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("concepto", getConcepto());
+		regresar.put("fechaPago", getFechaPago());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("referencia", getReferencia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdAnticipo(), getJustificacion(), getIdCliente(), getIdMovimientoEstatus(), getIdEmpresaMovimiento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdTipoConcepto(), getFechaAplicacion(), getTotal(), getIdTipoMovimiento(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getConcepto()
+      getIdAnticipo(), getJustificacion(), getIdCliente(), getIdMovimientoEstatus(), getIdEmpresaMovimiento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdTipoConcepto(), getFechaAplicacion(), getTotal(), getIdTipoMovimiento(), getIdEmpresaCuenta(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getOrden(), getConcepto(), getFechaPago(), getIdTipoMedioPago(), getReferencia()
     };
     return regresar;
   }

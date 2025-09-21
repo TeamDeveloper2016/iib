@@ -12,9 +12,11 @@
 		<script type="text/javascript">
       //<![CDATA[
 			Janal.Control.fields = {
-				'contenedorGrupos\\:idEmpresa'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
-				'contenedorGrupos\\:idBanco'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
-				'contenedorGrupos\\:idCliente'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'cliente'},
+				'contenedorGrupos\\:idEmpresa'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
+				'contenedorGrupos\\:idBanco'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
+				'contenedorGrupos\\:idCliente'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'cliente'},
+				'contenedorGrupos\\:fechaPago'      : {validaciones: 'requerido|fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:idTipoMedioPago': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:fechaAplicacion': {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'ingresos'},
 				'contenedorGrupos\\:idEmpresaCuenta': {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresos'},
 				'contenedorGrupos\\:idTipoConcepto_input': {validaciones: 'requerido|texto', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'ingresos'},
@@ -65,6 +67,29 @@
                     </p:selectOneMenu>
                   </p:panelGrid>
                 </p:panelGrid>
+                <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-60, janal-wid-20, janal-wid-20">
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
+                    <p:selectOneMenu id="idTipoMedioPago" value="#{kalanMovimientosAccion.movimiento.ikTipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt medios" effect="fade" filter="true" filterMatchMode="custom" filterFunction="janal.contains">
+                      <p:ajax event="change" listener="#{kalanMovimientosAccion.doUpdateMedios()}" process="@this @(.medios)" update="@(.banco)" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); janal.refresh()"/>
+                      <f:selectItems value="#{kalanMovimientosAccion.attrs.tiposMediosPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                      <p:column headerText="Clave">
+                        <h:outputText value="#{item.clave}"/>
+                      </p:column>   
+                      <p:column headerText="Nombre">
+                        <h:outputText value="#{item.nombre}"/>
+                      </p:column>   
+                    </p:selectOneMenu>	
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="referencia" value="Referencia:" styleClass="banco #{kalanMovimientosAccion.movimiento.ikTipoMedioPago eq '1'? 'janal-display-none': ''}"/>
+                    <p:inputText id="referencia" value="#{kalanMovimientosAccion.movimiento.referencia}" styleClass="janal-wid-100-txt banco #{kalanMovimientosAccion.movimiento.ikTipoMedioPago eq '1'? 'janal-display-none': ''}" placeholder="Ej. Referencia 4564"/>
+                  </p:panelGrid>
+                  <p:panelGrid columns="1" styleClass="janal-wid-100-txt">
+                    <p:outputLabel for="fechaPago" value="Fecha pago:"/>
+                    <p:calendar id="fechaPago" inputStyleClass="janal-column-center janal-wid-100-txt" styleClass="janal-wid-100" value="#{kalanMovimientosAccion.movimiento.fechaPago}" pattern="dd/MM/yyyy" locale="mx" converter="janal.convertidor.Calendario"/>
+                  </p:panelGrid>  
+                </p:panelGrid>  
                 <p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-60, janal-wid-15, janal-wid-25">
     							<p:panelGrid columns="1" styleClass="janal-wid-100">
                     <p:outputLabel for="idTipoConcepto" value="Tipo concepto:"/>
